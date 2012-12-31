@@ -7,47 +7,47 @@ import org.moe.Moe.Errors
 class Environment {
 
     object Markers {
-        val Package  = "__PACKAGE__";
-        val Class    = "__CLASS__";
-        val Invocant = "__SELF__";        
+        val Package  = "__PACKAGE__"
+        val Class    = "__CLASS__"
+        val Invocant = "__SELF__"        
     }
 
-    val pad = new HashMap[String,Container]();
-
-    var parent : Environment = _;
+    private val pad = new HashMap[String,MoeObject]()
+    
+    private var parent : Environment = _
 
     def this ( p : Environment ) {
         this()
         parent = p
     }
 
-    def getCurrentPackage  (): Container = getLocal( Markers.Package  )
-    def getCurrentClass    (): Container = getLocal( Markers.Class    )
-    def getCurrentInvocant (): Container = getLocal( Markers.Invocant )
+    def getCurrentPackage  (): MoeObject = getLocal( Markers.Package  )
+    def getCurrentClass    (): MoeObject = getLocal( Markers.Class    )
+    def getCurrentInvocant (): MoeObject = getLocal( Markers.Invocant )
 
-    def setCurrentPackage  ( p : Container ): Unit = pad.put( Markers.Package,  p )
-    def setCurrentClass    ( c : Container ): Unit = pad.put( Markers.Class,    c )
-    def setCurrentInvocant ( i : Container ): Unit = pad.put( Markers.Invocant, i )
+    def setCurrentPackage  ( p : MoeObject ): Unit = pad.put( Markers.Package,  p )
+    def setCurrentClass    ( c : MoeObject ): Unit = pad.put( Markers.Class,    c )
+    def setCurrentInvocant ( i : MoeObject ): Unit = pad.put( Markers.Invocant, i )
 
     def getParent (): Environment = parent
     def isRoot    (): Boolean     = parent == null
 
-    def get ( name : String ): Container = {
+    def get ( name : String ): MoeObject = {
         if ( pad.contains( name ) ) return pad( name )
         if ( !isRoot              ) return parent.get( name )
-        throw new Errors.ValueNotFound( name );
+        throw new Errors.ValueNotFound( name )
     }
 
     def has ( name : String ): Boolean = {
         if ( pad.contains( name ) ) return true
         if ( !isRoot              ) return parent.has( name )
-        false;
+        false
     }
 
-    def create ( name : String, value : Container ): Unit = pad.put( name, value )
+    def create ( name : String, value : MoeObject ): Unit = pad.put( name, value )
 
-    def set ( name : String, value : Container ): Unit = {
-        if ( !has( name ) ) throw new Errors.UninitializedValue( name )
+    def set ( name : String, value : MoeObject ): Unit = {
+        if ( !has( name ) ) throw new Errors.UndefinedValue( name )
 
         if ( pad.contains( name ) ) {
             pad.put( name, value )
@@ -62,13 +62,13 @@ class Environment {
                     current = current.getParent
                 }
             }
-            throw new Errors.UninitializedValue( name )
+            throw new Errors.UndefinedValue( name )
         }
     }
 
-    private def getLocal ( name : String ): Container = pad( name )
+    private def getLocal ( name : String ): MoeObject = pad( name )
     private def hasLocal ( name : String ): Boolean   = pad.contains( name )
-    private def setLocal ( name : String, value : Container ): Unit = pad.put( name, value )
+    private def setLocal ( name : String, value : MoeObject ): Unit = pad.put( name, value )
 
 }
 
