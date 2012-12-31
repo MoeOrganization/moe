@@ -35,13 +35,10 @@ class MoeClass (
     }
 
     override def toString (): String = {
-        var out = "{ " + name 
-        out += " " + version
-        out += " " + authority
+        var out = "{ " + name + "-" + version + "-" + authority
         if (hasSuperclass) {
             out += " #extends " + superclass.toString()
         }    
-        out += " }" 
-        out
+        out + " }" 
     }
 }

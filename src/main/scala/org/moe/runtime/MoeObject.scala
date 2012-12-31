@@ -18,6 +18,7 @@ class MoeObject {
 
     def getID              (): Integer  = id
     def getAssociatedClass (): MoeClass = klass
+    def hasAssociatedClass (): Boolean  = klass != null
 
     def setAssocaitedClass ( k : MoeClass ): Unit = klass = k
 
@@ -34,5 +35,11 @@ class MoeObject {
         klass.getMethod( method ).call( this, args )
     }
 
-    override def toString (): String = "{ #instance(" + id + ") " + klass.toString() + " }"
+    override def toString (): String = {
+        var out = "{ #instance(" + id + ")"
+        if ( hasAssociatedClass ) {
+            out += " " + klass.toString() 
+        }
+        out + " }"
+    }
 }
