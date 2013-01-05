@@ -22,6 +22,10 @@ class MoeClass (
     def hasSuperclass (): Boolean  = superclass != null
     def setSuperclass ( s : MoeClass ): Unit = superclass = s
 
+    def addMethod ( method : MoeMethod ): Unit = {
+        methods += ( method.getName() -> method )
+    }
+
     def getMethod ( name : String ): MoeMethod = {
         if ( hasMethod( name ) ) return methods( name )
         if ( hasSuperclass     ) return superclass.getMethod( name )
