@@ -3,12 +3,14 @@ package org.moe.runtime
 import org.moe.Moe.Errors
 
 class MoeMethod ( 
-        private val name : String 
+        private val name : String,
+        private val body : ( MoeObject, List[MoeObject] ) => MoeObject
     ) {
 
     def getName (): String = name 
+    def getBody (): ( MoeObject, List[MoeObject] ) => MoeObject = body
 
-    def call ( reciever : MoeObject, args : List[MoeObject] ): MoeObject = {
-        throw new Errors.UndefinedMethod( name )
+    def execute ( invocant : MoeObject, args : List[MoeObject] ): MoeObject = {
+        body( invocant, args )
     }
 }
