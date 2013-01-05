@@ -32,7 +32,7 @@ class MoeObject {
 
     def callMethod ( method : String, args : List[MoeObject] ): MoeObject = {
         if ( klass == null ) throw new Errors.MissingClass( toString )
-        klass.getMethod( method ).call( this, args )
+        klass.getMethod( method ).execute( this, args )
     }
 
     override def toString (): String = {
