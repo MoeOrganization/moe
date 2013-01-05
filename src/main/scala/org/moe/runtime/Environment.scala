@@ -50,7 +50,7 @@ class Environment {
         if ( !has( name ) ) throw new Errors.UndefinedValue( name )
 
         if ( pad.contains( name ) ) {
-            pad.put( name, value )
+            pad += ( name -> value )
         } else {
             var current : Environment = parent
             while ( current != null ) {
@@ -68,7 +68,7 @@ class Environment {
 
     private def getLocal ( name : String ): MoeObject = pad( name )
     private def hasLocal ( name : String ): Boolean   = pad.contains( name )
-    private def setLocal ( name : String, value : MoeObject ): Unit = pad.put( name, value )
+    private def setLocal ( name : String, value : MoeObject ): Unit = pad += ( name -> value )
 
 }
 
