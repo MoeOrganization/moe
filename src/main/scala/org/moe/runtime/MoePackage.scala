@@ -7,6 +7,8 @@ class MoePackage ( private val name : String ) {
     private val vars = new HashMap[ String, MoeVariable   ]()
     private val subs = new HashMap[ String, MoeSubroutine ]()
 
+    def getName (): String = name
+
     // Variables ...
 
     def addVariable ( variable : MoeVariable ): Unit = {
