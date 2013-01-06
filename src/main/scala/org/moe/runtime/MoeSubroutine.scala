@@ -7,7 +7,7 @@ class MoeSubroutine (
 
     def this ( name : String ) = {
         // yadda yadda yadda
-        this( name, ( _, _ ) => throw new Runtime.Errors.UndefinedSubroutine() )
+        this( name, ( args ) => throw new Runtime.Errors.UndefinedSubroutine( name ) )
     }
 
     def getName (): String = name 

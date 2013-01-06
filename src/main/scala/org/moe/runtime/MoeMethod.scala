@@ -7,7 +7,7 @@ class MoeMethod (
 
     def this ( name : String ) = {
         // yadda yadda yadda
-        this( name, ( _, _ ) => throw new Runtime.Errors.UndefinedMethod() )
+        this( name, ( inv, args ) => throw new Runtime.Errors.UndefinedMethod( name ) )
     }
 
     def getName (): String = name 
