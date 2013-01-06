@@ -1,18 +1,12 @@
-package org.moe.runtime
+package org.moe.interpreter
 
 import scala.collection.mutable.HashMap
 
-import org.moe.Moe.Errors
+import org.moe.runtime._
 
 class Environment {
 
-    object Markers {
-        val Package  = "__PACKAGE__"
-        val Class    = "__CLASS__"
-        val Invocant = "__SELF__"        
-    }
-
-    private val pad = new HashMap[String,MoeObject]()
+    private val pad = new HashMap[ String, MoeObject ]()
     
     private var parent : Environment = _
 
@@ -21,21 +15,13 @@ class Environment {
         parent = p
     }
 
-    def getCurrentPackage  (): MoeObject = getLocal( Markers.Package  )
-    def getCurrentClass    (): MoeObject = getLocal( Markers.Class    )
-    def getCurrentInvocant (): MoeObject = getLocal( Markers.Invocant )
-
-    def setCurrentPackage  ( p : MoeObject ): Unit = pad.put( Markers.Package,  p )
-    def setCurrentClass    ( c : MoeObject ): Unit = pad.put( Markers.Class,    c )
-    def setCurrentInvocant ( i : MoeObject ): Unit = pad.put( Markers.Invocant, i )
-
     def getParent (): Environment = parent
     def isRoot    (): Boolean     = parent == null
 
     def get ( name : String ): MoeObject = {
         if ( pad.contains( name ) ) return pad( name )
         if ( !isRoot              ) return parent.get( name )
-        throw new Errors.ValueNotFound( name )
+        throw new Runtime.Errors.ValueNotFound( name )
     }
 
     def has ( name : String ): Boolean = {
@@ -47,7 +33,7 @@ class Environment {
     def create ( name : String, value : MoeObject ): Unit = pad.put( name, value )
 
     def set ( name : String, value : MoeObject ): Unit = {
-        if ( !has( name ) ) throw new Errors.UndefinedValue( name )
+        if ( !has( name ) ) throw new Runtime.Errors.UndefinedValue( name )
 
         if ( pad.contains( name ) ) {
             pad += ( name -> value )
@@ -62,7 +48,7 @@ class Environment {
                     current = current.getParent
                 }
             }
-            throw new Errors.UndefinedValue( name )
+            throw new Runtime.Errors.UndefinedValue( name )
         }
     }
 
