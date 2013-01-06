@@ -2,8 +2,6 @@ package org.moe.runtime
 
 import scala.collection.mutable.HashMap
 
-import org.moe.Moe.Errors
-
 class MoeClass ( private val name : String ) {
 
     private var version    : String   = _
@@ -71,7 +69,7 @@ class MoeClass ( private val name : String ) {
     def getAttribute ( name : String ): MoeAttribute = {
         if ( hasAttribute( name ) ) return attributes( name )
         if ( hasSuperclass        ) return superclass.getAttribute( name )
-        throw new Errors.AttributeNotFound( name )
+        throw new Runtime.Errors.AttributeNotFound( name )
     }
 
     def hasAttribute ( name : String ): Boolean = {
@@ -105,7 +103,7 @@ class MoeClass ( private val name : String ) {
     def getMethod ( name : String ): MoeMethod = {
         if ( hasMethod( name ) ) return methods( name )
         if ( hasSuperclass     ) return superclass.getMethod( name )
-        throw new Errors.MethodNotFound( name )
+        throw new Runtime.Errors.MethodNotFound( name )
     }
 
     def hasMethod ( name : String ): Boolean = {
