@@ -30,6 +30,7 @@ class MoeObject {
 
     def setValue ( name : String, value : MoeObject ): Unit = data.put( name, value )
 
+    def callMethod ( method : String ): MoeObject = callMethod( method, List() )
     def callMethod ( method : String, args : List[MoeObject] ): MoeObject = {
         if ( klass == null ) throw new Errors.MissingClass( toString )
         klass.getMethod( method ).execute( this, args )
