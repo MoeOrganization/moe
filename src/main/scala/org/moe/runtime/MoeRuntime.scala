@@ -11,6 +11,7 @@ object Runtime {
 
         class UndefinedValue        ( msg : String ) extends Exception( msg )
         class UndefinedMethod       ( msg : String ) extends UndefinedValue( msg )
+        class UndefinedSubroutine   ( msg : String ) extends UndefinedValue( msg )
 
         class MissingValue          ( msg : String ) extends Exception( msg )
         class MissingClass          ( msg : String ) extends MissingValue( msg )

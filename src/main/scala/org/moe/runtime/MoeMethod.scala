@@ -5,6 +5,11 @@ class MoeMethod (
         private val body : ( MoeObject, List[ MoeObject ] ) => MoeObject
     ) {
 
+    def this ( name : String ) = {
+        // yadda yadda yadda
+        this( name, ( _, _ ) => throw new Runtime.Errors.UndefinedMethod() )
+    }
+
     def getName (): String = name 
     def getBody (): ( MoeObject, List[ MoeObject ] ) => MoeObject = body
 
