@@ -23,14 +23,14 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter {
         val klass = new MoeClass( "TestClass", "0.01", "cpan:STEVAN" )
         klass.addMethod( new MoeMethod( "ident", ( inv, args ) => inv ) )
         var obj = new MoeObject( klass )
-        assert(  obj.callMethod( "ident" ) === obj )
+        assert( obj.callMethod( "ident" ) === obj )
     }
 
     test("... test the whole thing together (makeInstance version)") {
         val klass = new MoeClass( "TestClass", "0.01", "cpan:STEVAN" )
         klass.addMethod( new MoeMethod( "ident", ( inv, args ) => inv ) )
         var obj = klass.newInstance()
-        assert(  obj.callMethod( "ident" ) === obj )
+        assert( obj.callMethod( "ident" ) === obj )
     }
 
 }
