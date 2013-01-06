@@ -9,6 +9,7 @@ object Moe {
         class ValueNotFound         ( msg : String ) extends Exception( msg )
         class InstanceValueNotFound ( msg : String ) extends ValueNotFound( msg )
         class MethodNotFound        ( msg : String ) extends ValueNotFound( msg )
+        class AttributeNotFound     ( msg : String ) extends ValueNotFound( msg )
 
         class UndefinedValue        ( msg : String ) extends Exception( msg )
         class UndefinedMethod       ( msg : String ) extends UndefinedValue( msg )
