@@ -9,8 +9,8 @@ class MoePackage ( private val name : String ) {
 
     // Variables ...
 
-    def addVariable ( var : MoeVariable ): Unit = {
-        vars += ( var.getName() -> var )
+    def addVariable ( variable : MoeVariable ): Unit = {
+        vars += ( variable.getName() -> variable )
     }
 
     def getVariable ( name : String ): MoeVariable = {
