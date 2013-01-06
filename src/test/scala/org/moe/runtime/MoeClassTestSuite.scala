@@ -7,6 +7,20 @@ import org.moe.Moe.Errors
 
 class MoeClassTestSuite extends FunSuite with BeforeAndAfter {
 
+    test("... test MRO") {
+        val Foo = new MoeClass( "Foo" )
+        val Bar = new MoeClass( "Bar", Foo )
+        val Baz = new MoeClass( "Baz", Bar )
+
+        val mro = Baz.getMRO()
+
+        assert( mro.length == 3 )
+
+        assert( mro(0) === Baz )
+        assert( mro(1) === Bar )
+        assert( mro(2) === Foo )
+    }
+
     test("... test the whole thing together") {
         val klass = new MoeClass( "TestClass", "0.01", "cpan:STEVAN" )
         klass.addMethod( new MoeMethod( "ident", ( inv, args ) => inv ) )
