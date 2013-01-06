@@ -53,12 +53,11 @@ class MoeClass ( private val name : String ) {
     def hasSuperclass (): Boolean  = superclass != null
     def setSuperclass ( s : MoeClass ): Unit = superclass = s
 
-    def getMRO (): List[MoeClass] = {
+    def getMRO (): List[ MoeClass ] = {
         if ( superclass == null ) List( this )
         else 
             this :: superclass.getMRO() 
     }
-
 
     // Attributes
 
