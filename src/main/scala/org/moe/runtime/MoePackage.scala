@@ -4,7 +4,24 @@ import scala.collection.mutable.HashMap
 
 class MoePackage ( private val name : String ) {
 
+    private val vars = new HashMap[ String, MoeVariable   ]()
     private val subs = new HashMap[ String, MoeSubroutine ]()
+
+    // Variables ...
+
+    def addVariable ( var : MoeVariable ): Unit = {
+        vars += ( var.getName() -> var )
+    }
+
+    def getVariable ( name : String ): MoeVariable = {
+        if ( hasVariable( name ) ) return vars( name )
+        throw new Runtime.Errors.VariableNotFound( name )
+    }
+
+    def hasVariable ( name : String ): Boolean = {
+        if ( vars.contains( name ) ) return true
+        false
+    }
 
     // Subroutines ...
 

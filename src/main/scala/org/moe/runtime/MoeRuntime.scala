@@ -8,6 +8,7 @@ object Runtime {
         class MethodNotFound        ( msg : String ) extends ValueNotFound( msg )
         class AttributeNotFound     ( msg : String ) extends ValueNotFound( msg )
         class SubroutineNotFound    ( msg : String ) extends ValueNotFound( msg )
+        class VariableNotFound      ( msg : String ) extends ValueNotFound( msg )
 
         class UndefinedValue        ( msg : String ) extends Exception( msg )
         class UndefinedMethod       ( msg : String ) extends UndefinedValue( msg )
