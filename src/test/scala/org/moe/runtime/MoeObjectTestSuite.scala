@@ -3,8 +3,6 @@ package org.moe.runtime
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
 
-import org.moe.Moe.Errors
-
 class MoeObjectTestSuite extends FunSuite with BeforeAndAfter {
 
     var o : MoeObject = _
@@ -45,14 +43,14 @@ class MoeObjectTestSuite extends FunSuite with BeforeAndAfter {
     }   
 
     test("... instance value not found thrown") {
-        val ex = intercept[Errors.InstanceValueNotFound] {
+        val ex = intercept[Runtime.Errors.InstanceValueNotFound] {
             o.getValue( "$.bar" )
         }
         assert( ex.getMessage === "$.bar" )
     }
 
     test("... missing class thrown") {
-        intercept[Errors.MissingClass] {
+        intercept[Runtime.Errors.MissingClass] {
             o.callMethod( "foo", List() )
         }
     }

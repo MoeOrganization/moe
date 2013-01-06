@@ -3,8 +3,6 @@ package org.moe.runtime
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
 
-import org.moe.Moe.Errors
-
 class MoeClassTestSuite extends FunSuite with BeforeAndAfter {
 
     test("... test MRO") {
