@@ -19,24 +19,24 @@ class Environment {
     def isRoot    (): Boolean     = parent == null
 
     def get ( name : String ): MoeObject = {
-        if ( pad.contains( name ) ) return pad( name )
-        if ( !isRoot              ) return parent.get( name )
+        if ( hasLocal( name ) ) return getLocal( name )
+        if ( !isRoot          ) return parent.get( name )
         throw new Runtime.Errors.ValueNotFound( name )
     }
 
     def has ( name : String ): Boolean = {
-        if ( pad.contains( name ) ) return true
-        if ( !isRoot              ) return parent.has( name )
+        if ( hasLocal( name ) ) return true
+        if ( !isRoot          ) return parent.has( name )
         false
     }
 
-    def create ( name : String, value : MoeObject ): Unit = pad.put( name, value )
+    def create ( name : String, value : MoeObject ): Unit = setLocal( name, value )
 
     def set ( name : String, value : MoeObject ): Unit = {
         if ( !has( name ) ) throw new Runtime.Errors.UndefinedValue( name )
 
-        if ( pad.contains( name ) ) {
-            pad += ( name -> value )
+        if ( hasLocal( name ) ) {
+            setLocal( name, value )
         } else {
             var current : Environment = parent
             while ( current != null ) {
