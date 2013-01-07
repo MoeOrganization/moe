@@ -1,16 +1,17 @@
 package org.moe.interpreter
 
+import org.moe.runtime._
 import org.moe.ast._
 
 object Interpreter {
 
-    def eval ( env : Environment, node : AST ): Unit = {
+    def eval ( env : MoeEnvironment, node : AST ): Unit = {
         node match {
             // containers
 
             case CompilationUnitNode ( body  ) => eval( env, body )
             case StatementsNode      ( nodes ) => nodes.foreach( (n) => eval( env, n ) )
-            case ScopeNode           ( body  ) => eval( new Environment( env ), body )
+            case ScopeNode           ( body  ) => eval( new MoeEnvironment( env ), body )
 
             // literals
 
