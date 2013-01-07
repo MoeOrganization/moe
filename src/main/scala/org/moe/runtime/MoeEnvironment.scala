@@ -1,21 +1,21 @@
-package org.moe.interpreter
+package org.moe.runtime
 
 import scala.collection.mutable.HashMap
 
 import org.moe.runtime._
 
-class Environment {
+class MoeEnvironment {
 
     private val pad = new HashMap[ String, MoeObject ]()
     
-    private var parent : Environment = _
+    private var parent : MoeEnvironment = _
 
-    def this ( p : Environment ) {
+    def this ( p : MoeEnvironment ) {
         this()
         parent = p
     }
 
-    def getParent (): Environment = parent
+    def getParent (): MoeEnvironment = parent
     def isRoot    (): Boolean     = parent == null
 
     def get ( name : String ): MoeObject = {
@@ -38,7 +38,7 @@ class Environment {
         if ( hasLocal( name ) ) {
             setLocal( name, value )
         } else {
-            var current : Environment = parent
+            var current : MoeEnvironment = parent
             while ( current != null ) {
                 if ( current.hasLocal( name ) ) {
                     current.setLocal( name, value )

@@ -1,19 +1,17 @@
-package org.moe.interpreter
+package org.moe.runtime
 
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
 
-import org.moe.runtime._
+class MoeEnvironmentTestSuite extends FunSuite with BeforeAndAfter {
 
-class EnvironmentTestSuite extends FunSuite with BeforeAndAfter {
-
-    var env : Environment = _
+    var env : MoeEnvironment = _
 
     before {
-        env = new Environment()
+        env = new MoeEnvironment()
     }
 
-    test("... this is a root Environment") {
+    test("... this is a root MoeEnvironment") {
         assert( env.isRoot )
     }
 
