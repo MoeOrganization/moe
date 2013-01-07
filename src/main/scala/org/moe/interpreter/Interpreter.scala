@@ -8,10 +8,9 @@ object Interpreter {
         node match {
             // containers
 
-            case CompilationUnitNode ( body ) => { }
-            case ScopeNode           ( body ) => { }
-
-            case StatementsNode      ( nodes ) => { }
+            case CompilationUnitNode ( body  ) => eval( env, body )
+            case StatementsNode      ( nodes ) => nodes.foreach( (n) => eval( env, n ) )
+            case ScopeNode           ( body  ) => eval( new Environment( env ), body )
 
             // literals
 
