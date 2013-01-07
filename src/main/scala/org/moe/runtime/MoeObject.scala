@@ -40,9 +40,7 @@ class MoeObject {
 
     override def toString (): String = {
         var out = "{ #instance(" + id + ")"
-        if ( hasAssociatedClass ) {
-            out += " " + klass.toString() 
-        }
+        if ( hasAssociatedClass ) out += " " + klass.toString() 
         out + " }"
     }
 }

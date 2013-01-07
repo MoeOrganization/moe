@@ -115,9 +115,7 @@ class MoeClass ( private val name : String ) {
 
     override def toString (): String = {
         var out = "{ " + name + "-" + version + "-" + authority
-        if (hasSuperclass) {
-            out += " #extends " + superclass.toString()
-        }    
+        if (hasSuperclass) out += " #extends " + superclass.toString()
         out + " }" 
     }
 }
