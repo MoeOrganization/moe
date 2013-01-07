@@ -5,42 +5,94 @@ import org.scalatest.BeforeAndAfter
 
 class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
 
-    test("... simple null object") {
-        val o = new MoeNativeObject( null )
-        assert( o.getNativeValue() === null )
-    }
-
     test("... simple String object") {
-        val o = new MoeNativeObject( "Hello World" )
+        val o = new MoeStringObject( "Hello World" )
         assert( o.getNativeValue() === "Hello World" )
+        assert( o.isTrue() )
+        assert( !o.isFalse() )
+        assert( !o.isUndef() )
     }
 
-    test("... simple Number object") {
-        val o = new MoeNativeObject( 10 )
+    test("... false String object") {
+        val o = new MoeStringObject( "" )
+        assert( o.getNativeValue() === "" )
+        assert( !o.isTrue() )
+        assert( o.isFalse() )
+        assert( !o.isUndef() )
+    }
+
+    test("... simple Int object") {
+        val o = new MoeIntObject( 10 )
         assert( o.getNativeValue() === 10 )
+        assert( o.isTrue() )
+        assert( !o.isFalse() )
+        assert( !o.isUndef() )        
+    }
+
+    test("... false Int object") {
+        val o = new MoeIntObject( 0 )
+        assert( o.getNativeValue() === 0 )
+        assert( !o.isTrue() )
+        assert( o.isFalse() )
+        assert( !o.isUndef() )        
+    }
+
+    test("... simple Float object") {
+        val o = new MoeFloatObject( 10.5 )
+        assert( o.getNativeValue() === 10.5 )
+        assert( o.isTrue() )
+        assert( !o.isFalse() )
+        assert( !o.isUndef() )
+    }
+
+    test("... false Float object") {
+        val o = new MoeFloatObject( 0.0 )
+        assert( o.getNativeValue() === 0.0 )
+        assert( !o.isTrue() )
+        assert( o.isFalse() )
+        assert( !o.isUndef() )
     }
 
     test("... simple Boolean object") {
-        val o = new MoeNativeObject( true )
+        val o = new MoeBooleanObject( true )
         assert( o.getNativeValue() === true )
+        assert( o.isTrue() )
+        assert( !o.isFalse() )
+        assert( !o.isUndef() )        
+    }
+
+    test("... false Boolean object") {
+        val o = new MoeBooleanObject( false )
+        assert( o.getNativeValue() === false )
+        assert( !o.isTrue() )
+        assert( o.isFalse() )
+        assert( !o.isUndef() )        
+    }
+
+    test("... simple Null object") {
+        val o = new MoeNullObject()
+        assert( o.getNativeValue() === null )
+        assert( !o.isTrue() )
+        assert( o.isFalse() )
+        assert( o.isUndef() )        
     }
 
     test("... test getValue exception thrown") {
-        val o = new MoeNativeObject( null )
+        val o = new MoeNullObject()
         intercept[ Runtime.Errors.MethodNotAllowed ] {
             o.getValue( "foo" )
         }
     }
 
     test("... test setValue exception thrown") {
-        val o = new MoeNativeObject( null )
+        val o = new MoeNullObject()
         intercept[ Runtime.Errors.MethodNotAllowed ] {
             o.setValue( "foo", new MoeObject() )
         }
     }
 
     test("... test hasValue exception thrown") {
-        val o = new MoeNativeObject( null )
+        val o = new MoeNullObject()
         intercept[ Runtime.Errors.MethodNotAllowed ] {
             o.hasValue( "foo" )
         }
