@@ -34,6 +34,10 @@ class MoeObject {
         klass.getMethod( method ).execute( this, args )
     }
 
+    def isTrue  (): Boolean = !isFalse()
+    def isFalse (): Boolean = false
+    def isUndef (): Boolean = false
+
     override def toString (): String = {
         var out = "{ #instance(" + id + ")"
         if ( hasAssociatedClass ) {
