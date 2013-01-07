@@ -18,7 +18,7 @@ class MoeObject {
     def getAssociatedClass (): MoeClass = klass
     def hasAssociatedClass (): Boolean  = klass != null
 
-    def setAssocaitedClass ( k : MoeClass ): Unit = klass = k
+    def setAssociatedClass ( k : MoeClass ): Unit = klass = k
 
     def hasValue ( name : String ): Boolean   = data.contains( name )
     def getValue ( name : String ): MoeObject = {
