@@ -2,28 +2,29 @@ package org.moe.runtime
 
 import scala.collection.mutable.HashMap
 
-class MoePackage ( private val name : String ) {
+class MoePackage ( 
+        private val name : String, 
+        private var env  : MoeEnvironment
+    ) {
 
-    private val vars = new HashMap[ String, MoeVariable   ]()
-    private val subs = new HashMap[ String, MoeSubroutine ]()
+    private var parent : MoePackage     = _
 
-    def getName (): String = name
+    private val klasses      = new HashMap[ String, MoeClass      ]()
+    private val subs         = new HashMap[ String, MoeSubroutine ]()
+    private val sub_packages = new HashMap[ String, MoePackage    ]()
 
-    // Variables ...
-
-    def addVariable ( variable : MoeVariable ): Unit = {
-        vars += ( variable.getName() -> variable )
+    def this ( n : String, e : MoeEnvironment, p : MoePackage ) = {
+        this( n, e )
+        parent = p
     }
 
-    def getVariable ( name : String ): MoeVariable = {
-        if ( hasVariable( name ) ) return vars( name )
-        throw new Runtime.Errors.VariableNotFound( name )
-    }
+    def getName (): String  = name
+    def isRoot  (): Boolean = parent == null 
 
-    def hasVariable ( name : String ): Boolean = {
-        if ( vars.contains( name ) ) return true
-        false
-    }
+    // Parent ...
+
+    def getParent (): MoePackage = parent
+    def setParent ( p : MoePackage ): Unit = parent = p
 
     // Subroutines ...
 
@@ -38,6 +39,38 @@ class MoePackage ( private val name : String ) {
 
     def hasSubroutine ( name : String ): Boolean = {
         if ( subs.contains( name ) ) return true
+        false
+    }
+
+    // Classes ...
+
+    def addClass ( klass : MoeClass ): Unit = {
+        klasses += ( klass.getName() -> klass )
+    }
+
+    def getClass ( name : String ): MoeClass = {
+        if ( hasClass( name ) ) return klasses( name )
+        throw new Runtime.Errors.ClassNotFound( name )
+    }
+
+    def hasClass ( name : String ): Boolean = {
+        if ( klasses.contains( name ) ) return true
+        false
+    }
+
+    // SubPackages ...
+
+    def addSubPackage ( pkg : MoePackage ): Unit = {
+        sub_packages += ( pkg.getName() -> pkg )
+    }
+
+    def getSubPackage ( name : String ): MoePackage = {
+        if ( hasSubPackage( name ) ) return sub_packages( name )
+        throw new Runtime.Errors.PackageNotFound( name )
+    }
+
+    def hasSubPackage ( name : String ): Boolean = {
+        if ( sub_packages.contains( name ) ) return true
         false
     }
 
