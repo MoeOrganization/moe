@@ -5,84 +5,102 @@ import org.moe.ast._
 
 object Interpreter {
 
-    def eval ( env : MoeEnvironment, node : AST ): Unit = {
-        node match {
-            // containers
+      val stub = new MoeObject()
 
-            case CompilationUnitNode ( body  ) => eval( env, body )
-            case StatementsNode      ( nodes ) => nodes.foreach( (n) => eval( env, n ) )
-            case ScopeNode           ( body  ) => eval( new MoeEnvironment( env ), body )
+      def eval ( env : MoeEnvironment, node : AST ): MoeObject = {
+            node match {
+                  // containers
 
-            // literals
+                  case CompilationUnitNode ( body  ) => eval( env, body )
+                  case ScopeNode           ( body  ) => eval( new MoeEnvironment( env ), body )
+                  case StatementsNode      ( nodes ) => {
+                        var result : MoeObject = Runtime.NativeObjects.getUndef()
+                        for ( val node <- nodes ) {
+                              result = eval( env, node )
+                        }
+                        result
+                  }
 
-            case LiteralNode ( value ) => { }
+                  // literals
 
-            case SelfLiteralNode  () => { }
-            case ClassLiteralNode () => { }
-            case SuperLiteralNode () => { }
+                  case IntLiteralNode     ( value ) => Runtime.NativeObjects.getInt( value )
+                  case FloatLiteralNode   ( value ) => Runtime.NativeObjects.getFloat( value )
+                  case StringLiteralNode  ( value ) => Runtime.NativeObjects.getString( value )
+                  case BooleanLiteralNode ( value ) => value match {
+                        case true  => Runtime.NativeObjects.getTrue()
+                        case false => Runtime.NativeObjects.getFalse()
+                  }
 
-            case PairLiteralNode ( key, value ) => { }
+                  case UndefLiteralNode () => Runtime.NativeObjects.getUndef()
+                  case SelfLiteralNode  () => env.getCurrentInvocant()
+                  case ClassLiteralNode () => env.getCurrentClass()
+                  case SuperLiteralNode () => env.getCurrentClass().getSuperclass() match {
+                        case s:MoeClass => s
+                        case _          => throw new Runtime.Errors.SuperclassNotFound("")
+                  }
 
-            case ArrayLiteralNode ( values ) => { }
-            case HashLiteralNode  ( map    ) => { }
+                  case PairLiteralNode ( key, value ) => stub
 
-            // unary operators
+                  case ArrayLiteralNode ( values ) => stub
+                  case HashLiteralNode  ( map    ) => stub
 
-            case IncrementNode ( reciever ) => { }
-            case DecrementNode ( reciever ) => { }
-            case NotNode       ( reciever ) => { }
+                  // unary operators
 
-            // binary operators
+                  case IncrementNode ( reciever ) => stub
+                  case DecrementNode ( reciever ) => stub
+                  case NotNode       ( reciever ) => stub
 
-            case AndNode ( lhs, rhs ) => { }
-            case OrNode  ( lhs, rhs ) => { }
+                  // binary operators
 
-            // value lookup, assignment and declaration
+                  case AndNode ( lhs, rhs ) => stub
+                  case OrNode  ( lhs, rhs ) => stub
 
-            case ClassAccessNode      ( name ) => { }
-            case ClassDeclarationNode ( name, superclass, body ) => { }
+                  // value lookup, assignment and declaration
 
-            case PackageDeclarationNode ( name, body ) => { }
+                  case ClassAccessNode      ( name ) => stub
+                  case ClassDeclarationNode ( name, superclass, body ) => stub
 
-            case ConstructorDeclarationNode ( params, body ) => { }
-            case DestructorDeclarationNode  ( params, body ) => { }
+                  case PackageDeclarationNode ( name, body ) => stub
 
-            case MethodDeclarationNode     ( name, params, body ) => { }
-            case SubroutineDeclarationNode ( name, params, body ) => { }
+                  case ConstructorDeclarationNode ( params, body ) => stub
+                  case DestructorDeclarationNode  ( params, body ) => stub
 
-            case AttributeAccessNode      ( name             ) => { }
-            case AttributeAssignmentNode  ( name, expression ) => { }
-            case AttributeDeclarationNode ( name, expression ) => { }
+                  case MethodDeclarationNode     ( name, params, body ) => stub
+                  case SubroutineDeclarationNode ( name, params, body ) => stub
 
-            case VariableAccessNode      ( name             ) => { }
-            case VariableAssignmentNode  ( name, expression ) => { }
-            case VariableDeclarationNode ( name, expression ) => { }
+                  case AttributeAccessNode      ( name             ) => stub
+                  case AttributeAssignmentNode  ( name, expression ) => stub
+                  case AttributeDeclarationNode ( name, expression ) => stub
 
-            // operations
+                  case VariableAccessNode      ( name             ) => stub
+                  case VariableAssignmentNode  ( name, expression ) => stub
+                  case VariableDeclarationNode ( name, expression ) => stub
 
-            case MethodCallNode     ( invocant, method_name, args ) => { }
-            case SubroutineCallNode ( function_name, args ) => { }
+                  // operations
 
-            // statements
+                  case MethodCallNode     ( invocant, method_name, args ) => stub
+                  case SubroutineCallNode ( function_name, args ) => stub
 
-            case IfNode          ( if_condition, if_body ) => { }
-            case IfElseNode      ( if_condition, if_body, else_body ) => { }
-            case IfElsifNode     ( if_condition, if_body, elsif_condition, elsif_body ) => { }
-            case IfElsifElseNode ( if_condition, if_body, elsif_condition, elsif_body, else_body ) => { }
+                  // statements
 
-            case UnlessNode     ( unless_condition, unless_body ) => { }
-            case UnlessElseNode ( unless_condition, unless_body, else_body ) => { }
+                  case IfNode          ( if_condition, if_body ) => stub
+                  case IfElseNode      ( if_condition, if_body, else_body ) => stub
+                  case IfElsifNode     ( if_condition, if_body, elsif_condition, elsif_body ) => stub
+                  case IfElsifElseNode ( if_condition, if_body, elsif_condition, elsif_body, else_body ) => stub
 
-            case TryNode     ( body, catch_nodes, finally_nodes ) => { }
-            case CatchNode   ( type_name, local_name, body ) => { }
-            case FinallyNode ( body ) => { }
+                  case UnlessNode     ( unless_condition, unless_body ) => stub
+                  case UnlessElseNode ( unless_condition, unless_body, else_body ) => stub
 
-            case WhileNode   ( condition, body ) => { }
-            case DoWhileNode ( condition, body ) => { }
+                  case TryNode     ( body, catch_nodes, finally_nodes ) => stub
+                  case CatchNode   ( type_name, local_name, body ) => stub
+                  case FinallyNode ( body ) => stub
 
-            case ForeachNode ( topic, list, body ) => { }
-            case ForNode ( init, condition, update, body ) => { }
-        }
-    }
+                  case WhileNode   ( condition, body ) => stub
+                  case DoWhileNode ( condition, body ) => stub
+
+                  case ForeachNode ( topic, list, body ) => stub
+                  case ForNode ( init, condition, update, body ) => stub
+            }
+      }
 
 }
