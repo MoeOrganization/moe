@@ -77,25 +77,4 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
         assert( o.isUndef() )        
     }
 
-    test("... test getValue exception thrown") {
-        val o = new MoeNullObject()
-        intercept[ Runtime.Errors.MethodNotAllowed ] {
-            o.getValue( "foo" )
-        }
-    }
-
-    test("... test setValue exception thrown") {
-        val o = new MoeNullObject()
-        intercept[ Runtime.Errors.MethodNotAllowed ] {
-            o.setValue( "foo", new MoeObject() )
-        }
-    }
-
-    test("... test hasValue exception thrown") {
-        val o = new MoeNullObject()
-        intercept[ Runtime.Errors.MethodNotAllowed ] {
-            o.hasValue( "foo" )
-        }
-    }
-
 }

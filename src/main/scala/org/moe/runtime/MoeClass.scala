@@ -2,7 +2,7 @@ package org.moe.runtime
 
 import scala.collection.mutable.HashMap
 
-class MoeClass ( private val name : String ) {
+class MoeClass ( private val name : String ) extends MoeObject {
 
     private var version    : String   = _
     private var authority  : String   = _ 
@@ -86,7 +86,7 @@ class MoeClass ( private val name : String ) {
     // Instances 
 
     def newInstance (): MoeObject = {
-        val instance = new MoeObject( this )
+        val instance = new MoeOpaque( this )
         collectAllAttributes().values.foreach(
             ( attr ) => instance.setValue( attr.getName(), null )
         )

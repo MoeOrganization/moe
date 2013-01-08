@@ -3,7 +3,7 @@ package org.moe.runtime
 class MoeSubroutine ( 
         private val name : String,
         private val body : ( List[ MoeObject ] ) => MoeObject
-    ) {
+    ) extends MoeObject {
 
     def this ( name : String ) = {
         // yadda yadda yadda

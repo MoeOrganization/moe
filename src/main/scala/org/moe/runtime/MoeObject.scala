@@ -1,11 +1,8 @@
 package org.moe.runtime
 
-import scala.collection.mutable.HashMap
-
 class MoeObject {
 
     private val id : Integer = System.identityHashCode( this )
-    private val data = new HashMap[ String, MoeObject ]()
 
     private var klass : MoeClass = _    
 
@@ -19,14 +16,6 @@ class MoeObject {
     def hasAssociatedClass (): Boolean  = klass != null
 
     def setAssociatedClass ( k : MoeClass ): Unit = klass = k
-
-    def hasValue ( name : String ): Boolean   = data.contains( name )
-    def getValue ( name : String ): MoeObject = {
-        if ( !hasValue( name ) ) throw new Runtime.Errors.InstanceValueNotFound( name )
-        data( name )
-    }
-
-    def setValue ( name : String, value : MoeObject ): Unit = data.put( name, value )
 
     def callMethod ( method : String ): MoeObject = callMethod( method, List() )
     def callMethod ( method : String, args : List[ MoeObject ] ): MoeObject = {
