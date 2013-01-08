@@ -2,6 +2,35 @@ package org.moe.runtime
 
 object Runtime {
 
+    val RootEnv = new MoeEnvironment()
+
+    // TODO:
+    // all the objects that come out 
+    // from this factory actually need
+    // to have a MoeClass associated with 
+    // them, since I have not defined them 
+    // yet I am punting for now.
+    // - SL
+    object NativeObjects {
+
+        private val Undef = new MoeNullObject()
+        private val True  = new MoeBooleanObject( true )
+        private val False = new MoeBooleanObject( false )
+
+        def getUndef () = Undef
+        def getTrue  () = True
+        def getFalse () = False
+
+        def getInt    ( value : Int    ) = new MoeIntObject( value )
+        def getFloat  ( value : Double ) = new MoeFloatObject( value )
+        def getString ( value : String ) = new MoeStringObject( value )
+    }
+
+    // TODO:
+    // Need to hook up these classes with
+    // their runtime counterparts, when 
+    // we actually have them that is.
+    // - SL
     object Errors {
         class MoeException          ( msg : String ) extends Exception( msg )
         class MoeMoney              ( msg : String ) extends MoeException( msg )
