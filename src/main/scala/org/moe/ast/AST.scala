@@ -6,14 +6,19 @@ abstract class AST
 
 // AST containers
 
-case class CompilationUnitNode ( body : AST ) extends AST
-case class ScopeNode           ( body : AST ) extends AST
+case class CompilationUnitNode ( body : ScopeNode ) extends AST
+case class ScopeNode           ( body : StatementsNode ) extends AST
 
 case class StatementsNode      ( nodes : List[ AST ] ) extends AST
 
 // literals
 
-case class LiteralNode ( value  : MoeObject ) extends AST
+case class IntLiteralNode     ( value : Int     ) extends AST
+case class FloatLiteralNode   ( value : Double  ) extends AST
+case class StringLiteralNode  ( value : String  ) extends AST
+case class BooleanLiteralNode ( value : Boolean ) extends AST
+
+case class UndefLiteralNode () extends AST
 
 case class SelfLiteralNode  () extends AST
 case class ClassLiteralNode () extends AST
