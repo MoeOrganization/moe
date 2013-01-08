@@ -6,6 +6,12 @@ import org.moe.runtime._
 
 class MoeEnvironment {
 
+    object Markers {
+        val Package  = "__PACKAGE__"
+        val Class    = "__CLASS__"
+        val Invocant = "__SELF__"        
+    }
+
     private val pad = new HashMap[ String, MoeObject ]()
     
     private var parent : MoeEnvironment = _
@@ -14,6 +20,15 @@ class MoeEnvironment {
         this()
         parent = p
     }
+
+    def getCurrentPackage  (): MoePackage = getLocal( Markers.Package  ).asInstanceOf[ MoePackage ]
+    def getCurrentClass    (): MoeClass   = getLocal( Markers.Class    ).asInstanceOf[ MoeClass ]
+    def getCurrentInvocant (): MoeObject  = getLocal( Markers.Invocant )
+
+    def setCurrentPackage  ( p : MoeObject ): Unit = setLocal( Markers.Package,  p )
+    def setCurrentClass    ( c : MoeObject ): Unit = setLocal( Markers.Class,    c )
+    def setCurrentInvocant ( i : MoeObject ): Unit = setLocal( Markers.Invocant, i )
+
 
     def getParent (): MoeEnvironment = parent
     def isRoot    (): Boolean     = parent == null
