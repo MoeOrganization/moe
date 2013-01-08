@@ -2,7 +2,9 @@ package org.moe.runtime
 
 object Runtime {
 
-    val RootEnv = new MoeEnvironment()
+    private val RootEnv = new MoeEnvironment()
+    
+    def getRootEnv () = RootEnv
 
     // TODO:
     // all the objects that come out 

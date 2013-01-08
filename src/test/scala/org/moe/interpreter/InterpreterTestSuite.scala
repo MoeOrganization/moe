@@ -17,7 +17,7 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
             )
         )
 
-        val result = Interpreter.eval( Runtime.RootEnv, ast )
+        val result = Interpreter.eval( Runtime.getRootEnv(), ast )
         assert( result === Runtime.NativeObjects.getUndef() )
     }    
 
@@ -30,7 +30,7 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
             )
         )
 
-        val result = Interpreter.eval( Runtime.RootEnv, ast )
+        val result = Interpreter.eval( Runtime.getRootEnv(), ast )
         assert( result.asInstanceOf[ MoeIntObject ].getNativeValue() ===  10 )
     }    
 
