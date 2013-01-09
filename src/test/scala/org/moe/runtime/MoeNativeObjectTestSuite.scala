@@ -123,8 +123,8 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
         assert( !o.isUndef() )        
     }
 
-    test("... simple Hash object") {
-        val o = new MoePairObject( "foo" -> new MoeNullObject() )
+    test("... simple Pair object") {
+        val o = new MoePairObject( "foo" -> new MoeIntObject( 10 ) )
         val pair = o.getNativeValue()
         assert( pair._1 === "foo" )
         assert( pair._2.asInstanceOf[ MoeIntObject ].getNativeValue() === 10 )
