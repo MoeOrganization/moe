@@ -35,5 +35,21 @@ class MoeNullObject extends MoeNativeObject {
     override def isUndef (): Boolean = true     
 }
 
+class MoeArrayObject ( private val values : List[ MoeObject ] ) extends MoeNativeObject {  
+    def this ( v : List[ MoeObject ], c : MoeClass ) = { this( v ); setAssociatedClass( c ) } 
+    def getNativeValue (): List[ MoeObject ] = values
+    override def isFalse (): Boolean = values.size == 0      
+}
+
+class MoeHashObject ( private val values : HashMap[ String, MoeObject ] ) extends MoeNativeObject {  
+    def this ( v : HashMap[ String, MoeObject ], c : MoeClass ) = { this( v ); setAssociatedClass( c ) } 
+    def getNativeValue (): HashMap[ String, MoeObject ] = values
+    override def isFalse (): Boolean = values.size == 0      
+}
+
+class MoePairObject ( private val value : ( String, MoeObject ) ) extends MoeNativeObject {  
+    def this ( v : ( String, MoeObject ), c : MoeClass ) = { this( v ); setAssociatedClass( c ) } 
+    def getNativeValue (): ( String, MoeObject ) = value
+}
 
 

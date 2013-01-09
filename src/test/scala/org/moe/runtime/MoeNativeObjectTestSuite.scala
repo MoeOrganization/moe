@@ -3,6 +3,8 @@ package org.moe.runtime
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
 
+import scala.collection.mutable.HashMap
+
 class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
 
     test("... simple String object") {
@@ -75,6 +77,60 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
         assert( !o.isTrue() )
         assert( o.isFalse() )
         assert( o.isUndef() )        
+    }
+
+    test("... simple Array object") {
+        val o = new MoeArrayObject( 
+            List( 
+                new MoeNullObject(),
+                new MoeIntObject( 10 )
+            ) 
+        )
+        val array = o.getNativeValue()
+        assert( array(0).asInstanceOf[ MoeNullObject ].getNativeValue() === null )
+        assert( array(1).asInstanceOf[ MoeIntObject ].getNativeValue() === 10 )
+        assert( o.isTrue() )
+        assert( !o.isFalse() )
+        assert( !o.isUndef() )        
+    }
+
+    test("... false Array object") {
+        val o = new MoeArrayObject( List() )
+        assert( !o.isTrue() )
+        assert( o.isFalse() )
+        assert( !o.isUndef() )        
+    }
+
+    test("... simple Hash object") {
+        val o = new MoeHashObject( 
+            HashMap( 
+                "foo" -> new MoeNullObject(),
+                "bar" -> new MoeIntObject( 10 )
+            ) 
+        )
+        val hash = o.getNativeValue()
+        assert( hash("foo").asInstanceOf[ MoeNullObject ].getNativeValue() === null )
+        assert( hash("bar").asInstanceOf[ MoeIntObject ].getNativeValue() === 10 )
+        assert( o.isTrue() )
+        assert( !o.isFalse() )
+        assert( !o.isUndef() )        
+    }
+
+    test("... false Hash object") {
+        val o = new MoeHashObject( HashMap() )
+        assert( !o.isTrue() )
+        assert( o.isFalse() )
+        assert( !o.isUndef() )        
+    }
+
+    test("... simple Hash object") {
+        val o = new MoePairObject( "foo" -> new MoeNullObject() )
+        val pair = o.getNativeValue()
+        assert( pair._1 === "foo" )
+        assert( pair._2.asInstanceOf[ MoeIntObject ].getNativeValue() === 10 )
+        assert( o.isTrue() )
+        assert( !o.isFalse() )
+        assert( !o.isUndef() )        
     }
 
 }
