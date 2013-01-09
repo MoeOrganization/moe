@@ -8,54 +8,28 @@ import org.moe.ast._
 
 class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
 
-    test("... basic test with null") {
-        val ast = CompilationUnitNode(
-            ScopeNode(
-                StatementsNode(
-                    List( UndefLiteralNode() )
-                )
-            )
-        )
+    private def basicAST ( nodes : List[ AST ] ) = CompilationUnitNode( ScopeNode( StatementsNode( nodes ) ) )
 
+    test("... basic test with null") {
+        val ast = basicAST( List( UndefLiteralNode() ) )
         val result = Interpreter.eval( Runtime.getRootEnv(), ast )
         assert( result === Runtime.NativeObjects.getUndef() )
     }    
 
     test("... basic test with Int") {
-        val ast = CompilationUnitNode(
-            ScopeNode(
-                StatementsNode(
-                    List( IntLiteralNode( 10 ) )
-                )
-            )
-        )
-
+        val ast = basicAST( List( IntLiteralNode( 10 ) ) )
         val result = Interpreter.eval( Runtime.getRootEnv(), ast )
         assert( result.asInstanceOf[ MoeIntObject ].getNativeValue() === 10 )
     }  
 
     test("... basic test with Float") {
-        val ast = CompilationUnitNode(
-            ScopeNode(
-                StatementsNode(
-                    List( FloatLiteralNode( 10.5 ) )
-                )
-            )
-        )
-
+        val ast = basicAST( List( FloatLiteralNode( 10.5 ) ) )
         val result = Interpreter.eval( Runtime.getRootEnv(), ast )
         assert( result.asInstanceOf[ MoeFloatObject ].getNativeValue() === 10.5 )
     } 
 
     test("... basic test with String") {
-        val ast = CompilationUnitNode(
-            ScopeNode(
-                StatementsNode(
-                    List( StringLiteralNode( "HELLO" ) )
-                )
-            )
-        )
-
+        val ast = basicAST( List( StringLiteralNode( "HELLO" ) ) )
         val result = Interpreter.eval( Runtime.getRootEnv(), ast )
         assert( result.asInstanceOf[ MoeStringObject ].getNativeValue() === "HELLO" )
     }     
@@ -63,15 +37,11 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     // some simple logical operators
 
     test("... basic test with And") {
-        val ast = CompilationUnitNode(
-            ScopeNode(
-                StatementsNode(
-                    List( 
-                        AndNode(
-                            BooleanLiteralNode( true ),
-                            BooleanLiteralNode( false )
-                        )
-                    )
+        val ast = basicAST(
+            List( 
+                AndNode(
+                    BooleanLiteralNode( true ),
+                    BooleanLiteralNode( false )
                 )
             )
         )
@@ -81,17 +51,13 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     } 
 
     test("... basic test with nested And") {
-        val ast = CompilationUnitNode(
-            ScopeNode(
-                StatementsNode(
-                    List( 
-                        AndNode(
-                            BooleanLiteralNode( true ),
-                            AndNode(
-                                BooleanLiteralNode( true ),
-                                IntLiteralNode( 100 )
-                            )
-                        )
+        val ast = basicAST(
+            List( 
+                AndNode(
+                    BooleanLiteralNode( true ),
+                    AndNode(
+                        BooleanLiteralNode( true ),
+                        IntLiteralNode( 100 )
                     )
                 )
             )
@@ -102,15 +68,11 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     }    
 
     test("... basic test with Or") {
-        val ast = CompilationUnitNode(
-            ScopeNode(
-                StatementsNode(
-                    List( 
-                        OrNode(
-                            BooleanLiteralNode( true ),
-                            BooleanLiteralNode( false )
-                        )
-                    )
+        val ast = basicAST(
+            List( 
+                OrNode(
+                    BooleanLiteralNode( true ),
+                    BooleanLiteralNode( false )
                 )
             )
         )
