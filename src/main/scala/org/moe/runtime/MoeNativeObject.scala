@@ -45,14 +45,14 @@ class MoeNullObject extends MoeObject {
 
 // Complex objects 
 
-class MoeArrayObject ( v : List[ MoeObject ] ) extends MoeNativeObject[List[ MoeObject ]]( v ) {  
+class MoeArrayObject ( v : List[ MoeObject ] ) extends MoeNativeObject[ List[ MoeObject ] ]( v ) {  
     override def isFalse (): Boolean = getNativeValue().size == 0      
 }
 
-class MoeHashObject ( v : HashMap[ String, MoeObject ] ) extends MoeNativeObject[HashMap[ String, MoeObject ]]( v ) {  
+class MoeHashObject ( v : HashMap[ String, MoeObject ] ) extends MoeNativeObject[ HashMap[ String, MoeObject ] ]( v ) {  
     override def isFalse (): Boolean = getNativeValue().size == 0      
 }
 
-class MoePairObject ( v : ( String, MoeObject ) ) extends MoeNativeObject[( String, MoeObject )]( v ) {}
+class MoePairObject ( v : ( String, MoeObject ) ) extends MoeNativeObject[ ( String, MoeObject ) ]( v ) {}
 
 
