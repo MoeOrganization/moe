@@ -3,6 +3,8 @@ package org.moe.interpreter
 import org.moe.runtime._
 import org.moe.ast._
 
+import scala.collection.mutable.HashMap
+
 object Interpreter {
 
     val stub = new MoeObject()
@@ -42,10 +44,29 @@ object Interpreter {
                 }
             }
 
-            case PairLiteralNode ( key, value ) => stub
+            case ArrayLiteralNode ( values ) => {
+                val array : List[ MoeObject ] = values.map( (i) => eval( env, i ) )
+                Runtime.NativeObjects.getArray( array )
+            }
 
-            case ArrayLiteralNode ( values ) => stub
-            case HashLiteralNode  ( map    ) => stub
+            case PairLiteralNode ( key, value ) => Runtime.NativeObjects.getPair( key -> eval( env, value ) )
+
+            case HashLiteralNode ( map ) => {
+                val hash = HashMap[ String, MoeObject ]()
+                for ( val pair <- map ) {
+                    val p = eval( env, pair )
+                    // NOTE:
+                    // forcing each element to become
+                    // a single MoePairObject might be
+                    // a little too restrictive, it 
+                    // should (in theory) be possible 
+                    // for it to evaluate into many 
+                    // MoePairObject instances as well
+                    // - SL
+                    hash += p.asInstanceOf[ MoePairObject ].getNativeValue()
+                }
+                Runtime.NativeObjects.getHash( hash )
+            }
 
             // unary operators
 

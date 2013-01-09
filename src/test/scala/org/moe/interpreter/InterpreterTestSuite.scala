@@ -6,9 +6,12 @@ import org.scalatest.BeforeAndAfter
 import org.moe.runtime._
 import org.moe.ast._
 
+import scala.collection.mutable.HashMap
+
 class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
 
-    private def basicAST ( nodes : List[ AST ] ) = CompilationUnitNode( ScopeNode( StatementsNode( nodes ) ) )
+    private def basicAST ( nodes : List[ AST ] ) = 
+        CompilationUnitNode( ScopeNode( StatementsNode( nodes ) ) )
 
     test("... basic test with null") {
         val ast = basicAST( List( UndefLiteralNode() ) )
@@ -34,6 +37,44 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
         assert( result.asInstanceOf[ MoeStringObject ].getNativeValue() === "HELLO" )
     }     
 
+    test("... basic test with Array") {
+        val ast = basicAST( 
+            List( 
+                ArrayLiteralNode(
+                    List(
+                        IntLiteralNode( 10 ),
+                        IntLiteralNode( 20 )
+                    )
+                ) 
+            ) 
+        )
+        val result = Interpreter.eval( Runtime.getRootEnv(), ast )
+
+        val array : List[ MoeObject ] = result.asInstanceOf[ MoeArrayObject ].getNativeValue();
+
+        assert( array.size === 2 )
+        assert( array(0).asInstanceOf[ MoeIntObject ].getNativeValue() === 10 )
+        assert( array(1).asInstanceOf[ MoeIntObject ].getNativeValue() === 20 )
+    } 
+
+    test("... basic test with Hash") {
+        val ast = basicAST( 
+            List( 
+                HashLiteralNode(
+                    List(
+                        PairLiteralNode( "foo", IntLiteralNode( 10 ) ),
+                        PairLiteralNode( "bar", IntLiteralNode( 20 ) )
+                    )
+                ) 
+            ) 
+        )
+        val result = Interpreter.eval( Runtime.getRootEnv(), ast )
+
+        val hash : HashMap[ String, MoeObject ] = result.asInstanceOf[ MoeHashObject ].getNativeValue();
+        assert( hash("foo").asInstanceOf[ MoeIntObject ].getNativeValue() === 10 )
+        assert( hash("bar").asInstanceOf[ MoeIntObject ].getNativeValue() === 20 )
+    }     
+
     // some simple logical operators
 
     test("... basic test with And") {
@@ -45,7 +86,6 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
                 )
             )
         )
-
         val result = Interpreter.eval( Runtime.getRootEnv(), ast )
         assert( result.asInstanceOf[ MoeBooleanObject ].getNativeValue() === false )
     } 
@@ -62,7 +102,6 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
                 )
             )
         )
-
         val result = Interpreter.eval( Runtime.getRootEnv(), ast )
         assert( result.asInstanceOf[ MoeIntObject ].getNativeValue() === 100 )
     }    
@@ -76,7 +115,6 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
                 )
             )
         )
-
         val result = Interpreter.eval( Runtime.getRootEnv(), ast )
         assert( result.asInstanceOf[ MoeBooleanObject ].getNativeValue() === true )
     } 
