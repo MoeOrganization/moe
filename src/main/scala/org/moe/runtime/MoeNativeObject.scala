@@ -2,54 +2,57 @@ package org.moe.runtime
 
 import scala.collection.mutable.HashMap
 
-abstract class MoeNativeObject extends MoeObject {}
-
-class MoeIntObject ( private val value : Int ) extends MoeNativeObject {
-    def this ( v : Int, c : MoeClass ) = { this( v ); setAssociatedClass( c ) }
-    def getNativeValue (): Int = value
-    override def isFalse (): Boolean = value == 0      
+abstract class MoeNativeObject[ A ] ( private val value : A ) extends MoeObject {
+    def this ( v : A, c : MoeClass ) = { this( v ); setAssociatedClass( c ) }
+    def getNativeValue (): A = value.asInstanceOf[ A ]
 }
 
-class MoeFloatObject ( private val value : Double ) extends MoeNativeObject {
-    def this ( v : Double, c : MoeClass ) = { this( v ); setAssociatedClass( c ) }
-    def getNativeValue (): Double = value
-    override def isFalse (): Boolean = value == 0              
+// NOTE:
+// It will likely be useful to add more methods 
+// to all of these classes, if for no other reason
+// then to keep the boxing/unboxing logic in one
+// single place. At which point, it will also 
+// become useful to break these out into separate 
+// source files as well.
+// - SL
+
+// Simple objects
+
+class MoeIntObject ( v : Int ) extends MoeNativeObject[Int]( v ) {
+    override def isFalse (): Boolean = getNativeValue() == 0      
 }
 
-class MoeStringObject ( private val value : String ) extends MoeNativeObject {   
-    def this ( v : String, c : MoeClass ) = { this( v ); setAssociatedClass( c ) }
-    def getNativeValue (): String = value
-    override def isFalse (): Boolean = value == ""      
+class MoeFloatObject ( v : Double ) extends MoeNativeObject[Double]( v ) {
+    override def isFalse (): Boolean = getNativeValue() == 0              
 }
 
-class MoeBooleanObject ( private val value : Boolean ) extends MoeNativeObject {  
-    def this ( v : Boolean, c : MoeClass ) = { this( v ); setAssociatedClass( c ) } 
-    def getNativeValue (): Boolean = value
-    override def isFalse (): Boolean = value == false      
+class MoeStringObject ( v : String ) extends MoeNativeObject[String]( v ) {   
+    override def isFalse (): Boolean = getNativeValue() == ""      
 }
 
-class MoeNullObject extends MoeNativeObject {   
-    def this ( c : MoeClass ) = { this(); setAssociatedClass( c ) }
-    def getNativeValue (): AnyRef = null   
+class MoeBooleanObject ( v : Boolean ) extends MoeNativeObject[Boolean]( v ) {  
+    override def isFalse (): Boolean = getNativeValue() == false      
+}
+
+// this is the one outlyer, it doesn't need to be 
+// a NativeObject because it doesn't need to actually 
+// box any values, just the lack of a value
+class MoeNullObject extends MoeObject {  
+    def getNativeValue   (): AnyRef  = null 
     override def isFalse (): Boolean = true      
     override def isUndef (): Boolean = true     
 }
 
-class MoeArrayObject ( private val values : List[ MoeObject ] ) extends MoeNativeObject {  
-    def this ( v : List[ MoeObject ], c : MoeClass ) = { this( v ); setAssociatedClass( c ) } 
-    def getNativeValue (): List[ MoeObject ] = values
-    override def isFalse (): Boolean = values.size == 0      
+// Complex objects 
+
+class MoeArrayObject ( v : List[ MoeObject ] ) extends MoeNativeObject[List[ MoeObject ]]( v ) {  
+    override def isFalse (): Boolean = getNativeValue().size == 0      
 }
 
-class MoeHashObject ( private val values : HashMap[ String, MoeObject ] ) extends MoeNativeObject {  
-    def this ( v : HashMap[ String, MoeObject ], c : MoeClass ) = { this( v ); setAssociatedClass( c ) } 
-    def getNativeValue (): HashMap[ String, MoeObject ] = values
-    override def isFalse (): Boolean = values.size == 0      
+class MoeHashObject ( v : HashMap[ String, MoeObject ] ) extends MoeNativeObject[HashMap[ String, MoeObject ]]( v ) {  
+    override def isFalse (): Boolean = getNativeValue().size == 0      
 }
 
-class MoePairObject ( private val value : ( String, MoeObject ) ) extends MoeNativeObject {  
-    def this ( v : ( String, MoeObject ), c : MoeClass ) = { this( v ); setAssociatedClass( c ) } 
-    def getNativeValue (): ( String, MoeObject ) = value
-}
+class MoePairObject ( v : ( String, MoeObject ) ) extends MoeNativeObject[( String, MoeObject )]( v ) {}
 
 
