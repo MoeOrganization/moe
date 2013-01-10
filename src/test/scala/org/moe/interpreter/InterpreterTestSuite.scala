@@ -77,6 +77,26 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
 
     // some simple logical operators
 
+    test("... basic test with Not") {
+        val ast = basicAST(
+            List(
+                NotNode( BooleanLiteralNode( true ) )
+            )
+        )
+        val result = Interpreter.eval( Runtime.getRootEnv(), ast )
+        assert( result.asInstanceOf[ MoeBooleanObject ].getNativeValue() === false )
+    }
+
+    test("... basic (false) test with Not") {
+        val ast = basicAST(
+            List(
+                NotNode( BooleanLiteralNode( false ) )
+            )
+        )
+        val result = Interpreter.eval( Runtime.getRootEnv(), ast )
+        assert( result.asInstanceOf[ MoeBooleanObject ].getNativeValue() === true )
+    }
+
     test("... basic test with And") {
         val ast = basicAST(
             List( 

@@ -11,6 +11,7 @@ object Interpreter {
 
     def eval ( env : MoeEnvironment, node : AST ): MoeObject = {
         node match {
+            
             // containers
 
             case CompilationUnitNode ( body  ) => eval( env, body )
@@ -72,7 +73,12 @@ object Interpreter {
 
             case IncrementNode ( reciever ) => stub
             case DecrementNode ( reciever ) => stub
-            case NotNode       ( reciever ) => stub
+            case NotNode       ( reciever ) => {
+                eval( env, reciever ).isTrue() match {
+                    case true  => Runtime.NativeObjects.getFalse()
+                    case false => Runtime.NativeObjects.getTrue()
+                }
+            }
 
             // binary operators
 
