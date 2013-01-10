@@ -35,7 +35,18 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
         val ast = basicAST( List( StringLiteralNode( "HELLO" ) ) )
         val result = Interpreter.eval( Runtime.getRootEnv(), ast )
         assert( result.asInstanceOf[ MoeStringObject ].getNativeValue() === "HELLO" )
-    }     
+    }   
+
+    test("... basic test that last value is the one returned") {
+        val ast = basicAST( 
+            List( 
+                StringLiteralNode( "HELLO" ),
+                StringLiteralNode( "WORLD" )                 
+            ) 
+        )
+        val result = Interpreter.eval( Runtime.getRootEnv(), ast )
+        assert( result.asInstanceOf[ MoeStringObject ].getNativeValue() === "WORLD" )
+    }  
 
     test("... basic test with Array") {
         val ast = basicAST( 
@@ -79,23 +90,23 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
 
     test("... basic test with Not") {
         val ast = basicAST(
-            List(
+            List( 
                 NotNode( BooleanLiteralNode( true ) )
             )
         )
         val result = Interpreter.eval( Runtime.getRootEnv(), ast )
         assert( result.asInstanceOf[ MoeBooleanObject ].getNativeValue() === false )
-    }
+    } 
 
     test("... basic (false) test with Not") {
         val ast = basicAST(
-            List(
+            List( 
                 NotNode( BooleanLiteralNode( false ) )
             )
         )
         val result = Interpreter.eval( Runtime.getRootEnv(), ast )
         assert( result.asInstanceOf[ MoeBooleanObject ].getNativeValue() === true )
-    }
+    }     
 
     test("... basic test with And") {
         val ast = basicAST(
