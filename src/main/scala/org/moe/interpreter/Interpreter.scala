@@ -73,6 +73,7 @@ object Interpreter {
 
             case IncrementNode ( reciever ) => stub
             case DecrementNode ( reciever ) => stub
+            
             case NotNode       ( reciever ) => {
                 eval( env, reciever ).isTrue() match {
                     case true  => Runtime.NativeObjects.getFalse()
