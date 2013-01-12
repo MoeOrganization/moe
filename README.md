@@ -4,7 +4,9 @@ An -OFun prototype of an Ultra Modern Perl 5 written in Scala.
 
 ## Wait, what are you talking about?
 
-Over time there will be more and more information in this README, but for the time being I will share an email discussion I had with Nicolas Clark about what it is that I am trying to do here.
+Over time there will be more and more information in this README, but 
+for the time being I will start by sharing an email discussion I had 
+with Nicolas Clark about what it is that I am trying to do here.
 
 ```
 >> On Jan 12, 2013, at 1:10 PM, Nicholas Clark <nick@ccl4.org> wrote:
@@ -34,7 +36,7 @@ Right now I have the following:
 - an Interpreter, this just evaluates the AST and is only like 20% of the 
   AST at the moment, but is a start (and an easy place for people to 
   start hacking)
-- no parser at all to speak
+- no parser at all to speak of
 
 I know that an AST interpreter is slow as dirt, but I also know that having 
 an AST makes it easier to write a true compiler as well (possibly to target 
@@ -113,3 +115,39 @@ Thanks again for your advice and ideas,
 
 - Stevan
 ```
+
+## Status of this
+
+This is at a very, very, very early stage, please don't judge it too 
+harshly. Nuff said.
+
+## Hacking on this
+
+So if anyone is interested in hacking on this, here is what you need
+installed to get started.
+
+* Scala (latest stable is fine)
+* SBT (Scala Build Tool)
+
+To compile the code and run the test suite, you need only type the 
+following at the root of the source tree.
+
+```
+sbt test
+```
+
+As is the convention with git based projects, please fork and send
+pull requests.
+
+I don't have a formal plan yet, so I don't have a formal list of 
+TODO items either. I have tried to make sure there is a test file 
+for most every component in the system and there is most certainly 
+more tests that can be written. 
+
+## Discussion of this 
+
+I have created no formal communications channel for discussing this 
+project, that will come over the next few days/weeks as needs dictate. 
+
+
+
