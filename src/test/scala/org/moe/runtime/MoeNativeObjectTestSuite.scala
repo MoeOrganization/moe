@@ -101,6 +101,26 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
         assert( !o.isUndef() )        
     }
 
+    test("... complex Array object") {
+        val o = new MoeArrayObject( 
+            List( 
+                new MoeIntObject( 10 ),
+                new MoeArrayObject( 
+                    List( 
+                        new MoeIntObject( 42 )
+                    ) 
+                )
+            ) 
+        )
+        val array = o.getNativeValue()
+        assert( array(0).asInstanceOf[ MoeIntObject ].getNativeValue() === 10 )
+        val nested = array(1).asInstanceOf[ MoeArrayObject ].getNativeValue();
+        assert( nested(0).asInstanceOf[ MoeIntObject ].getNativeValue() === 42 )
+        assert( o.isTrue() )
+        assert( !o.isFalse() )
+        assert( !o.isUndef() )        
+    }
+
     test("... simple Hash object") {
         val o = new MoeHashObject( 
             HashMap( 
@@ -120,6 +140,28 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
         val o = new MoeHashObject( HashMap() )
         assert( !o.isTrue() )
         assert( o.isFalse() )
+        assert( !o.isUndef() )        
+    }
+
+    test("... complex Hash object") {
+        val o = new MoeHashObject( 
+            HashMap( 
+                "foo" -> new MoeArrayObject( 
+                    List( 
+                        new MoeNullObject(),
+                        new MoeIntObject( 10 )
+                    ) 
+                ),
+                "bar" -> new MoeIntObject( 10 )
+            ) 
+        )
+        val hash = o.getNativeValue()
+        assert( hash("bar").asInstanceOf[ MoeIntObject ].getNativeValue() === 10 )
+        val nested = hash("foo").asInstanceOf[ MoeArrayObject ].getNativeValue()
+        assert( nested(0).asInstanceOf[ MoeNullObject ].getNativeValue() === null )
+        assert( nested(1).asInstanceOf[ MoeIntObject ].getNativeValue() === 10 )
+        assert( o.isTrue() )
+        assert( !o.isFalse() )
         assert( !o.isUndef() )        
     }
 
