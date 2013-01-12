@@ -149,5 +149,6 @@ more tests that can be written.
 I have created no formal communications channel for discussing this 
 project, that will come over the next few days/weeks as needs dictate. 
 
-
+## Moe?
+Modern Perl (Moose) - OS dependency (the JVM) = Moose - OS = Moe
 
