@@ -11,10 +11,6 @@ class MoeObjectTestSuite extends FunSuite with BeforeAndAfter {
         o = new MoeObject()
     }
 
-    test("... all MoeObjects have an id") {
-        assert( o.getID != null )
-    }
-
     test("... MoeObjects do not have a default class") {
         assert( !o.hasAssociatedClass )
     }
