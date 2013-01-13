@@ -4,23 +4,24 @@ class MoeObject {
 
   private val id: Int = System.identityHashCode(this)
 
-  private var klass: MoeClass = _
+  private var klass: Option[MoeClass] = None
 
-  def this (k: MoeClass) = {
+  def this (k: Option[MoeClass]) = {
     this()
     klass = k
   }
 
-  def getID: Int  = id
-  def getAssociatedClass: MoeClass = klass
-  def hasAssociatedClass: Boolean  = klass != null
+  def getID: Int = id
+  def getAssociatedClass: Option[MoeClass] = klass
+  def hasAssociatedClass: Boolean = klass.isDefined
 
-  def setAssociatedClass(k: MoeClass): Unit = klass = k
+  def setAssociatedClass(k: Option[MoeClass]) = klass = k
 
   def callMethod(method: String): MoeObject = callMethod(method, List())
   def callMethod(method: String, args: List[MoeObject]): MoeObject = {
-    if (klass == null) throw new Runtime.Errors.MissingClass(toString)
-    klass.getMethod(method).execute(this, args)
+    klass.map({ k => k.getMethod(method).execute(this, args) }).getOrElse(
+      throw new Runtime.Errors.MissingClass(toString)
+    )
   }
 
   def isTrue: Boolean = !isFalse
@@ -28,8 +29,6 @@ class MoeObject {
   def isUndef: Boolean = false
 
   override def toString: String = {
-    var out = "{ #instance(" + id + ")"
-    if (hasAssociatedClass) out += " " + klass.toString
-    out + " }"
+    "{ #instance(" + id + ")" + klass.map({ k => k.toString }).getOrElse("") + "}"
   }
 }

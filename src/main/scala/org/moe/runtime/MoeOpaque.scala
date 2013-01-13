@@ -8,7 +8,7 @@ class MoeOpaque extends MoeObject {
 
   def this(k: MoeClass) = {
     this()
-    setAssociatedClass(k)
+    setAssociatedClass(Some(k))
   }
 
   def hasValue(name: String): Boolean   = data.contains(name)
