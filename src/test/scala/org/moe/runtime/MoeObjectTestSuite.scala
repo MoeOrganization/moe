@@ -12,16 +12,16 @@ class MoeObjectTestSuite extends FunSuite with BeforeAndAfter {
     }
 
     test("... all MoeObjects have an id") {
-        assert( o.getID != null )
+        assert(o.getID != null)
     }
 
     test("... MoeObjects do not have a default class") {
-        assert( !o.hasAssociatedClass )
+        assert(!o.hasAssociatedClass)
     }
 
     test("... missing class thrown") {
         intercept[Runtime.Errors.MissingClass] {
-            o.callMethod( "foo", List() )
+            o.callMethod("foo", List())
         }
     }
 
