@@ -90,7 +90,7 @@ object Interpreter {
       }
     }
 
-    case OrNode (lhs, rhs) => {
+    case OrNode(lhs, rhs) => {
       val left_result = eval(env, lhs)
       left_result.isTrue match {
         case true  => left_result
