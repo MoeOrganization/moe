@@ -150,5 +150,22 @@ I have created no formal communications channel for discussing this
 project, that will come over the next few days/weeks as needs dictate. 
 
 ## Moe?
+
 Modern Perl (Moose) - OS dependency (the JVM) = Moose - OS = Moe
+
+## What about Perl 6
+
+I need to come up with a clear position statement on how this interfaces
+with the Perl 6 effort, but for now I will say this.
+
+I believe that Perl 6 is the future, but I believe that it will only 
+benefit Perl 6 to have a more modern Perl 5 that it can interface with. 
+And one of the key goals of this effort is exactly that, to move Perl 5
+closer to Perl 6 on all levels (syntax, runtime, etc.).
+
+
+
+
+
+
 
