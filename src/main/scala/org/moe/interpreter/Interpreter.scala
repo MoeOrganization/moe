@@ -71,11 +71,11 @@ object Interpreter {
 
             // unary operators
 
-            case IncrementNode ( reciever ) => stub
-            case DecrementNode ( reciever ) => stub
+            case IncrementNode ( receiver ) => stub
+            case DecrementNode ( receiver ) => stub
             
-            case NotNode       ( reciever ) => {
-                eval( env, reciever ).isTrue() match {
+            case NotNode       ( receiver ) => {
+                eval( env, receiver ).isTrue() match {
                     case true  => Runtime.NativeObjects.getFalse()
                     case false => Runtime.NativeObjects.getTrue()
                 }
