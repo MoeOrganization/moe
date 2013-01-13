@@ -2,7 +2,7 @@ package org.moe.runtime
 
 class MoeObject {
 
-    private val id : Integer = System.identityHashCode( this )
+    private val id : Int = System.identityHashCode( this )
 
     private var klass : MoeClass = _    
 
@@ -11,7 +11,7 @@ class MoeObject {
         klass = k
     }
 
-    def getID              (): Integer  = id
+    def getID              (): Int  = id
     def getAssociatedClass (): MoeClass = klass
     def hasAssociatedClass (): Boolean  = klass != null
 
