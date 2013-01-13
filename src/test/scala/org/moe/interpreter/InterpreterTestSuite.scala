@@ -10,6 +10,8 @@ import scala.collection.mutable.HashMap
 
 class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
 
+  private case class FooNode() extends AST
+
   private def basicAST(nodes: List[AST]) =
     CompilationUnitNode(ScopeNode(StatementsNode(nodes)))
 
@@ -176,6 +178,17 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
    )
     val result = Interpreter.eval(Runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
+  }
+
+  test("... unknown node") {
+    val ast = basicAST(
+      List(
+        FooNode()
+      )
+    )
+    intercept[Runtime.Errors.UnknownNode] {
+      Interpreter.eval(Runtime.getRootEnv, ast)
+    }
   }
 
 }

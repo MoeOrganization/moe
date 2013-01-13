@@ -143,6 +143,8 @@ object Interpreter {
 
     case ForeachNode(topic, list, body) => stub
     case ForNode(init, condition, update, body) => stub
+
+    case _ => throw new Runtime.Errors.UnknownNode("Unknown Node")
   }
 
 }
