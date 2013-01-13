@@ -114,7 +114,7 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
        )
         val array = o.getNativeValue
         assert(array(0).asInstanceOf[ MoeIntObject ].getNativeValue === 10)
-        val nested = array(1).asInstanceOf[ MoeArrayObject ].getNativeValue;
+        val nested = array(1).asInstanceOf[ MoeArrayObject ].getNativeValue
         assert(nested(0).asInstanceOf[ MoeIntObject ].getNativeValue === 42)
         assert(o.isTrue)
         assert(!o.isFalse)

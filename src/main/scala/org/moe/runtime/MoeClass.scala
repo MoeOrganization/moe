@@ -61,17 +61,17 @@ class MoeClass (private val name: String) extends MoeObject {
 
   // Attributes
 
-  def addAttribute (attribute: MoeAttribute): Unit = {
+  def addAttribute(attribute: MoeAttribute): Unit = {
     attributes += (attribute.getName -> attribute)
   }
 
-  def getAttribute (name: String): MoeAttribute = {
+  def getAttribute(name: String): MoeAttribute = {
     if (hasAttribute(name)) return attributes(name)
     if (hasSuperclass) return superclass.getAttribute(name)
     throw new Runtime.Errors.AttributeNotFound(name)
   }
 
-  def hasAttribute (name: String): Boolean = {
+  def hasAttribute(name: String): Boolean = {
     if (attributes.contains(name)) return true
     if (hasSuperclass) return superclass.hasAttribute(name)
     false

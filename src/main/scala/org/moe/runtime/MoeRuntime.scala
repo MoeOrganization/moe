@@ -50,6 +50,7 @@ object Runtime {
     class MethodNotAllowed      (msg: String) extends NotAllowed(msg)
 
     class ValueNotFound         (msg: String) extends MoeProblems(msg)
+    class UnknownNode           (msg: String) extends MoeProblems(msg)
     class PackageNotFound       (msg: String) extends ValueNotFound(msg)
     class InstanceValueNotFound (msg: String) extends ValueNotFound(msg)
     class ClassNotFound         (msg: String) extends ValueNotFound(msg)
