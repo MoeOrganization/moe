@@ -1,19 +1,19 @@
 package org.moe.runtime
 
-import scala.collection.mutable.HashMap
+import scala.collection.mutable.{HashMap,Map}
 
 class MoeClass (private val name: String) extends MoeObject {
 
   private var version: String = _
   private var authority: String = _
-  private var superclass: MoeClass = _
+  private var superclass: Option[MoeClass] = None
 
-  private val methods = new HashMap[String, MoeMethod]()
-  private val attributes = new HashMap[String, MoeAttribute]()
+  private val methods: Map[String,MoeMethod] = new HashMap[String, MoeMethod]()
+  private val attributes: Map[String,MoeAttribute] = new HashMap[String, MoeAttribute]()
 
   // the various alternate constructors ...
 
-  def this(name: String, superclass: MoeClass) = {
+  def this(name: String, superclass: Option[MoeClass]) = {
     this(name)
     setSuperclass(superclass)
   }
@@ -23,7 +23,7 @@ class MoeClass (private val name: String) extends MoeObject {
     setVersion(version)
   }
 
-  def this(name: String, version: String, superclass: MoeClass) = {
+  def this(name: String, version: String, superclass: Option[MoeClass]) = {
     this(name, version)
     setSuperclass(superclass)
   }
@@ -33,7 +33,7 @@ class MoeClass (private val name: String) extends MoeObject {
     setAuthority(authority)
   }
 
-  def this(name: String, version: String, authority: String, superclass: MoeClass) = {
+  def this(name: String, version: String, authority: String, superclass: Option[MoeClass]) = {
     this(name, version, authority)
     setSuperclass(superclass)
   }
@@ -49,14 +49,12 @@ class MoeClass (private val name: String) extends MoeObject {
 
   // Superclass ...
 
-  def getSuperclass: MoeClass = superclass
-  def hasSuperclass: Boolean  = superclass != null
-  def setSuperclass(s: MoeClass): Unit = superclass = s
+  def getSuperclass: Option[MoeClass] = superclass
+  def hasSuperclass: Boolean  = superclass.isDefined
+  def setSuperclass(s: Option[MoeClass]) = superclass = s
 
   def getMRO: List[MoeClass] = {
-    if (superclass == null) List(this)
-    else
-      this:: superclass.getMRO
+    superclass.map(s => this:: s.getMRO).getOrElse(List(this))
   }
 
   // Attributes
@@ -67,20 +65,18 @@ class MoeClass (private val name: String) extends MoeObject {
 
   def getAttribute(name: String): MoeAttribute = {
     if (hasAttribute(name)) return attributes(name)
-    if (hasSuperclass) return superclass.getAttribute(name)
+    if (hasSuperclass) return superclass.get.getAttribute(name)
     throw new Runtime.Errors.AttributeNotFound(name)
   }
 
   def hasAttribute(name: String): Boolean = {
     if (attributes.contains(name)) return true
-    if (hasSuperclass) return superclass.hasAttribute(name)
+    if (hasSuperclass) return superclass.get.hasAttribute(name)
     false
   }
 
-  private def collectAllAttributes: HashMap[String, MoeAttribute] = {
-    if (superclass == null) attributes.clone
-    else
-      superclass.collectAllAttributes ++ attributes
+  private def collectAllAttributes: Map[String, MoeAttribute] = {
+    superclass.map({ s => s.collectAllAttributes ++ attributes }).getOrElse(attributes.clone)
   }
 
   // Instances
@@ -101,22 +97,22 @@ class MoeClass (private val name: String) extends MoeObject {
 
   def getMethod(name: String): MoeMethod = {
     if (hasMethod(name)) return methods(name)
-    if (hasSuperclass) return superclass.getMethod(name)
+    if (hasSuperclass) return superclass.get.getMethod(name)
     throw new Runtime.Errors.MethodNotFound(name)
   }
 
   def hasMethod(name: String): Boolean = {
     if (methods.contains(name)) return true
-    if (hasSuperclass) return superclass.hasMethod(name)
+    if (hasSuperclass) return superclass.get.hasMethod(name)
     false
   }
 
   // Utils ...
 
   override def toString: String = {
-    var out = "{ " + name + "-" + version + "-" + authority
-    if (hasSuperclass) out += " #extends " + superclass.toString
-    out + " }"
+    "{ " + name + "-" + version + "-" + authority + superclass.map({ s =>
+      " #extends " + s.toString
+    }).getOrElse("") + "}"
   }
 
 }
