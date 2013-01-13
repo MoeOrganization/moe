@@ -3,7 +3,7 @@ package org.moe.runtime
 import scala.collection.mutable.HashMap
 
 abstract class MoeNativeObject[A] (private val value: A) extends MoeObject {
-  def this(v: A, c: MoeClass) = { this(v); setAssociatedClass(c) }
+  def this(v: A, c: Option[MoeClass]) = { this(v); setAssociatedClass(c) }
   def getNativeValue: A = value.asInstanceOf[A]
 }
 
