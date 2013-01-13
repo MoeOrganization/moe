@@ -57,7 +57,7 @@ class MoeEnvironment {
       while (current != null) {
         if (current.hasLocal(name)) {
           current.setLocal(name, value)
-          return;
+          return
         }
         else {
           current = current.getParent

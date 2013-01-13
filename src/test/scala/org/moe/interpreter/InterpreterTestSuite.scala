@@ -85,7 +85,7 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     )
     val result = Interpreter.eval(Runtime.getRootEnv, ast)
 
-    val array: List[ MoeObject ] = result.asInstanceOf[MoeArrayObject].getNativeValue;
+    val array: List[ MoeObject ] = result.asInstanceOf[MoeArrayObject].getNativeValue
 
     assert(array.size === 2)
     assert(array(0).asInstanceOf[ MoeIntObject ].getNativeValue === 10)
@@ -109,7 +109,7 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
    )
     val result = Interpreter.eval(Runtime.getRootEnv, ast)
 
-    val hash: HashMap[String, MoeObject] = result.asInstanceOf[MoeHashObject].getNativeValue;
+    val hash: HashMap[String, MoeObject] = result.asInstanceOf[MoeHashObject].getNativeValue
     assert(hash("foo").asInstanceOf[MoeIntObject].getNativeValue === 10)
     assert(hash("bar").asInstanceOf[MoeIntObject].getNativeValue === 20)
   }
