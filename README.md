@@ -127,7 +127,8 @@ So if anyone is interested in hacking on this, here is what you need
 installed to get started.
 
 * Scala (latest stable is fine)
-* SBT (Scala Build Tool)
+* SBT (Scala Build Tool, get it from
+  http://www.scala-sbt.org/release/docs/Getting-Started/Setup.html)
 
 To compile the code and run the test suite, you need only type the
 following at the root of the source tree.
