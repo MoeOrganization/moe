@@ -7,8 +7,8 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... test MRO") {
     val Foo = new MoeClass("Foo")
-    val Bar = new MoeClass("Bar", Foo)
-    val Baz = new MoeClass("Baz", Bar)
+    val Bar = new MoeClass("Bar", Some(Foo))
+    val Baz = new MoeClass("Baz", Some(Bar))
 
     val mro = Baz.getMRO
 
