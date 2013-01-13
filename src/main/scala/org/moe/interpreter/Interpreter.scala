@@ -18,7 +18,7 @@ object Interpreter {
             case ScopeNode           ( body  ) => eval( new MoeEnvironment( env ), body )
             case StatementsNode      ( nodes ) => {
                 var result : MoeObject = Runtime.NativeObjects.getUndef()
-                for ( val node <- nodes ) {
+                for ( node <- nodes ) {
                     result = eval( env, node )
                 }
                 result
@@ -54,7 +54,7 @@ object Interpreter {
 
             case HashLiteralNode ( map ) => {
                 val hash = HashMap[ String, MoeObject ]()
-                for ( val pair <- map ) {
+                for ( pair <- map ) {
                     val p = eval( env, pair )
                     // NOTE:
                     // forcing each element to become
