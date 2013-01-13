@@ -31,9 +31,10 @@ case class HashLiteralNode(map: List[AST]) extends AST
 
 // unary operators
 
-case class IncrementNode(reciever: AST) extends AST
-case class DecrementNode(reciever: AST) extends AST
-case class NotNode(reciever: AST) extends AST
+case class IncrementNode(receiver: AST) extends AST
+case class DecrementNode(receiver: AST) extends AST
+case class NotNode(receiver: AST) extends AST
+
 
 // binary operators
 

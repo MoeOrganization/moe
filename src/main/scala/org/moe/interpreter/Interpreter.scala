@@ -9,7 +9,7 @@ object Interpreter {
 
   val stub = new MoeObject()
 
-  def eval (env: MoeEnvironment, node: AST): MoeObject = {
+  def eval(env: MoeEnvironment, node: AST): MoeObject = {
     node match {
 
       // containers
@@ -17,8 +17,8 @@ object Interpreter {
       case CompilationUnitNode(body) => eval(env, body)
       case ScopeNode(body) => eval(new MoeEnvironment(env), body)
       case StatementsNode(nodes) => {
-        var result : MoeObject = Runtime.NativeObjects.getUndef
-        for(val node <- nodes) {
+        var result: MoeObject = Runtime.NativeObjects.getUndef
+        for (node <- nodes) {
           result = eval(env, node)
         }
         result
@@ -53,8 +53,8 @@ object Interpreter {
       case PairLiteralNode(key, value) => Runtime.NativeObjects.getPair(key -> eval(env, value))
 
       case HashLiteralNode(map) => {
-        val hash = HashMap[String,MoeObject]()
-        for(val pair <- map) {
+        val hash = HashMap[String, MoeObject]()
+        for (pair <- map) {
           val p = eval(env, pair)
           // NOTE:
           // forcing each element to become
@@ -64,18 +64,18 @@ object Interpreter {
           // for it to evaluate into many
           // MoePairObject instances as well
           // - SL
-          hash += p.asInstanceOf[MoePairObject].getNativeValue
+          hash += p.asInstanceOf[ MoePairObject ].getNativeValue
         }
         Runtime.NativeObjects.getHash(hash)
       }
 
       // unary operators
 
-      case IncrementNode(reciever) => stub
-      case DecrementNode(reciever) => stub
+      case IncrementNode(receiver) => stub
+      case DecrementNode(receiver) => stub
 
-      case NotNode(reciever) => {
-        eval(env, reciever).isTrue match {
+      case NotNode(receiver) => {
+        eval(env, receiver).isTrue match {
           case true  => Runtime.NativeObjects.getFalse
           case false => Runtime.NativeObjects.getTrue
         }
@@ -84,19 +84,19 @@ object Interpreter {
       // binary operators
 
       case AndNode(lhs, rhs) => {
-          val left_result = eval(env, lhs)
-          left_result.isTrue match {
-              case true  => eval(env, rhs)
-              case false => left_result
-          }
+        val left_result = eval(env, lhs)
+        left_result.isTrue match {
+          case true  => eval(env, rhs)
+          case false => left_result
+        }
       }
 
-      case OrNode(lhs, rhs) => {
-          val left_result = eval(env, lhs)
-          left_result.isTrue match {
-              case true  => left_result
-              case false => eval(env, rhs)
-          }
+      case OrNode (lhs, rhs) => {
+        val left_result = eval(env, lhs)
+        left_result.isTrue match {
+          case true  => left_result
+          case false => eval(env, rhs)
+        }
       }
 
       // value lookup, assignment and declaration
@@ -133,7 +133,7 @@ object Interpreter {
       case IfElsifElseNode(if_condition, if_body, elsif_condition, elsif_body, else_body) => stub
 
       case UnlessNode(unless_condition, unless_body) => stub
-      case UnlessElseNode (unless_condition, unless_body, else_body) => stub
+      case UnlessElseNode(unless_condition, unless_body, else_body) => stub
 
       case TryNode(body, catch_nodes, finally_nodes) => stub
       case CatchNode(type_name, local_name, body) => stub
@@ -142,8 +142,8 @@ object Interpreter {
       case WhileNode(condition, body) => stub
       case DoWhileNode(condition, body) => stub
 
-      case ForeachNode (topic, list, body) => stub
-      case ForNode (init, condition, update, body) => stub
+      case ForeachNode(topic, list, body) => stub
+      case ForNode(init, condition, update, body) => stub
     }
   }
 
