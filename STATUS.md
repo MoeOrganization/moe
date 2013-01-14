@@ -1,7 +1,7 @@
 # Moe Project Status
 
-This is a very, very, very early stage of this project, so please do 
-not judge too harshly. 
+This is a very, very, very early stage of this project, so please do
+not judge too harshly.
 
 Currently we have the following:
 
