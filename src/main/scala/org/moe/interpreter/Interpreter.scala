@@ -39,8 +39,8 @@ object Interpreter {
     case SuperLiteralNode() => {
       val klass = env.getCurrentClass
       klass.getSuperclass match {
-        case s:MoeClass => s
-        case _          => throw new Runtime.Errors.SuperclassNotFound(klass.getName)
+        case Some(s) => s
+        case _ => throw new Runtime.Errors.SuperclassNotFound(klass.getName)
       }
     }
 
