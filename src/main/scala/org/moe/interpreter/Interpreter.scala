@@ -127,39 +127,67 @@ object Interpreter {
     // statements
 
     case IfNode(if_condition, if_body) => {
-      val if_cond_result = eval(env, if_condition)
-      if_cond_result.isTrue match {
-        case true  => eval(env, if_body)
-        case false => Runtime.NativeObjects.getUndef
-      }
+      eval( env,
+        IfElseNode(
+          if_condition,
+          if_body,
+          UndefLiteralNode()
+        )
+      )
     }
 
     case IfElseNode(if_condition, if_body, else_body) => {
-      val if_cond_result = eval(env, if_condition)
-      if_cond_result.isTrue match {
+      eval( env, if_condition ).isTrue match {
         case true  => eval(env, if_body)
         case false => eval(env, else_body)
       }
     }
 
     case IfElsifNode(if_condition, if_body, elsif_condition, elsif_body) => {
-      val if_cond_result = eval(env, if_condition)
-      if_cond_result.isTrue match {
-        case true  => eval(env, if_body)
-        case false => eval(env, IfNode(elsif_condition, elsif_body))
-      }
+      eval( env,
+        IfElseNode(
+          if_condition,
+          if_body,
+          IfNode(
+            elsif_condition,
+            elsif_body
+          )
+        )
+      )
     }
 
     case IfElsifElseNode(if_condition, if_body, elsif_condition, elsif_body, else_body) => {
-      val if_cond_result = eval(env, if_condition)
-      if_cond_result.isTrue match {
-        case true  => eval(env, if_body)
-        case false => eval(env, IfElseNode(elsif_condition, elsif_body, else_body))
-      }
+      eval( env,
+        IfElseNode(
+          if_condition,
+          if_body,
+          IfElseNode(
+            elsif_condition,
+            elsif_body,
+            else_body
+          )
+        )
+      )
     }
 
-    case UnlessNode(unless_condition, unless_body) => stub
-    case UnlessElseNode(unless_condition, unless_body, else_body) => stub
+    case UnlessNode(unless_condition, unless_body) => {
+      eval( env,
+        UnlessElseNode(
+          unless_condition,
+          unless_body,
+          UndefLiteralNode()
+        )
+      )
+    }
+    case UnlessElseNode(unless_condition, unless_body, else_body) => {
+      eval( env,
+        IfElseNode(
+          NotNode( unless_condition ),
+          unless_body,
+          else_body
+        )
+      )
+    }
 
     case TryNode(body, catch_nodes, finally_nodes) => stub
     case CatchNode(type_name, local_name, body) => stub
