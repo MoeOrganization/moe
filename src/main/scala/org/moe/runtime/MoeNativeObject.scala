@@ -1,7 +1,5 @@
 package org.moe.runtime
 
-import scala.collection.mutable.HashMap
-
 abstract class MoeNativeObject[A] (private val value: A) extends MoeObject {
   def this(v: A, c: Option[MoeClass]) = { this(v); setAssociatedClass(c) }
   def getNativeValue: A = value.asInstanceOf[A]
@@ -59,7 +57,7 @@ class MoeArrayObject(v: List[MoeObject]) extends MoeNativeObject[List[MoeObject]
   override def isFalse: Boolean = getNativeValue.size == 0
 }
 
-class MoeHashObject(v: HashMap[String, MoeObject]) extends MoeNativeObject[HashMap[String, MoeObject]](v) {
+class MoeHashObject(v: Map[String, MoeObject]) extends MoeNativeObject[Map[String, MoeObject]](v) {
   override def isFalse: Boolean = getNativeValue.size == 0
 }
 
