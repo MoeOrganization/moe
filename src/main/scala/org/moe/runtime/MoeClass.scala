@@ -2,85 +2,131 @@ package org.moe.runtime
 
 import scala.collection.mutable.{HashMap,Map}
 
-class MoeClass (private val name: String) extends MoeObject {
-
-  private var version: String = _
-  private var authority: String = _
-  private var superclass: Option[MoeClass] = None
+class MoeClass(
+  private val name: String,
+  private var version: Option[String] = None,
+  private var authority: Option[String] = None,
+  private var superclass: Option[MoeClass] = None)
+  extends MoeObject {
 
   private val methods: Map[String,MoeMethod] = new HashMap[String, MoeMethod]()
   private val attributes: Map[String,MoeAttribute] = new HashMap[String, MoeAttribute]()
 
-  // the various alternate constructors ...
-
-  def this(name: String, superclass: Option[MoeClass]) = {
-    this(name)
-    setSuperclass(superclass)
-  }
-
-  def this(name: String, version: String) = {
-    this(name)
-    setVersion(version)
-  }
-
-  def this(name: String, version: String, superclass: Option[MoeClass]) = {
-    this(name, version)
-    setSuperclass(superclass)
-  }
-
-  def this(name: String, version: String, authority: String) = {
-    this(name, version)
-    setAuthority(authority)
-  }
-
-  def this(name: String, version: String, authority: String, superclass: Option[MoeClass]) = {
-    this(name, version, authority)
-    setSuperclass(superclass)
-  }
-
   // Identity ...
 
+  /**
+   * Returns the name of this class
+   */
   def getName: String = name
-  def getVersion: String = version
-  def getAuthority: String = authority
 
-  def setVersion(v: String): Unit = version = v
-  def setAuthority(a: String): Unit = authority = a
+  /**
+   * Returns the version of this class
+   */
+  def getVersion: Option[String] = version
+
+  /**
+   * Returns the authority of this class
+   */
+  def getAuthority: Option[String] = authority
+
+  /**
+   * Sets the version of this class
+   *
+   * @param v The version
+   */
+  def setVersion(v: Option[String]) = version = v
+
+  /**
+   * Sets the authority of this class
+   *
+   * @param a The authority
+   */
+  def setAuthority(a: Option[String]) = authority = a
 
   // Superclass ...
 
+  /**
+   * Returns this superclass of this class
+   */
   def getSuperclass: Option[MoeClass] = superclass
+
+  /**
+   * Returns true if this class has a superclass
+   */
   def hasSuperclass: Boolean  = superclass.isDefined
+
+  /**
+   * Sets the superclass of this class.
+   */
   def setSuperclass(s: Option[MoeClass]) = superclass = s
 
+  /**
+   * Gets a list of classes in method resolution order for this class.
+   */
   def getMRO: List[MoeClass] = {
     superclass.map(s => this:: s.getMRO).getOrElse(List(this))
   }
 
   // Attributes
 
+  /**
+   * Adds an attribute to this class
+   */
   def addAttribute(attribute: MoeAttribute): Unit = {
     attributes += (attribute.getName -> attribute)
   }
 
+  /**
+   * Returns this class' attribute with the specified name.
+   *
+   * @param name The name of the attribute to return
+   */
   def getAttribute(name: String): MoeAttribute = {
-    if (hasAttribute(name)) return attributes(name)
-    if (hasSuperclass) return superclass.get.getAttribute(name)
-    throw new Runtime.Errors.AttributeNotFound(name)
+    // If, in the future, it is decided that this method should just return
+    // Option[MoeAttribute] then the assignment to a and subsequent definedness
+    // check can go away and the superclass.map can be adjusted - @gphat
+    val a = attributes.get(name).orElse(
+      superclass.map({ sc => sc.getAttribute(name) })
+    )
+
+    if(!a.isDefined) {
+      throw new Runtime.Errors.AttributeNotFound(name)
+    }
+
+    a.get
   }
 
+  /**
+   * Returns true if this class (or any of it's superclasses) has an attribute
+   * with the specified name.
+   *
+   * @param name The name of the attribute to check for
+   */
   def hasAttribute(name: String): Boolean = {
-    if (attributes.contains(name)) return true
-    if (hasSuperclass) return superclass.get.hasAttribute(name)
-    false
+
+    // If getAttribute returned Option[MoeAttribute], this would become
+    // getMethod(name).isDefined - @gphat
+    try {
+      getAttribute(name)
+      true
+    } catch {
+      case e: Exception => false
+    }
   }
 
+  /**
+   * Returns a [[scala.collection.Map]] of names and attributes for this class
+   * and all of it's superclasses.
+   */
   private def collectAllAttributes: Map[String, MoeAttribute] = {
     superclass.map({ s => s.collectAllAttributes ++ attributes }).getOrElse(attributes.clone)
   }
 
   // Instances
 
+  /**
+   * Creates a new instance of this class.
+   */
   def newInstance: MoeObject = {
     val instance = new MoeOpaque(this)
     collectAllAttributes.values.foreach(
@@ -91,26 +137,60 @@ class MoeClass (private val name: String) extends MoeObject {
 
   // Methods ...
 
+  /**
+   * Adds a method to this class.
+   *
+   * @param method The method to add to this class
+   */
   def addMethod(method: MoeMethod): Unit = {
     methods += (method.getName -> method)
   }
 
+  /**
+   * Returns this class' method with the specified name.
+   *
+   * @param name The name of the method to return
+   */
   def getMethod(name: String): MoeMethod = {
-    if (hasMethod(name)) return methods(name)
-    if (hasSuperclass) return superclass.get.getMethod(name)
-    throw new Runtime.Errors.MethodNotFound(name)
+
+    // If, in the future, it is decided that this method should just return
+    // Option[MoeMethod] then the assignment to m and subsequent definedness
+    // check can go away and the superclass.map can be adjusted - @gphat
+    val m = methods.get(name).orElse(
+      superclass.map({ sc => sc.getMethod(name) })
+    )
+
+    if(!m.isDefined) {
+      throw new Runtime.Errors.MethodNotFound(name)
+    }
+
+    m.get
   }
 
+  /**
+   * Returns true if this class has a method with the specified name.
+   *
+   * @param name The name of the method to check for.
+   */
   def hasMethod(name: String): Boolean = {
-    if (methods.contains(name)) return true
-    if (hasSuperclass) return superclass.get.hasMethod(name)
-    false
+
+    // If getMethod returned Option[MoeMethod], this would become
+    // getMethod(name).isDefined - @gphat
+    try {
+        getMethod(name)
+        true
+    } catch {
+      case e: Exception => false
+    }
   }
 
   // Utils ...
 
+  /**
+   * Returns a string representation of this class.
+   */
   override def toString: String = {
-    "{ " + name + "-" + version + "-" + authority + superclass.map({ s =>
+    "{ " + name + "-" + version.getOrElse("") + "-" + authority.getOrElse("") + superclass.map({ s =>
       " #extends " + s.toString
     }).getOrElse("") + "}"
   }

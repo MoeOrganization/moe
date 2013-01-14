@@ -3,7 +3,7 @@ package org.moe.runtime
 /** An object!
  * @param associatedClass The class to associated with this object.
  */
-class MoeObject(associatedClass: Option[MoeClass] = None) {
+class MoeObject(private var associatedClass: Option[MoeClass] = None) {
 
   private val id: Int = System.identityHashCode(this)
 

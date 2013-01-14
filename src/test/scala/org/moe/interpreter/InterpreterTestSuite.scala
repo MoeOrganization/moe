@@ -6,8 +6,6 @@ import org.scalatest.BeforeAndAfter
 import org.moe.runtime._
 import org.moe.ast._
 
-import scala.collection.mutable.HashMap
-
 class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
 
   private case class FooNode() extends AST
@@ -111,7 +109,7 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     )
     val result = Interpreter.eval(Runtime.getRootEnv, ast)
 
-    val hash: HashMap[String, MoeObject] = result.asInstanceOf[MoeHashObject].getNativeValue
+    val hash: Map[String, MoeObject] = result.asInstanceOf[MoeHashObject].getNativeValue
     assert(hash("foo").asInstanceOf[MoeIntObject].getNativeValue === 10)
     assert(hash("bar").asInstanceOf[MoeIntObject].getNativeValue === 20)
   }
@@ -233,7 +231,7 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     val result = Interpreter.eval(Runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 3)
   }
-  
+
   test("... basic (true/true) test with IfElsif (true/true)") {
     val ast = basicAST(
       List(

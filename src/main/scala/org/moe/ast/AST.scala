@@ -13,6 +13,11 @@ case class StatementsNode(nodes: List[AST]) extends AST
 
 // literals
 
+/**
+ * A literal Int node
+ *
+ * @param value The Int value of this node
+ */
 case class IntLiteralNode(value: Int) extends AST
 case class FloatLiteralNode(value: Double) extends AST
 case class StringLiteralNode(value: String) extends AST
