@@ -146,13 +146,7 @@ object Interpreter {
       val if_cond_result = eval(env, if_condition)
       if_cond_result.isTrue match {
         case true  => eval(env, if_body)
-        case false => {
-          val elsif_cond_result = eval(env, elsif_condition)
-          elsif_cond_result.isTrue match {
-            case true  => eval(env, elsif_body)
-            case false => Runtime.NativeObjects.getUndef
-          }
-        }
+        case false => eval(env, IfNode(elsif_condition, elsif_body))
       }
     }
 
@@ -160,13 +154,7 @@ object Interpreter {
       val if_cond_result = eval(env, if_condition)
       if_cond_result.isTrue match {
         case true  => eval(env, if_body)
-        case false => {
-          val elsif_cond_result = eval(env, elsif_condition)
-          elsif_cond_result.isTrue match {
-            case true  => eval(env, elsif_body)
-            case false => eval(env, else_body)
-          }
-        }
+        case false => eval(env, IfElseNode(elsif_condition, elsif_body, else_body))
       }
     }
 
