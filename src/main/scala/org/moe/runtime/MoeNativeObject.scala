@@ -27,7 +27,10 @@ class MoeFloatObject(v: Double) extends MoeNativeObject[Double](v) {
 }
 
 class MoeStringObject(v: String) extends MoeNativeObject[String](v) {
-  override def isFalse: Boolean = getNativeValue == ""
+  override def isFalse: Boolean = getNativeValue match {
+    case "" | "0" => true
+    case _        => false
+  }
 }
 
 class MoeBooleanObject(v: Boolean) extends MoeNativeObject[Boolean](v) {

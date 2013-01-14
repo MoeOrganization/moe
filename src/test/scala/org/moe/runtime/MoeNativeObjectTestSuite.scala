@@ -15,9 +15,17 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
         assert(!o.isUndef)
     }
 
-    test("... false String object") {
+    test("... false String object - empty string") {
         val o = new MoeStringObject("")
         assert(o.getNativeValue === "")
+        assert(!o.isTrue)
+        assert(o.isFalse)
+        assert(!o.isUndef)
+    }
+
+    test("... false String object - zero") {
+        val o = new MoeStringObject("0")
+        assert(o.getNativeValue === "0")
         assert(!o.isTrue)
         assert(o.isFalse)
         assert(!o.isUndef)
