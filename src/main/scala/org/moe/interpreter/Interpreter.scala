@@ -52,20 +52,20 @@ object Interpreter {
     case PairLiteralNode(key, value) => Runtime.NativeObjects.getPair(key -> eval(env, value))
 
     case HashLiteralNode(map) => {
-      val hash = HashMap[String, MoeObject]()
-      for (pair <- map) {
-        val p = eval(env, pair)
-        // NOTE:
-        // forcing each element to become
-        // a single MoePairObject might be
-        // a little too restrictive, it
-        // should (in theory) be possible
-        // for it to evaluate into many
-        // MoePairObject instances as well
-        // - SL
-        hash += p.asInstanceOf[ MoePairObject ].getNativeValue
-      }
-      Runtime.NativeObjects.getHash(hash)
+      // NOTE:
+      // forcing each element to become
+      // a single MoePairObject might be
+      // a little too restrictive, it
+      // should (in theory) be possible
+      // for it to evaluate into many
+      // MoePairObject instances as well
+      // - SL
+      Runtime.NativeObjects.getHash(
+        map.map(
+          pair => eval(env, pair)
+          .asInstanceOf[MoePairObject].getNativeValue
+        ).toMap
+      )
     }
 
     // unary operators

@@ -1,7 +1,5 @@
 package org.moe.runtime
 
-import scala.collection.mutable.HashMap
-
 object Runtime {
 
   private val RootEnv = new MoeEnvironment()
@@ -30,7 +28,7 @@ object Runtime {
     def getString(value: String) = new MoeStringObject(value)
 
     def getPair(value: (String, MoeObject)) = new MoePairObject(value)
-    def getHash(value: HashMap[String, MoeObject]) = new MoeHashObject(value)
+    def getHash(value: Map[String, MoeObject]) = new MoeHashObject(value)
     def getArray(value: List[MoeObject]) = new MoeArrayObject(value)
   }
 
