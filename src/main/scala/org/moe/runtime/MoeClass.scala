@@ -64,7 +64,7 @@ class MoeClass (private val name: String) extends MoeObject {
   }
 
   def getAttribute(name: String): MoeAttribute = {
-    if (hasAttribute(name)) return attributes(name)
+    if (attributes.contains(name)) return attributes(name)
     if (hasSuperclass) return superclass.get.getAttribute(name)
     throw new Runtime.Errors.AttributeNotFound(name)
   }
@@ -96,7 +96,7 @@ class MoeClass (private val name: String) extends MoeObject {
   }
 
   def getMethod(name: String): MoeMethod = {
-    if (hasMethod(name)) return methods(name)
+    if (methods.contains(name)) return methods(name)
     if (hasSuperclass) return superclass.get.getMethod(name)
     throw new Runtime.Errors.MethodNotFound(name)
   }
