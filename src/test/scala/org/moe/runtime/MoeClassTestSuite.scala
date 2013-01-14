@@ -7,8 +7,8 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... test MRO") {
     val Foo = new MoeClass("Foo")
-    val Bar = new MoeClass("Bar", Some(Foo))
-    val Baz = new MoeClass("Baz", Some(Bar))
+    val Bar = new MoeClass(name = "Bar", superclass = Some(Foo))
+    val Baz = new MoeClass(name = "Baz", superclass = Some(Bar))
 
     val mro = Baz.getMRO
 
@@ -20,14 +20,22 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... test the whole thing together") {
-    val klass = new MoeClass("TestClass", "0.01", "cpan:STEVAN")
+    val klass = new MoeClass(
+      name = "TestClass",
+      version = Some("0.01"),
+      authority = Some("cpan:STEVAN")
+    )
     klass.addMethod(new MoeMethod("ident", (inv, args) => inv))
     var obj = new MoeObject(Some(klass))
     assert(obj.callMethod("ident") === obj)
   }
 
   test("... test the whole thing together (newInstance version)") {
-    val klass = new MoeClass("TestClass", "0.01", "cpan:STEVAN")
+    val klass = new MoeClass(
+      name = "TestClass",
+      version = Some("0.01"),
+      authority = Some("cpan:STEVAN")
+    )
     klass.addMethod(new MoeMethod("ident", (inv, args) => inv))
     var obj = klass.newInstance
     assert(obj.callMethod("ident") === obj)
