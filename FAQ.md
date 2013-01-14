@@ -59,7 +59,7 @@ being self-hosting or something.
 ## Why Scala?
 
 So, see my above comment about a nice static type system, which
-Scala has and which I find much nicer then other languages like
+Scala has and which I find much nicer than other languages like
 Java.
 
 In fact, I originally started to write this in Java, after looking
@@ -84,7 +84,7 @@ See above.
 
 No, not necessarily, the only reason the JVM is involved right
 now is that I am writing this in Scala. I don't plan on only
-having an interpreter, eventually I would love have a compiler
+having an interpreter; eventually I would love have a compiler
 and then we can target multiple VMs.
 
 ## Why do you have a simplistic tree-walking interpreter?
