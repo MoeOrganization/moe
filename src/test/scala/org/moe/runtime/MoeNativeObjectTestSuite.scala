@@ -38,11 +38,11 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple Int object") {
-      val o = new MoeIntObject(10)
-      assert(o.getNativeValue === 10)
-      assert(o.isTrue)
-      assert(!o.isFalse)
-      assert(!o.isUndef)
+    val o = new MoeIntObject(10)
+    assert(o.getNativeValue === 10)
+    assert(o.isTrue)
+    assert(!o.isFalse)
+    assert(!o.isUndef)
   }
 
   test("... false Int object") {
@@ -54,27 +54,27 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple Float object") {
-      val o = new MoeFloatObject(10.5)
-      assert(o.getNativeValue === 10.5)
-      assert(o.isTrue)
-      assert(!o.isFalse)
-      assert(!o.isUndef)
+    val o = new MoeFloatObject(10.5)
+    assert(o.getNativeValue === 10.5)
+    assert(o.isTrue)
+    assert(!o.isFalse)
+    assert(!o.isUndef)
   }
 
   test("... false Float object") {
-      val o = new MoeFloatObject(0.0)
-      assert(o.getNativeValue === 0.0)
-      assert(!o.isTrue)
-      assert(o.isFalse)
-      assert(!o.isUndef)
+    val o = new MoeFloatObject(0.0)
+    assert(o.getNativeValue === 0.0)
+    assert(!o.isTrue)
+    assert(o.isFalse)
+    assert(!o.isUndef)
   }
 
   test("... simple Boolean object") {
-      val o = new MoeBooleanObject(true)
-      assert(o.getNativeValue === true)
-      assert(o.isTrue)
-      assert(!o.isFalse)
-      assert(!o.isUndef)
+    val o = new MoeBooleanObject(true)
+    assert(o.getNativeValue === true)
+    assert(o.isTrue)
+    assert(!o.isFalse)
+    assert(!o.isUndef)
   }
 
   test("... false Boolean object") {
