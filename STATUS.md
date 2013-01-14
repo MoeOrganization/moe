@@ -14,4 +14,4 @@ Currently we have the following:
   start hacking)
 * no parser at all to speak of
 
-~~MORE TO COME~~
+MORE DETAIL TO COME SOON!
