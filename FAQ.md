@@ -103,7 +103,7 @@ Modern Perl (Moose) - OS dependency (the JVM) = Moose - OS = Moe
 
 ## Perl is Dead
 
-Yes, I know, I wrote a talk about it.
+Yes, I know, I wrote [a talk](https://speakerdeck.com/stevan_little/perl-is-not-dead-it-is-a-dead-end) about it.
 
 But if you are just looking to troll, you can go to reddit,
 hackernews or whatever, that is what they are there for.
