@@ -22,7 +22,7 @@ effort for it to have any chance of success.
 
 A sizable portion of the inspiration for this project came from a talk
 given by Jesse Vincent called "Perl 5.16 and Beyond" in which he spoke
-about a slimmer Perl 5 core which no longer included things like;
+about a slimmer Perl 5 core which no longer included things like
 formats, Unix group and user functions, sockets, etc. He also talked
 about the idea of breaking some backwards compatibility (in a very
 controlled and clean way) and allowing for new features to be added
