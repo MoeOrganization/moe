@@ -90,7 +90,7 @@ object Interpreter {
       }
     }
 
-    case OrNode (lhs, rhs) => {
+    case OrNode(lhs, rhs) => {
       val left_result = eval(env, lhs)
       left_result.isTrue match {
         case true  => left_result
@@ -126,10 +126,37 @@ object Interpreter {
 
     // statements
 
-    case IfNode(if_condition, if_body) => stub
-    case IfElseNode(if_condition, if_body, else_body) => stub
-    case IfElsifNode(if_condition, if_body, elsif_condition, elsif_body) => stub
-    case IfElsifElseNode(if_condition, if_body, elsif_condition, elsif_body, else_body) => stub
+    case IfNode(if_condition, if_body) => {
+      val if_cond_result = eval(env, if_condition)
+      if_cond_result.isTrue match {
+        case true  => eval(env, if_body)
+        case false => Runtime.NativeObjects.getUndef
+      }
+    }
+
+    case IfElseNode(if_condition, if_body, else_body) => {
+      val if_cond_result = eval(env, if_condition)
+      if_cond_result.isTrue match {
+        case true  => eval(env, if_body)
+        case false => eval(env, else_body)
+      }
+    }
+
+    case IfElsifNode(if_condition, if_body, elsif_condition, elsif_body) => {
+      val if_cond_result = eval(env, if_condition)
+      if_cond_result.isTrue match {
+        case true  => eval(env, if_body)
+        case false => eval(env, IfNode(elsif_condition, elsif_body))
+      }
+    }
+
+    case IfElsifElseNode(if_condition, if_body, elsif_condition, elsif_body, else_body) => {
+      val if_cond_result = eval(env, if_condition)
+      if_cond_result.isTrue match {
+        case true  => eval(env, if_body)
+        case false => eval(env, IfElseNode(elsif_condition, elsif_body, else_body))
+      }
+    }
 
     case UnlessNode(unless_condition, unless_body) => stub
     case UnlessElseNode(unless_condition, unless_body, else_body) => stub
