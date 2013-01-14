@@ -210,6 +210,20 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     val ast = basicAST(
       List(
         IfElseNode(
+          BooleanLiteralNode(true),
+          IntLiteralNode(2),
+          IntLiteralNode(3)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 2)
+  }
+
+  test("... basic (false) test with IfElse") {
+    val ast = basicAST(
+      List(
+        IfElseNode(
           BooleanLiteralNode(false),
           IntLiteralNode(2),
           IntLiteralNode(3)
@@ -219,8 +233,23 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     val result = Interpreter.eval(Runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 3)
   }
+  
+  test("... basic (true/true) test with IfElsif (true/true)") {
+    val ast = basicAST(
+      List(
+        IfElsifNode(
+          BooleanLiteralNode(true),
+          IntLiteralNode(5),
+          BooleanLiteralNode(true),
+          IntLiteralNode(8)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 5)
+  }
 
-  test("... basic test with IfElsif") {
+  test("... basic (false/true) test with IfElsif") {
     val ast = basicAST(
       List(
         IfElsifNode(
@@ -235,7 +264,7 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 8)
   }
 
-  test("... basic (false) test with IfElseIf") {
+  test("... basic (false/false) test with IfElseIf") {
     val ast = basicAST(
       List(
         IfElsifNode(
@@ -250,7 +279,39 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     assert(result === Runtime.NativeObjects.getUndef)
   }
 
-  test("... basic test with IfElsifElse") {
+  test("... basic (true/true) test with IfElsifElse") {
+    val ast = basicAST(
+      List(
+        IfElsifElseNode(
+          BooleanLiteralNode(true),
+          IntLiteralNode(34),
+          BooleanLiteralNode(true),
+          IntLiteralNode(55),
+          IntLiteralNode(89)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 34)
+  }
+
+  test("... basic (false/true) test with IfElsifElse") {
+    val ast = basicAST(
+      List(
+        IfElsifElseNode(
+          BooleanLiteralNode(false),
+          IntLiteralNode(34),
+          BooleanLiteralNode(true),
+          IntLiteralNode(55),
+          IntLiteralNode(89)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 55)
+  }
+
+  test("... basic (false/false) test with IfElsifElse") {
     val ast = basicAST(
       List(
         IfElsifElseNode(
