@@ -41,4 +41,57 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter {
     assert(obj.callMethod("ident") === obj)
   }
 
+  test("... test method resolution") {
+    val parent = new MoeClass(
+      name = "ParentClass", 
+      version = Some("0.01"), 
+      authority = Some("cpan:STEVAN")
+    )
+    val child = new MoeClass(
+      name = "ChildClass", 
+      version = Some("0.01"), 
+      authority = Some("cpan:STEVAN"),
+      superclass = Some(parent)
+    )
+
+    val method = new MoeMethod("ident", (inv, args) => inv)
+    parent.addMethod(method)
+
+    var dad = parent.newInstance
+    var son = child.newInstance
+
+    assert(parent.hasMethod("ident"))
+    assert(child.hasMethod("ident"))
+
+    assert(parent.getMethod("ident") === method)
+    assert(child.getMethod("ident") === method)
+
+    assert(dad.callMethod("ident") === dad)
+    assert(son.callMethod("ident") === son)
+  }
+
+  test("... test attribute resolution") {
+    val parent = new MoeClass(
+      name = "ParentClass", 
+      version = Some("0.01"), 
+      authority = Some("cpan:STEVAN")
+    )
+    val child = new MoeClass(
+      name = "ChildClass", 
+      version = Some("0.01"), 
+      authority = Some("cpan:STEVAN"),
+      superclass = Some(parent)
+    )
+
+    val default = new MoeObject()
+    val attr = new MoeAttribute("name", default)
+    parent.addAttribute(attr)
+
+    assert(parent.hasAttribute("name"))
+    assert(child.hasAttribute("name"))
+
+    assert(parent.getAttribute("name") === attr)
+    assert(child.getAttribute("name") === attr)
+  }
+
 }
