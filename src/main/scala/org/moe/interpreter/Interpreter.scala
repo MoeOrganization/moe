@@ -170,8 +170,24 @@ object Interpreter {
       )
     }
 
-    case UnlessNode(unless_condition, unless_body) => stub
-    case UnlessElseNode(unless_condition, unless_body, else_body) => stub
+    case UnlessNode(unless_condition, unless_body) => {
+      eval( env,
+        UnlessElseNode(
+          unless_condition,
+          unless_body,
+          UndefLiteralNode()
+        )
+      )
+    }
+    case UnlessElseNode(unless_condition, unless_body, else_body) => {
+      eval( env,
+        IfElseNode(
+          NotNode( unless_condition ),
+          unless_body,
+          else_body
+        )
+      )
+    }
 
     case TryNode(body, catch_nodes, finally_nodes) => stub
     case CatchNode(type_name, local_name, body) => stub

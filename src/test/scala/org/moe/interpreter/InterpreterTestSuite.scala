@@ -327,6 +327,60 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 89)
   }
 
+  test("... basic test with Unless") {
+    val ast = basicAST(
+      List(
+        UnlessNode(
+          BooleanLiteralNode( false ),
+          IntLiteralNode( 42 )
+        )
+      )
+    )
+    val result = Interpreter.eval( Runtime.getRootEnv, ast )
+    assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 42 )
+  }
+
+  test("... basic (true) test with Unless") {
+    val ast = basicAST(
+      List(
+        UnlessNode(
+          BooleanLiteralNode( true ),
+          IntLiteralNode( 42 )
+        )
+      )
+    )
+    val result = Interpreter.eval( Runtime.getRootEnv, ast )
+    assert( result === Runtime.NativeObjects.getUndef )
+  }
+
+  test("... basic test with UnlessElse") {
+    val ast = basicAST(
+      List(
+        UnlessElseNode(
+          BooleanLiteralNode( false ),
+          IntLiteralNode( 42 ),
+          IntLiteralNode( 21 )
+        )
+      )
+    )
+    val result = Interpreter.eval( Runtime.getRootEnv, ast )
+    assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 42 )
+  }
+
+  test("... basic (true) test with UnlessElse") {
+    val ast = basicAST(
+      List(
+        UnlessElseNode(
+          BooleanLiteralNode( true ),
+          IntLiteralNode( 42 ),
+          IntLiteralNode( 21 )
+        )
+      )
+    )
+    val result = Interpreter.eval( Runtime.getRootEnv, ast )
+    assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 21 )
+  }
+
   test("... unknown node") {
     val ast = basicAST(
       List(

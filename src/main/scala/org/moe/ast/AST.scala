@@ -86,6 +86,8 @@ case class IfElsifElseNode(
 
 case class UnlessNode(unless_condition: AST, unless_body: AST) extends AST
 case class UnlessElseNode(unless_condition: AST, unless_body: AST, else_body: AST) extends AST
+// TODO: UnlessElsif and UnlessElsifElse to match If above?
+// Or should the normalization be handled by the parser instead? -TRS
 
 case class TryNode(
   body: AST,
