@@ -113,5 +113,6 @@ hackernews or whatever, that is what they are there for.
 * Twitter's [Scala School](http://twitter.github.com/scala_school/)
 * Programming Scala [OFPS](http://ofps.oreilly.com/titles/9780596155957/)
 * Programming in Scala (1st edition from Artima) [pins1ed](http://www.artima.com/pins1ed/)
+* Understand pattern matching and scala.Option, but are having some trouble with `map`, `orElse`, `getOrElse` and others? (Check out this cheat sheet.)[http://blog.tmorris.net/posts/scalaoption-cheat-sheet/]
 
 If you're the kind to read dead tree versions, you can buy from O'Reilly or Artima.
