@@ -87,7 +87,7 @@ but this should be sufficient for now.
 
 Here is what you need installed to get started.
 
-* Scala 2.10.0
+* Java (preferably 7)
 * SBT (Simple Build Tool, get it from
   http://www.scala-sbt.org/release/docs/Getting-Started/Setup.html)
 
