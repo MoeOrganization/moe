@@ -4,7 +4,7 @@ import scala.collection.mutable.HashMap
 
 import org.moe.runtime._
 
-class MoeEnvironment {
+class MoeEnvironment(private val parent: Option[MoeEnvironment] = None) {
 
   object Markers {
     val Package  = "__PACKAGE__"
@@ -12,17 +12,10 @@ class MoeEnvironment {
     val Invocant = "__SELF__"
   }
 
-  private val pad = new HashMap[String, MoeObject ]()
+  private val pad = new HashMap[String, MoeObject]()
 
-  private var parent: MoeEnvironment = _
-
-  def this (p: MoeEnvironment) {
-    this()
-    parent = p
-  }
-
-  def getCurrentPackage: MoePackage = getLocal(Markers.Package).asInstanceOf[ MoePackage ]
-  def getCurrentClass: MoeClass = getLocal(Markers.Class).asInstanceOf[ MoeClass ]
+  def getCurrentPackage: MoePackage = getLocal(Markers.Package).asInstanceOf[MoePackage]
+  def getCurrentClass: MoeClass = getLocal(Markers.Class).asInstanceOf[MoeClass]
   def getCurrentInvocant: MoeObject  = getLocal(Markers.Invocant)
 
   def setCurrentPackage(p: MoeObject): Unit = setLocal(Markers.Package, p)
@@ -30,40 +23,39 @@ class MoeEnvironment {
   def setCurrentInvocant(i: MoeObject): Unit = setLocal(Markers.Invocant, i)
 
 
-  def getParent: MoeEnvironment = parent
-  def isRoot: Boolean = parent == null
+  def getParent: Option[MoeEnvironment] = parent
+  def isRoot: Boolean = !parent.isDefined
 
   def get(name: String): MoeObject = {
     if (hasLocal(name)) return getLocal(name)
-    if (!isRoot) return parent.get(name)
-    throw new Runtime.Errors.ValueNotFound(name)
+    parent match {
+      case Some(p) => p.get(name)
+      case None => throw new Runtime.Errors.ValueNotFound(name)
+    }
   }
 
   def has(name: String): Boolean = {
     if (hasLocal(name)) return true
-    if (!isRoot) return parent.has(name)
-    false
+    parent match {
+      case Some(p) => p.has(name)
+      case None => false
+    }
   }
 
   def create(name: String, value: MoeObject): Unit = setLocal(name, value)
 
   def set(name: String, value: MoeObject): Unit = {
+    // This env and non of it's parents know about this value, explode
     if (!has(name)) throw new Runtime.Errors.UndefinedValue(name)
-
     if (hasLocal(name)) {
+      // This environment has a local value, set it
       setLocal(name, value)
     } else {
-      var current: MoeEnvironment = parent
-      while (current != null) {
-        if (current.hasLocal(name)) {
-          current.setLocal(name, value)
-          return
-        }
-        else {
-          current = current.getParent
-        }
-      }
-      throw new Runtime.Errors.UndefinedValue(name)
+      // If we have a parent, reach into it to set (recursing upward). If
+      // we don't then blow up with an UndefinedValue
+      parent.map({ p => p.set(name, value) }).getOrElse(
+        throw new Runtime.Errors.UndefinedValue(name)
+      )
     }
   }
 
