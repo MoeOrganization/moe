@@ -64,10 +64,13 @@ class MoeClass(
    * Gets a list of classes in method resolution order for this class.
    */
   def getMRO: List[MoeClass] = {
-    superclass match {
-      case Some(s) => this :: s.getMRO
-      case None    => List(this)
-    }
+    superclass.map(s => this:: s.getMRO).getOrElse(List(this))
+
+    // patmatch version
+    // superclass match {
+    //   case Some(s) => this :: s.getMRO
+    //   case None    => List(this)
+    // }
   }
 
   // Attributes
@@ -122,10 +125,13 @@ class MoeClass(
    * and all of it's superclasses.
    */
   private def collectAllAttributes: Map[String, MoeAttribute] = {
-    superclass match {
-      case None    => attributes.clone
-      case Some(s) => s.collectAllAttributes ++ attributes
-    }
+    superclass.map({ s => s.collectAllAttributes ++ attributes }).getOrElse(attributes.clone)
+
+    // patmatch version
+    // superclass match {
+    //   case None    => attributes.clone
+    //   case Some(s) => s.collectAllAttributes ++ attributes
+    // }
   }
 
   // Instances
