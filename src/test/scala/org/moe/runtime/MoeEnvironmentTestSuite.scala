@@ -57,7 +57,7 @@ class MoeEnvironmentTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... child changes parent") {
-    val child = new MoeEnvironment(env)
+    val child = new MoeEnvironment(Some(env))
 
     // Make sure the child knows it's a child
     assert(!child.isRoot)
@@ -92,7 +92,7 @@ class MoeEnvironmentTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... child overrides parent") {
-    val child = new MoeEnvironment(env)
+    val child = new MoeEnvironment(Some(env))
 
     // Make sure the child knows it's a child
     assert(!child.isRoot)

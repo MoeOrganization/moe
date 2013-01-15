@@ -14,7 +14,7 @@ object Interpreter {
     // containers
 
     case CompilationUnitNode(body) => eval(env, body)
-    case ScopeNode(body) => eval(new MoeEnvironment(env), body)
+    case ScopeNode(body) => eval(new MoeEnvironment(Some(env)), body)
     case StatementsNode(nodes) => {
       var result: MoeObject = Runtime.NativeObjects.getUndef
       for (node <- nodes) {
