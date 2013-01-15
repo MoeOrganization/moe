@@ -3,9 +3,9 @@ package org.moe.runtime
 import scala.collection.mutable.HashMap
 
 class MoePackage(
-  private val name: String,
-  private var env: MoeEnvironment)
-  extends MoeObject {
+    private val name: String,
+    private var env: MoeEnvironment
+  ) extends MoeObject {
 
   private var parent: MoePackage = _
 

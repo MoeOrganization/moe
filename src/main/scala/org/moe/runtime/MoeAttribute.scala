@@ -1,7 +1,9 @@
 package org.moe.runtime
 
-class MoeAttribute(private val name: String, private val default: MoeObject)
-  extends MoeObject {
+class MoeAttribute(
+    private val name:    String, 
+    private val default: MoeObject
+  ) extends MoeObject {
 
   /**
    * Return the name of this attribute.

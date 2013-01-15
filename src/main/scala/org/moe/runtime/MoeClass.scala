@@ -3,11 +3,11 @@ package org.moe.runtime
 import scala.collection.mutable.{HashMap,Map}
 
 class MoeClass(
-  private val name: String,
-  private var version: Option[String] = None,
-  private var authority: Option[String] = None,
-  private var superclass: Option[MoeClass] = None)
-  extends MoeObject {
+    private val name: String,
+    private var version: Option[String] = None,
+    private var authority: Option[String] = None,
+    private var superclass: Option[MoeClass] = None
+  ) extends MoeObject {
 
   private val methods: Map[String,MoeMethod] = new HashMap[String, MoeMethod]()
   private val attributes: Map[String,MoeAttribute] = new HashMap[String, MoeAttribute]()
