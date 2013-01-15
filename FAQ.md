@@ -108,3 +108,6 @@ Yes, I know, I wrote [a talk](https://speakerdeck.com/stevan_little/perl-is-not-
 But if you are just looking to troll, you can go to reddit,
 hackernews or whatever, that is what they are there for.
 
+## What are some good resources for those who want to learn more about Scala
+
+Twitter's [Scala School](http://twitter.github.com/scala_school/)
