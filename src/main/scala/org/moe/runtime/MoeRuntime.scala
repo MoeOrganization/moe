@@ -6,13 +6,15 @@ object Runtime {
 
   def getRootEnv = RootEnv
 
-  // TODO:
-  // all the objects that come out
-  // from this factory actually need
-  // to have a MoeClass associated with
-  // them, since I have not defined them
-  // yet I am punting for now.
-  // - SL
+  /** 
+   * TODO:
+   * all the objects that come out
+   * from this factory actually need
+   * to have a MoeClass associated with
+   * them, since I have not defined them
+   * yet I am punting for now.
+   * - SL
+   */
   object NativeObjects {
 
     private val Undef = new MoeNullObject()
@@ -32,11 +34,13 @@ object Runtime {
     def getArray(value: List[MoeObject]) = new MoeArrayObject(value)
   }
 
-  // TODO:
-  // Need to hook up these classes with
-  // their runtime counterparts, when
-  // we actually have them that is.
-  // - SL
+  /** 
+   * TODO:
+   * Need to hook up these classes with
+   * their runtime counterparts, when
+   * we actually have them that is.
+   * - SL
+   */
   object Errors {
     class MoeException          (msg: String) extends Exception(msg)
     class MoeMoney              (msg: String) extends MoeException(msg)
