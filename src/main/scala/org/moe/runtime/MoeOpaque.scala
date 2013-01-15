@@ -2,14 +2,9 @@ package org.moe.runtime
 
 import scala.collection.mutable.HashMap
 
-class MoeOpaque extends MoeObject {
+class MoeOpaque(private var associatedClass: Option[MoeClass] = None) extends MoeObject(associatedClass) {
 
   private val data = new HashMap[String, MoeObject]()
-
-  def this(k: MoeClass) = {
-    this()
-    setAssociatedClass(Some(k))
-  }
 
   def hasValue(name: String): Boolean   = data.contains(name)
   def getValue(name: String): MoeObject = {
