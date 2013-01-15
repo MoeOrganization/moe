@@ -110,4 +110,8 @@ hackernews or whatever, that is what they are there for.
 
 ## What are some good resources for those who want to learn more about Scala
 
-Twitter's [Scala School](http://twitter.github.com/scala_school/)
+* Twitter's [Scala School](http://twitter.github.com/scala_school/)
+* Programming Scala [OFPS](http://ofps.oreilly.com/titles/9780596155957/)
+* Programming in Scala (1st edition from Artima) [pins1ed](http://www.artima.com/pins1ed/)
+
+If you're the kind to read dead tree versions, you can buy from O'Reilly or Artima.
