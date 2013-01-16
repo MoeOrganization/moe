@@ -10,7 +10,7 @@ object Parser extends RegexParsers {
   def constTrue  : Parser[AST] = "true" ^^ { _ => BooleanLiteralNode(true) }
   def constFalse : Parser[AST] = "false" ^^ { _ => BooleanLiteralNode(false) }
 
-  def literal = intNumber | floatNumber | constTrue | constFalse
+  def literal = floatNumber | intNumber | constTrue | constFalse
 
   // Parser wrapper -- indicates the start node
   def parseStuff(input: String): AST = parseAll(literal, input) match {
