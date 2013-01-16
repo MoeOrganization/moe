@@ -111,4 +111,3 @@ This software is Copyright (c) 2013 Infinity Interactive, Inc.
 and licensed under the MIT license. See the LICENSE file for 
 more details.
 
-
