@@ -5,7 +5,7 @@ abstract class MoeNativeObject[A] (
   private var associatedClass: Option[MoeClass] = None)
   extends MoeObject(associatedClass) {
 
-  def getNativeValue: A = value.asInstanceOf[A]
+  def getNativeValue: A = value
 }
 
 // NOTE:
