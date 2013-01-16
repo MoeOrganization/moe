@@ -16,11 +16,14 @@ object Interpreter {
     case CompilationUnitNode(body) => eval(env, body)
     case ScopeNode(body) => eval(new MoeEnvironment(Some(env)), body)
     case StatementsNode(nodes) => {
-      var result: MoeObject = Runtime.NativeObjects.getUndef
-      for (node <- nodes) {
-        result = eval(env, node)
-      }
-      result
+
+      // foldLeft starts with undef and iterates over each node (left to right)
+      // returning the result.  Normally foldLeft is used to accumulate, but
+      // we're just throwing away the result each time so that the final eval
+      // returns it's result as the overall result of the fold.
+      nodes.foldLeft[MoeObject](Runtime.NativeObjects.getUndef)(
+        (last, node) => eval(env, node)
+      )
     }
 
     // literals
