@@ -17,10 +17,13 @@ object Interpreter {
     case ScopeNode(body) => eval(new MoeEnvironment(Some(env)), body)
     case StatementsNode(nodes) => {
 
-      // foldLeft starts with undef and iterates over each node (left to right)
-      // returning the result.  Normally foldLeft is used to accumulate, but
-      // we're just throwing away the result each time so that the final eval
-      // returns it's result as the overall result of the fold.
+      // foldLeft iterates over each node (left to right) in the list, executing
+      // a function.  That function is given two arguments: the result of the
+      // previous iteration and the next item in the list.  It returns the result
+      // of the final iteration. Many times it used to accumulate, such as
+      // finding a sum of a list.  In thise case we don't acculate, we just
+      // return the result of each eval.  Therefore the final result will be
+      // the result of the last eval.
       nodes.foldLeft[MoeObject](Runtime.NativeObjects.getUndef)(
         (last, node) => eval(env, node)
       )
