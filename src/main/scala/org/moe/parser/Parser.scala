@@ -10,7 +10,7 @@ object Parser extends RegexParsers {
   def hexIntNumber = """0x[0-9A-Fa-f_]+""".r ^^ { n => IntLiteralNode(Integer.parseInt(n.replace("_", "")
                                                                       .replace("0x", "").toUpperCase, 16)) }
   def binIntNumber = """0b[01_]+""".r ^^ { n => IntLiteralNode(Integer.parseInt(n.replace("_", "").replace("0b", ""), 2)) }
-  def floatNumber = """[0-9]*\.[0-9]+""".r ^^ { n => FloatLiteralNode(n.toDouble) }
+  def floatNumber = """[0-9_]*\.[0-9_]+""".r ^^ { n => FloatLiteralNode(n.replace("_", "").toDouble) }
   def constTrue  : Parser[AST] = "true" ^^ { _ => BooleanLiteralNode(true) }
   def constFalse : Parser[AST] = "false" ^^ { _ => BooleanLiteralNode(false) }
 
