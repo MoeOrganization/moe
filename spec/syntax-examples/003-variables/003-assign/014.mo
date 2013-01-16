@@ -1,2 +1,2 @@
 my %baz; 
-%baz.{"test"} = 10;
+$baz{"test"} = 10;
