@@ -1,8 +1,8 @@
 package Bar {
 
     my $foo = 10;
-    my @bar = [];
-    my %baz = {};
+    my @bar = ();
+    my %baz = ();
 
     sub foo () { $foo }
 
