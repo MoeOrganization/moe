@@ -18,7 +18,11 @@ object Parser extends RegexParsers {
   def constTrue = "true".r ^^ { _ => BooleanLiteralNode(true) }
   def constFalse = "false".r ^^ { _ => BooleanLiteralNode(false) }
 
-  def literal = floatNumber | intNumber | octIntNumber | hexIntNumber | binIntNumber | constTrue | constFalse
+  // String literals
+  def doubleQuoteStringContent = """[^"]*""".r ^^ { s => StringLiteralNode(s) }
+  def doubleQuoteString = '"' ~> doubleQuoteStringContent <~ '"'
+
+  def literal = floatNumber | intNumber | octIntNumber | hexIntNumber | binIntNumber | constTrue | constFalse | doubleQuoteString
 
   // Parser wrapper -- indicates the start node
   def parseStuff(input: String): AST = parseAll(literal, input) match {
