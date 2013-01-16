@@ -127,7 +127,7 @@ object Interpreter {
     // statements
 
     case IfNode(if_condition, if_body) => {
-      eval( env,
+      eval(env,
         IfElseNode(
           if_condition,
           if_body,
@@ -137,7 +137,7 @@ object Interpreter {
     }
 
     case IfElseNode(if_condition, if_body, else_body) => {
-      eval( env, if_condition ).isTrue match {
+      eval(env, if_condition).isTrue match {
         case true  => eval(env, if_body)
         case false => eval(env, else_body)
       }
@@ -157,7 +157,7 @@ object Interpreter {
     }
 
     case IfElsifElseNode(if_condition, if_body, elsif_condition, elsif_body, else_body) => {
-      eval( env,
+      eval(env,
         IfElseNode(
           if_condition,
           if_body,
@@ -171,7 +171,7 @@ object Interpreter {
     }
 
     case UnlessNode(unless_condition, unless_body) => {
-      eval( env,
+      eval(env,
         UnlessElseNode(
           unless_condition,
           unless_body,
@@ -180,9 +180,9 @@ object Interpreter {
       )
     }
     case UnlessElseNode(unless_condition, unless_body, else_body) => {
-      eval( env,
+      eval(env,
         IfElseNode(
-          NotNode( unless_condition ),
+          NotNode(unless_condition),
           unless_body,
           else_body
         )
