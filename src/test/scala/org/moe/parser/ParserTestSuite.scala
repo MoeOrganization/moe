@@ -103,9 +103,14 @@ class ParserTestSuite extends FunSuite with BeforeAndAfter {
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
   }
 
-
-  test("... basic test with a simple string") {
+  test("... basic test with a simple double-quoted string") {
     val ast = basicAST(List(Parser.parseStuff("\"hello world\"")))
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeStringObject].getNativeValue === "hello world")
+  }
+
+  test("... basic test with a simple single-quoted string") {
+    val ast = basicAST(List(Parser.parseStuff("'hello world'")))
     val result = Interpreter.eval(Runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeStringObject].getNativeValue === "hello world")
   }

@@ -22,7 +22,12 @@ object Parser extends RegexParsers {
   def doubleQuoteStringContent = """[^"]*""".r ^^ { s => StringLiteralNode(s) }
   def doubleQuoteString = '"' ~> doubleQuoteStringContent <~ '"'
 
-  def literal = floatNumber | intNumber | octIntNumber | hexIntNumber | binIntNumber | constTrue | constFalse | doubleQuoteString
+  def singleQuoteStringContent = """[^']*""".r ^^ { s => StringLiteralNode(s) }
+  def singleQuoteString = '\'' ~> singleQuoteStringContent <~ '\''
+
+  def string = doubleQuoteString | singleQuoteString
+
+  def literal = floatNumber | intNumber | octIntNumber | hexIntNumber | binIntNumber | constTrue | constFalse | string
 
   // Parser wrapper -- indicates the start node
   def parseStuff(input: String): AST = parseAll(literal, input) match {
