@@ -34,20 +34,17 @@ object Interpreter {
     case IntLiteralNode(value) => Runtime.NativeObjects.getInt(value)
     case FloatLiteralNode(value) => Runtime.NativeObjects.getFloat(value)
     case StringLiteralNode(value) => Runtime.NativeObjects.getString(value)
-    case BooleanLiteralNode(value) => value match {
-      case true  => Runtime.NativeObjects.getTrue
-      case false => Runtime.NativeObjects.getFalse
-    }
+    case BooleanLiteralNode(value) =>
+      if(value) Runtime.NativeObjects.getTrue else Runtime.NativeObjects.getFalse
 
     case UndefLiteralNode() => Runtime.NativeObjects.getUndef
     case SelfLiteralNode() => env.getCurrentInvocant
     case ClassLiteralNode() => env.getCurrentClass
     case SuperLiteralNode() => {
       val klass = env.getCurrentClass
-      klass.getSuperclass match {
-        case Some(s) => s
-        case _ => throw new Runtime.Errors.SuperclassNotFound(klass.getName)
-      }
+      klass.getSuperclass.getOrElse(
+        throw new Runtime.Errors.SuperclassNotFound(klass.getName)
+      )
     }
 
     case ArrayLiteralNode(values) => {
