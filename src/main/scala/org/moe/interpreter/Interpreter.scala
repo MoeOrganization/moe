@@ -34,8 +34,13 @@ object Interpreter {
     case IntLiteralNode(value) => Runtime.NativeObjects.getInt(value)
     case FloatLiteralNode(value) => Runtime.NativeObjects.getFloat(value)
     case StringLiteralNode(value) => Runtime.NativeObjects.getString(value)
-    case BooleanLiteralNode(value) =>
-      if(value) Runtime.NativeObjects.getTrue else Runtime.NativeObjects.getFalse
+    case BooleanLiteralNode(value) => {
+      if(value) {
+        Runtime.NativeObjects.getTrue
+      } else {
+        Runtime.NativeObjects.getFalse
+      }
+    }
 
     case UndefLiteralNode() => Runtime.NativeObjects.getUndef
     case SelfLiteralNode() => env.getCurrentInvocant
@@ -77,9 +82,10 @@ object Interpreter {
     case DecrementNode(receiver) => stub
 
     case NotNode(receiver) => {
-      eval(env, receiver).isTrue match {
-        case true  => Runtime.NativeObjects.getFalse
-        case false => Runtime.NativeObjects.getTrue
+      if(eval(env, receiver).isTrue) {
+        Runtime.NativeObjects.getFalse
+      } else {
+        Runtime.NativeObjects.getTrue
       }
     }
 
@@ -87,17 +93,19 @@ object Interpreter {
 
     case AndNode(lhs, rhs) => {
       val left_result = eval(env, lhs)
-      left_result.isTrue match {
-        case true  => eval(env, rhs)
-        case false => left_result
+      if(left_result.isTrue) {
+        eval(env, rhs)
+      } else {
+        left_result
       }
     }
 
     case OrNode(lhs, rhs) => {
       val left_result = eval(env, lhs)
-      left_result.isTrue match {
-        case true  => left_result
-        case false => eval(env, rhs)
+      if(left_result.isTrue) {
+        left_result
+      } else {
+        eval(env, rhs)
       }
     }
 
@@ -140,9 +148,10 @@ object Interpreter {
     }
 
     case IfElseNode(if_condition, if_body, else_body) => {
-      eval(env, if_condition).isTrue match {
-        case true  => eval(env, if_body)
-        case false => eval(env, else_body)
+      if(eval(env, if_condition).isTrue) {
+        eval(env, if_body)
+      } else {
+        eval(env, else_body)
       }
     }
 
