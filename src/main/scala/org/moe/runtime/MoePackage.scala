@@ -34,7 +34,7 @@ class MoePackage(
    *
    * @param p The package
    */
-  def setParent(p: Option[MoePackage]): Unit = parent = p
+  private def setParent(p: Option[MoePackage]): Unit = parent = p
 
   // Subroutines ...
 
