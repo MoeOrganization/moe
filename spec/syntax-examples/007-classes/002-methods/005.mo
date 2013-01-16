@@ -1,1 +1,1 @@
-Foo.new();
+Foo->new();

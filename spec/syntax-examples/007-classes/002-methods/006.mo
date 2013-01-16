@@ -1,1 +1,1 @@
-Foo.new.bar(10);
+Foo->new->bar(10);
