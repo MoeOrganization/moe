@@ -110,8 +110,12 @@ class MoePackage(
    * @param pkg The SubPackage to add
    */
   def addSubPackage(pkg: MoePackage): Unit = {
+    pkg.attachToParent(this)
     sub_packages += (pkg.getName -> pkg)
   }
+
+  def attachToParent(parent: MoePackage): Unit =
+    setParent(Some(parent))
 
   /**
    * returns the SubPackaged with the specified name

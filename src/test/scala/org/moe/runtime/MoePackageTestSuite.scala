@@ -28,7 +28,13 @@ class MoePackageTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... basic package w/ sub-package") {
-    pkg.addSubPackage(new MoePackage("Foo", new MoeEnvironment()))
+    val subpkg = new MoePackage("Foo", new MoeEnvironment())
+    assert(subpkg.isRoot)
+
+    pkg.addSubPackage(subpkg)
+    assert(!subpkg.isRoot)
+    assert(subpkg.getParent.get == pkg)
+
     assert(pkg.hasSubPackage("Foo"))
   }
 
