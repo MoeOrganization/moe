@@ -6,7 +6,7 @@ import org.moe.ast._
  
 object Parser extends RegexParsers {
   def intNumber   = """[0-9]+""".r ^^ { n => IntLiteralNode(n.toInt) }
-  def floatNumber = """[0-9]+(\.[0-9]+)?""".r ^^ { n => FloatLiteralNode(n.toDouble) }
+  def floatNumber = """[0-9]+\.[0-9]+""".r ^^ { n => FloatLiteralNode(n.toDouble) }
   def constTrue  : Parser[AST] = "true" ^^ { _ => BooleanLiteralNode(true) }
   def constFalse : Parser[AST] = "false" ^^ { _ => BooleanLiteralNode(false) }
 
