@@ -87,19 +87,10 @@ class MoeClass(
    *
    * @param name The name of the attribute to return
    */
-  def getAttribute(name: String): MoeAttribute = {
-    // If, in the future, it is decided that this method should just return
-    // Option[MoeAttribute] then the assignment to a and subsequent definedness
-    // check can go away and the superclass.map can be adjusted - @gphat
-    val a = attributes.get(name).orElse(
-      superclass.map({ sc => sc.getAttribute(name) })
+  def getAttribute(name: String): Option[MoeAttribute] = {
+    attributes.get(name).orElse(
+      superclass.flatMap({ sc => sc.getAttribute(name) })
     )
-
-    if(!a.isDefined) {
-      throw new Runtime.Errors.AttributeNotFound(name)
-    }
-
-    a.get
   }
 
   /**
@@ -108,17 +99,7 @@ class MoeClass(
    *
    * @param name The name of the attribute to check for
    */
-  def hasAttribute(name: String): Boolean = {
-
-    // If getAttribute returned Option[MoeAttribute], this would become
-    // getMethod(name).isDefined - @gphat
-    try {
-      getAttribute(name)
-      true
-    } catch {
-      case e: Exception => false
-    }
-  }
+  def hasAttribute(name: String): Boolean = getAttribute(name).isDefined
 
   /**
    * Returns a [[scala.collection.Map]] of names and attributes for this class
@@ -163,20 +144,11 @@ class MoeClass(
    *
    * @param name The name of the method to return
    */
-  def getMethod(name: String): MoeMethod = {
+  def getMethod(name: String): Option[MoeMethod] = {
 
-    // If, in the future, it is decided that this method should just return
-    // Option[MoeMethod] then the assignment to m and subsequent definedness
-    // check can go away and the superclass.map can be adjusted - @gphat
-    val m = methods.get(name).orElse(
-      superclass.map({ sc => sc.getMethod(name) })
+    methods.get(name).orElse(
+      superclass.flatMap({ sc => sc.getMethod(name) })
     )
-
-    if(!m.isDefined) {
-      throw new Runtime.Errors.MethodNotFound(name)
-    }
-
-    m.get
   }
 
   /**
@@ -184,17 +156,7 @@ class MoeClass(
    *
    * @param name The name of the method to check for.
    */
-  def hasMethod(name: String): Boolean = {
-
-    // If getMethod returned Option[MoeMethod], this would become
-    // getMethod(name).isDefined - @gphat
-    try {
-        getMethod(name)
-        true
-    } catch {
-      case e: Exception => false
-    }
-  }
+  def hasMethod(name: String): Boolean = getMethod(name).isDefined
 
   // Utils ...
 

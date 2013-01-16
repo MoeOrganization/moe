@@ -47,7 +47,13 @@ class MoeObject(
    * @param args The list of arguments to provide to the method
    */
   def callMethod(name: String, args: List[MoeObject]): MoeObject = {
-    klass.map({ k => k.getMethod(name).execute(this, args) }).getOrElse(
+    klass.map({ k =>
+      k.getMethod(name).map({ m =>
+        m.execute(this, args)
+      }).getOrElse(
+        throw new Runtime.Errors.MethodNotFound(name)
+      )
+    }).getOrElse(
       throw new Runtime.Errors.MissingClass(toString)
     )
   }
