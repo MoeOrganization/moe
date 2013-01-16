@@ -25,7 +25,7 @@ object Interpreter {
       // return the result of each eval.  Therefore the final result will be
       // the result of the last eval.
       nodes.foldLeft[MoeObject](Runtime.NativeObjects.getUndef)(
-        (last, node) => eval(env, node)
+        (_, node) => eval(env, node)
       )
     }
 
