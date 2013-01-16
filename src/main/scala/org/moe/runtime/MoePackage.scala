@@ -20,7 +20,7 @@ class MoePackage(
   /**
    * returns true if this package has a parent
    */
-  def isRoot: Boolean = parent.isDefined
+  def isRoot: Boolean = !parent.isDefined
 
   // Parent ...
 

@@ -13,6 +13,8 @@ class MoePackageTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... basic package") {
     assert(pkg.getName === "main")
+    assert(pkg.isRoot)
+    assert(pkg.getParent == None)
   }
 
   test("... basic package w/ subroutine") {
