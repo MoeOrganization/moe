@@ -1,7 +1,13 @@
 package org.moe.runtime
 
+/**
+ * An Attribute!
+ *
+ * @param name The name of this attribute
+ * @param default Default value for this attribute
+ */
 class MoeAttribute(
-    private val name:    String, 
+    private val name:    String,
     private val default: MoeObject
   ) extends MoeObject {
 

@@ -2,6 +2,14 @@ package org.moe.runtime
 
 import scala.collection.mutable.{HashMap,Map}
 
+/**
+ * A Class!
+ *
+ * @param name The name of the class
+ * @param version The version of the class
+ * @param authority The authority of the class
+ * @param superclass The superclass of this class
+ */
 class MoeClass(
     private val name: String,
     private var version: Option[String] = None,

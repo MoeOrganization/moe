@@ -2,6 +2,13 @@ package org.moe.runtime
 
 import scala.collection.mutable.HashMap
 
+/**
+ * A Package!
+ *
+ * @param name The name of the package
+ * @param env The package's environment
+ * @param parent The package's parent package
+ */
 class MoePackage(
     private val name: String,
     private var env: MoeEnvironment,
