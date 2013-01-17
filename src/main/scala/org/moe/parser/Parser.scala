@@ -32,8 +32,7 @@ object Parser extends RegexParsers {
   def expression: Parser[AST] = literal | arrayRef
 
   // List stuff
-  def delimitedList = repsep(expression, ",") ^^ ArrayLiteralNode
-  def list = delimitedList
+  def list = (",?".r ~> repsep(expression, ",") <~ ",?".r) ^^ ArrayLiteralNode
 
   def arrayRef = "[" ~> list <~ "]"
 

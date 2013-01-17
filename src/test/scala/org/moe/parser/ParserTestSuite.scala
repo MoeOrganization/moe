@@ -148,4 +148,22 @@ class ParserTestSuite extends FunSuite with BeforeAndAfter {
 
     assert(elems(2).asInstanceOf[MoeBooleanObject].getNativeValue === true);
   }
+
+  test("... basic test with arrayref containing a right-trailing list") {
+    val ast = basicAST(List(Parser.parseStuff("[42, true, ]")))
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val elems = result.asInstanceOf[MoeArrayObject].getNativeValue
+
+    assert(elems(0).asInstanceOf[MoeIntObject].getNativeValue === 42);
+    assert(elems(1).asInstanceOf[MoeBooleanObject].getNativeValue === true);
+  }
+
+  test("... basic test with arrayref containing a left-trailing list") {
+    val ast = basicAST(List(Parser.parseStuff("[, 42, true]")))
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val elems = result.asInstanceOf[MoeArrayObject].getNativeValue
+
+    assert(elems(0).asInstanceOf[MoeIntObject].getNativeValue === 42);
+    assert(elems(1).asInstanceOf[MoeBooleanObject].getNativeValue === true);
+  }
 }
