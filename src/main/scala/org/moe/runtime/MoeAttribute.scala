@@ -1,10 +1,10 @@
 package org.moe.runtime
 
 /**
- * An Attribute!
+ * MoeAttribute
  *
- * @param name The name of this attribute
- * @param default Default value for this attribute
+ * @param name MoeAttribute
+ * @param default None
  */
 class MoeAttribute(
     private val name: String,
