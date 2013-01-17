@@ -3,7 +3,7 @@ package org.moe.parser
 import scala.util.parsing.combinator._
 // import scala.util.matching.Regex
 import org.moe.ast._
- 
+
 object Parser extends RegexParsers {
 
   // Numeric literals
@@ -19,11 +19,11 @@ object Parser extends RegexParsers {
   def constFalse = "false".r ^^ { _ => BooleanLiteralNode(false) }
 
   // String literals
-  def doubleQuoteStringContent = """[^"]*""".r ^^ { s => StringLiteralNode(s) }
-  def doubleQuoteString = '"' ~> doubleQuoteStringContent <~ '"'
+  def doubleQuoteStringContent = """[^"]*""".r ^^ StringLiteralNode
+  def doubleQuoteString = "\"".r ~> doubleQuoteStringContent <~ "\"".r
 
-  def singleQuoteStringContent = """[^']*""".r ^^ { s => StringLiteralNode(s) }
-  def singleQuoteString = '\'' ~> singleQuoteStringContent <~ '\''
+  def singleQuoteStringContent = """[^']*""".r  ^^ StringLiteralNode
+  def singleQuoteString = "'".r ~> singleQuoteStringContent <~ "'".r
 
   def string = doubleQuoteString | singleQuoteString
 
