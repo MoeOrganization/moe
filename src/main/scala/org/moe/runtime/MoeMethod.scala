@@ -1,5 +1,14 @@
 package org.moe.runtime
 
+/**
+ * MoeClass!
+ *
+ * @param name MoeMethod
+ * @param version None
+ * @param authority None
+ * @param superclass None
+ */
+
 class MoeMethod (
     private val name: String,
     private val body: (MoeObject, List[MoeObject]) => MoeObject
