@@ -29,8 +29,16 @@ object Parser extends RegexParsers {
 
   def literal = floatNumber | intNumber | octIntNumber | hexIntNumber | binIntNumber | constTrue | constFalse | string
 
+  def expression: Parser[AST] = literal | arrayRef
+
+  // List stuff
+  def delimitedList = repsep(expression, ",") ^^ ArrayLiteralNode
+  def list = delimitedList
+
+  def arrayRef = "[" ~> list <~ "]"
+
   // Parser wrapper -- indicates the start node
-  def parseStuff(input: String): AST = parseAll(literal, input) match {
+  def parseStuff(input: String): AST = parseAll(expression, input) match {
     case Success(result, _) => result
     case failure : NoSuccess => scala.sys.error(failure.msg)
   }

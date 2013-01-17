@@ -114,4 +114,38 @@ class ParserTestSuite extends FunSuite with BeforeAndAfter {
     val result = Interpreter.eval(Runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeStringObject].getNativeValue === "hello world")
   }
+
+  test("... basic test with a one-element arrayref") {
+    val ast = basicAST(List(Parser.parseStuff("[42]")))
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+
+    val listElement = result.asInstanceOf[MoeArrayObject].getNativeValue(0)
+    assert(listElement.asInstanceOf[MoeIntObject].getNativeValue === 42);
+  }
+
+  test("... basic test with a four-element arrayref") {
+    val ast = basicAST(List(Parser.parseStuff("""[42, 'jason', "may", true]""")))
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val elems = result.asInstanceOf[MoeArrayObject].getNativeValue
+
+    assert(elems(0).asInstanceOf[MoeIntObject].getNativeValue === 42);
+
+    assert(elems(1).asInstanceOf[MoeStringObject].getNativeValue === "jason");
+    assert(elems(2).asInstanceOf[MoeStringObject].getNativeValue === "may");
+    assert(elems(3).asInstanceOf[MoeBooleanObject].getNativeValue === true);
+  }
+
+  test("... basic test with nested arrayrefs") {
+    val ast = basicAST(List(Parser.parseStuff("""[42, ['jason', "may"], true]""")))
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val elems = result.asInstanceOf[MoeArrayObject].getNativeValue
+
+    assert(elems(0).asInstanceOf[MoeIntObject].getNativeValue === 42);
+
+    val nested_elems = elems(1).asInstanceOf[MoeArrayObject].getNativeValue
+    assert(nested_elems(0).asInstanceOf[MoeStringObject].getNativeValue === "jason");
+    assert(nested_elems(1).asInstanceOf[MoeStringObject].getNativeValue === "may");
+
+    assert(elems(2).asInstanceOf[MoeBooleanObject].getNativeValue === true);
+  }
 }
