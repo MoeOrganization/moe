@@ -1,5 +1,14 @@
 package org.moe.runtime
 
+/**
+ * MoeSubroutine: Class for moe subroutine!
+ *
+ * @param name MoeSubroutine
+ * @param version None
+ * @param authority None
+ * @param superclass None
+ */
+
 class MoeSubroutine (
     private val name: String,
     private val body: (List[MoeObject]) => MoeObject
