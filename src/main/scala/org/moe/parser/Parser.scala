@@ -7,7 +7,7 @@ import org.moe.ast._
 object Parser extends RegexParsers {
 
   // Numeric literals
-  def intNumber   = """[1-9][0-9_]+""".r ^^ { n => IntLiteralNode(n.replace("_", "").toInt) }
+  def intNumber   = """[1-9][0-9_]*""".r ^^ { n => IntLiteralNode(n.replace("_", "").toInt) }
   def octIntNumber = """0[0-9_]+""".r ^^ { n => IntLiteralNode(Integer.parseInt(n.replace("_", ""), 8)) }
   def hexIntNumber = """0x[0-9A-Fa-f_]+""".r ^^ { n => IntLiteralNode(Integer.parseInt(n.replace("_", "")
                                                                       .replace("0x", "").toUpperCase, 16)) }
