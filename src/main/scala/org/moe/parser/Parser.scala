@@ -15,8 +15,8 @@ object Parser extends RegexParsers {
   def floatNumber = """[0-9_]*\.[0-9_]+""".r ^^ { n => FloatLiteralNode(n.replace("_", "").toDouble) }
 
   // Boolean literals
-  def constTrue = "true".r ^^ { _ => BooleanLiteralNode(true) }
-  def constFalse = "false".r ^^ { _ => BooleanLiteralNode(false) }
+  def constTrue = "true".r ^^^ BooleanLiteralNode(true)
+  def constFalse = "false".r ^^^ BooleanLiteralNode(false)
 
   // String literals
   def doubleQuoteStringContent = """[^"]*""".r ^^ StringLiteralNode
