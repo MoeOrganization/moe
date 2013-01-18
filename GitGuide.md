@@ -8,24 +8,21 @@ The purpose of this guide is to help you understand how to use Git and GitHub
 effectively when working on Moe, using the conventions we find most
 comfortable.
 
-We will introduce branches, pulls, pushes, rebasing and so on. One step at a
-time, do not worry!
-
-If you are already familiar with Git, feel free to move on to more advanced
-topics.
+We'll cover branches, pulls, pushes, rebasing, and so on, one step at
+a time.
 
 
-Development flow
-----------------
+Development workflow
+--------------------
 
-The flow of Moe is similar to GitHub flow. If you already know it, you'll
-feel right at home!
+Once you have a local clone of the repository you can start contributing.
+A typical workflow (described in more detail below) is:
 
-Once you have a repository clone locally you can start contributing. The flow
-is to create your own branch and work on it. Then once you're done, you want
-to sync it with all changes done since you started working on it, and then
-you submit your work, either in your own fork or the main fork. Let's go over
-all the steps.
+  * create a branch to work in
+  * while working, keep your local repo in sync with the main repo
+  * optionally merge your branch into your local master
+  * submit your changes
+
 
 ### cloning your repository
 
@@ -33,59 +30,61 @@ If you have a commit bit on the main repository, you can simply clone that:
 
     git clone git@github.com:MoeOrganization/moe.git
 
-If you do not have a commit bit, you will need to fork the project (easily
-done via the `Fork` button in the project's page. Then you can clone your
+and your "origin" will be the main Moe repo.
+
+If you do not have a commit bit, fork the project using
+the `Fork` button on the Moe project page. Then clone your
 fork:
 
-    git clone git@github.com:YourUsername/moe.git
+```bash
+git clone git@github.com:YOUR_USERNAME/moe.git
 
-    # and now to add the original path as the upstream
-    git remote add upstream https://github.com/MoeOrganization/moe.git
+# and now to add the original path as the upstream
+git remote add upstream https://github.com/MoeOrganization/moe.git
+```
 
-You should now have a directory called ''moe'' with the entire project,
-including all the commit history. You should read up on other Git commands
-such as `git log` if you want to review the history.
+You should now have a directory called "moe" containing the entire project,
+including all the commit history. (Read up on other Git commands
+such as `git log` if you want to review the history.)
+
 
 ### branching
 
-In order to keep your contribution isolated from other code or documentation
-changes, it's healthy to create a branch of development. That makes it easier
-to review, approve, merge or even revise it, if necessary.
+In order to keep your contribution isolated from other code or
+documentation changes, it's usually best to create a branch for
+it. This makes it easier to review, approve, merge or even revise it,
+if necessary.
 
-    git checkout -b mysuperawesomefeature master
+    git checkout -b my-changes master
 
-This creates a new branch called ''mysuperawesomefeature'' (though you can use
-dashes to make long names more readable), which is based on the ''master''
-branch, which is the main project branch and where all works gets merged
-eventually.
+This creates and switches you to a new branch called "my-changes"
+which is based on the "master" branch (the main project branch and
+where all works gets merged eventually).
 
-However, it doesn't just create the branch, it also places you on it, so you
-can start working right away. All commits you will make from this point (until
-you switch to a different branch) will be done in your new awesome branch.
 
 ### committing changes
 
-Once you've created the files you wish to create and have edited whatever
-content needs editing, you're ready to add and commit.
+Once you've created any files you wish to create and have edited whatever
+content needs editing, you're ready to add and commit to your branch:
 
-The act of `git add` will add new files that did not exist prior to your work,
-while `git commit` introduces into the repo changes that were done to files
-Git already knows (which are referred to as "tracked files" in Git-speak).
+```bash
+vi Guide.md       # A new file; We'll need to add it in a moment.
+git add Guide.md  # Add to what will be our next commit.
+git commit -m "created a new guide"
 
-    vi Guide.mkdn # new file, it will need adding
-    git add Guide.mkdn # now we can commit it
-    git commit -m "created a new guide"
-
-    cd src/main/scala/org/moe/
-    vi Moe.scala # editing a tracked file
-    git commit Moe.scala -m "cleaned up some Scala styling"
+cd src/main/scala/org/moe/
+vi Moe.scala  # Edit a tracked file.
+git add -p    # Interactively add changes.
+git commit -m "cleaned up some Scala styling"
+```
 
 Note that `git add` and `git commit` are commands that have layers of
-complexity and features that will not be covered and can be used in various
+complexity and features that will not be covered here and can be used in various
 different ways that provide a more fluent work-flow coupled with advanced
 features. Should you find the time, read more on these commands, especially
 `git add -p`, which provides finer-grained control over content adding and
 allows to review your work more easily before committing.
+
 
 ### rebasing in preparation for submission
 
@@ -119,7 +118,7 @@ changes fresh on top of the existing ones.
     git pull upstream master
 
     # now we can go back to our branch and rebase from master
-    git checkout mysuperawesomefeature
+    git checkout my-changes
     git rebase master
 
 Now your code is sitting on top of all the changes that had happened since
@@ -133,7 +132,7 @@ it becomes unlikely you'll make changes that need reverting.
 
 Since we have everything in a branch, we can simply push that branch remotely.
 
-    git push origin mysuperawesomefeature
+    git push origin my-changes
 
 Now we need to alert the other developers that there's a new branch for review.
 This is best done using the "Pull Request" button available on the Github
