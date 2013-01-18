@@ -150,6 +150,13 @@ class ParserTestSuite extends FunSuite with BeforeAndAfter {
     assert(elems(1).asInstanceOf[MoeBooleanObject].getNativeValue === true);
   }
 
+  test("... basic test with hashref") {
+    val result = interpretCode("{foo => 'bar'}")
+    val map = result.asInstanceOf[MoeHashObject].getNativeValue
+    val key = map("foo")
+    assert(key.asInstanceOf[MoeStringObject].getNativeValue === "bar")
+  }
+
   test("... a weird looking if") {
     val result = interpretCode("if(true) { 2; 7 }")
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 7)

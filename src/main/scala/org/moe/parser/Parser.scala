@@ -29,13 +29,19 @@ object Parser extends RegexParsers {
 
   def literal = floatNumber | intNumber | octIntNumber | hexIntNumber | binIntNumber | constTrue | constFalse | string
 
-  def expression: Parser[AST] = literal | arrayRef
+  def expression: Parser[AST] = literal | arrayRef | hashRef
 
   // List stuff
   def list = (",?".r ~> repsep(expression, ",") <~ ",?".r)
 
   def arrayRef = """\[""".r ~> list <~ """\]""".r ^^ ArrayLiteralNode
 
+  def barehashKey = """[0-9\w_]*""".r ^^ StringLiteralNode
+  def hashKey = barehashKey | string
+  // FIXME should be able to do <~ "=>".r ~> but couldn't fiddle with it enough
+  def pair = hashKey ~ "=>".r ~ expression ^^ { case a ~ b ~ c => PairLiteralNode(a, c) }
+  def hashContent = repsep(pair, ",")
+  def hashRef = """\{""".r ~> hashContent <~ """\}""".r ^^ HashLiteralNode
 
   // awwaiid's experimental structures
 
