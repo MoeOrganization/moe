@@ -32,9 +32,9 @@ object Parser extends RegexParsers {
   def expression: Parser[AST] = literal | arrayRef
 
   // List stuff
-  def list = (",?".r ~> repsep(expression, ",") <~ ",?".r) ^^ ArrayLiteralNode
+  def list = (",?".r ~> repsep(expression, ",") <~ ",?".r)
 
-  def arrayRef = "[" ~> list <~ "]"
+  def arrayRef = "[" ~> list <~ "]" ^^ ArrayLiteralNode
 
   // Parser wrapper -- indicates the start node
   def parseStuff(input: String): AST = parseAll(expression, input) match {
