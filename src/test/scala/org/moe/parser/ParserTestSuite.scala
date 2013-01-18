@@ -152,7 +152,6 @@ class ParserTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... a weird looking if") {
     val result = interpretCode("if(true) { 2; 7 }")
-    println(result)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 7)
   }
 }

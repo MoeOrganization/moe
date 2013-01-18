@@ -34,8 +34,7 @@ object Parser extends RegexParsers {
   // List stuff
   def list = (",?".r ~> repsep(expression, ",") <~ ",?".r)
 
-  def arrayRef = "[" ~> list <~ "]" ^^ ArrayLiteralNode
-
+  def arrayRef = """\[""".r ~> list <~ """\]""".r ^^ ArrayLiteralNode
 
 
   // awwaiid's experimental structures
