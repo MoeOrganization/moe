@@ -36,8 +36,33 @@ object Parser extends RegexParsers {
 
   def arrayRef = "[" ~> list <~ "]" ^^ ArrayLiteralNode
 
+
+
+  // awwaiid's experimental structures
+
+  def loop: Parser[AST] = ifLoop // | forLoop | foreachLoop | whileLoop 
+
+  def ifLoop: Parser[AST] = (("if" ~ "(") ~> expression) ~ (")" ~> block) ^^ { case a ~ b => IfNode(a,b) }
+
+  // def forLoop = "for" ~ "(" ~> expression <~ ";" ~> expression <~ ";" ~> expression <~ ")" ~ block
+  // def whileLoop = "if" ~ "(" ~> expression <~ ")" ~ block
+  // def foreachLoop = "for(each)?".r ~ varDeclare ~ "(" ~> expression <~ ")" ~ block
+  // def varDeclare = "my" ~ varName
+  // def sigil = """[$@%]""".r
+  // def bareName = """[a-zA-Z](\w*)""".r
+  // def varName = sigil ~ bareName
+
+  // def packageName = bareName
+  // def className = bareName
+
+  def statement = loop | expression
+  def blockContent = repsep(statement, ";") <~ ";?".r ^^ { StatementsNode(_) }
+  def block = "{" ~> blockContent <~ "}"
+  // def packageBlock = "package" ~> packageName ~ block
+  // def classBlock = "class" ~> className ~ block
+
   // Parser wrapper -- indicates the start node
-  def parseStuff(input: String): AST = parseAll(expression, input) match {
+  def parseStuff(input: String): AST = parseAll(statement, input) match {
     case Success(result, _) => result
     case failure : NoSuccess => scala.sys.error(failure.msg)
   }
