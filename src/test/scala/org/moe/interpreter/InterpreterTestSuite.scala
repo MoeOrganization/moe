@@ -101,8 +101,8 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
       List(
         HashLiteralNode(
           List(
-            PairLiteralNode("foo", IntLiteralNode(10)),
-            PairLiteralNode("bar", IntLiteralNode(20))
+            PairLiteralNode(StringLiteralNode("foo"), IntLiteralNode(10)),
+            PairLiteralNode(StringLiteralNode("bar"), IntLiteralNode(20))
           )
         )
       )
