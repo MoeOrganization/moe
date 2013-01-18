@@ -40,7 +40,7 @@ object Parser extends RegexParsers {
 
   // awwaiid's experimental structures
 
-  def loop: Parser[AST] = ifLoop // | forLoop | foreachLoop | whileLoop 
+  def loop: Parser[AST] = ifLoop // | forLoop | foreachLoop | whileLoop
 
   def ifLoop: Parser[AST] = (("if" ~ "(") ~> expression) ~ (")" ~> block) ^^ { case a ~ b => IfNode(a,b) }
 
