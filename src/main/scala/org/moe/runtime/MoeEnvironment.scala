@@ -7,12 +7,8 @@ import org.moe.runtime._
 /**
  * MoeEnvironment: Presumably the moe environment
  *
- * @param name MoeEnvironment
- * @param version None
- * @param authority None
- * @param superclass None
+ * @param parent optional parent environment
  */
-
 
 class MoeEnvironment(private val parent: Option[MoeEnvironment] = None) {
 

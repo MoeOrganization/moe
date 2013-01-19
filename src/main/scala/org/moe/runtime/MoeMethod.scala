@@ -1,12 +1,10 @@
 package org.moe.runtime
 
 /**
- * MoeClass!
+ * MoeMethod
  *
- * @param name MoeMethod
- * @param version None
- * @param authority None
- * @param superclass None
+ * @param name method name
+ * @param body executable body of method 
  */
 
 class MoeMethod (
