@@ -60,11 +60,19 @@ object Parser extends RegexParsers {
   // def packageName = bareName
   // def className = bareName
 
-  def statement = loop | expression
-  def blockContent = repsep(statement, ";") <~ ";?".r ^^ { StatementsNode(_) }
-  def block = "{" ~> blockContent <~ "}"
+  // FIXME I feel skipping over blank statements doesn't
+  // portray the AST completely but I might just be splitting hairs
+  def statementDelim = rep1(";")
+  def statements = repsep(statement, statementDelim)
+  def blockContent = statements <~ statementDelim.? ^^ { StatementsNode(_) }
+  def block: Parser[StatementsNode] = """\{""".r ~> blockContent <~ """\}""".r
+
+  def doBlock = "do".r ~> block
+  def scopeBlock = block ^^ { ScopeNode(_) }
   // def packageBlock = "package" ~> packageName ~ block
   // def classBlock = "class" ~> className ~ block
+
+  def statement = loop | expression | doBlock | scopeBlock
 
   // Parser wrapper -- indicates the start node
   def parseStuff(input: String): AST = parseAll(statement, input) match {
