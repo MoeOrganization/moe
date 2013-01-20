@@ -182,4 +182,43 @@ class ParserTestSuite extends FunSuite with BeforeAndAfter {
     val result = interpretCode("do { 100; 200;; }")
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 200)
   }
+
+  test("... a basic try block") {
+    val result = interpretCode("try { 100 }")
+    result match {
+      case _: MoeObject => assert(true) // stub
+      case _ => assert(false)
+    }
+  }
+
+  test("... a basic try-catch block") {
+    val result = interpretCode("try { 100 } catch (Exception $e) { 'yup' }")
+    result match {
+      case _: MoeObject => assert(true) // stub
+      case _ => assert(false)
+    }
+  }
+
+  test("... a basic try-catch-catch block") {
+    val result = interpretCode("try { 100 } " +
+      "catch (Exception $e) { 'yup' }" +
+      "catch (OtherException $e) { 'indeed' }"
+    )
+    result match {
+      case _: MoeObject => assert(true) // stub
+      case _ => assert(false)
+    }
+  }
+
+  test("... a basic try-catch-catch-finally block") {
+    val result = interpretCode("try { 100 } " +
+      "catch (Exception $e) { 'yup' }" +
+      "catch (Other::Exception $e) { 'indeed' }" +
+      "finally { 200 }"
+    )
+    result match {
+      case _: MoeObject => assert(true) // stub
+      case _ => assert(false)
+    }
+  }
 }

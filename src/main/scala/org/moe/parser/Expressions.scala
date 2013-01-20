@@ -13,6 +13,8 @@ trait Expressions extends Literals {
     | hashRef
   )
 
+  def expressionParens: Parser[AST] = "(" ~> expression <~ ")"
+
   // List stuff
   def list: Parser[List[AST]] = (",?".r ~> repsep(expression, ",") <~ ",?".r)
 
@@ -31,4 +33,7 @@ trait Expressions extends Literals {
   def hashRef: Parser[HashLiteralNode] =
     """\{""".r ~> hashContent <~ """\}""".r ^^ HashLiteralNode
 
+  // Variable stuff
+  def sigil = """[$@%]""".r
+  def variable = sigil ~ namespacedIdentifier ^^ {case a ~ b => a + b}
 }

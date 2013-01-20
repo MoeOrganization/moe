@@ -7,6 +7,13 @@ import org.moe.ast._
 
 trait Statements extends Expressions {
 
+  lazy val tryBlockRule =
+    "try" ~> block
+  lazy val catchBlockRule =
+    ("catch" ~ "(") ~> typeLiteral ~ variable ~ (")" ~> block)
+  lazy val finallyBlockRule =
+    "finally" ~> block
+
   // FIXME I feel skipping over blank statements doesn't
   // portray the AST completely but I might just be splitting hairs
   def statementDelim: Parser[List[String]] = rep1(";")
@@ -31,19 +38,26 @@ trait Statements extends Expressions {
   // def forLoop = "for" ~ "(" ~> expression <~ ";" ~> expression <~ ";" ~> expression <~ ")" ~ block
   // def whileLoop = "if" ~ "(" ~> expression <~ ")" ~ block
   // def foreachLoop = "for(each)?".r ~ varDeclare ~ "(" ~> expression <~ ")" ~ block
-  // def varDeclare = "my" ~ varName
-  // def sigil = """[$@%]""".r
-  // def bareName = """[a-zA-Z](\w*)""".r
-  // def varName = sigil ~ bareName
-
   // def packageName = bareName
   // def className = bareName
 
+  def tryBlock: Parser[TryNode] =
+    tryBlockRule ~ rep(catchBlock) ~ rep(finallyBlock) ^^ {
+      case a ~ b ~ c => TryNode(a, b, c)
+    }
+
+  def catchBlock: Parser[CatchNode] =
+    catchBlockRule ^^ {
+      case a ~ b ~ c => CatchNode(a, b, c)
+    }
+
+  def finallyBlock: Parser[FinallyNode] = finallyBlockRule ^^ FinallyNode
 
   def statement: Parser[AST] = (
       loop
     | expression
     | doBlock
     | scopeBlock
+    | tryBlock
   )
 }

@@ -5,7 +5,7 @@ import ParserUtils._
 import scala.util.parsing.combinator._
 import org.moe.ast._
 
-trait Literals extends RegexParsers {
+trait Literals extends Base {
   // Numeric literals
   def intNumber: Parser[IntLiteralNode]   =
   """[1-9][0-9_]*""".r ^^ { n => IntLiteralNode(formatInt(n)) }
@@ -36,6 +36,10 @@ trait Literals extends RegexParsers {
     "'".r ~> singleQuoteStringContent <~ "'".r
 
   def string: Parser[StringLiteralNode] = doubleQuoteString | singleQuoteString
+
+  // FIXME string is too generic but discussion is required
+  // to have a more specific AST node I think
+  def typeLiteral: Parser[String] = namespacedIdentifier
 
   def literal: Parser[AST] = (
       floatNumber
