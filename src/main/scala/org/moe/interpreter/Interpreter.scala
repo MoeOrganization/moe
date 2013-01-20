@@ -78,8 +78,30 @@ object Interpreter {
 
     // unary operators
 
-    case IncrementNode(receiver) => stub
-    case DecrementNode(receiver) => stub
+    case IncrementNode(receiver: AST) => receiver match {
+      case VariableAccessNode(varName) => env.get(varName) match {
+        case i: MoeIntObject => {
+          env.set(varName, Runtime.NativeObjects.getInt(i.getNativeValue + 1))
+          env.get(varName)
+        }
+        case n: MoeFloatObject => {
+          env.set(varName, Runtime.NativeObjects.getFloat(n.getNativeValue + 1.0))
+          env.get(varName)
+        }
+      }
+    }
+    case DecrementNode(receiver: AST) => receiver match {
+      case VariableAccessNode(varName) => env.get(varName) match {
+        case i: MoeIntObject => {
+          env.set(varName, Runtime.NativeObjects.getInt(i.getNativeValue - 1))
+          env.get(varName)
+        }
+        case n: MoeFloatObject => {
+          env.set(varName, Runtime.NativeObjects.getFloat(n.getNativeValue - 1.0))
+          env.get(varName)
+        }
+      }
+    }
 
     case NotNode(receiver) => {
       if(eval(env, receiver).isTrue) {
