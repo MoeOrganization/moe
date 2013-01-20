@@ -126,9 +126,16 @@ object Interpreter {
     case AttributeAssignmentNode(name, expression) => stub
     case AttributeDeclarationNode(name, expression) => stub
 
-    case VariableAccessNode(name) => stub
-    case VariableAssignmentNode(name, expression) => stub
-    case VariableDeclarationNode(name, expression) => stub
+    // TODO context etc
+    case VariableAccessNode(name) => env.get(name)
+    case VariableAssignmentNode(name, expression) => {
+      env.set(name, eval(env, expression))
+      env.get(name)
+    }
+    case VariableDeclarationNode(name, expression) => {
+      env.create(name, eval(env, expression))
+      env.get(name)
+    }
 
     // operations
 

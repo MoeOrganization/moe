@@ -379,6 +379,36 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 21 )
   }
 
+  test("... basic test with variable declaration") {
+    val ast = basicAST(
+      List(
+        VariableDeclarationNode(
+          "$foo",
+          IntLiteralNode(42)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 42)
+  }
+
+  test("... basic test with variable assignment") {
+    val ast = basicAST(
+      List(
+        VariableDeclarationNode(
+          "$foo",
+          IntLiteralNode(42)
+        ),
+        VariableAssignmentNode(
+          "$foo",
+          StringLiteralNode("jason")
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeStringObject].getNativeValue === "jason")
+  }
+
   test("... unknown node") {
     val ast = basicAST(
       List(
