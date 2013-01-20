@@ -6,13 +6,17 @@ import org.moe.ast._
 
 import ParserUtils._
 
-object Parser extends Statements {
+object MoeParsers extends Statements {
+  def getEntryPoint: Parser[AST] = statement
 
   // Parser wrapper -- indicates the start node
-  def parseStuff(input: String): AST = parseAll(statement, input) match {
-    case Success(result, _) => result
-    case failure : NoSuccess => scala.sys.error(failure.msg)
-  }
+  def parseFromEntry(input: String): AST =
+    parseAll(getEntryPoint, input) match {
+      case Success(result, _) => result
+      case failure : NoSuccess => scala.sys.error(failure.msg)
+    }
 }
- 
 
+object Parser {
+  def parseStuff(input: String): AST = MoeParsers.parseFromEntry(input)
+}
