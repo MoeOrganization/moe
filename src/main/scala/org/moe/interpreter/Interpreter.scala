@@ -9,6 +9,13 @@ object Interpreter {
 
   val stub = new MoeObject()
 
+  object Utils {
+    def objToNumeric(obj: MoeObject) = obj match {
+      case i: MoeIntObject => i.getNativeValue.toDouble
+      case n: MoeFloatObject => n.getNativeValue
+    }
+  }
+
   def eval(env: MoeEnvironment, node: AST): MoeObject = node match {
 
     // containers
@@ -132,17 +139,18 @@ object Interpreter {
     }
 
     case LessThanNode(lhs, rhs) => {
-      val objToDouble = { o: MoeObject =>
-        o match {
-          case i: MoeIntObject => i.getNativeValue.toDouble
-          case n: MoeFloatObject => n.getNativeValue
-        }
-      }
-
-      val lhs_result: Double = objToDouble(eval(env, lhs))
-      val rhs_result: Double = objToDouble(eval(env, rhs))
+      val lhs_result: Double = Utils.objToNumeric(eval(env, lhs))
+      val rhs_result: Double = Utils.objToNumeric(eval(env, rhs))
 
       val result = lhs_result < rhs_result
+      Runtime.NativeObjects.getBool(result)
+    }
+
+    case GreaterThanNode(lhs, rhs) => {
+      val lhs_result: Double = Utils.objToNumeric(eval(env, lhs))
+      val rhs_result: Double = Utils.objToNumeric(eval(env, rhs))
+
+      val result = lhs_result > rhs_result
       Runtime.NativeObjects.getBool(result)
     }
 
