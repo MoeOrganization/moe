@@ -178,6 +178,58 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 
+  test("... basic test with <") {
+    val ast = basicAST(
+      List(
+        LessThanNode(
+          IntLiteralNode(4),
+          IntLiteralNode(6)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
+  }
+
+  test("... basic (false) test with <") {
+    val ast = basicAST(
+      List(
+        LessThanNode(
+          IntLiteralNode(6),
+          IntLiteralNode(4)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
+  }
+
+  test("... basic test with < between int and float") {
+    val ast = basicAST(
+      List(
+        LessThanNode(
+          IntLiteralNode(4),
+          FloatLiteralNode(6.433)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
+  }
+
+  test("... basic test with < of equal floats") {
+    val ast = basicAST(
+      List(
+        LessThanNode(
+          FloatLiteralNode(6.433),
+          FloatLiteralNode(6.433)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
+  }
+
   test("... basic test with If") {
     val ast = basicAST(
       List(

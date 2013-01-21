@@ -45,6 +45,8 @@ case class NotNode(receiver: AST) extends AST
 
 case class AndNode(lhs: AST, rhs: AST) extends AST
 case class OrNode(lhs: AST, rhs: AST) extends AST
+case class LessThanNode(lhs: AST, rhs: AST) extends AST
+case class GreaterThanNode(lhs: AST, rhs: AST) extends AST
 
 // value lookup, assignment and declaration
 

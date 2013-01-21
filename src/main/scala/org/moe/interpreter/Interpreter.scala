@@ -131,6 +131,21 @@ object Interpreter {
       }
     }
 
+    case LessThanNode(lhs, rhs) => {
+      val objToDouble = { o: MoeObject =>
+        o match {
+          case i: MoeIntObject => i.getNativeValue.toDouble
+          case n: MoeFloatObject => n.getNativeValue
+        }
+      }
+
+      val lhs_result: Double = objToDouble(eval(env, lhs))
+      val rhs_result: Double = objToDouble(eval(env, rhs))
+
+      val result = lhs_result < rhs_result
+      Runtime.NativeObjects.getBool(result)
+    }
+
     // value lookup, assignment and declaration
 
     case ClassAccessNode(name) => stub

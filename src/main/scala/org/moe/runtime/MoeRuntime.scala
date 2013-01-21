@@ -28,6 +28,7 @@ object Runtime {
     def getInt(value: Int) = new MoeIntObject(value)
     def getFloat(value: Double) = new MoeFloatObject(value)
     def getString(value: String) = new MoeStringObject(value)
+    def getBool(value: Boolean) = new MoeBooleanObject(value)
 
     def getPair(value: (String, MoeObject)) = new MoePairObject(value)
     def getHash(value: Map[String, MoeObject]) = new MoeHashObject(value)
