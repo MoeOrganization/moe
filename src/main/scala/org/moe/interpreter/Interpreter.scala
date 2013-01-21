@@ -257,7 +257,12 @@ object Interpreter {
     case CatchNode(type_name, local_name, body) => stub
     case FinallyNode(body) => stub
 
-    case WhileNode(condition, body) => stub
+    case WhileNode(condition, body) => {
+      while (eval(env, condition).isTrue) {
+        eval(env, body)
+      }
+      Runtime.NativeObjects.getUndef // XXX
+    }
     case DoWhileNode(condition, body) => stub
 
     case ForeachNode(topic, list, body) => stub
