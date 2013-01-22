@@ -601,6 +601,38 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === -10)
   }
 
+  test("... basic test with dowhile loop") {
+    // my ($foo, $bar) = (10, 0);
+    // do { $foo++; $bar-- } while($foo < 10); $bar
+    val ast = basicAST(
+      List(
+        VariableDeclarationNode(
+          "$foo",
+          IntLiteralNode(10) 
+        ),
+        VariableDeclarationNode(
+          "$bar",
+          IntLiteralNode(0)
+        ),
+        DoWhileNode(
+          LessThanNode(
+            VariableAccessNode("$foo"),
+            IntLiteralNode(10)
+          ),
+          StatementsNode(
+            List(
+              IncrementNode(VariableAccessNode("$foo")),
+              DecrementNode(VariableAccessNode("$bar"))
+            )
+          )
+        ),
+        VariableAccessNode("$bar")
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast) 
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === -1)
+  }
+
   test("... unknown node") {
     val ast = basicAST(
       List(
