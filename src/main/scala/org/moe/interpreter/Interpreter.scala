@@ -265,10 +265,9 @@ object Interpreter {
     }
 
     case DoWhileNode(condition, body) => {
-      eval(env, body)
-      while (eval(env,condition).isTrue) {
+      do { 
         eval(env, body)
-      }
+      } while (eval(env,condition).isTrue)
       Runtime.NativeObjects.getUndef // XXX
     }
 
