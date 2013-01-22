@@ -263,7 +263,14 @@ object Interpreter {
       }
       Runtime.NativeObjects.getUndef // XXX
     }
-    case DoWhileNode(condition, body) => stub
+
+    case DoWhileNode(condition, body) => {
+      eval(env, body)
+      while (eval(env,condition).isTrue) {
+        eval(env, body)
+      }
+      Runtime.NativeObjects.getUndef // XXX
+    }
 
     case ForeachNode(topic, list, body) => stub
     case ForNode(init, condition, update, body) => stub
