@@ -257,17 +257,23 @@ object Interpreter {
     case CatchNode(type_name, local_name, body) => stub
     case FinallyNode(body) => stub
 
-    case WhileNode(condition, body) => {
-      while (eval(env, condition).isTrue) {
-        eval(env, body)
+    case WhileNode(condition, body) => body match {
+      case ScopeNode(statementsNode) => {
+        var newEnv = new MoeEnvironment(Some(env))
+        while (eval(newEnv, condition).isTrue) {
+          eval(newEnv, body)
+        }
       }
       Runtime.NativeObjects.getUndef // XXX
     }
 
-    case DoWhileNode(condition, body) => {
-      do {
-        eval(env, body)
-      } while (eval(env,condition).isTrue)
+    case DoWhileNode(condition, body) => body match {
+      case ScopeNode(statementsNode) => {
+        var newEnv = new MoeEnvironment(Some(env))
+        do {
+          eval(newEnv, body)
+        } while (eval(newEnv, condition).isTrue)
+      }
       Runtime.NativeObjects.getUndef // XXX
     }
 

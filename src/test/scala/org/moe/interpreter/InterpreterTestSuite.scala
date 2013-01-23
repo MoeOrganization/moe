@@ -587,10 +587,12 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
             VariableAccessNode("$foo"),
             IntLiteralNode(10)
           ),
-          StatementsNode(
-            List(
-              IncrementNode(VariableAccessNode("$foo")),
-              DecrementNode(VariableAccessNode("$bar"))
+          ScopeNode(
+            StatementsNode(
+              List(
+                IncrementNode(VariableAccessNode("$foo")),
+                DecrementNode(VariableAccessNode("$bar"))
+              )
             )
           )
         ),
@@ -619,10 +621,12 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
             VariableAccessNode("$foo"),
             IntLiteralNode(10)
           ),
-          StatementsNode(
-            List(
-              IncrementNode(VariableAccessNode("$foo")),
-              DecrementNode(VariableAccessNode("$bar"))
+          ScopeNode(
+            StatementsNode(
+              List(
+                IncrementNode(VariableAccessNode("$foo")),
+                DecrementNode(VariableAccessNode("$bar"))
+              )
             )
           )
         ),
