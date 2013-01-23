@@ -26,7 +26,10 @@ trait Statements extends Expressions {
 
   def doBlock: Parser[StatementsNode] = "do".r ~> block
   def scopeBlock: Parser[ScopeNode] = block ^^ { ScopeNode(_) }
-  // def packageBlock = "package" ~> packageName ~ block
+
+  def packageBlock = ("package" ~> namespacedIdentifier) ~ block ^^ {
+    case p ~ b => PackageDeclarationNode(p, b)
+  }
   // def classBlock = "class" ~> className ~ block
 
   // awwaiid's experimental structures
@@ -59,5 +62,6 @@ trait Statements extends Expressions {
     | doBlock
     | scopeBlock
     | tryBlock
+    | packageBlock
   )
 }

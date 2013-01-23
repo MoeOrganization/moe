@@ -221,4 +221,15 @@ class ParserTestSuite extends FunSuite with BeforeAndAfter {
       case _ => assert(false)
     }
   }
+
+  test("... a basic package block") {
+    val result = interpretCode("""
+      package foo::bar {
+      }
+    """)
+    result match {
+      case _: MoeObject => assert(true) // stub
+      case _ => assert(false)
+    }
+  }
 }
