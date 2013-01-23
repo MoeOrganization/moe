@@ -263,53 +263,46 @@ object Interpreter {
     case CatchNode(type_name, local_name, body) => stub
     case FinallyNode(body) => stub
 
-    case WhileNode(condition, body) => body match {
-      case ScopeNode(statementsNode) => {
-        Utils.inNewEnv[Unit](env, newEnv =>
-          while (eval(newEnv, condition).isTrue) {
-            eval(newEnv, body)
-          }
-        )
-      }
+    case WhileNode(condition, body) => {
+      Utils.inNewEnv[Unit](env, newEnv =>
+        while (eval(newEnv, condition).isTrue) {
+          eval(newEnv, body)
+        }
+      )
       Runtime.NativeObjects.getUndef // XXX
     }
 
-    case DoWhileNode(condition, body) => body match {
-      case ScopeNode(statementsNode) => {
-        Utils.inNewEnv[Unit](env, newEnv =>
-          do {
-            eval(newEnv, body)
-          } while (eval(newEnv, condition).isTrue)
-        )
-      }
+    case DoWhileNode(condition, body) => {
+      Utils.inNewEnv[Unit](env, newEnv =>
+        do {
+          eval(newEnv, body)
+        } while (eval(newEnv, condition).isTrue)
+      )
       Runtime.NativeObjects.getUndef // XXX
     }
 
-    case ForeachNode(topic, list, body) => body match {
-      case ScopeNode(statementsNode) => {
-        eval(env, list) match {
-          case objects: MoeArrayObject => {
-            val applyScopeInjection = { (newEnv: MoeEnvironment, name: String, obj: MoeObject, f: (MoeEnvironment, String, MoeObject) => Any) =>
-              f(env, name, obj)
-              eval(newEnv, statementsNode)
-            }
-            Utils.inNewEnv(env, newEnv =>
-              for (o <- objects.getNativeValue)
-                topic match {
-                  // XXX ran into issues trying to eval(env, ScopeNode(...))
-                  // since o is already evaluated at this point
-                  case VariableDeclarationNode(name, expr) =>
-                    applyScopeInjection(newEnv, name, o, (_.create(_, _)))
-                  // Don't do anything special here, env access will just walk back
-                  case VariableAccessNode(name) =>
-                    applyScopeInjection(newEnv, name, o, (_.set(_, _)))
-                }
-            )
+    case ForeachNode(topic, list, body) => {
+      eval(env, list) match {
+        case objects: MoeArrayObject => {
+          val applyScopeInjection = { (newEnv: MoeEnvironment, name: String, obj: MoeObject, f: (MoeEnvironment, String, MoeObject) => Any) =>
+            f(env, name, obj)
+            eval(newEnv, body)
           }
+          Utils.inNewEnv(env, newEnv =>
+            for (o <- objects.getNativeValue)
+              topic match {
+                // XXX ran into issues trying to eval(env, ScopeNode(...))
+                // since o is already evaluated at this point
+                case VariableDeclarationNode(name, expr) =>
+                  applyScopeInjection(newEnv, name, o, (_.create(_, _)))
+                // Don't do anything special here, env access will just walk back
+                case VariableAccessNode(name) =>
+                  applyScopeInjection(newEnv, name, o, (_.set(_, _)))
+              }
+          )
         }
       }
       Runtime.NativeObjects.getUndef
-      case _ => throw new Runtime.Errors.MoeException("ScopeNode expected")
     }
     case ForNode(init, condition, update, body) => stub
 

@@ -587,12 +587,10 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
             VariableAccessNode("$foo"),
             IntLiteralNode(10)
           ),
-          ScopeNode(
-            StatementsNode(
-              List(
-                IncrementNode(VariableAccessNode("$foo")),
-                DecrementNode(VariableAccessNode("$bar"))
-              )
+          StatementsNode(
+            List(
+              IncrementNode(VariableAccessNode("$foo")),
+              DecrementNode(VariableAccessNode("$bar"))
             )
           )
         ),
@@ -621,12 +619,10 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
             VariableAccessNode("$foo"),
             IntLiteralNode(10)
           ),
-          ScopeNode(
-            StatementsNode(
-              List(
-                IncrementNode(VariableAccessNode("$foo")),
-                DecrementNode(VariableAccessNode("$bar"))
-              )
+          StatementsNode(
+            List(
+              IncrementNode(VariableAccessNode("$foo")),
+              DecrementNode(VariableAccessNode("$bar"))
             )
           )
         ),
@@ -658,15 +654,13 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
               StringLiteralNode("fum")
             )
           ),
-          ScopeNode(
-            StatementsNode(
-              List(
-                // TODO need to test the in-scope
-                // topic assignment somehow - maybe
-                // when we have more features, like
-                // pushing to a result array
-                IncrementNode(VariableAccessNode("$bar"))
-              )
+          StatementsNode(
+            List(
+              // TODO need to test the in-scope
+              // topic assignment somehow - maybe
+              // when we have more features, like
+              // pushing to a result array
+              IncrementNode(VariableAccessNode("$bar"))
             )
           )
         ),

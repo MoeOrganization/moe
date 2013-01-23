@@ -104,8 +104,8 @@ case class TryNode(
 case class CatchNode(type_name: String, local_name: String, body: AST) extends AST
 case class FinallyNode(body: AST) extends AST
 
-case class WhileNode(condition: AST, body: AST) extends AST
-case class DoWhileNode(condition: AST, body: AST) extends AST
+case class WhileNode(condition: AST, body: StatementsNode) extends AST
+case class DoWhileNode(condition: AST, body: StatementsNode) extends AST
 
-case class ForeachNode(topic: AST, list: AST, body: AST) extends AST
-case class ForNode(init: AST, condition: AST, update: AST, body: AST) extends AST
+case class ForeachNode(topic: AST, list: AST, body: StatementsNode) extends AST
+case class ForNode(init: AST, condition: AST, update: AST, body: StatementsNode) extends AST
