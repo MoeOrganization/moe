@@ -633,6 +633,47 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === -1)
   }
 
+  test("... basic test with foreach loop") {
+    // my $bar = 0; for my $foo ('fee', 'fi', 'fo', 'fum') { $bar++ } $bar
+    val ast = basicAST(
+      List(
+        VariableDeclarationNode(
+          "$bar",
+          IntLiteralNode(0)
+        ),
+        ForeachNode(
+          VariableDeclarationNode(
+            "$foo",
+            UndefLiteralNode()
+          ),
+          ArrayLiteralNode(
+            List(
+              StringLiteralNode("fee"),
+              StringLiteralNode("fi"),
+              StringLiteralNode("fo"),
+              StringLiteralNode("fum")
+            )
+          ),
+          ScopeNode(
+            StatementsNode(
+              List(
+                // TODO need to test the in-scope
+                // topic assignment somehow - maybe
+                // when we have more features, like
+                // pushing to a result array
+                IncrementNode(VariableAccessNode("$bar"))
+              )
+            )
+          )
+        ),
+        VariableAccessNode("$bar")
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 4)
+  }
+
+
   test("... unknown node") {
     val ast = basicAST(
       List(

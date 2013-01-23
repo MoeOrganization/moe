@@ -265,13 +265,37 @@ object Interpreter {
     }
 
     case DoWhileNode(condition, body) => {
-      do { 
+      do {
         eval(env, body)
       } while (eval(env,condition).isTrue)
       Runtime.NativeObjects.getUndef // XXX
     }
 
-    case ForeachNode(topic, list, body) => stub
+    case ForeachNode(topic, list, body) => body match {
+      case ScopeNode(statementsNode) => {
+        val injectAndEval: (String, MoeObject) => MoeObject = { (name, obj) =>
+            var newEnv = new MoeEnvironment(Some(env))
+            newEnv.create(name, obj)
+            eval(newEnv, statementsNode)
+        }
+        eval(env, list) match {
+          case objects: MoeArrayObject => {
+            for (o <- objects.getNativeValue)
+              topic match {
+                // XXX ran into issues trying to eval(env, ScopeNode(...))
+                // since o is already evaluated at this point
+                case VariableDeclarationNode(name, expr) =>
+                  injectAndEval(name, o)
+                // Don't do anything special here, env access will just walk back
+                case VariableAccessNode(name) =>
+                  eval(env, body)
+              }
+          }
+        }
+      }
+      Runtime.NativeObjects.getUndef
+      case _ => throw new Runtime.Errors.MoeException("ScopeNode expected")
+    }
     case ForNode(init, condition, update, body) => stub
 
     case _ => throw new Runtime.Errors.UnknownNode("Unknown Node")
