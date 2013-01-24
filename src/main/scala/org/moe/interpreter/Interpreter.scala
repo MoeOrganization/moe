@@ -304,8 +304,20 @@ object Interpreter {
       }
       Runtime.NativeObjects.getUndef
     }
-    case ForNode(init, condition, update, body) => stub
+    case ForNode(init, condition, update, body) => {
+      Utils.inNewEnv(
+        env,
+        newEnv => {
+          eval(newEnv, init)
+          while (eval(newEnv, condition).isTrue) {
+            eval(newEnv, body)
+            eval(newEnv, update)
+          }
+        }
+      )
+      Runtime.NativeObjects.getUndef
 
+    }
     case _ => throw new Runtime.Errors.UnknownNode("Unknown Node")
   }
 
