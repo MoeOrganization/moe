@@ -1,6 +1,6 @@
 package org.moe
 
-/** Moe object for [[mypackage.Moe]] instance */
+/** Moe object for [[org.moe.Moe]] instance */
 object Moe {
 
     /** prints hello world */
