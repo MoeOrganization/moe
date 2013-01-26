@@ -105,25 +105,25 @@ pull requests.
 
 #### Using Eclipse
 
-Install [SBT](http://www.scala-sbt.org/release/docs/Getting-Started/Setup.html).
+1. Install [SBT](http://www.scala-sbt.org/release/docs/Getting-Started/Setup.html).
 It is available for all major operating systems.
 
-I think the latest version of Eclipse supported by the Scala plugin is 3.7,
+2. I think the latest version of Eclipse supported by the Scala plugin is 3.7,
 so install Eclipse 3.7 (Indigo).
 
-1. Install EGit from the available plugins.
+3. Install EGit from the available plugins.
 
-2. From the Install New Software form, add
+4. From the Install New Software form, add
 http://download.scala-ide.org/sdk/e37/scala210/dev/site/ to the available
 sites (gotten from http://scala-ide.org/download/milestone.html - this isn't
 a stable version, but the stable only supports up to Scala 2.9).
 
-3. Clone the project using git (separately from Eclipse) into your desired workspace.
+5. Clone the project using git (separately from Eclipse) into your desired workspace.
 
-4. Use the instructions from [sbteclipse](https://github.com/typesafehub/sbteclipse)
+6. Use the instructions from [sbteclipse](https://github.com/typesafehub/sbteclipse)
 and convert the moe project into an Eclipse workspace-friendly project.
 
-5. Import the project into Eclipse.
+7. Import the project into Eclipse:
 
 ```
 File -> Import... -> Existing Projects into Workspace -> <Browse to the project>
