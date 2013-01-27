@@ -21,10 +21,12 @@ abstract class MoeNativeObject[A] (
 
 class MoeIntObject(v: Int) extends MoeNativeObject[Int](v) {
   override def isFalse: Boolean = getNativeValue == 0
+  override def toString = getNativeValue.toString
 }
 
 class MoeFloatObject(v: Double) extends MoeNativeObject[Double](v) {
   override def isFalse: Boolean = getNativeValue == 0
+  override def toString = getNativeValue.toString
 }
 
 class MoeStringObject(v: String) extends MoeNativeObject[String](v) {
@@ -32,10 +34,12 @@ class MoeStringObject(v: String) extends MoeNativeObject[String](v) {
     case "" | "0" => true
     case _        => false
   }
+  override def toString = '"' + getNativeValue + '"'
 }
 
 class MoeBooleanObject(v: Boolean) extends MoeNativeObject[Boolean](v) {
   override def isFalse: Boolean = getNativeValue == false
+  override def toString: String = if (getNativeValue) "true" else "false"
 }
 
 // this is the one outlyer, it doesn't need to be
@@ -45,6 +49,7 @@ class MoeNullObject extends MoeObject {
   def getNativeValue: AnyRef  = null
   override def isFalse: Boolean = true
   override def isUndef: Boolean = true
+  override def toString: String = "null"
 }
 
 // Complex objects
@@ -58,10 +63,21 @@ class MoeNullObject extends MoeObject {
 // - SL
 class MoeArrayObject(v: List[MoeObject]) extends MoeNativeObject[List[MoeObject]](v) {
   override def isFalse: Boolean = getNativeValue.size == 0
+  override def toString: String =
+    '[' + getNativeValue.map(_.toString).mkString(", ") + ']'
 }
 
 class MoeHashObject(v: Map[String, MoeObject]) extends MoeNativeObject[Map[String, MoeObject]](v) {
   override def isFalse: Boolean = getNativeValue.size == 0
+  override def toString: String =
+    '{' + getNativeValue.map({
+      case (k, v) => k + " => " + v.toString
+    }).mkString(", ") + '}'
 }
 
-class MoePairObject(v: (String, MoeObject)) extends MoeNativeObject[(String, MoeObject)](v) {}
+class MoePairObject(v: (String, MoeObject)) extends MoeNativeObject[(String, MoeObject)](v) {
+  override def toString: String = getNativeValue match {
+    case (k, v) =>
+      k + " => " + v.toString
+  }
+}

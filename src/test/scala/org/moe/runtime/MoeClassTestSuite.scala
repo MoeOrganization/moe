@@ -98,5 +98,4 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
     parent.getAttribute("name") should be (Some(attr))
     child.getAttribute("name") should be (Some(attr))
   }
-
 }
