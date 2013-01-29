@@ -7,7 +7,7 @@ my $VERSION = 0.01;
 package Geometry {
 
     sub create_path ( $x1, $y1, $x2, $y2 ) {
-        [ Point->new( $x1, $y1 ), Point->new( $x2, $y2 ) ];
+        [ Point->new( $x1, $y1 ), Point->new( $x2, $y2 ) ]
     }
 
     class Point {
