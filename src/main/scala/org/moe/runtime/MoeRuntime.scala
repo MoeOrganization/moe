@@ -29,7 +29,7 @@ object Runtime {
     def getFloat(value: Double) = new MoeFloatObject(value)
     def getString(value: String) = new MoeStringObject(value)
 
-    def getPair(value: (String, MoeObject)) = new MoePairObject(value)
+    def getPair(value: (MoeObject, MoeObject)) = new MoePairObject((value._1.asInstanceOf[MoeStringObject].getNativeValue, value._2))
     def getHash(value: Map[String, MoeObject]) = new MoeHashObject(value)
     def getArray(value: List[MoeObject]) = new MoeArrayObject(value)
   }

@@ -57,7 +57,7 @@ object Interpreter {
       Runtime.NativeObjects.getArray(array)
     }
 
-    case PairLiteralNode(key, value) => Runtime.NativeObjects.getPair(key -> eval(env, value))
+    case PairLiteralNode(key, value) => Runtime.NativeObjects.getPair(eval(env, key) -> eval(env, value))
 
     case HashLiteralNode(map) => {
       // NOTE:
