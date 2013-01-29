@@ -23,7 +23,7 @@ object Interpreter {
   }
 
   def eval(env: MoeEnvironment, node: AST): MoeObject = {
-    val scoped = Utils.inNewEnv[Any](env) _
+    val scoped = Utils.inNewEnv[MoeObject](env) _
     node match {
 
       // containers
@@ -167,13 +167,39 @@ object Interpreter {
       case ClassAccessNode(name) => stub
       case ClassDeclarationNode(name, superclass, body) => stub
 
-      case PackageDeclarationNode(name, body) => stub
+      case PackageDeclarationNode(name, body) => {
+        scoped { newEnv =>
+          newEnv.setCurrentPackage(
+            new MoePackage(
+              name,
+              newEnv,
+              if (env.hasPackage)
+                Some(env.getPackage)
+              else
+                None
+            )
+          )
+          env.getCurrentPackage.addSubPackage(newEnv.getCurrentPackage)
+          eval(newEnv, body)
+        }
+      }
 
       case ConstructorDeclarationNode(params, body) => stub
       case DestructorDeclarationNode(params, body) => stub
 
       case MethodDeclarationNode(name, params, body) => stub
-      case SubroutineDeclarationNode(name, params, body) => stub
+      // TODO: handle arguments
+      case SubroutineDeclarationNode(name, params, body) => {
+        scoped { newEnv =>
+          env.getCurrentPackage.addSubroutine(
+            new MoeSubroutine(
+              name,
+              params => eval(newEnv, body)
+            )
+          )
+          env.getCurrentPackage.getSubroutine(name)
+        }
+      }
 
       case AttributeAccessNode(name) => stub
       case AttributeAssignmentNode(name, expression) => stub
@@ -193,7 +219,11 @@ object Interpreter {
       // operations
 
       case MethodCallNode(invocant, method_name, args) => stub
-      case SubroutineCallNode(function_name, args) => stub
+      case SubroutineCallNode(function_name, args) => {
+        val pkg = env.getPackage
+        val sub = pkg.getSubroutine(function_name)
+        sub.execute(args.map(eval(env, _)))
+      }
 
       // statements
 
@@ -266,21 +296,21 @@ object Interpreter {
       case FinallyNode(body) => stub
 
       case WhileNode(condition, body) => {
-        scoped(newEnv =>
+        scoped { newEnv =>
           while (eval(newEnv, condition).isTrue) {
             eval(newEnv, body)
           }
-        )
-        Runtime.NativeObjects.getUndef // XXX
+          Runtime.NativeObjects.getUndef // XXX
+        }
       }
 
       case DoWhileNode(condition, body) => {
-        scoped(newEnv =>
+        scoped { newEnv =>
           do {
             eval(newEnv, body)
           } while (eval(newEnv, condition).isTrue)
-        )
-        Runtime.NativeObjects.getUndef // XXX
+          Runtime.NativeObjects.getUndef // XXX
+        }
       }
 
       case ForeachNode(topic, list, body) => {
@@ -290,7 +320,7 @@ object Interpreter {
               f(env, name, obj)
               eval(newEnv, body)
             }
-            scoped(newEnv =>
+            scoped { newEnv =>
               for (o <- objects.getNativeValue)
                 topic match {
                   // XXX ran into issues trying to eval(env, ScopeNode(...))
@@ -301,10 +331,10 @@ object Interpreter {
                   case VariableAccessNode(name) =>
                     applyScopeInjection(newEnv, name, o, (_.set(_, _)))
                 }
-            )
+              Runtime.NativeObjects.getUndef // XXX
+            }
           }
         }
-        Runtime.NativeObjects.getUndef
       }
       case ForNode(init, condition, update, body) => {
         scoped(
@@ -314,9 +344,9 @@ object Interpreter {
               eval(newEnv, body)
               eval(newEnv, update)
             }
+            Runtime.NativeObjects.getUndef
           }
         )
-        Runtime.NativeObjects.getUndef
 
       }
       case _ => throw new Runtime.Errors.UnknownNode("Unknown Node")

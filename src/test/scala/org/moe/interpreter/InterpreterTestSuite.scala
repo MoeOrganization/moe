@@ -702,6 +702,41 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === -10)
   }
 
+  test("... basic test with package and closure") {
+    // package Foo { my $foo = 0; sub add_foo { $foo++ }
+    // add_foo(); add_foo(); add_foo(); $foo }
+    val ast = basicAST(
+      List(
+        PackageDeclarationNode(
+          "Foo",
+          StatementsNode(
+            List(
+              VariableDeclarationNode(
+                "$foo",
+                IntLiteralNode(0)
+              ),
+              SubroutineDeclarationNode(
+                "add_foo",
+                List(),
+                StatementsNode(
+                  List(
+                    IncrementNode(VariableAccessNode("$foo"))
+                  )
+                )
+              ),
+              SubroutineCallNode("add_foo", List()),
+              SubroutineCallNode("add_foo", List()),
+              SubroutineCallNode("add_foo", List()),
+              VariableAccessNode("$foo")
+            )
+          )
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 3)
+  }
+
   test("... unknown node") {
     val ast = basicAST(
       List(
