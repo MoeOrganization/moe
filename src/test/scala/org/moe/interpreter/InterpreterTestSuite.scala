@@ -178,6 +178,110 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 
+  test("... basic test with <") {
+    val ast = basicAST(
+      List(
+        LessThanNode(
+          IntLiteralNode(4),
+          IntLiteralNode(6)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
+  }
+
+  test("... basic (false) test with <") {
+    val ast = basicAST(
+      List(
+        LessThanNode(
+          IntLiteralNode(6),
+          IntLiteralNode(4)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
+  }
+
+  test("... basic test with < between int and float") {
+    val ast = basicAST(
+      List(
+        LessThanNode(
+          IntLiteralNode(4),
+          FloatLiteralNode(6.433)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
+  }
+
+  test("... basic test with < of equal floats") {
+    val ast = basicAST(
+      List(
+        LessThanNode(
+          FloatLiteralNode(6.433),
+          FloatLiteralNode(6.433)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
+  }
+
+  test("... basic test with >") {
+    val ast = basicAST(
+      List(
+        GreaterThanNode(
+          IntLiteralNode(6),
+          IntLiteralNode(4)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
+  }
+
+  test("... basic (false) test with >") {
+    val ast = basicAST(
+      List(
+        GreaterThanNode(
+          IntLiteralNode(4),
+          IntLiteralNode(6)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
+  }
+
+  test("... basic test with > between int and float") {
+    val ast = basicAST(
+      List(
+        GreaterThanNode(
+          FloatLiteralNode(6.433),
+          IntLiteralNode(4)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
+  }
+
+  test("... basic test with > of equal floats") {
+    val ast = basicAST(
+      List(
+        GreaterThanNode(
+          FloatLiteralNode(6.433),
+          FloatLiteralNode(6.433)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
+  }
+
   test("... basic test with If") {
     val ast = basicAST(
       List(
@@ -377,6 +481,260 @@ class InterpreterTestSuite extends FunSuite with BeforeAndAfter {
     )
     val result = Interpreter.eval( Runtime.getRootEnv, ast )
     assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 21 )
+  }
+
+  test("... basic test with variable declaration") {
+    val ast = basicAST(
+      List(
+        VariableDeclarationNode(
+          "$foo",
+          IntLiteralNode(42)
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 42)
+  }
+
+  test("... basic test with variable assignment") {
+    val ast = basicAST(
+      List(
+        VariableDeclarationNode(
+          "$foo",
+          IntLiteralNode(42)
+        ),
+        VariableAssignmentNode(
+          "$foo",
+          StringLiteralNode("jason")
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeStringObject].getNativeValue === "jason")
+  }
+
+  test("... basic test with variable increment") {
+    val ast = basicAST(
+      List(
+        VariableDeclarationNode(
+          "$foo",
+          IntLiteralNode(42)
+        ),
+        IncrementNode(VariableAccessNode("$foo"))
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 43)
+  }
+
+  test("... basic test with variable increment (float)") {
+    val ast = basicAST(
+      List(
+        VariableDeclarationNode(
+          "$foo",
+          FloatLiteralNode(98.6)
+        ),
+        IncrementNode(VariableAccessNode("$foo"))
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeFloatObject].getNativeValue === 99.6)
+  }
+
+  test("... basic test with variable decrement") {
+    val ast = basicAST(
+      List(
+        VariableDeclarationNode(
+          "$foo",
+          IntLiteralNode(42)
+        ),
+        DecrementNode(VariableAccessNode("$foo"))
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 41)
+  }
+
+  test("... basic test with variable decrement (float)") {
+    val ast = basicAST(
+      List(
+        VariableDeclarationNode(
+          "$foo",
+          FloatLiteralNode(98.6)
+        ),
+        DecrementNode(VariableAccessNode("$foo"))
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeFloatObject].getNativeValue === 97.6)
+  }
+
+  test("... basic test with while loop") {
+    // my ($foo, $bar) = (0, 0);
+    // while ($foo < 10) { $foo++; $bar-- } $bar
+    val ast = basicAST(
+      List(
+        VariableDeclarationNode(
+          "$foo",
+          IntLiteralNode(0)
+        ),
+        VariableDeclarationNode(
+          "$bar",
+          IntLiteralNode(0)
+        ),
+        WhileNode(
+          LessThanNode(
+            VariableAccessNode("$foo"),
+            IntLiteralNode(10)
+          ),
+          StatementsNode(
+            List(
+              IncrementNode(VariableAccessNode("$foo")),
+              DecrementNode(VariableAccessNode("$bar"))
+            )
+          )
+        ),
+        VariableAccessNode("$bar")
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === -10)
+  }
+
+  test("... basic test with dowhile loop") {
+    // my ($foo, $bar) = (10, 0);
+    // do { $foo++; $bar-- } while($foo < 10); $bar
+    val ast = basicAST(
+      List(
+        VariableDeclarationNode(
+          "$foo",
+          IntLiteralNode(10) 
+        ),
+        VariableDeclarationNode(
+          "$bar",
+          IntLiteralNode(0)
+        ),
+        DoWhileNode(
+          LessThanNode(
+            VariableAccessNode("$foo"),
+            IntLiteralNode(10)
+          ),
+          StatementsNode(
+            List(
+              IncrementNode(VariableAccessNode("$foo")),
+              DecrementNode(VariableAccessNode("$bar"))
+            )
+          )
+        ),
+        VariableAccessNode("$bar")
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast) 
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === -1)
+  }
+
+  test("... basic test with foreach loop") {
+    // my $bar = 0; for my $foo ('fee', 'fi', 'fo', 'fum') { $bar++ } $bar
+    val ast = basicAST(
+      List(
+        VariableDeclarationNode(
+          "$bar",
+          IntLiteralNode(0)
+        ),
+        ForeachNode(
+          VariableDeclarationNode(
+            "$foo",
+            UndefLiteralNode()
+          ),
+          ArrayLiteralNode(
+            List(
+              StringLiteralNode("fee"),
+              StringLiteralNode("fi"),
+              StringLiteralNode("fo"),
+              StringLiteralNode("fum")
+            )
+          ),
+          StatementsNode(
+            List(
+              // TODO need to test the in-scope
+              // topic assignment somehow - maybe
+              // when we have more features, like
+              // pushing to a result array
+              IncrementNode(VariableAccessNode("$bar"))
+            )
+          )
+        ),
+        VariableAccessNode("$bar")
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 4)
+  }
+
+  test("... basic test with C-style for loop") {
+    // my $bar = 0; for (my $foo = 0; $foo < 10; $foo++) { $bar-- } $bar
+    val ast = basicAST(
+      List(
+        VariableDeclarationNode(
+          "$bar",
+          IntLiteralNode(0)
+        ),
+        ForNode(
+          VariableDeclarationNode(
+            "$foo",
+            IntLiteralNode(0)
+          ),
+          LessThanNode(
+            VariableAccessNode("$foo"),
+            IntLiteralNode(10)
+          ),
+          IncrementNode(VariableAccessNode("$foo")),
+          StatementsNode(
+            List(
+              DecrementNode(VariableAccessNode("$bar"))
+            )
+          )
+        ),
+        VariableAccessNode("$bar")
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === -10)
+  }
+
+  test("... basic test with package and closure") {
+    // package Foo { my $foo = 0; sub add_foo { $foo++ }
+    // add_foo(); add_foo(); add_foo(); $foo }
+    val ast = basicAST(
+      List(
+        PackageDeclarationNode(
+          "Foo",
+          StatementsNode(
+            List(
+              VariableDeclarationNode(
+                "$foo",
+                IntLiteralNode(0)
+              ),
+              SubroutineDeclarationNode(
+                "add_foo",
+                List(),
+                StatementsNode(
+                  List(
+                    IncrementNode(VariableAccessNode("$foo"))
+                  )
+                )
+              ),
+              SubroutineCallNode("add_foo", List()),
+              SubroutineCallNode("add_foo", List()),
+              SubroutineCallNode("add_foo", List()),
+              VariableAccessNode("$foo")
+            )
+          )
+        )
+      )
+    )
+    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 3)
   }
 
   test("... unknown node") {

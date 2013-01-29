@@ -46,18 +46,20 @@ case class NotNode(receiver: AST) extends AST
 
 case class AndNode(lhs: AST, rhs: AST) extends AST
 case class OrNode(lhs: AST, rhs: AST) extends AST
+case class LessThanNode(lhs: AST, rhs: AST) extends AST
+case class GreaterThanNode(lhs: AST, rhs: AST) extends AST
 
 // value lookup, assignment and declaration
 
 case class ClassAccessNode(name: String) extends AST
 case class ClassDeclarationNode(name: String, superclass: String, body: AST) extends AST
-case class PackageDeclarationNode(name: String, body: AST) extends AST
+case class PackageDeclarationNode(name: String, body: StatementsNode) extends AST
 
 case class ConstructorDeclarationNode(params: List[String], body: AST) extends AST
 case class DestructorDeclarationNode(params: List[String], body: AST) extends AST
 
 case class MethodDeclarationNode(name: String, params: List[String], body: AST) extends AST
-case class SubroutineDeclarationNode(name: String, params: List[String], body: AST) extends AST
+case class SubroutineDeclarationNode(name: String, params: List[String], body: StatementsNode) extends AST
 
 case class AttributeAccessNode(name: String) extends AST
 case class AttributeAssignmentNode(name: String, expression: AST) extends AST
@@ -103,8 +105,8 @@ case class TryNode(
 case class CatchNode(type_name: String, local_name: String, body: AST) extends AST
 case class FinallyNode(body: AST) extends AST
 
-case class WhileNode(condition: AST, body: AST) extends AST
-case class DoWhileNode(condition: AST, body: AST) extends AST
+case class WhileNode(condition: AST, body: StatementsNode) extends AST
+case class DoWhileNode(condition: AST, body: StatementsNode) extends AST
 
-case class ForeachNode(topic: AST, list: AST, body: AST) extends AST
-case class ForNode(init: AST, condition: AST, update: AST, body: AST) extends AST
+case class ForeachNode(topic: AST, list: AST, body: StatementsNode) extends AST
+case class ForNode(init: AST, condition: AST, update: AST, body: StatementsNode) extends AST
