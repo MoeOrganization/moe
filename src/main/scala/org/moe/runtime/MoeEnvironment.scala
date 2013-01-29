@@ -24,10 +24,14 @@ class MoeEnvironment(private val parent: Option[MoeEnvironment] = None) {
   def getCurrentClass: MoeClass = getLocal(Markers.Class).asInstanceOf[MoeClass]
   def getCurrentInvocant: MoeObject  = getLocal(Markers.Invocant)
 
+  def getPackage: MoePackage = get(Markers.Package).asInstanceOf[MoePackage]
+
   def setCurrentPackage(p: MoeObject): Unit = setLocal(Markers.Package, p)
   def setCurrentClass(c: MoeObject): Unit = setLocal(Markers.Class, c)
   def setCurrentInvocant(i: MoeObject): Unit = setLocal(Markers.Invocant, i)
 
+
+  def hasPackage: Boolean = has(Markers.Package)
 
   def getParent: Option[MoeEnvironment] = parent
   def isRoot: Boolean = !parent.isDefined
