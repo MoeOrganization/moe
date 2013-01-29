@@ -1,5 +1,5 @@
 try {
-    10;
+    10
 } catch ( Foo::Bar $e ) {
-    $e;
+    $e
 }

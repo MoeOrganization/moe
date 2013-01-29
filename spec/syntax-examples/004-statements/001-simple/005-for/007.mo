@@ -1,3 +1,3 @@
 foreach my $foo ( @foo ) {
-    $foo + 2;
+    $foo + 2
 }
