@@ -1,2 +1,2 @@
-my %baz; 
-$baz{'test' + "this"} = 10;
+my %baz;
+$baz{'test' . "this"} = 10;

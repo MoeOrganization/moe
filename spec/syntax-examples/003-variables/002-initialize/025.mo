@@ -1,1 +1,1 @@
-my %baz = ( "one" => 10, 'two' => 20, three => 30 );
+my %baz = { "one" => 10, 'two' => 20, three => 30 };

@@ -1,2 +1,2 @@
-my %baz; 
-%baz = ();
+my %baz;
+%baz = {};
