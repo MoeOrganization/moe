@@ -15,6 +15,11 @@ class IntLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTestUt
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 123)
   }
 
+  test("... basic test with a negative int") {
+    val result = interpretCode("-123")
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === -123)
+  }
+
   test("... basic test with an int - embedded underscore") {
     val result = interpretCode("123_456")
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 123456)

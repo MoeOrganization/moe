@@ -8,7 +8,7 @@ import org.moe.ast._
 trait Literals extends Base {
   // Numeric literals
   def intNumber: Parser[IntLiteralNode]   =
-    """[1-9][0-9_]*""".r ^^ { n => IntLiteralNode(formatInt(n)) }
+    """-?[1-9][0-9_]*""".r ^^ { n => IntLiteralNode(formatInt(n)) }
   def octIntNumber: Parser[IntLiteralNode] =
     """0[0-9_]+""".r ^^ { n => IntLiteralNode(formatOctal(n)) }
   def hexIntNumber: Parser[IntLiteralNode] =
@@ -16,7 +16,7 @@ trait Literals extends Base {
   def binIntNumber: Parser[IntLiteralNode] =
     """0b[01_]+""".r ^^ { n => IntLiteralNode(formatBin(n)) }
   def floatNumber: Parser[FloatLiteralNode] =
-    """[0-9_]*\.[0-9_]+([eE][\-+]?[0-9_]+)?""".r ^^ { n => FloatLiteralNode(formatFloat(n)) }
+    """-?[0-9_]*\.[0-9_]+([eE][\-+]?[0-9_]+)?""".r ^^ { n => FloatLiteralNode(formatFloat(n)) }
 
   // Boolean literals
   def constTrue: Parser[BooleanLiteralNode] =
