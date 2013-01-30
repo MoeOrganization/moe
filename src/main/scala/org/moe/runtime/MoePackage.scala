@@ -1,6 +1,6 @@
 package org.moe.runtime
 
-import scala.collection.mutable.HashMap
+import scala.collection.mutable.{HashMap,Map}
 
 /**
  * A Package!
@@ -15,9 +15,9 @@ class MoePackage(
     private var parent: Option[MoePackage] = None
   ) extends MoeObject {
 
-  private val klasses = new HashMap[String, MoeClass]()
-  private val subs = new HashMap[String, MoeSubroutine]()
-  private val sub_packages = new HashMap[String, MoePackage]()
+  private val klasses: Map[String, MoeClass] = new HashMap[String, MoeClass]()
+  private val subs: Map[String, MoeSubroutine] = new HashMap[String, MoeSubroutine]()
+  private val sub_packages: Map[String, MoePackage] = new HashMap[String, MoePackage]()
 
   /**
    * returns the name of this package
@@ -61,10 +61,7 @@ class MoePackage(
    *
    * @throws SubroutineNotFound specified name does not match any subroutine
    */
-  def getSubroutine(name: String): MoeSubroutine = {
-    if (hasSubroutine(name)) return subs(name)
-    throw new Runtime.Errors.SubroutineNotFound(name)
-  }
+  def getSubroutine(name: String): Option[MoeSubroutine] = subs.get(name)
 
   /**
    * checks if a subroutine with the specified name is in package
@@ -94,10 +91,7 @@ class MoePackage(
    *
    * @throws ClassNotFound specified name does not match any class
    */
-  def getClass(name: String): MoeClass = {
-    if (hasClass(name)) return klasses(name)
-    throw new Runtime.Errors.ClassNotFound(name)
-  }
+  def getClass(name: String): Option[MoeClass] = klasses.get(name)
 
   /**
    * checks if a class with the specified name is in package
@@ -121,8 +115,7 @@ class MoePackage(
     sub_packages += (pkg.getName -> pkg)
   }
 
-  def attachToParent(parent: MoePackage): Unit =
-    setParent(Some(parent))
+  def attachToParent(parent: MoePackage): Unit = setParent(Some(parent))
 
   /**
    * returns the SubPackaged with the specified name
@@ -131,10 +124,7 @@ class MoePackage(
    *
    * @throws PackageNotFound specified name does not match any SubPackage
    */
-  def getSubPackage(name: String): MoePackage = {
-    if (hasSubPackage(name)) return sub_packages(name)
-    throw new Runtime.Errors.PackageNotFound(name)
-  }
+  def getSubPackage(name: String): Option[MoePackage] = sub_packages.get(name)
 
   /**
    * checks if a SubPackage wit the specified name is in this package

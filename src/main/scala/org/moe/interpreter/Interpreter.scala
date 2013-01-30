@@ -191,13 +191,12 @@ object Interpreter {
       // TODO: handle arguments
       case SubroutineDeclarationNode(name, params, body) => {
         scoped { newEnv =>
-          env.getCurrentPackage.addSubroutine(
-            new MoeSubroutine(
-              name,
-              params => eval(newEnv, body)
-            )
+          val sub = new MoeSubroutine(
+            name,
+            params => eval(newEnv, body)
           )
-          env.getCurrentPackage.getSubroutine(name)
+          env.getCurrentPackage.addSubroutine( sub )
+          sub
         }
       }
 
@@ -221,7 +220,9 @@ object Interpreter {
       case MethodCallNode(invocant, method_name, args) => stub
       case SubroutineCallNode(function_name, args) => {
         val pkg = env.getPackage
-        val sub = pkg.getSubroutine(function_name)
+        val sub = pkg.getSubroutine(function_name).getOrElse(
+            throw new MoeRuntime.Errors.SubroutineNotFound(function_name)
+        )
         sub.execute(args.map(eval(env, _)))
       }
 
