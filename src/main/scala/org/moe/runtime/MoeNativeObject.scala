@@ -19,17 +19,17 @@ abstract class MoeNativeObject[A] (
 
 // Simple objects
 
-class MoeIntObject(v: Int) extends MoeNativeObject[Int](v) {
+class MoeIntObject(v: Int, klass : Option[MoeClass] = None) extends MoeNativeObject[Int](v, klass) {
   override def isFalse: Boolean = getNativeValue == 0
   override def toString = getNativeValue.toString
 }
 
-class MoeFloatObject(v: Double) extends MoeNativeObject[Double](v) {
+class MoeFloatObject(v: Double, klass : Option[MoeClass] = None) extends MoeNativeObject[Double](v, klass) {
   override def isFalse: Boolean = getNativeValue == 0
   override def toString = getNativeValue.toString
 }
 
-class MoeStringObject(v: String) extends MoeNativeObject[String](v) {
+class MoeStringObject(v: String, klass : Option[MoeClass] = None) extends MoeNativeObject[String](v, klass) {
   override def isFalse: Boolean = getNativeValue match {
     case "" | "0" => true
     case _        => false
@@ -37,7 +37,7 @@ class MoeStringObject(v: String) extends MoeNativeObject[String](v) {
   override def toString = '"' + getNativeValue + '"'
 }
 
-class MoeBooleanObject(v: Boolean) extends MoeNativeObject[Boolean](v) {
+class MoeBooleanObject(v: Boolean, klass : Option[MoeClass] = None) extends MoeNativeObject[Boolean](v, klass) {
   override def isFalse: Boolean = getNativeValue == false
   override def toString: String = if (getNativeValue) "true" else "false"
 }
@@ -45,7 +45,7 @@ class MoeBooleanObject(v: Boolean) extends MoeNativeObject[Boolean](v) {
 // this is the one outlyer, it doesn't need to be
 // a NativeObject because it doesn't need to actually
 // box any values, just the lack of a value
-class MoeNullObject extends MoeObject {
+class MoeNullObject(klass : Option[MoeClass] = None) extends MoeObject(klass) {
   def getNativeValue: AnyRef  = null
   override def isFalse: Boolean = true
   override def isUndef: Boolean = true
@@ -61,13 +61,13 @@ class MoeNullObject extends MoeObject {
 // could be suitable, but we might need to just
 // write our own in the long run.
 // - SL
-class MoeArrayObject(v: List[MoeObject]) extends MoeNativeObject[List[MoeObject]](v) {
+class MoeArrayObject(v: List[MoeObject], klass : Option[MoeClass] = None) extends MoeNativeObject[List[MoeObject]](v, klass) {
   override def isFalse: Boolean = getNativeValue.size == 0
   override def toString: String =
     '[' + getNativeValue.map(_.toString).mkString(", ") + ']'
 }
 
-class MoeHashObject(v: Map[String, MoeObject]) extends MoeNativeObject[Map[String, MoeObject]](v) {
+class MoeHashObject(v: Map[String, MoeObject], klass : Option[MoeClass] = None) extends MoeNativeObject[Map[String, MoeObject]](v, klass) {
   override def isFalse: Boolean = getNativeValue.size == 0
   override def toString: String =
     '{' + getNativeValue.map({
