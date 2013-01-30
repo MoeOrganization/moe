@@ -9,9 +9,10 @@ Currently we have the following:
   think the core is where I would like it to be)
 * an AST, which I know is still missing a lot of stuff, but again I have
   a foundation
-* an Interpreter, this just evaluates the AST and is only like 20% of the
+* an Interpreter, this just evaluates the AST and is only like 40% of the
   AST at the moment, but is a start (and an easy place for people to
   start hacking)
-* no parser at all to speak of
+* some of the Parser has been put together (jasonmay++) but more could be
+  done from here.
 
 MORE DETAIL TO COME SOON!
