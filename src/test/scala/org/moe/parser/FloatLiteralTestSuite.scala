@@ -15,6 +15,11 @@ class FloatLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
     assert(result.asInstanceOf[MoeFloatObject].getNativeValue === 123.5)
   }
 
+  test("... basic test with a negative float") {
+    val result = interpretCode("-123.5")
+    assert(result.asInstanceOf[MoeFloatObject].getNativeValue === -123.5)
+  }
+
   test("... basic test with a float - 2") {
     val result = interpretCode(".5678")
     assert(result.asInstanceOf[MoeFloatObject].getNativeValue === .5678)

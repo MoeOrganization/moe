@@ -6,9 +6,10 @@ import scala.util.parsing.combinator._
 import org.moe.ast._
 
 trait Literals extends Base {
+
   // Numeric literals
   def intNumber: Parser[IntLiteralNode]   =
-    """[1-9][0-9_]*""".r ^^ { n => IntLiteralNode(formatInt(n)) }
+    """-?[1-9][0-9_]*""".r ^^ { n => IntLiteralNode(formatInt(n)) }
   def octIntNumber: Parser[IntLiteralNode] =
     """0[0-9_]+""".r ^^ { n => IntLiteralNode(formatOctal(n)) }
   def hexIntNumber: Parser[IntLiteralNode] =
@@ -16,7 +17,7 @@ trait Literals extends Base {
   def binIntNumber: Parser[IntLiteralNode] =
     """0b[01_]+""".r ^^ { n => IntLiteralNode(formatBin(n)) }
   def floatNumber: Parser[FloatLiteralNode] =
-    """[0-9_]*\.[0-9_]+([eE][\-+]?[0-9_]+)?""".r ^^ { n => FloatLiteralNode(formatFloat(n)) }
+    """-?[0-9_]*\.[0-9_]+([eE][\-+]?[0-9_]+)?""".r ^^ { n => FloatLiteralNode(formatFloat(n)) }
 
   // Boolean literals
   def constTrue: Parser[BooleanLiteralNode] =
@@ -25,15 +26,27 @@ trait Literals extends Base {
     "false".r ^^^ BooleanLiteralNode(false)
 
   // String literals
-  def doubleQuoteStringContent: Parser[StringLiteralNode] =
-    """[^"]*""".r ^^ StringLiteralNode
-  def doubleQuoteString: Parser[StringLiteralNode] =
-    "\"".r ~> doubleQuoteStringContent <~ "\"".r
 
-  def singleQuoteStringContent: Parser[StringLiteralNode] =
-    """[^']*""".r  ^^ StringLiteralNode
-  def singleQuoteString: Parser[StringLiteralNode] =
-    "'".r ~> singleQuoteStringContent <~ "'".r
+  // NOTE:
+  // These two are basically duplicated except for
+  // the start which disallows ' or " accordingly
+  // this is pulled from the Scala JavaTokenParser
+  // class and modified to be Perlish. It should be
+  // noted that the unicode literal handling requires
+  // 4 hex chars, whereas the Perl unicode docs have
+  // variable widths. I don't know enough about unicode
+  // to understand (or care) about the details, but
+  // this should suffice (and perhaps even normalize
+  // things a little)
+  // - SL
+
+  def doubleQuoteStringContents: Parser[StringLiteralNode] =
+    """([^"\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*""".r ^^ StringLiteralNode
+  def singleQuoteStringContents: Parser[StringLiteralNode] =
+    """([^'\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*""".r ^^ StringLiteralNode
+
+  def doubleQuoteString: Parser[StringLiteralNode] = "\"".r ~> doubleQuoteStringContents <~ "\"".r
+  def singleQuoteString: Parser[StringLiteralNode] = "'".r  ~> singleQuoteStringContents <~ "'".r
 
   def string: Parser[StringLiteralNode] = doubleQuoteString | singleQuoteString
 
