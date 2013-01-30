@@ -14,7 +14,7 @@ class MoeMethod (
 
   def this (name : String) = {
     // yadda yadda yadda
-    this(name, (inv, args) => throw new Runtime.Errors.UndefinedMethod(name))
+    this(name, (inv, args) => throw new MoeRuntime.Errors.UndefinedMethod(name))
   }
 
   /**

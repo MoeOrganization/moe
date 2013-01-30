@@ -17,7 +17,7 @@ class MiscNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTes
         StringLiteralNode("WORLD")
       )
     )
-    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeStringObject].getNativeValue === "WORLD")
   }
 
@@ -27,8 +27,8 @@ class MiscNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTes
         FooNode()
       )
     )
-    intercept[Runtime.Errors.UnknownNode] {
-      Interpreter.eval(Runtime.getRootEnv, ast)
+    intercept[MoeRuntime.Errors.UnknownNode] {
+      Interpreter.eval(MoeRuntime.getRootEnv, ast)
     }
   }
 

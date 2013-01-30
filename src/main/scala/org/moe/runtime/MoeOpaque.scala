@@ -8,7 +8,7 @@ class MoeOpaque(private var associatedClass: Option[MoeClass] = None) extends Mo
 
   def hasValue(name: String): Boolean   = data.contains(name)
   def getValue(name: String): MoeObject = {
-    if (!hasValue(name)) throw new Runtime.Errors.InstanceValueNotFound(name)
+    if (!hasValue(name)) throw new MoeRuntime.Errors.InstanceValueNotFound(name)
     data(name)
   }
 

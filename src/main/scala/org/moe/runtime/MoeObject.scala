@@ -51,10 +51,10 @@ class MoeObject(
       k.getMethod(name).map({ m =>
         m.execute(this, args)
       }).getOrElse(
-        throw new Runtime.Errors.MethodNotFound(name)
+        throw new MoeRuntime.Errors.MethodNotFound(name)
       )
     }).getOrElse(
-      throw new Runtime.Errors.MissingClass(toString)
+      throw new MoeRuntime.Errors.MissingClass(toString)
     )
   }
 

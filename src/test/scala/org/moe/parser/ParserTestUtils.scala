@@ -12,7 +12,7 @@ trait ParserTestUtils {
 
   def interpretCode(code: String): MoeObject = {
     val ast = basicAST(List(Parser.parseStuff(code)))
-    Interpreter.eval(Runtime.getRootEnv, ast)
+    Interpreter.eval(MoeRuntime.getRootEnv, ast)
   }
 
 }

@@ -42,7 +42,7 @@ class MoeEnvironmentTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... value not found thrown") {
-    val ex = intercept[Runtime.Errors.ValueNotFound] {
+    val ex = intercept[MoeRuntime.Errors.ValueNotFound] {
         env.get("$bar")
     }
     assert(ex.getMessage === "$bar")
@@ -50,7 +50,7 @@ class MoeEnvironmentTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... undefined value thrown") {
     val c001 = new MoeObject()
-    val ex = intercept[Runtime.Errors.UndefinedValue] {
+    val ex = intercept[MoeRuntime.Errors.UndefinedValue] {
       env.set("$baz", c001)
     }
     assert(ex.getMessage === "$baz")
@@ -76,7 +76,7 @@ class MoeEnvironmentTestSuite extends FunSuite with BeforeAndAfter {
     assert(child.get("$foo") === c001)
 
     // Verify that the child & parent work for a missing value
-    val ex = intercept[Runtime.Errors.UndefinedValue] {
+    val ex = intercept[MoeRuntime.Errors.UndefinedValue] {
       env.set("$baz", c001)
     }
     assert(ex.getMessage === "$baz")

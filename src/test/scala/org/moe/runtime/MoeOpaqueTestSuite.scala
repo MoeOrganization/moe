@@ -35,7 +35,7 @@ class MoeOpaqueTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... instance value not found thrown") {
-    val ex = intercept[Runtime.Errors.InstanceValueNotFound] {
+    val ex = intercept[MoeRuntime.Errors.InstanceValueNotFound] {
       o.getValue("$.bar")
     }
     assert(ex.getMessage === "$.bar")

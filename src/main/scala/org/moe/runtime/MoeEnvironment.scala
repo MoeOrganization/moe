@@ -40,7 +40,7 @@ class MoeEnvironment(private val parent: Option[MoeEnvironment] = None) {
     if (hasLocal(name)) return getLocal(name)
     parent match {
       case Some(p) => p.get(name)
-      case None => throw new Runtime.Errors.ValueNotFound(name)
+      case None => throw new MoeRuntime.Errors.ValueNotFound(name)
     }
   }
 
@@ -56,7 +56,7 @@ class MoeEnvironment(private val parent: Option[MoeEnvironment] = None) {
 
   def set(name: String, value: MoeObject): Unit = {
     // This env and non of it's parents know about this value, explode
-    if (!has(name)) throw new Runtime.Errors.UndefinedValue(name)
+    if (!has(name)) throw new MoeRuntime.Errors.UndefinedValue(name)
     if (hasLocal(name)) {
       // This environment has a local value, set it
       setLocal(name, value)
@@ -65,11 +65,11 @@ class MoeEnvironment(private val parent: Option[MoeEnvironment] = None) {
       // we don't then blow up with an UndefinedValue
       parent match {
         case Some(p) => p.set(name, value)
-        case None => throw new Runtime.Errors.UndefinedValue(name)
+        case None => throw new MoeRuntime.Errors.UndefinedValue(name)
       }
       // The above could be more idiomatic as:
       // parent.map({ p => p.set(name, value) }).getOrElse(
-      //   throw new Runtime.Errors.UndefinedValue(name)
+      //   throw new MoeRuntime.Errors.UndefinedValue(name)
       // )
     }
   }

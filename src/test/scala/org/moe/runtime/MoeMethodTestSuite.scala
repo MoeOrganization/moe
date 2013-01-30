@@ -15,7 +15,7 @@ class MoeMethodTestSuite extends FunSuite with BeforeAndAfter {
   test("... basic yadda-yadda-yadda method") {
     val invocant = new MoeObject()
     val method   = new MoeMethod("yadda_yadda_yadda")
-    intercept[Runtime.Errors.UndefinedMethod] {
+    intercept[MoeRuntime.Errors.UndefinedMethod] {
       method.execute(invocant, List())
     }
   }

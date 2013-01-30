@@ -17,7 +17,7 @@ object Moe {
           )
         )
 
-        val result = Interpreter.eval(Runtime.getRootEnv, ast)
+        val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
         println(result.toString)
       }
       catch {

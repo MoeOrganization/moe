@@ -14,7 +14,7 @@ class LogicalNodeTestSuite extends FunSuite with BeforeAndAfter with Interpreter
         NotNode(BooleanLiteralNode(true))
       )
     )
-    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
     assert(result.asInstanceOf[ MoeBooleanObject ].getNativeValue === false)
   }
 
@@ -24,7 +24,7 @@ class LogicalNodeTestSuite extends FunSuite with BeforeAndAfter with Interpreter
         NotNode(BooleanLiteralNode(false))
       )
     )
-    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 
@@ -37,7 +37,7 @@ class LogicalNodeTestSuite extends FunSuite with BeforeAndAfter with Interpreter
         )
       )
     )
-    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
   }
 
@@ -53,7 +53,7 @@ class LogicalNodeTestSuite extends FunSuite with BeforeAndAfter with Interpreter
         )
       )
     )
-    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 100)
   }
 
@@ -66,7 +66,7 @@ class LogicalNodeTestSuite extends FunSuite with BeforeAndAfter with Interpreter
         )
       )
     )
-    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 

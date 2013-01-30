@@ -16,7 +16,7 @@ class MoeObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... missing class thrown") {
-    intercept[Runtime.Errors.MissingClass] {
+    intercept[MoeRuntime.Errors.MissingClass] {
       o.callMethod("foo", List())
     }
   }

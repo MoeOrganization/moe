@@ -17,7 +17,7 @@ class UnlessNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterT
         )
       )
     )
-    val result = Interpreter.eval( Runtime.getRootEnv, ast )
+    val result = Interpreter.eval( MoeRuntime.getRootEnv, ast )
     assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 42 )
   }
 
@@ -30,8 +30,8 @@ class UnlessNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterT
         )
       )
     )
-    val result = Interpreter.eval( Runtime.getRootEnv, ast )
-    assert( result === Runtime.NativeObjects.getUndef )
+    val result = Interpreter.eval( MoeRuntime.getRootEnv, ast )
+    assert( result === MoeRuntime.NativeObjects.getUndef )
   }
 
   test("... basic test with UnlessElse") {
@@ -44,7 +44,7 @@ class UnlessNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterT
         )
       )
     )
-    val result = Interpreter.eval( Runtime.getRootEnv, ast )
+    val result = Interpreter.eval( MoeRuntime.getRootEnv, ast )
     assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 42 )
   }
 
@@ -58,7 +58,7 @@ class UnlessNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterT
         )
       )
     )
-    val result = Interpreter.eval( Runtime.getRootEnv, ast )
+    val result = Interpreter.eval( MoeRuntime.getRootEnv, ast )
     assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 21 )
   }
 

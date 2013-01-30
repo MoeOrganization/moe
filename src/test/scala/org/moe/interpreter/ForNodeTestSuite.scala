@@ -42,7 +42,7 @@ class ForNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTest
         VariableAccessNode("$bar")
       )
     )
-    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 4)
   }
 
@@ -73,7 +73,7 @@ class ForNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTest
         VariableAccessNode("$bar")
       )
     )
-    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === -10)
   }
 

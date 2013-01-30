@@ -19,7 +19,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with BeforeAndAfter with Interp
         )
       )
     )
-    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
 
     val array: List[MoeObject] = result.asInstanceOf[MoeArrayObject].getNativeValue
 
@@ -43,7 +43,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with BeforeAndAfter with Interp
         )
       )
     )
-    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
 
     val array: List[ MoeObject ] = result.asInstanceOf[MoeArrayObject].getNativeValue
 

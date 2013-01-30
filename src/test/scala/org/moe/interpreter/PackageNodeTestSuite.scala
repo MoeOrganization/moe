@@ -39,7 +39,7 @@ class PackageNodeTestSuite extends FunSuite with BeforeAndAfter with Interpreter
         )
       )
     )
-    val result = Interpreter.eval(Runtime.getRootEnv, ast)
+    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 3)
   }
 

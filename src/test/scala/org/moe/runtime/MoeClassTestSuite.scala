@@ -70,7 +70,7 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
     assert(dad.callMethod("ident") === dad)
     assert(son.callMethod("ident") === son)
 
-    intercept[Runtime.Errors.MethodNotFound] {
+    intercept[MoeRuntime.Errors.MethodNotFound] {
       son.callMethod("foobar", List())
     }
   }

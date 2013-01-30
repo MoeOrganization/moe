@@ -39,40 +39,40 @@ object Interpreter {
         // finding a sum of a list.  In thise case we don't acculate, we just
         // return the result of each eval.  Therefore the final result will be
         // the result of the last eval.
-        nodes.foldLeft[MoeObject](Runtime.NativeObjects.getUndef)(
+        nodes.foldLeft[MoeObject](MoeRuntime.NativeObjects.getUndef)(
           (_, node) => eval(env, node)
         )
       }
 
       // literals
 
-      case IntLiteralNode(value) => Runtime.NativeObjects.getInt(value)
-      case FloatLiteralNode(value) => Runtime.NativeObjects.getFloat(value)
-      case StringLiteralNode(value) => Runtime.NativeObjects.getString(value)
+      case IntLiteralNode(value) => MoeRuntime.NativeObjects.getInt(value)
+      case FloatLiteralNode(value) => MoeRuntime.NativeObjects.getFloat(value)
+      case StringLiteralNode(value) => MoeRuntime.NativeObjects.getString(value)
       case BooleanLiteralNode(value) => {
         if(value) {
-          Runtime.NativeObjects.getTrue
+          MoeRuntime.NativeObjects.getTrue
         } else {
-          Runtime.NativeObjects.getFalse
+          MoeRuntime.NativeObjects.getFalse
         }
       }
 
-      case UndefLiteralNode() => Runtime.NativeObjects.getUndef
+      case UndefLiteralNode() => MoeRuntime.NativeObjects.getUndef
       case SelfLiteralNode() => env.getCurrentInvocant
       case ClassLiteralNode() => env.getCurrentClass
       case SuperLiteralNode() => {
         val klass = env.getCurrentClass
         klass.getSuperclass.getOrElse(
-          throw new Runtime.Errors.SuperclassNotFound(klass.getName)
+          throw new MoeRuntime.Errors.SuperclassNotFound(klass.getName)
         )
       }
 
       case ArrayLiteralNode(values) => {
         val array: List[MoeObject] = values.map((i) => eval(env, i))
-        Runtime.NativeObjects.getArray(array)
+        MoeRuntime.NativeObjects.getArray(array)
       }
 
-      case PairLiteralNode(key, value) => Runtime.NativeObjects.getPair(eval(env, key) -> eval(env, value))
+      case PairLiteralNode(key, value) => MoeRuntime.NativeObjects.getPair(eval(env, key) -> eval(env, value))
 
       case HashLiteralNode(map) => {
         // NOTE:
@@ -83,7 +83,7 @@ object Interpreter {
         // for it to evaluate into many
         // MoePairObject instances as well
         // - SL
-        Runtime.NativeObjects.getHash(
+        MoeRuntime.NativeObjects.getHash(
           map.map(
             pair => eval(env, pair)
             .asInstanceOf[MoePairObject].getNativeValue
@@ -96,11 +96,11 @@ object Interpreter {
       case IncrementNode(receiver: AST) => receiver match {
         case VariableAccessNode(varName) => env.get(varName) match {
           case i: MoeIntObject => {
-            env.set(varName, Runtime.NativeObjects.getInt(i.getNativeValue + 1))
+            env.set(varName, MoeRuntime.NativeObjects.getInt(i.getNativeValue + 1))
             env.get(varName)
           }
           case n: MoeFloatObject => {
-            env.set(varName, Runtime.NativeObjects.getFloat(n.getNativeValue + 1.0))
+            env.set(varName, MoeRuntime.NativeObjects.getFloat(n.getNativeValue + 1.0))
             env.get(varName)
           }
         }
@@ -108,11 +108,11 @@ object Interpreter {
       case DecrementNode(receiver: AST) => receiver match {
         case VariableAccessNode(varName) => env.get(varName) match {
           case i: MoeIntObject => {
-            env.set(varName, Runtime.NativeObjects.getInt(i.getNativeValue - 1))
+            env.set(varName, MoeRuntime.NativeObjects.getInt(i.getNativeValue - 1))
             env.get(varName)
           }
           case n: MoeFloatObject => {
-            env.set(varName, Runtime.NativeObjects.getFloat(n.getNativeValue - 1.0))
+            env.set(varName, MoeRuntime.NativeObjects.getFloat(n.getNativeValue - 1.0))
             env.get(varName)
           }
         }
@@ -120,9 +120,9 @@ object Interpreter {
 
       case NotNode(receiver) => {
         if(eval(env, receiver).isTrue) {
-          Runtime.NativeObjects.getFalse
+          MoeRuntime.NativeObjects.getFalse
         } else {
-          Runtime.NativeObjects.getTrue
+          MoeRuntime.NativeObjects.getTrue
         }
       }
 
@@ -151,7 +151,7 @@ object Interpreter {
         val rhs_result: Double = Utils.objToNumeric(eval(env, rhs))
 
         val result = lhs_result < rhs_result
-        Runtime.NativeObjects.getBool(result)
+        MoeRuntime.NativeObjects.getBool(result)
       }
 
       case GreaterThanNode(lhs, rhs) => {
@@ -159,7 +159,7 @@ object Interpreter {
         val rhs_result: Double = Utils.objToNumeric(eval(env, rhs))
 
         val result = lhs_result > rhs_result
-        Runtime.NativeObjects.getBool(result)
+        MoeRuntime.NativeObjects.getBool(result)
       }
 
       // value lookup, assignment and declaration
@@ -300,7 +300,7 @@ object Interpreter {
           while (eval(newEnv, condition).isTrue) {
             eval(newEnv, body)
           }
-          Runtime.NativeObjects.getUndef // XXX
+          MoeRuntime.NativeObjects.getUndef // XXX
         }
       }
 
@@ -309,7 +309,7 @@ object Interpreter {
           do {
             eval(newEnv, body)
           } while (eval(newEnv, condition).isTrue)
-          Runtime.NativeObjects.getUndef // XXX
+          MoeRuntime.NativeObjects.getUndef // XXX
         }
       }
 
@@ -331,7 +331,7 @@ object Interpreter {
                   case VariableAccessNode(name) =>
                     applyScopeInjection(newEnv, name, o, (_.set(_, _)))
                 }
-              Runtime.NativeObjects.getUndef // XXX
+              MoeRuntime.NativeObjects.getUndef // XXX
             }
           }
         }
@@ -344,12 +344,12 @@ object Interpreter {
               eval(newEnv, body)
               eval(newEnv, update)
             }
-            Runtime.NativeObjects.getUndef
+            MoeRuntime.NativeObjects.getUndef
           }
         )
 
       }
-      case _ => throw new Runtime.Errors.UnknownNode("Unknown Node")
+      case _ => throw new MoeRuntime.Errors.UnknownNode("Unknown Node")
     }
   }
 
