@@ -13,6 +13,12 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(!o.isUndef)
   }
 
+  test("... simple String object with class") {
+    val c = new MoeClass("String")
+    val o = new MoeStringObject("Hello World", Some(c))
+    assert(o.getAssociatedClass.get === c)
+  }
+
   test("... false String object - empty string") {
     val o = new MoeStringObject("")
     assert(o.getNativeValue === "")
@@ -45,6 +51,12 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(!o.isUndef)
   }
 
+  test("... simple Int object with class") {
+    val c = new MoeClass("Number")
+    val o = new MoeIntObject(10, Some(c))
+    assert(o.getAssociatedClass.get === c)
+  }
+
   test("... false Int object") {
     val o = new MoeIntObject(0)
     assert(o.getNativeValue === 0)
@@ -59,6 +71,12 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(o.isTrue)
     assert(!o.isFalse)
     assert(!o.isUndef)
+  }
+
+  test("... simple Float object with class") {
+    val c = new MoeClass("Number")
+    val o = new MoeFloatObject(10.5, Some(c))
+    assert(o.getAssociatedClass.get === c)
   }
 
   test("... false Float object") {
@@ -85,12 +103,24 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(!o.isUndef)
   }
 
+  test("... simple Boolean object with class") {
+    val c = new MoeClass("Boolean")
+    val o = new MoeBooleanObject(false, Some(c))
+    assert(o.getAssociatedClass.get === c)
+  }
+
   test("... simple Null object") {
     val o = new MoeNullObject()
     assert(o.getNativeValue === null)
     assert(!o.isTrue)
     assert(o.isFalse)
     assert(o.isUndef)
+  }
+
+  test("... simple Null object with class") {
+    val c = new MoeClass("Null")
+    val o = new MoeNullObject(Some(c))
+    assert(o.getAssociatedClass.get === c)
   }
 
   test("... simple Array object") {
@@ -106,6 +136,12 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(o.isTrue)
     assert(!o.isFalse)
     assert(!o.isUndef)
+  }
+
+  test("... simple Array object with class") {
+    val c = new MoeClass("Array")
+    val o = new MoeArrayObject(List(), Some(c))
+    assert(o.getAssociatedClass.get === c)
   }
 
   test("... false Array object") {
@@ -148,6 +184,12 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(o.isTrue)
     assert(!o.isFalse)
     assert(!o.isUndef)
+  }
+
+  test("... simple Hash object with class") {
+    val c = new MoeClass("Hash")
+    val o = new MoeHashObject(Map(), Some(c))
+    assert(o.getAssociatedClass.get === c)
   }
 
   test("... false Hash object") {
