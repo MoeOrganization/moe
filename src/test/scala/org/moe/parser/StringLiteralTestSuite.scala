@@ -11,7 +11,7 @@ import org.moe.parser._
 class StringLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils {
 
   test("... basic test with a simple double-quoted string") {
-    val result = interpretCode("\"hello world\"")
+    val result = interpretCode(""" "hello world" """)
     assert(result.asInstanceOf[MoeStringObject].getNativeValue === "hello world")
   }
 
