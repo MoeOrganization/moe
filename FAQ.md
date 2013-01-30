@@ -16,7 +16,7 @@ The second option is the more preferred approach of course.
 A subset.
 
 Exactly what subset, at this point I can not say. This should
-shake out in the next week or so as I try and spec out the
+shake out in the next couple weeks or so as I try and spec out the
 language subset.
 
 ## Are you going to support XS
