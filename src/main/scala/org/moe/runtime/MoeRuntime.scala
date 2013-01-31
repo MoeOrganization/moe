@@ -6,6 +6,7 @@ object MoeRuntime {
   private val AUTHORITY       = "cpan:STEVAN"
 
   private var is_bootstrapped = false
+  private var system          = new MoeSystem()
 
   private val rootEnv         = new MoeEnvironment()
   private val rootPackage     = new MoePackage("*", rootEnv)
@@ -18,6 +19,9 @@ object MoeRuntime {
   def getAuthority   = AUTHORITY
 
   def isBootstrapped = is_bootstrapped
+
+  def getSystem                        = system
+  def setSystem (sys: MoeSystem): Unit = system = sys
 
   def getRootEnv     = rootEnv
   def getRootPackage = rootPackage
