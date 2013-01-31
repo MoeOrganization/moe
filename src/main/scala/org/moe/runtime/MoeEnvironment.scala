@@ -22,22 +22,20 @@ class MoeEnvironment(private val parent: Option[MoeEnvironment] = None) {
   private val pad: Map[String, MoeObject] = new HashMap[String, MoeObject]()
 
   def getCurrentPackage: MoePackage = getLocal(Markers.Package).asInstanceOf[MoePackage]
-  def getCurrentClass: MoeClass = getLocal(Markers.Class).asInstanceOf[MoeClass]
-  def getCurrentInvocant: MoeObject  = getLocal(Markers.Invocant)
+  def getCurrentClass: MoeClass     = getLocal(Markers.Class).asInstanceOf[MoeClass]
+  def getCurrentInvocant: MoeObject = getLocal(Markers.Invocant)
   def getCurrentTopic: MoeObject    = getLocal(Markers.Topic)
 
   def getPackage: MoePackage = get(Markers.Package).asInstanceOf[MoePackage]
 
-  def setCurrentPackage(p: MoeObject): Unit = setLocal(Markers.Package, p)
-  def setCurrentClass(c: MoeObject): Unit = setLocal(Markers.Class, c)
+  def setCurrentPackage(p: MoeObject): Unit  = setLocal(Markers.Package, p)
+  def setCurrentClass(c: MoeObject): Unit    = setLocal(Markers.Class, c)
   def setCurrentInvocant(i: MoeObject): Unit = setLocal(Markers.Invocant, i)
   def setCurrentTopic(t: MoeObject): Unit    = setLocal(Markers.Topic, t)
 
-
-  def hasPackage: Boolean = has(Markers.Package)
-
-  def getParent: Option[MoeEnvironment] = parent
-  def isRoot: Boolean = !parent.isDefined
+  def hasPackage = has(Markers.Package)
+  def getParent  = parent
+  def isRoot     = !parent.isDefined
 
   def get(name: String): MoeObject = {
     if (hasLocal(name)) return getLocal(name)
