@@ -1,41 +1,84 @@
 package org.moe.runtime
 
-object Runtime {
+object MoeRuntime {
 
-  private val RootEnv = new MoeEnvironment()
+  private val VERSION         = "0.0.0"
+  private val AUTHORITY       = "cpan:STEVAN"
 
-  def getRootEnv = RootEnv
+  private var is_bootstrapped = false
 
-  /** 
-   * TODO:
-   * all the objects that come out
-   * from this factory actually need
-   * to have a MoeClass associated with
-   * them, since I have not defined them
-   * yet I am punting for now.
-   * - SL
-   */
-  object NativeObjects {
+  private val rootEnv         = new MoeEnvironment()
+  private val rootPackage     = new MoePackage("*", rootEnv)
+  private val corePackage     = new MoePackage("CORE", new MoeEnvironment(Some(rootEnv)), Some(rootPackage))
 
-    private val Undef = new MoeNullObject()
-    private val True  = new MoeBooleanObject(true)
-    private val False = new MoeBooleanObject(false)
+  private val objectClass     = new MoeClass("Object", Some(VERSION), Some(AUTHORITY))
+  private val classClass      = new MoeClass("Class", Some(VERSION), Some(AUTHORITY), Some(objectClass))
 
-    def getUndef = Undef
-    def getTrue = True
-    def getFalse = False
+  def getVersion     = VERSION
+  def getAuthority   = AUTHORITY
 
-    def getInt(value: Int) = new MoeIntObject(value)
-    def getFloat(value: Double) = new MoeFloatObject(value)
-    def getString(value: String) = new MoeStringObject(value)
-    def getBool(value: Boolean) = new MoeBooleanObject(value)
+  def isBootstrapped = is_bootstrapped
 
-    def getPair(value: (MoeObject, MoeObject)) = new MoePairObject((value._1.asInstanceOf[MoeStringObject].getNativeValue, value._2))
-    def getHash(value: Map[String, MoeObject]) = new MoeHashObject(value)
-    def getArray(value: List[MoeObject]) = new MoeArrayObject(value)
+  def getRootEnv     = rootEnv
+  def getRootPackage = rootPackage
+  def getCorePackage = corePackage
+
+  def getObjectClass = objectClass
+  def getClassClass  = classClass
+
+  def getCoreClassFor (name: String): Option[MoeClass] = corePackage.getClass(name)
+
+  def bootstrap (): Unit = {
+    if (!is_bootstrapped) {
+
+      objectClass.setAssociatedClass(Some(classClass)) // Object is a class
+      classClass.setAssociatedClass(Some(classClass))  // Class is a class
+
+      val scalarClass = new MoeClass("Scalar", Some(VERSION), Some(AUTHORITY), Some(objectClass))
+      val arrayClass  = new MoeClass("Array",  Some(VERSION), Some(AUTHORITY), Some(objectClass))
+      val hashClass   = new MoeClass("Hash",   Some(VERSION), Some(AUTHORITY), Some(objectClass))
+
+      corePackage.addClass(scalarClass)
+      corePackage.addClass(arrayClass)
+      corePackage.addClass(hashClass)
+
+      val nullClass      = new MoeClass("Null",      Some(VERSION), Some(AUTHORITY), Some(scalarClass))
+      val booleanClass   = new MoeClass("Boolean",   Some(VERSION), Some(AUTHORITY), Some(scalarClass))
+      val exceptionClass = new MoeClass("Exception", Some(VERSION), Some(AUTHORITY), Some(scalarClass))
+      val stringClass    = new MoeClass("String",    Some(VERSION), Some(AUTHORITY), Some(scalarClass))
+      val numberClass    = new MoeClass("Number",    Some(VERSION), Some(AUTHORITY), Some(scalarClass))
+
+      corePackage.addClass(nullClass)
+      corePackage.addClass(booleanClass)
+      corePackage.addClass(exceptionClass)
+      corePackage.addClass(stringClass)
+      corePackage.addClass(numberClass)
+
+      is_bootstrapped = true
+    }
   }
 
-  /** 
+  object NativeObjects {
+
+    private lazy val Undef = new MoeNullObject(getCoreClassFor("Null"))
+    private lazy val True  = new MoeBooleanObject(true, getCoreClassFor("Boolean"))
+    private lazy val False = new MoeBooleanObject(false, getCoreClassFor("Boolean"))
+
+    def getUndef = Undef
+    def getTrue  = True
+    def getFalse = False
+
+    def getInt    (value: Int)     = new MoeIntObject(value, getCoreClassFor("Number"))
+    def getFloat  (value: Double)  = new MoeFloatObject(value, getCoreClassFor("Number"))
+    def getString (value: String)  = new MoeStringObject(value, getCoreClassFor("String"))
+    def getBool   (value: Boolean) = new MoeBooleanObject(value, getCoreClassFor("Boolean"))
+
+    def getPair  (value: (MoeObject, MoeObject)) = new MoePairObject((value._1.asInstanceOf[MoeStringObject].getNativeValue, value._2))
+    def getHash  (value: Map[String, MoeObject]) = new MoeHashObject(value, getCoreClassFor("Hash"))
+    def getArray (value: List[MoeObject])        = new MoeArrayObject(value, getCoreClassFor("Array"))
+  }
+
+  /**
    * TODO:
    * Need to hook up these classes with
    * their runtime counterparts, when
