@@ -63,14 +63,9 @@ class MoeEnvironment(private val parent: Option[MoeEnvironment] = None) {
     } else {
       // If we have a parent, reach into it to set (recursing upward). If
       // we don't then blow up with an UndefinedValue
-      parent match {
-        case Some(p) => p.set(name, value)
-        case None => throw new MoeRuntime.Errors.UndefinedValue(name)
-      }
-      // The above could be more idiomatic as:
-      // parent.map({ p => p.set(name, value) }).getOrElse(
-      //   throw new MoeRuntime.Errors.UndefinedValue(name)
-      // )
+      parent.map({ p => p.set(name, value) }).getOrElse(
+         throw new MoeRuntime.Errors.UndefinedValue(name)
+      )
     }
   }
 
