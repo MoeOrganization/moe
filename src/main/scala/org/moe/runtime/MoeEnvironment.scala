@@ -16,6 +16,7 @@ class MoeEnvironment(private val parent: Option[MoeEnvironment] = None) {
     val Package  = "__PACKAGE__"
     val Class    = "__CLASS__"
     val Invocant = "__SELF__"
+    val Topic    = "$_"
   }
 
   private val pad: Map[String, MoeObject] = new HashMap[String, MoeObject]()
@@ -23,12 +24,14 @@ class MoeEnvironment(private val parent: Option[MoeEnvironment] = None) {
   def getCurrentPackage: MoePackage = getLocal(Markers.Package).asInstanceOf[MoePackage]
   def getCurrentClass: MoeClass = getLocal(Markers.Class).asInstanceOf[MoeClass]
   def getCurrentInvocant: MoeObject  = getLocal(Markers.Invocant)
+  def getCurrentTopic: MoeObject    = getLocal(Markers.Topic)
 
   def getPackage: MoePackage = get(Markers.Package).asInstanceOf[MoePackage]
 
   def setCurrentPackage(p: MoeObject): Unit = setLocal(Markers.Package, p)
   def setCurrentClass(c: MoeObject): Unit = setLocal(Markers.Class, c)
   def setCurrentInvocant(i: MoeObject): Unit = setLocal(Markers.Invocant, i)
+  def setCurrentTopic(t: MoeObject): Unit    = setLocal(Markers.Topic, t)
 
 
   def hasPackage: Boolean = has(Markers.Package)
