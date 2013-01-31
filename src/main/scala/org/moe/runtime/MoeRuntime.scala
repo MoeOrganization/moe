@@ -75,7 +75,9 @@ object MoeRuntime {
 
     def getPair  (value: (MoeObject, MoeObject)) = new MoePairObject((value._1.asInstanceOf[MoeStringObject].getNativeValue, value._2))
     def getHash  (value: Map[String, MoeObject]) = new MoeHashObject(value, getCoreClassFor("Hash"))
+    def getHash  ()                              = new MoeHashObject(Map(), getCoreClassFor("Hash"))
     def getArray (value: List[MoeObject])        = new MoeArrayObject(value, getCoreClassFor("Array"))
+    def getArray ()                              = new MoeArrayObject(List(), getCoreClassFor("Array"))
   }
 
   /**
@@ -95,8 +97,9 @@ object MoeRuntime {
     class NotAllowed            (msg: String) extends MoeProblems(msg)
     class MethodNotAllowed      (msg: String) extends NotAllowed(msg)
 
-    class ValueNotFound         (msg: String) extends MoeProblems(msg)
     class UnknownNode           (msg: String) extends MoeProblems(msg)
+
+    class ValueNotFound         (msg: String) extends MoeProblems(msg)
     class PackageNotFound       (msg: String) extends ValueNotFound(msg)
     class InstanceValueNotFound (msg: String) extends ValueNotFound(msg)
     class ClassNotFound         (msg: String) extends ValueNotFound(msg)
