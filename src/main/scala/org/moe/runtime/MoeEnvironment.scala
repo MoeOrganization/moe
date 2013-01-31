@@ -1,6 +1,6 @@
 package org.moe.runtime
 
-import scala.collection.mutable.HashMap
+import scala.collection.mutable.{Map,HashMap}
 
 import org.moe.runtime._
 
@@ -18,7 +18,7 @@ class MoeEnvironment(private val parent: Option[MoeEnvironment] = None) {
     val Invocant = "__SELF__"
   }
 
-  private val pad = new HashMap[String, MoeObject]()
+  private val pad: Map[String, MoeObject] = new HashMap[String, MoeObject]()
 
   def getCurrentPackage: MoePackage = getLocal(Markers.Package).asInstanceOf[MoePackage]
   def getCurrentClass: MoeClass = getLocal(Markers.Class).asInstanceOf[MoeClass]
