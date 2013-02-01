@@ -11,10 +11,10 @@ import scala.collection.mutable.{HashMap,Map}
  */
 class MoePackage(
     private val name: String,
-    private var env: MoeEnvironment,
-    private var parent: Option[MoePackage] = None
+    private var env: MoeEnvironment
   ) extends MoeObject {
 
+  private var parent: Option[MoePackage] = None
   private val klasses: Map[String, MoeClass] = new HashMap[String, MoeClass]()
   private val subs: Map[String, MoeSubroutine] = new HashMap[String, MoeSubroutine]()
   private val sub_packages: Map[String, MoePackage] = new HashMap[String, MoePackage]()
@@ -115,7 +115,7 @@ class MoePackage(
     sub_packages += (pkg.getName -> pkg)
   }
 
-  def attachToParent(parent: MoePackage): Unit = setParent(Some(parent))
+  private def attachToParent(parent: MoePackage): Unit = setParent(Some(parent))
 
   /**
    * returns the SubPackaged with the specified name
