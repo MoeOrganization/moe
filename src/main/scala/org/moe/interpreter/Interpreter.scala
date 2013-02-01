@@ -163,17 +163,10 @@ object Interpreter {
 
       case PackageDeclarationNode(name, body) => {
         scoped { newEnv =>
-          newEnv.setCurrentPackage(
-            new MoePackage(
-              name,
-              newEnv,
-              if (env.hasPackage)
-                Some(env.getPackage)
-              else
-                None
-            )
-          )
-          env.getCurrentPackage.addSubPackage(newEnv.getCurrentPackage)
+          val parent = env.getCurrentPackage
+          val pkg    = new MoePackage(name, newEnv)
+          parent.addSubPackage(pkg)
+          newEnv.setCurrentPackage(pkg)
           eval(newEnv, body)
         }
       }
