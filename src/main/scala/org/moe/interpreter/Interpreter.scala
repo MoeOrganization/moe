@@ -212,8 +212,8 @@ object Interpreter {
         // NOTE:
         // I think we might need to eval these
         // in the context of the sub body, and
-        // we also need to make sure that we
-        // add the args to the environment as
+        // we also need to make sure that we 
+        // add the args to the environment as 
         // well.
         // - SL
         sub.execute(args.map(eval(env, _)))
@@ -232,7 +232,7 @@ object Interpreter {
       }
 
       case IfElseNode(if_condition, if_body, else_body) => {
-        if(eval(env, if_condition).isTrue) {
+        if (eval(env, if_condition).isTrue) {
           eval(env, if_body)
         } else {
           eval(env, else_body)
@@ -310,7 +310,13 @@ object Interpreter {
       case ForeachNode(topic, list, body) => {
         eval(env, list) match {
           case objects: MoeArrayObject => {
-            val applyScopeInjection = { (newEnv: MoeEnvironment, name: String, obj: MoeObject, f: (MoeEnvironment, String, MoeObject) => Any) =>
+            val applyScopeInjection = { 
+              (
+                newEnv: MoeEnvironment, 
+                name: String, 
+                obj: MoeObject, 
+                f: (MoeEnvironment, String, MoeObject) => Any
+              ) =>
               f(env, name, obj)
               eval(newEnv, body)
             }
