@@ -206,10 +206,16 @@ object Interpreter {
 
       case MethodCallNode(invocant, method_name, args) => stub
       case SubroutineCallNode(function_name, args) => {
-        val pkg = env.getPackage
-        val sub = pkg.getSubroutine(function_name).getOrElse(
+        val sub = env.getCurrentPackage.getSubroutine(function_name).getOrElse(
             throw new MoeRuntime.Errors.SubroutineNotFound(function_name)
         )
+        // NOTE:
+        // I think we might need to eval these
+        // in the context of the sub body, and
+        // we also need to make sure that we
+        // add the args to the environment as
+        // well.
+        // - SL
         sub.execute(args.map(eval(env, _)))
       }
 
