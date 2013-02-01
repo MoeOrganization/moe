@@ -63,8 +63,6 @@ class MoePackage(
    * returns the subroutine with the specified name
    *
    * @param name The name of the subroutine to return
-   *
-   * @throws SubroutineNotFound specified name does not match any subroutine
    */
   def getSubroutine(name: String): Option[MoeSubroutine] = subs.get(name)
 
@@ -93,8 +91,6 @@ class MoePackage(
    * returns the class with the specified name
    *
    * @param name The name of the class to return
-   *
-   * @throws ClassNotFound specified name does not match any class
    */
   def getClass(name: String): Option[MoeClass] = klasses.get(name)
 
@@ -126,8 +122,6 @@ class MoePackage(
    * returns the SubPackaged with the specified name
    *
    * @param name the name of the SubPackage to return
-   *
-   * @throws PackageNotFound specified name does not match any SubPackage
    */
   def getSubPackage(name: String): Option[MoePackage] = sub_packages.get(name)
 
