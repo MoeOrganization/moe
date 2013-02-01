@@ -46,19 +46,13 @@ object Interpreter {
 
       // literals
 
-      case IntLiteralNode(value) => MoeRuntime.NativeObjects.getInt(value)
-      case FloatLiteralNode(value) => MoeRuntime.NativeObjects.getFloat(value)
-      case StringLiteralNode(value) => MoeRuntime.NativeObjects.getString(value)
-      case BooleanLiteralNode(value) => {
-        if(value) {
-          MoeRuntime.NativeObjects.getTrue
-        } else {
-          MoeRuntime.NativeObjects.getFalse
-        }
-      }
+      case IntLiteralNode(value)     => MoeRuntime.NativeObjects.getInt(value)
+      case FloatLiteralNode(value)   => MoeRuntime.NativeObjects.getFloat(value)
+      case StringLiteralNode(value)  => MoeRuntime.NativeObjects.getString(value)
+      case BooleanLiteralNode(value) => MoeRuntime.NativeObjects.getBool(value)
 
       case UndefLiteralNode() => MoeRuntime.NativeObjects.getUndef
-      case SelfLiteralNode() => env.getCurrentInvocant
+      case SelfLiteralNode()  => env.getCurrentInvocant
       case ClassLiteralNode() => env.getCurrentClass
       case SuperLiteralNode() => {
         val klass = env.getCurrentClass
