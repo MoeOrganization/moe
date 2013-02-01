@@ -22,7 +22,12 @@ class MoePackage(
   /**
    * returns the name of this package
    */
-  def getName: String  = name
+  def getName: String = name
+
+  /**
+   * returns the local package environment
+   */
+  def getEnv: MoeEnvironment = env
 
   /**
    * returns true if this package has a parent
