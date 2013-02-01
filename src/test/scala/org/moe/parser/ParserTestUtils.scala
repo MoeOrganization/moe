@@ -11,6 +11,7 @@ trait ParserTestUtils {
     CompilationUnitNode(ScopeNode(StatementsNode(nodes)))
 
   def interpretCode(code: String): MoeObject = {
+    MoeRuntime.bootstrap()
     val ast = basicAST(List(Parser.parseStuff(code)))
     Interpreter.eval(MoeRuntime.getRootEnv, ast)
   }
