@@ -75,7 +75,7 @@ object MoeRuntime {
     def getInt    (value: Int)     = new MoeIntObject(value, getCoreClassFor("Number"))
     def getFloat  (value: Double)  = new MoeFloatObject(value, getCoreClassFor("Number"))
     def getString (value: String)  = new MoeStringObject(value, getCoreClassFor("String"))
-    def getBool   (value: Boolean) = new MoeBooleanObject(value, getCoreClassFor("Boolean"))
+    def getBool   (value: Boolean) = if (value) { getTrue } else { getFalse }
 
     def getPair  (value: (MoeObject, MoeObject)) = new MoePairObject((value._1.asInstanceOf[MoeStringObject].getNativeValue, value._2))
     def getHash  (value: Map[String, MoeObject]) = new MoeHashObject(value, getCoreClassFor("Hash"))
