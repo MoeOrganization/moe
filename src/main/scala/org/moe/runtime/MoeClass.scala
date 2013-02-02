@@ -162,7 +162,7 @@ class MoeClass(
   override def toString: String = {
     "{ " + name + "-" + version.getOrElse("") + "-" + authority.getOrElse("") + superclass.map({ s =>
       " #extends " + s.toString
-    }).getOrElse("") + "}"
+    }).getOrElse("") + " }"
   }
 
 }

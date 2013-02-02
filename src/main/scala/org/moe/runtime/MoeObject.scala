@@ -77,6 +77,6 @@ class MoeObject(
    * Returns a string representation of this object.
    */
   override def toString: String = {
-    "{ #instance(" + id + ")" + klass.map({ k => k.toString }).getOrElse("") + "}"
+    "{ #instance(" + id + ")" + klass.map({ k => k.toString }).getOrElse("") + " }"
   }
 }
