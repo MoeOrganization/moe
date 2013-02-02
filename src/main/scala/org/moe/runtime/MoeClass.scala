@@ -119,7 +119,7 @@ class MoeClass(
   def newInstance: MoeObject = {
     val instance = new MoeOpaque(Some(this))
     collectAllAttributes.values.foreach(
-      (attr) => instance.setValue(attr.getName, MoeRuntime.NativeObjects.getUndef)
+      (attr) => instance.setValue(attr.getName, None)
     )
     instance
   }
