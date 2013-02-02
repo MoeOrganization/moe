@@ -10,7 +10,9 @@ import org.moe.runtime._
  * @param parent optional parent environment
  */
 
-class MoeEnvironment(private val parent: Option[MoeEnvironment] = None) {
+class MoeEnvironment(
+    private val parent: Option[MoeEnvironment] = None
+  ) {
 
   object Markers {
     val Package  = "__PACKAGE__"
@@ -21,54 +23,45 @@ class MoeEnvironment(private val parent: Option[MoeEnvironment] = None) {
 
   private val pad: Map[String, MoeObject] = new HashMap[String, MoeObject]()
 
-  def getCurrentPackage: MoePackage = get(Markers.Package).asInstanceOf[MoePackage]
-  def getCurrentClass: MoeClass     = get(Markers.Class).asInstanceOf[MoeClass]
-  def getCurrentInvocant: MoeObject = get(Markers.Invocant)
-  def getCurrentTopic: MoeObject    = get(Markers.Topic)
+  def getCurrentPackage  : Option[MoePackage] = get(Markers.Package).asInstanceOf[Option[MoePackage]]
+  def getCurrentClass    : Option[MoeClass]   = get(Markers.Class).asInstanceOf[Option[MoeClass]]
+  def getCurrentInvocant : Option[MoeObject]  = get(Markers.Invocant)
+  def getCurrentTopic    : Option[MoeObject]  = get(Markers.Topic)
 
-  def setCurrentPackage(p: MoeObject): Unit  = setLocal(Markers.Package, p)
-  def setCurrentClass(c: MoeObject): Unit    = setLocal(Markers.Class, c)
-  def setCurrentInvocant(i: MoeObject): Unit = setLocal(Markers.Invocant, i)
-  def setCurrentTopic(t: MoeObject): Unit    = setLocal(Markers.Topic, t)
+  def setCurrentPackage  (p: MoePackage): Unit = setLocal(Markers.Package,  p.asInstanceOf[MoeObject])
+  def setCurrentClass    (c: MoeClass  ): Unit = setLocal(Markers.Class,    c.asInstanceOf[MoeObject])
+  def setCurrentInvocant (i: MoeObject ): Unit = setLocal(Markers.Invocant, i)
+  def setCurrentTopic    (t: MoeObject ): Unit = setLocal(Markers.Topic,    t)
 
-  def getParent  = parent
-  def isRoot     = !parent.isDefined
+  def getParent = parent
+  def isRoot    = !parent.isDefined
 
-  def get(name: String): MoeObject = {
+  def get (name: String): Option[MoeObject] = {
     if (hasLocal(name)) return getLocal(name)
-    parent match {
-      case Some(p) => p.get(name)
-      case None => throw new MoeRuntime.Errors.ValueNotFound(name)
-    }
+    parent.flatMap( _.get(name) )
   }
 
-  def has(name: String): Boolean = {
+  def has (name: String): Boolean = {
     if (hasLocal(name)) return true
-    parent match {
-      case Some(p) => p.has(name)
-      case None => false
-    }
+    parent.exists( _.has(name) )
   }
 
-  def create(name: String, value: MoeObject): Unit = setLocal(name, value)
+  def create (name: String, value: MoeObject): Option[MoeObject] = setLocal(name, value)
 
-  def set(name: String, value: MoeObject): Unit = {
-    // This env and non of it's parents know about this value, explode
-    if (!has(name)) throw new MoeRuntime.Errors.UndefinedValue(name)
+  def set (name: String, value: MoeObject): Option[MoeObject] = {
+    if (!has(name)) return None
     if (hasLocal(name)) {
-      // This environment has a local value, set it
       setLocal(name, value)
     } else {
-      // If we have a parent, reach into it to set (recursing upward). If
-      // we don't then blow up with an UndefinedValue
-      parent.map({ p => p.set(name, value) }).getOrElse(
-         throw new MoeRuntime.Errors.UndefinedValue(name)
-      )
+      parent.flatMap( _.set(name, value) )
     }
   }
 
-  private def getLocal(name: String): MoeObject = pad(name)
-  private def hasLocal(name: String): Boolean   = pad.contains(name)
-  private def setLocal(name: String, value: MoeObject): Unit = pad += (name -> value)
+  private def getLocal(name: String): Option[MoeObject] = pad.get(name)
+  private def hasLocal(name: String): Boolean           = pad.contains(name)
+  private def setLocal(name: String, value: MoeObject): Option[MoeObject] = {
+    pad += (name -> value)
+    Some(value)
+  }
 
 }
