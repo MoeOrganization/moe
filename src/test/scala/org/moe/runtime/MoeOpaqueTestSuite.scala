@@ -2,8 +2,9 @@ package org.moe.runtime
 
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
+import org.scalatest.matchers.ShouldMatchers
 
-class MoeOpaqueTestSuite extends FunSuite with BeforeAndAfter {
+class MoeOpaqueTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers {
 
   var o : MoeOpaque = _
 
@@ -19,7 +20,7 @@ class MoeOpaqueTestSuite extends FunSuite with BeforeAndAfter {
     val c001 = new MoeOpaque()
     o.setValue("$.foo", c001)
     assert(o.hasValue("$.foo"))
-    assert(o.getValue("$.foo") === c001)
+    o.getValue("$.foo") should be (Some(c001))
   }
 
   test("... overwrite a value in the instance") {
@@ -27,18 +28,11 @@ class MoeOpaqueTestSuite extends FunSuite with BeforeAndAfter {
     val c002 = new MoeOpaque()
     o.setValue("$.foo", c001)
     assert(o.hasValue("$.foo"))
-    assert(o.getValue("$.foo") === c001)
+    o.getValue("$.foo") should be (Some(c001))
 
     o.setValue("$.foo", c002)
-    assert(o.getValue("$.foo") != c001)
-    assert(o.getValue("$.foo") === c002)
-  }
-
-  test("... instance value not found thrown") {
-    val ex = intercept[MoeRuntime.Errors.InstanceValueNotFound] {
-      o.getValue("$.bar")
-    }
-    assert(ex.getMessage === "$.bar")
+    o.getValue("$.foo") should be (Some(c002))
+    o.getValue("$.foo") should not be (Some(c001))
   }
 
 }
