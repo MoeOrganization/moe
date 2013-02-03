@@ -65,6 +65,8 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
     val ident = new MoeMethod("ident", (inv, args) => inv)
     klass.addMethod(ident)
     var obj = new MoeObject(Some(klass))
+    assert(obj.isInstanceOf(klass))
+    assert(obj.isInstanceOf("TestClass"))
     assert(obj.callMethod(ident) === obj)
   }
 
@@ -77,6 +79,8 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
     val ident = new MoeMethod("ident", (inv, args) => inv)
     klass.addMethod(ident)
     var obj = klass.newInstance
+    assert(obj.isInstanceOf(klass))
+    assert(obj.isInstanceOf("TestClass"))
     assert(obj.callMethod(ident) === obj)
   }
 
@@ -107,6 +111,12 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
 
     assert(dad.callMethod(ident) === dad)
     assert(son.callMethod(ident) === son)
+
+    assert(dad.isInstanceOf(parent))
+    assert(son.isInstanceOf(parent))
+
+    assert(!dad.isInstanceOf(child))
+    assert(son.isInstanceOf(child))
   }
 
   test("... test attribute resolution") {
