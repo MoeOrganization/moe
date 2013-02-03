@@ -24,6 +24,7 @@ object MoeErrors {
   class InstanceValueNotFound (msg: String) extends ValueNotFound(msg)
   class ClassNotFound         (msg: String) extends ValueNotFound(msg)
   class SuperclassNotFound    (msg: String) extends ValueNotFound(msg)
+  class InvocantNotFound      (msg: String) extends ValueNotFound(msg) 
   class MethodNotFound        (msg: String) extends ValueNotFound(msg)
   class AttributeNotFound     (msg: String) extends ValueNotFound(msg)
   class SubroutineNotFound    (msg: String) extends ValueNotFound(msg)

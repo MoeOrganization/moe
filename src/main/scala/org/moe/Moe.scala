@@ -126,7 +126,7 @@ object Moe {
             StatementsNode(nodes)
           )
         )
-        val result = Interpreter.eval(runtime.getRootEnv, ast)
+        val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
         println(result.toString)
       }
       catch {
