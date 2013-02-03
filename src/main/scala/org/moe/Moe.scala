@@ -7,6 +7,9 @@ import org.moe.parser._
 import org.moe.interpreter._
 import org.moe.runtime._
 
+import java.io.File
+import scala.io.Source
+
 object Moe {
 
   def main (args: Array[String]): Unit = {
@@ -73,14 +76,31 @@ object Moe {
           return
       }
       else {
-          val rest: Array[String] = cmd.getArgs()
-          if (rest.length == 0) {
-              REPL.enter(runtime, dumpAST)
-          } else {
-              // TODO: ... read a file and execute it
-          }
-      }
+        val rest: Array[String] = cmd.getArgs()
+        if (rest.length == 0) {
+          REPL.enter(runtime)
+        } else {
+          // TODO: invocation arguments
+          val path = rest(0)
 
+          val source = Source.fromFile(path).mkString
+          try {
+            val nodes = List(MoeParsers.parseFromEntry(source))
+            val ast = CompilationUnitNode(
+              ScopeNode(
+                StatementsNode(nodes)
+              )
+            )
+            if (dumpAST) {
+              println(Serializer.toJSON(ast))
+            }
+            Interpreter.eval(runtime, runtime.getRootEnv, ast)
+          }
+          catch {
+            case e: Exception => System.err.println(e)
+          }
+        }
+      }
   }
 
   def printHelp (options: Options): Unit = {
