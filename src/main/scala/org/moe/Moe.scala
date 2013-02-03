@@ -15,6 +15,7 @@ object Moe {
 
       options.addOption("h", false, "display this message")
       options.addOption("v", false, "display version information")
+      options.addOption("u", false, "dump the AST after parsing")
 
       val e = new Option("e", "code to evaluate")
       e.setArgs(1)
@@ -30,7 +31,6 @@ object Moe {
 
         options.addOption("c", false, "check syntax only")
         options.addOption("d", false, "debug mode")
-        options.addOption("u", false, "dump the AST after parsing")
       */
 
       /*
@@ -65,15 +65,17 @@ object Moe {
           return
       }
 
+      val dumpAST = cmd.hasOption("u")
+
       if (cmd.hasOption("e")) {
           val code: String = cmd.getOptionValue("e")
-          REPL.evalLine(runtime, code)
+          REPL.evalLine(runtime, code, dumpAST)
           return
       }
       else {
           val rest: Array[String] = cmd.getArgs()
           if (rest.length == 0) {
-              REPL.enter(runtime)
+              REPL.enter(runtime, dumpAST)
           } else {
               // TODO: ... read a file and execute it
           }
@@ -105,20 +107,20 @@ object Moe {
         to own the line editing capabilities
   */
   object REPL {
-    def enter (runtime: MoeRuntime): Unit = {
+    def enter (runtime: MoeRuntime, dumpAST: Boolean = false): Unit = {
         var ok = true
         print("> ")
         while (ok) {
           val line = readLine()
           ok = line != null
           if (ok) {
-            evalLine(runtime, line)
+            evalLine(runtime, line, dumpAST)
             print("> ")
           }
         }
     }
 
-    def evalLine(runtime: MoeRuntime, line: String) = {
+    def evalLine(runtime: MoeRuntime, line: String, dumpAST: Boolean = false) = {
       try {
         val nodes = List(MoeParsers.parseFromEntry(line))
         val ast = CompilationUnitNode(
@@ -126,6 +128,9 @@ object Moe {
             StatementsNode(nodes)
           )
         )
+        if (dumpAST) {
+          println(ast.serialize)
+        }
         val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
         println(result.toString)
       }
