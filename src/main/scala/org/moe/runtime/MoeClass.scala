@@ -12,8 +12,8 @@ import scala.collection.mutable.{HashMap,Map}
  */
 class MoeClass(
     private val name: String,
-    private var version: Option[String] = None,
-    private var authority: Option[String] = None,
+    private val version: Option[String] = None,
+    private val authority: Option[String] = None,
     private var superclass: Option[MoeClass] = None
   ) extends MoeObject {
 
@@ -36,20 +36,6 @@ class MoeClass(
    * Returns the authority of this class
    */
   def getAuthority: Option[String] = authority
-
-  /**
-   * Sets the version of this class
-   *
-   * @param v The version
-   */
-  def setVersion(v: Option[String]) = version = v
-
-  /**
-   * Sets the authority of this class
-   *
-   * @param a The authority
-   */
-  def setAuthority(a: Option[String]) = authority = a
 
   // Superclass ...
 
