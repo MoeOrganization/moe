@@ -94,26 +94,26 @@ object Interpreter {
       // unary operators
 
       case IncrementNode(receiver: AST) => receiver match {
-        case VariableAccessNode(varName) => env.get(varName) match {
+        case VariableAccessNode(varName) => env.get(varName).getOrElse(
+          throw new MoeErrors.VariableNotFound(varName)
+        ) match {
           case i: MoeIntObject => {
-            env.set(varName, runtime.NativeObjects.getInt(i.getNativeValue + 1))
-            env.get(varName)
+            env.set(varName, runtime.NativeObjects.getInt(i.getNativeValue + 1)).get
           }
           case n: MoeFloatObject => {
-            env.set(varName, runtime.NativeObjects.getFloat(n.getNativeValue + 1.0))
-            env.get(varName)
+            env.set(varName, runtime.NativeObjects.getFloat(n.getNativeValue + 1.0)).get
           }
         }
       }
       case DecrementNode(receiver: AST) => receiver match {
-        case VariableAccessNode(varName) => env.get(varName) match {
+        case VariableAccessNode(varName) => env.get(varName).getOrElse(
+          throw new MoeErrors.VariableNotFound(varName)
+        ) match {
           case i: MoeIntObject => {
-            env.set(varName, runtime.NativeObjects.getInt(i.getNativeValue - 1))
-            env.get(varName)
+            env.set(varName, runtime.NativeObjects.getInt(i.getNativeValue - 1)).get
           }
           case n: MoeFloatObject => {
-            env.set(varName, runtime.NativeObjects.getFloat(n.getNativeValue - 1.0))
-            env.get(varName)
+            env.set(varName, runtime.NativeObjects.getFloat(n.getNativeValue - 1.0)).get
           }
         }
       }
@@ -169,7 +169,9 @@ object Interpreter {
 
       case PackageDeclarationNode(name, body) => {
         scoped { newEnv =>
-          val parent = env.getCurrentPackage
+          val parent = env.getCurrentPackage.getOrElse(
+            throw new MoeErrors.PackageNotFound("__PACKAGE__")
+          )
           val pkg    = new MoePackage(name, newEnv)
           parent.addSubPackage(pkg)
           newEnv.setCurrentPackage(pkg)
@@ -188,7 +190,9 @@ object Interpreter {
             name,
             params => eval(runtime, newEnv, body)
           )
-          env.getCurrentPackage.addSubroutine( sub )
+          env.getCurrentPackage.getOrElse(
+            throw new MoeErrors.PackageNotFound("__PACKAGE__")
+          ).addSubroutine( sub )
           sub
         }
       }
@@ -198,21 +202,23 @@ object Interpreter {
       case AttributeDeclarationNode(name, expression) => stub
 
       // TODO context etc
-      case VariableAccessNode(name) => env.get(name)
+      case VariableAccessNode(name) => env.get(name).getOrElse(
+          throw new MoeErrors.VariableNotFound(name)
+        )
       case VariableAssignmentNode(name, expression) => {
-        env.set(name, eval(runtime, env, expression))
-        env.get(name)
+        env.set(name, eval(runtime, env, expression)).get
       }
       case VariableDeclarationNode(name, expression) => {
-        env.create(name, eval(runtime, env, expression))
-        env.get(name)
+        env.create(name, eval(runtime, env, expression)).get
       }
 
       // operations
 
       case MethodCallNode(invocant, method_name, args) => stub
       case SubroutineCallNode(function_name, args) => {
-        val sub = env.getCurrentPackage.getSubroutine(function_name).getOrElse(
+        val sub = env.getCurrentPackage.getOrElse(
+            throw new MoeErrors.PackageNotFound("__PACKAGE__")
+          ).getSubroutine(function_name).getOrElse(
             throw new MoeErrors.SubroutineNotFound(function_name)
         )
         // NOTE:
@@ -246,7 +252,7 @@ object Interpreter {
       }
 
       case IfElsifNode(if_condition, if_body, elsif_condition, elsif_body) => {
-        eval( env,
+        eval(runtime, env,
           IfElseNode(
             if_condition,
             if_body,
