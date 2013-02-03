@@ -1,28 +1,27 @@
 package org.moe.runtime
 
-object MoeRuntime {
+class MoeRuntime (
+    private val system: MoeSystem = new MoeSystem()
+  ) {
 
   private val VERSION         = "0.0.0"
   private val AUTHORITY       = "cpan:STEVAN"
 
   private var is_bootstrapped = false
-  private var system          = new MoeSystem()
 
-  private val rootEnv         = new MoeEnvironment()
-  private val rootPackage     = new MoePackage("*", rootEnv)
-  private val corePackage     = new MoePackage("CORE", new MoeEnvironment(Some(rootEnv)), Some(rootPackage))
+  private val rootEnv     = new MoeEnvironment()
+  private val rootPackage = new MoePackage("*", rootEnv)
+  private val corePackage = new MoePackage("CORE", new MoeEnvironment(Some(rootEnv)))
 
-  private val objectClass     = new MoeClass("Object", Some(VERSION), Some(AUTHORITY))
-  private val classClass      = new MoeClass("Class", Some(VERSION), Some(AUTHORITY), Some(objectClass))
+  private val objectClass = new MoeClass("Object", Some(VERSION), Some(AUTHORITY))
+  private val classClass  = new MoeClass("Class", Some(VERSION), Some(AUTHORITY), Some(objectClass))
 
   def getVersion     = VERSION
   def getAuthority   = AUTHORITY
 
   def isBootstrapped = is_bootstrapped
 
-  def getSystem                        = system
-  def setSystem (sys: MoeSystem): Unit = system = sys
-
+  def getSystem      = system
   def getRootEnv     = rootEnv
   def getRootPackage = rootPackage
   def getCorePackage = corePackage
@@ -32,12 +31,33 @@ object MoeRuntime {
 
   def getCoreClassFor (name: String): Option[MoeClass] = corePackage.getClass(name)
 
-  def bootstrap (): Unit = {
+  def bootstrap() : Unit = {
     if (!is_bootstrapped) {
 
+      // setup the root package
+      rootEnv.setCurrentPackage(rootPackage) // bind it to env
+
+      // set up the core package
+      rootPackage.addSubPackage(corePackage) // bind it to the root
+      corePackage.getEnv.setCurrentPackage(corePackage) // bind it to the env
+
+      // tie the knot
       objectClass.setAssociatedClass(Some(classClass)) // Object is a class
       classClass.setAssociatedClass(Some(classClass))  // Class is a class
 
+      /*
+        TODO:
+        bootstrap the other associtateClass for 
+        MoeClass, MoeAttribute,MoeMethod, etc.
+      */
+
+      // create the core classes
+      /* 
+        NOTE:
+        Do some research on the core Perl 6
+        classes, we should be following their
+        lead (within reason)
+      */
       val scalarClass = new MoeClass("Scalar", Some(VERSION), Some(AUTHORITY), Some(objectClass))
       val arrayClass  = new MoeClass("Array",  Some(VERSION), Some(AUTHORITY), Some(objectClass))
       val hashClass   = new MoeClass("Hash",   Some(VERSION), Some(AUTHORITY), Some(objectClass))
@@ -75,50 +95,13 @@ object MoeRuntime {
     def getInt    (value: Int)     = new MoeIntObject(value, getCoreClassFor("Number"))
     def getFloat  (value: Double)  = new MoeFloatObject(value, getCoreClassFor("Number"))
     def getString (value: String)  = new MoeStringObject(value, getCoreClassFor("String"))
-    def getBool   (value: Boolean) = if (value) { getTrue } else { getFalse }
+    def getBool   (value: Boolean) = if (value) { True } else { False }
 
     def getPair  (value: (MoeObject, MoeObject)) = new MoePairObject((value._1.asInstanceOf[MoeStringObject].getNativeValue, value._2))
     def getHash  (value: Map[String, MoeObject]) = new MoeHashObject(value, getCoreClassFor("Hash"))
     def getHash  ()                              = new MoeHashObject(Map(), getCoreClassFor("Hash"))
     def getArray (value: List[MoeObject])        = new MoeArrayObject(value, getCoreClassFor("Array"))
     def getArray ()                              = new MoeArrayObject(List(), getCoreClassFor("Array"))
-  }
-
-  /**
-   * TODO:
-   * Need to hook up these classes with
-   * their runtime counterparts, when
-   * we actually have them that is.
-   * - SL
-   */
-  object Errors {
-    class MoeException          (msg: String) extends Exception(msg)
-    class MoeMoney              (msg: String) extends MoeException(msg)
-
-    // MoeProblems is derived from MoeMoney - RIP B.I.G
-    class MoeProblems           (msg: String) extends MoeMoney(msg)
-
-    class NotAllowed            (msg: String) extends MoeProblems(msg)
-    class MethodNotAllowed      (msg: String) extends NotAllowed(msg)
-
-    class UnknownNode           (msg: String) extends MoeProblems(msg)
-
-    class ValueNotFound         (msg: String) extends MoeProblems(msg)
-    class PackageNotFound       (msg: String) extends ValueNotFound(msg)
-    class InstanceValueNotFound (msg: String) extends ValueNotFound(msg)
-    class ClassNotFound         (msg: String) extends ValueNotFound(msg)
-    class SuperclassNotFound    (msg: String) extends ValueNotFound(msg)
-    class MethodNotFound        (msg: String) extends ValueNotFound(msg)
-    class AttributeNotFound     (msg: String) extends ValueNotFound(msg)
-    class SubroutineNotFound    (msg: String) extends ValueNotFound(msg)
-    class VariableNotFound      (msg: String) extends ValueNotFound(msg)
-
-    class UndefinedValue        (msg: String) extends MoeProblems(msg)
-    class UndefinedMethod       (msg: String) extends UndefinedValue(msg)
-    class UndefinedSubroutine   (msg: String) extends UndefinedValue(msg)
-
-    class MissingValue          (msg: String) extends MoeProblems(msg)
-    class MissingClass          (msg: String) extends MissingValue(msg)
   }
 
 }

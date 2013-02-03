@@ -2,31 +2,63 @@ package org.moe.runtime
 
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
+import org.scalatest.matchers.ShouldMatchers
 
-class MoeRuntimeTestSuite extends FunSuite with BeforeAndAfter {
-
-  test("... basic runtime test (unbootstrapped)") {
-    assert(!MoeRuntime.isBootstrapped)
-  }
+class MoeRuntimeTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers {
 
   test("... basic runtime test (bootstrapped)") {
-    assert(!MoeRuntime.isBootstrapped)
-    MoeRuntime.bootstrap()
-    assert(MoeRuntime.isBootstrapped)
+    val runtime = new MoeRuntime()
+    runtime.bootstrap()
+    assert(runtime.isBootstrapped)
+    assert(runtime.getSystem != null)
+  }
+
+  test("... test root-package (basic env setup)") {
+    val runtime = new MoeRuntime()
+    runtime.bootstrap()
+    assert(runtime.isBootstrapped)
+
+    val rootPackage = runtime.getRootPackage
+    rootPackage.getEnv should be (runtime.getRootEnv)
+    runtime.getRootEnv.getCurrentPackage should be (Some(rootPackage))
+  }
+
+  test("... test root-package (basic core setup)") {
+    val runtime = new MoeRuntime()
+    runtime.bootstrap()
+    assert(runtime.isBootstrapped)
+
+    val rootPackage = runtime.getRootPackage
+    val corePackage = runtime.getCorePackage
+    rootPackage.getSubPackage("CORE") should be (Some(corePackage))
+  }
+
+  test("... test core-package (basic env setup)") {
+    val runtime = new MoeRuntime()
+    runtime.bootstrap()
+    assert(runtime.isBootstrapped)
+
+    val corePackage = runtime.getCorePackage
+    corePackage.getEnv.getCurrentPackage should be (Some(corePackage))
+    corePackage.getEnv.getParent should be (Some(runtime.getRootEnv))
   }
 
   test("... test core-package (basic core classes)") {
-    MoeRuntime.bootstrap()
-    assert(MoeRuntime.isBootstrapped)
-    assert(MoeRuntime.getCorePackage.hasClass("Scalar"))
-    assert(MoeRuntime.getCorePackage.hasClass("Array"))
-    assert(MoeRuntime.getCorePackage.hasClass("Hash"))
+    val runtime = new MoeRuntime()
+    runtime.bootstrap()
+    assert(runtime.isBootstrapped)
 
-    assert(MoeRuntime.getCorePackage.hasClass("Null"))
-    assert(MoeRuntime.getCorePackage.hasClass("Boolean"))
-    assert(MoeRuntime.getCorePackage.hasClass("Number"))
-    assert(MoeRuntime.getCorePackage.hasClass("String"))
-    assert(MoeRuntime.getCorePackage.hasClass("Exception"))
+    val corePackage = runtime.getCorePackage
+
+    assert(corePackage.hasClass("Scalar"))
+    assert(corePackage.hasClass("Array"))
+    assert(corePackage.hasClass("Hash"))
+
+    assert(corePackage.hasClass("Null"))
+    assert(corePackage.hasClass("Boolean"))
+    assert(corePackage.hasClass("Number"))
+    assert(corePackage.hasClass("String"))
+    assert(corePackage.hasClass("Exception"))
   }
 
 }
