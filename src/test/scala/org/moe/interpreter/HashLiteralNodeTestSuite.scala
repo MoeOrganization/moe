@@ -18,7 +18,7 @@ class HashLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
 
     val hash: Map[String, MoeObject] = result.asInstanceOf[MoeHashObject].getNativeValue
     assert(hash("foo").asInstanceOf[MoeIntObject].getNativeValue === 10)
