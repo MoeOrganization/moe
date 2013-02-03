@@ -9,8 +9,6 @@ class MoeObject(
 
   private val id: Int = System.identityHashCode(this)
 
-  private var klass: Option[MoeClass] = associatedClass
-
   /**
    * Returns the ID of this class.
    */
@@ -19,19 +17,19 @@ class MoeObject(
   /**
    * Returns the class associted with this object, if there is one.
    */
-  def getAssociatedClass: Option[MoeClass] = klass
+  def getAssociatedClass: Option[MoeClass] = associatedClass
 
   /**
    * Returns true if a class is associated with this object.
    */
-  def hasAssociatedClass: Boolean = klass.isDefined
+  def hasAssociatedClass: Boolean = associatedClass.isDefined
 
   /**
    * Set the class that is associated with this object.
    *
    * @param c The class to associate with this object.
    */
-  def setAssociatedClass(c: Option[MoeClass]) = klass = c
+  def setAssociatedClass(c: Option[MoeClass]) = associatedClass = c
 
   /**
    * Invoke the named method.
@@ -67,6 +65,6 @@ class MoeObject(
    * Returns a string representation of this object.
    */
   override def toString: String = {
-    "{ #instance(" + id + ")" + klass.map({ k => k.toString }).getOrElse("") + " }"
+    "{ #instance(" + id + ")" + associatedClass.map({ k => k.toString }).getOrElse("") + " }"
   }
 }
