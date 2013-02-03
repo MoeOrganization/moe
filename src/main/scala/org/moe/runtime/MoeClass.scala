@@ -112,13 +112,7 @@ class MoeClass(
   /**
    * Creates a new instance of this class.
    */
-  def newInstance: MoeObject = {
-    val instance = new MoeOpaque(Some(this))
-    collectAllAttributes.values.foreach(
-      (attr) => instance.setValue(attr.getName, None)
-    )
-    instance
-  }
+  def newInstance: MoeObject = new MoeOpaque(Some(this))
 
   // Methods ...
 
