@@ -58,20 +58,22 @@ object Moe {
           return
       }
 
+      val runtime = new MoeRuntime()
+
       if (cmd.hasOption("v")) {
-          printVersionInformation()
+          printVersionInformation(runtime)
           return
       }
 
       if (cmd.hasOption("e")) {
           val code: String = cmd.getOptionValue("e")
-          REPL.evalLine(code)
+          REPL.evalLine(runtime, code)
           return
       }
       else {
           val rest: Array[String] = cmd.getArgs()
           if (rest.length == 0) {
-              REPL.enter()
+              REPL.enter(runtime)
           } else {
               // TODO: ... read a file and execute it
           }
@@ -85,9 +87,9 @@ object Moe {
   }
 
   // NOTE: this likely needs work - SL
-  def printVersionInformation (): Unit = println(
+  def printVersionInformation (runtime: MoeRuntime): Unit = println(
     "\n" +
-    "This is Moe v" + MoeRuntime.getVersion + "\n" +
+    "This is Moe v" + runtime.getVersion + "\n" +
     "\n" +
     "This software is copyright (c) 2013 by Infinity Interactive, Inc.\n" +
     "\n" +
@@ -103,20 +105,20 @@ object Moe {
         to own the line editing capabilities
   */
   object REPL {
-    def enter (): Unit = {
+    def enter (runtime: MoeRuntime): Unit = {
         var ok = true
         print("> ")
         while (ok) {
           val line = readLine()
           ok = line != null
           if (ok) {
-            evalLine(line)
+            evalLine(runtime, line)
             print("> ")
           }
         }
     }
 
-    def evalLine(line: String) = {
+    def evalLine(runtime: MoeRuntime, line: String) = {
       try {
         val nodes = List(MoeParsers.parseFromEntry(line))
         val ast = CompilationUnitNode(
@@ -124,7 +126,7 @@ object Moe {
             StatementsNode(nodes)
           )
         )
-        val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+        val result = Interpreter.eval(runtime.getRootEnv, ast)
         println(result.toString)
       }
       catch {
