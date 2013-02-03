@@ -7,7 +7,7 @@ class MoeSystem(
  ) {
 
   def getSTDIN  = STDIN
-  def getSTROUT = STDOUT
+  def getSTDOUT = STDOUT
   def getSTDERR = STDERR
 
   def getEnv = sys.env
@@ -15,16 +15,3 @@ class MoeSystem(
   def exit ()            = sys.exit()
   def exit (status: Int) = sys.exit(status)
 }
-
-/*
-
-NOTES:
-
-This object is meant to wrap some basic runtime
-features so that we can control/configure it
-within our runtime. This is just the basics for
-now, but eventually this should be the primary
-way in which our runtime interfaces with it's
-host runtime.
-
-*/
