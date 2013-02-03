@@ -1,12 +1,11 @@
 package org.moe.interpreter
 
 import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
 
 import org.moe.runtime._
 import org.moe.ast._
 
-class LogicalNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestUtils {
+class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
   test("... basic test with Not") {
     val ast = wrapSimpleAST(
@@ -14,7 +13,7 @@ class LogicalNodeTestSuite extends FunSuite with BeforeAndAfter with Interpreter
         NotNode(BooleanLiteralNode(true))
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[ MoeBooleanObject ].getNativeValue === false)
   }
 
@@ -24,7 +23,7 @@ class LogicalNodeTestSuite extends FunSuite with BeforeAndAfter with Interpreter
         NotNode(BooleanLiteralNode(false))
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 
@@ -37,7 +36,7 @@ class LogicalNodeTestSuite extends FunSuite with BeforeAndAfter with Interpreter
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
   }
 
@@ -53,7 +52,7 @@ class LogicalNodeTestSuite extends FunSuite with BeforeAndAfter with Interpreter
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 100)
   }
 
@@ -66,7 +65,7 @@ class LogicalNodeTestSuite extends FunSuite with BeforeAndAfter with Interpreter
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 

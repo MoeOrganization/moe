@@ -1,12 +1,11 @@
 package org.moe.interpreter
 
 import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
 
 import org.moe.runtime._
 import org.moe.ast._
 
-class ComparisonNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestUtils {
+class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
   test("... basic test with <") {
     val ast = wrapSimpleAST(
@@ -17,7 +16,7 @@ class ComparisonNodeTestSuite extends FunSuite with BeforeAndAfter with Interpre
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 
@@ -30,7 +29,7 @@ class ComparisonNodeTestSuite extends FunSuite with BeforeAndAfter with Interpre
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
   }
 
@@ -43,7 +42,7 @@ class ComparisonNodeTestSuite extends FunSuite with BeforeAndAfter with Interpre
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 
@@ -56,7 +55,7 @@ class ComparisonNodeTestSuite extends FunSuite with BeforeAndAfter with Interpre
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
   }
 
@@ -69,7 +68,7 @@ class ComparisonNodeTestSuite extends FunSuite with BeforeAndAfter with Interpre
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 
@@ -82,7 +81,7 @@ class ComparisonNodeTestSuite extends FunSuite with BeforeAndAfter with Interpre
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
   }
 
@@ -95,7 +94,7 @@ class ComparisonNodeTestSuite extends FunSuite with BeforeAndAfter with Interpre
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 
@@ -108,7 +107,7 @@ class ComparisonNodeTestSuite extends FunSuite with BeforeAndAfter with Interpre
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
   }
 

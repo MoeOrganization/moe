@@ -1,12 +1,11 @@
 package org.moe.interpreter
 
 import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
 
 import org.moe.runtime._
 import org.moe.ast._
 
-class UnlessNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestUtils {
+class UnlessNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
   test("... basic test with Unless") {
     val ast = wrapSimpleAST(
@@ -17,7 +16,7 @@ class UnlessNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterT
         )
       )
     )
-    val result = Interpreter.eval( MoeRuntime.getRootEnv, ast )
+    val result = Interpreter.eval( runtime.getRootEnv, ast )
     assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 42 )
   }
 
@@ -30,8 +29,8 @@ class UnlessNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterT
         )
       )
     )
-    val result = Interpreter.eval( MoeRuntime.getRootEnv, ast )
-    assert( result === MoeRuntime.NativeObjects.getUndef )
+    val result = Interpreter.eval( runtime.getRootEnv, ast )
+    assert( result === runtime.NativeObjects.getUndef )
   }
 
   test("... basic test with UnlessElse") {
@@ -44,7 +43,7 @@ class UnlessNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterT
         )
       )
     )
-    val result = Interpreter.eval( MoeRuntime.getRootEnv, ast )
+    val result = Interpreter.eval( runtime.getRootEnv, ast )
     assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 42 )
   }
 
@@ -58,7 +57,7 @@ class UnlessNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterT
         )
       )
     )
-    val result = Interpreter.eval( MoeRuntime.getRootEnv, ast )
+    val result = Interpreter.eval( runtime.getRootEnv, ast )
     assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 21 )
   }
 

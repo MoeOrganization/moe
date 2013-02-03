@@ -1,12 +1,11 @@
 package org.moe.interpreter
 
 import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
 
 import org.moe.runtime._
 import org.moe.ast._
 
-class HashLiteralNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestUtils {
+class HashLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
   test("... basic test with Hash") {
     val ast = wrapSimpleAST(
@@ -19,7 +18,7 @@ class HashLiteralNodeTestSuite extends FunSuite with BeforeAndAfter with Interpr
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
 
     val hash: Map[String, MoeObject] = result.asInstanceOf[MoeHashObject].getNativeValue
     assert(hash("foo").asInstanceOf[MoeIntObject].getNativeValue === 10)

@@ -1,12 +1,11 @@
 package org.moe.interpreter
 
 import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
 
 import org.moe.runtime._
 import org.moe.ast._
 
-class IncrementDecrementNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestUtils {
+class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
   test("... basic test with variable increment") {
     val ast = wrapSimpleAST(
@@ -18,7 +17,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with BeforeAndAfter with 
         IncrementNode(VariableAccessNode("$foo"))
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 43)
   }
 
@@ -32,7 +31,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with BeforeAndAfter with 
         IncrementNode(VariableAccessNode("$foo"))
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeFloatObject].getNativeValue === 99.6)
   }
 
@@ -46,7 +45,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with BeforeAndAfter with 
         DecrementNode(VariableAccessNode("$foo"))
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 41)
   }
 
@@ -60,7 +59,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with BeforeAndAfter with 
         DecrementNode(VariableAccessNode("$foo"))
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeFloatObject].getNativeValue === 97.6)
   }
 

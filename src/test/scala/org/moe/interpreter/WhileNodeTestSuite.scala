@@ -1,12 +1,11 @@
 package org.moe.interpreter
 
 import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
 
 import org.moe.runtime._
 import org.moe.ast._
 
-class WhileNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestUtils {
+class WhileNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
   test("... basic test with while loop") {
     // my ($foo, $bar) = (0, 0);
@@ -36,7 +35,7 @@ class WhileNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTe
         VariableAccessNode("$bar")
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === -10)
   }
 

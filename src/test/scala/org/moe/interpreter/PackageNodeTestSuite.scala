@@ -1,12 +1,11 @@
 package org.moe.interpreter
 
 import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
 
 import org.moe.runtime._
 import org.moe.ast._
 
-class PackageNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestUtils {
+class PackageNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
   test("... basic test with package and closure") {
     // package Foo { my $foo = 0; sub add_foo { $foo++ }
@@ -39,7 +38,7 @@ class PackageNodeTestSuite extends FunSuite with BeforeAndAfter with Interpreter
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 3)
   }
 

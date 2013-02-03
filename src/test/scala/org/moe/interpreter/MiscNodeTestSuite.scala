@@ -1,12 +1,11 @@
 package org.moe.interpreter
 
 import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
 
 import org.moe.runtime._
 import org.moe.ast._
 
-class MiscNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestUtils {
+class MiscNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
   private case class FooNode() extends AST
 
@@ -17,7 +16,7 @@ class MiscNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTes
         StringLiteralNode("WORLD")
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeStringObject].getNativeValue === "WORLD")
   }
 
@@ -27,8 +26,8 @@ class MiscNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTes
         FooNode()
       )
     )
-    intercept[MoeRuntime.Errors.UnknownNode] {
-      Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    intercept[MoeErrors.UnknownNode] {
+      Interpreter.eval(runtime.getRootEnv, ast)
     }
   }
 

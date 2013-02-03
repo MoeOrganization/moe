@@ -1,12 +1,11 @@
 package org.moe.interpreter
 
 import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
 
 import org.moe.runtime._
 import org.moe.ast._
 
-class IfNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestUtils {
+class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
   test("... basic test with If") {
     val ast = wrapSimpleAST(
@@ -17,7 +16,7 @@ class IfNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestU
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 1)
   }
 
@@ -30,8 +29,8 @@ class IfNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestU
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
-    assert(result === MoeRuntime.NativeObjects.getUndef)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
+    assert(result === runtime.NativeObjects.getUndef)
   }
 
   test("... basic test with IfElse") {
@@ -44,7 +43,7 @@ class IfNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestU
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 2)
   }
 
@@ -58,7 +57,7 @@ class IfNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestU
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 3)
   }
 
@@ -73,7 +72,7 @@ class IfNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestU
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 5)
   }
 
@@ -88,7 +87,7 @@ class IfNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestU
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 8)
   }
 
@@ -103,8 +102,8 @@ class IfNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestU
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
-    assert(result === MoeRuntime.NativeObjects.getUndef)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
+    assert(result === runtime.NativeObjects.getUndef)
   }
 
   test("... basic (true/true) test with IfElsifElse") {
@@ -119,7 +118,7 @@ class IfNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestU
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 34)
   }
 
@@ -135,7 +134,7 @@ class IfNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestU
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 55)
   }
 
@@ -151,7 +150,7 @@ class IfNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestU
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 89)
   }
 

@@ -1,12 +1,11 @@
 package org.moe.interpreter
 
 import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
 
 import org.moe.runtime._
 import org.moe.ast._
 
-class VariableDeclarationNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestUtils {
+class VariableDeclarationNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
   test("... basic test with variable declaration") {
     val ast = wrapSimpleAST(
@@ -17,7 +16,7 @@ class VariableDeclarationNodeTestSuite extends FunSuite with BeforeAndAfter with
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 42)
   }
 
@@ -34,7 +33,7 @@ class VariableDeclarationNodeTestSuite extends FunSuite with BeforeAndAfter with
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeStringObject].getNativeValue === "jason")
   }
 

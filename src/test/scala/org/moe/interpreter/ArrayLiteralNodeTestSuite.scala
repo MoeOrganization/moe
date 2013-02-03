@@ -1,12 +1,11 @@
 package org.moe.interpreter
 
-import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
-
 import org.moe.runtime._
 import org.moe.ast._
 
-class ArrayLiteralNodeTestSuite extends FunSuite with BeforeAndAfter with InterpreterTestUtils {
+import org.scalatest.FunSuite
+
+class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
   test("... basic test with Array") {
     val ast = wrapSimpleAST(
@@ -19,7 +18,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with BeforeAndAfter with Interp
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
 
     val array: List[MoeObject] = result.asInstanceOf[MoeArrayObject].getNativeValue
 
@@ -43,7 +42,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with BeforeAndAfter with Interp
         )
       )
     )
-    val result = Interpreter.eval(MoeRuntime.getRootEnv, ast)
+    val result = Interpreter.eval(runtime.getRootEnv, ast)
 
     val array: List[ MoeObject ] = result.asInstanceOf[MoeArrayObject].getNativeValue
 
