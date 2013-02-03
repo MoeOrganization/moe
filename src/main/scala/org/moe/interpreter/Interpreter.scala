@@ -16,6 +16,12 @@ object Interpreter {
       case _ => throw new MoeErrors.MoeException("Could not coerce object into numeric")
     }
 
+    def objToInteger(obj: MoeObject): Int = obj match {
+      case i: MoeIntObject => i.getNativeValue
+      case n: MoeFloatObject => n.getNativeValue.toInt
+      case _ => throw new MoeErrors.MoeException("Could not coerce object into integer")
+    }
+
     def objToString(obj: MoeObject): String = obj match {
       case i: MoeIntObject => i.getNativeValue.toString
       case n: MoeFloatObject => n.getNativeValue.toString
@@ -78,6 +84,21 @@ object Interpreter {
       case ArrayLiteralNode(values) => {
         val array: List[MoeObject] = values.map((i) => eval(runtime, env, i))
         runtime.NativeObjects.getArray(array)
+      }
+
+      case ArrayElementAccessNode(arrayName: String, index: AST) => {
+        val index_result = eval(runtime, env, index)
+        val array_value = env.get(arrayName) match {
+          case Some(a: MoeArrayObject) => a.getNativeValue
+          case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
+        }
+
+        // TODO: ListBuffer probably, like stevan said - JM
+        var native_index = Utils.objToInteger(index_result)
+        while (native_index < 0) {
+          native_index += array_value.size
+        }
+        array_value(native_index)
       }
 
       case PairLiteralNode(key, value) => runtime.NativeObjects.getPair(eval(runtime, env, key) -> eval(runtime, env, value))
