@@ -12,12 +12,4 @@ class MoeMethodTestSuite extends FunSuite with BeforeAndAfter {
     assert(result === invocant)
   }
 
-  test("... basic yadda-yadda-yadda method") {
-    val invocant = new MoeObject()
-    val method   = new MoeMethod("yadda_yadda_yadda")
-    intercept[MoeRuntime.Errors.UndefinedMethod] {
-      method.execute(invocant, List())
-    }
-  }
-
 }

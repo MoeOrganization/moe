@@ -12,11 +12,6 @@ class MoeMethod (
     private val body: (MoeObject, List[MoeObject]) => MoeObject
   ) extends MoeObject {
 
-  def this (name : String) = {
-    // yadda yadda yadda
-    this(name, (inv, args) => throw new MoeRuntime.Errors.UndefinedMethod(name))
-  }
-
   /**
    * Returns the name of this method
    */

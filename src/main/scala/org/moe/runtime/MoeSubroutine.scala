@@ -14,11 +14,6 @@ class MoeSubroutine (
     private val body: (List[MoeObject]) => MoeObject
   ) extends MoeObject {
 
-  def this (name: String) = {
-    // yadda yadda yadda
-    this(name, (args) => throw new MoeRuntime.Errors.UndefinedSubroutine(name))
-  }
-
   /**
    * Returns the name of this subroutine
    */

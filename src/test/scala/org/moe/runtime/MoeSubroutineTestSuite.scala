@@ -12,11 +12,4 @@ class MoeSubroutineTestSuite extends FunSuite with BeforeAndAfter {
     assert(result === value)
   }
 
-  test("... basic yadda-yadda-yadda sub") {
-    val sub = new MoeSubroutine("yadda_yadda_yadda")
-    intercept[MoeRuntime.Errors.UndefinedSubroutine] {
-        sub.execute(List())
-    }
-  }
-
 }
