@@ -69,6 +69,11 @@ class MoeClass(
   def addAttribute(attribute: MoeAttribute): Unit = attributes += (attribute.getName -> attribute)
 
   /**
+   * Removes an attribute from this class
+   */
+  def removeAttribute(name: String): Unit = attributes -= name
+
+  /**
    * Returns this class' attribute with the specified name.
    *
    * @param name The name of the attribute to return
@@ -108,6 +113,11 @@ class MoeClass(
    * @param method The method to add to this class
    */
   def addMethod(method: MoeMethod): Unit = methods += (method.getName -> method)
+
+  /**
+   * Removes a method from this class
+   */
+  def removeMethod(name: String): Unit = methods -= name
 
   /**
    * Returns this class' method with the specified name.
