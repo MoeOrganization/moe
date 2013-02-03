@@ -61,13 +61,19 @@ class MoeNullObject(klass : Option[MoeClass] = None) extends MoeObject(klass) {
 // could be suitable, but we might need to just
 // write our own in the long run.
 // - SL
-class MoeArrayObject(v: List[MoeObject], klass : Option[MoeClass] = None) extends MoeNativeObject[List[MoeObject]](v, klass) {
+class MoeArrayObject(
+    v: List[MoeObject], 
+    klass : Option[MoeClass] = None
+  ) extends MoeNativeObject[List[MoeObject]](v, klass) {
   override def isFalse: Boolean = getNativeValue.size == 0
   override def toString: String =
     '[' + getNativeValue.map(_.toString).mkString(", ") + ']'
 }
 
-class MoeHashObject(v: Map[String, MoeObject], klass : Option[MoeClass] = None) extends MoeNativeObject[Map[String, MoeObject]](v, klass) {
+class MoeHashObject(
+    v: Map[String, MoeObject], 
+    klass : Option[MoeClass] = None
+  ) extends MoeNativeObject[Map[String, MoeObject]](v, klass) {
   override def isFalse: Boolean = getNativeValue.size == 0
   override def toString: String =
     '{' + getNativeValue.map({
@@ -75,7 +81,10 @@ class MoeHashObject(v: Map[String, MoeObject], klass : Option[MoeClass] = None) 
     }).mkString(", ") + '}'
 }
 
-class MoePairObject(v: (String, MoeObject), klass : Option[MoeClass] = None) extends MoeNativeObject[(String, MoeObject)](v,) {
+class MoePairObject(
+    v: (String, MoeObject), 
+    klass : Option[MoeClass] = None
+  ) extends MoeNativeObject[(String, MoeObject)](v, klass) {
   override def toString: String = getNativeValue match {
     case (k, v) =>
       k + " => " + v.toString
