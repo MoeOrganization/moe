@@ -129,7 +129,7 @@ object Moe {
           )
         )
         if (dumpAST) {
-          println(ast.serialize)
+          println(Serializer.toJSON(ast))
         }
         val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
         println(result.toString)
