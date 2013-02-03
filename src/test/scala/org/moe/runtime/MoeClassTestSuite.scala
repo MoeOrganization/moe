@@ -20,6 +20,42 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
     assert(mro(2) === Foo)
   }
 
+  test("... test isClassOf[String]") {
+    val Foo = new MoeClass("Foo")
+    val Bar = new MoeClass(name = "Bar", superclass = Some(Foo))
+    val Baz = new MoeClass(name = "Baz", superclass = Some(Bar))
+
+    assert(Foo.isClassOf("Foo"))
+    assert(Bar.isClassOf("Foo"))
+    assert(Baz.isClassOf("Foo"))
+
+    assert(!Foo.isClassOf("Bar"))
+    assert(Bar.isClassOf("Bar"))
+    assert(Baz.isClassOf("Bar"))
+
+    assert(!Foo.isClassOf("Baz"))
+    assert(!Bar.isClassOf("Baz"))
+    assert(Baz.isClassOf("Baz"))
+  }
+
+  test("... test isClassOf[MoeClass]") {
+    val Foo = new MoeClass("Foo")
+    val Bar = new MoeClass(name = "Bar", superclass = Some(Foo))
+    val Baz = new MoeClass(name = "Baz", superclass = Some(Bar))
+
+    assert(Foo.isClassOf(Foo))
+    assert(Bar.isClassOf(Foo))
+    assert(Baz.isClassOf(Foo))
+
+    assert(!Foo.isClassOf(Bar))
+    assert(Bar.isClassOf(Bar))
+    assert(Baz.isClassOf(Bar))
+
+    assert(!Foo.isClassOf(Baz))
+    assert(!Bar.isClassOf(Baz))
+    assert(Baz.isClassOf(Baz))
+  }
+
   test("... test the whole thing together") {
     val klass = new MoeClass(
       name      = "TestClass",

@@ -129,6 +129,12 @@ class MoeClass(
 
   // Utils ...
 
+  def isClassOf(klass:   MoeClass): Boolean = isClassOf(klass.getName)
+  def isClassOf(klassname: String): Boolean = {
+    if (klassname == name) return true
+    superclass.exists(_.isClassOf(klassname))
+  }
+
   /**
    * Returns a [[scala.collection.Map]] of names and attributes for this class
    * and all of it's superclasses.
