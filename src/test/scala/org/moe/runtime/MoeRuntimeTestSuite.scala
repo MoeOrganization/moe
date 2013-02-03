@@ -50,15 +50,19 @@ class MoeRuntimeTestSuite extends FunSuite with BeforeAndAfter with ShouldMatche
 
     val corePackage = runtime.getCorePackage
 
+    assert(corePackage.hasClass("Object"))
+    assert(corePackage.hasClass("Class"))
+
+    assert(corePackage.hasClass("Any"))
     assert(corePackage.hasClass("Scalar"))
     assert(corePackage.hasClass("Array"))
     assert(corePackage.hasClass("Hash"))
 
     assert(corePackage.hasClass("Null"))
-    assert(corePackage.hasClass("Boolean"))
-    assert(corePackage.hasClass("Number"))
-    assert(corePackage.hasClass("String"))
-    assert(corePackage.hasClass("Exception"))
+    assert(corePackage.hasClass("Bool"))
+    assert(corePackage.hasClass("Num"))
+    assert(corePackage.hasClass("Int"))
+    assert(corePackage.hasClass("Str"))
   }
 
 }

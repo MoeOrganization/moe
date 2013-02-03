@@ -43,40 +43,55 @@ class MoeRuntime (
       objectClass.setAssociatedClass(Some(classClass)) // Object is a class
       classClass.setAssociatedClass(Some(classClass))  // Class is a class
 
-      /*
-        TODO:
-        bootstrap the other associtateClass for 
-        MoeClass, MoeAttribute,MoeMethod, etc.
-      */
+      /**
+       * NOTE:
+       * These are the core classes in our runtime. 
+       * They are meant to look like the Perl 6 types
+       * but ultimately will be for Perl 5 so there 
+       * will be some variance here and there.
+       * - SL
+       *
+       * SEE ALSO: 
+       *  - http://perlcabal.org/syn/S02.html
+       *  - https://raw.github.com/lue/Perl-6-Type-Hierarchy/master/notes/S02.pod6
+       */
 
-      // create the core classes
-      /* 
-        NOTE:
-        Do some research on the core Perl 6
-        classes, we should be following their
-        lead (within reason)
-      */
-      val scalarClass = new MoeClass("Scalar", Some(VERSION), Some(AUTHORITY), Some(objectClass))
-      val arrayClass  = new MoeClass("Array",  Some(VERSION), Some(AUTHORITY), Some(objectClass))
-      val hashClass   = new MoeClass("Hash",   Some(VERSION), Some(AUTHORITY), Some(objectClass))
-      val pairClass   = new MoeClass("Pair",   Some(VERSION), Some(AUTHORITY), Some(objectClass))
+      val anyClass       = new MoeClass("Any",        Some(VERSION), Some(AUTHORITY), Some(objectClass))
+           
+      val scalarClass    = new MoeClass("Scalar",     Some(VERSION), Some(AUTHORITY), Some(anyClass))
+      val arrayClass     = new MoeClass("Array",      Some(VERSION), Some(AUTHORITY), Some(anyClass))
+      val hashClass      = new MoeClass("Hash",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
+      val pairClass      = new MoeClass("Pair",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
+       
+      val nullClass      = new MoeClass("Null",       Some(VERSION), Some(AUTHORITY), Some(scalarClass))
+      val boolClass      = new MoeClass("Bool",       Some(VERSION), Some(AUTHORITY), Some(scalarClass))
+      val strClass       = new MoeClass("Str",        Some(VERSION), Some(AUTHORITY), Some(scalarClass))
+      val intClass       = new MoeClass("Int",        Some(VERSION), Some(AUTHORITY), Some(scalarClass))
+      val numClass       = new MoeClass("Num",        Some(VERSION), Some(AUTHORITY), Some(scalarClass))
+      val exceptionClass = new MoeClass("Exception",  Some(VERSION), Some(AUTHORITY), Some(scalarClass))
 
+      // add all these classes to the corePackage
+      corePackage.addClass(objectClass)
+      corePackage.addClass(classClass)
+
+      corePackage.addClass(anyClass)
       corePackage.addClass(scalarClass)
       corePackage.addClass(arrayClass)
       corePackage.addClass(hashClass)
       corePackage.addClass(pairClass)
 
-      val nullClass      = new MoeClass("Null",      Some(VERSION), Some(AUTHORITY), Some(scalarClass))
-      val booleanClass   = new MoeClass("Boolean",   Some(VERSION), Some(AUTHORITY), Some(scalarClass))
-      val exceptionClass = new MoeClass("Exception", Some(VERSION), Some(AUTHORITY), Some(scalarClass))
-      val stringClass    = new MoeClass("String",    Some(VERSION), Some(AUTHORITY), Some(scalarClass))
-      val numberClass    = new MoeClass("Number",    Some(VERSION), Some(AUTHORITY), Some(scalarClass))
-
       corePackage.addClass(nullClass)
-      corePackage.addClass(booleanClass)
+      corePackage.addClass(boolClass)
+      corePackage.addClass(strClass)
+      corePackage.addClass(intClass)
+      corePackage.addClass(numClass)
       corePackage.addClass(exceptionClass)
-      corePackage.addClass(stringClass)
-      corePackage.addClass(numberClass)
+
+      /*
+        TODO:
+        bootstrap the other associtateClass for 
+        MoeClass, MoeAttribute,MoeMethod, etc.
+      */
 
       is_bootstrapped = true
     }
@@ -87,16 +102,16 @@ class MoeRuntime (
   object NativeObjects {
 
     private lazy val Undef = new MoeNullObject(getCoreClassFor("Null"))
-    private lazy val True  = new MoeBooleanObject(true, getCoreClassFor("Boolean"))
-    private lazy val False = new MoeBooleanObject(false, getCoreClassFor("Boolean"))
+    private lazy val True  = new MoeBooleanObject(true, getCoreClassFor("Bool"))
+    private lazy val False = new MoeBooleanObject(false, getCoreClassFor("Bool"))
 
     def getUndef = Undef
     def getTrue  = True
     def getFalse = False
 
-    def getInt    (value: Int)     = new MoeIntObject(value, getCoreClassFor("Number"))
-    def getFloat  (value: Double)  = new MoeFloatObject(value, getCoreClassFor("Number"))
-    def getString (value: String)  = new MoeStringObject(value, getCoreClassFor("String"))
+    def getInt    (value: Int)     = new MoeIntObject(value, getCoreClassFor("Int"))
+    def getFloat  (value: Double)  = new MoeFloatObject(value, getCoreClassFor("Num"))
+    def getString (value: String)  = new MoeStringObject(value, getCoreClassFor("Str"))
     def getBool   (value: Boolean) = if (value) { True } else { False }
 
     def getHash  (value: Map[String, MoeObject]) = new MoeHashObject(value, getCoreClassFor("Hash"))
