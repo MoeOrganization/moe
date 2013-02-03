@@ -98,7 +98,12 @@ object Interpreter {
         while (native_index < 0) {
           native_index += array_value.size
         }
-        array_value(native_index)
+        try {
+          array_value(native_index)
+        }
+        catch {
+          case _: java.lang.IndexOutOfBoundsException => runtime.NativeObjects.getUndef // TODO: warn
+        }
       }
 
       case PairLiteralNode(key, value) => runtime.NativeObjects.getPair(eval(runtime, env, key) -> eval(runtime, env, value))

@@ -154,4 +154,24 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
     assert(result.asInstanceOf[ MoeIntObject ].getNativeValue === 20)
   }
+
+  test("... basic test with Array accessing last out of bounds") {
+    val ast = wrapSimpleAST(
+      List(
+        VariableDeclarationNode(
+          "@array",
+          ArrayLiteralNode(
+            List(
+              IntLiteralNode(10),
+              IntLiteralNode(20)
+            )
+          )
+        ),
+        ArrayElementAccessNode("@array", IntLiteralNode(2))
+      )
+    )
+    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+
+    assert(result.asInstanceOf[ MoeNullObject ].getNativeValue === null)
+  }
 }
