@@ -32,6 +32,12 @@ class MoeObject(
   def setAssociatedClass(c: Option[MoeClass]) = associatedClass = c
 
   /**
+   * Ask if this object is-a instance of a class
+   */
+  def isInstanceOf(klassname: String): Boolean = associatedClass.exists(_.isClassOf(klassname))
+  def isInstanceOf(klass:   MoeClass): Boolean = associatedClass.exists(_.isClassOf(klass))
+
+  /**
    * Invoke the named method.
    *
    * @param name The name of the method
