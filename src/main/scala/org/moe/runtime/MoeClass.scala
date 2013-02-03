@@ -90,6 +90,14 @@ class MoeClass(
    */
   def hasAttribute(name: String): Boolean = getAttribute(name).isDefined
 
+  /**
+   * Returns a [[scala.collection.Map]] of names and attributes for this class
+   * and all of it's superclasses.
+   */
+  def collectAllAttributes: Map[String, MoeAttribute] = superclass.map(
+      { s => s.collectAllAttributes ++ attributes }
+    ).getOrElse(attributes.clone)  
+
   // Instances
 
   /**
@@ -127,6 +135,14 @@ class MoeClass(
    */
   def hasMethod(name: String): Boolean = getMethod(name).isDefined
 
+  /**
+   * Returns a [[scala.collection.Map]] of names and methods for this class
+   * and all of it's superclasses.
+   */
+  def collectAllMethods: Map[String, MoeMethod] = superclass.map(
+      { s => s.collectAllMethods ++ methods }
+    ).getOrElse(methods.clone)  
+
   // Utils ...
 
   def isClassOf(klass:   MoeClass): Boolean = isClassOf(klass.getName)
@@ -134,22 +150,6 @@ class MoeClass(
     if (klassname == name) return true
     superclass.exists(_.isClassOf(klassname))
   }
-
-  /**
-   * Returns a [[scala.collection.Map]] of names and attributes for this class
-   * and all of it's superclasses.
-   */
-  private def collectAllAttributes: Map[String, MoeAttribute] = superclass.map(
-      { s => s.collectAllAttributes ++ attributes }
-    ).getOrElse(attributes.clone)
-
-  /**
-   * Returns a [[scala.collection.Map]] of names and methods for this class
-   * and all of it's superclasses.
-   */
-  private def collectAllMethods: Map[String, MoeMethod] = superclass.map(
-      { s => s.collectAllMethods ++ methods }
-    ).getOrElse(methods.clone)
 
   /**
    * Returns a string representation of this class.
