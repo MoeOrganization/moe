@@ -10,9 +10,17 @@ object Interpreter {
   val stub = new MoeObject()
 
   object Utils {
-    def objToNumeric(obj: MoeObject) = obj match {
+    def objToNumeric(obj: MoeObject): Double = obj match {
       case i: MoeIntObject => i.getNativeValue.toDouble
       case n: MoeFloatObject => n.getNativeValue
+      case _ => throw new MoeErrors.MoeException("Could not coerce object into numeric")
+    }
+
+    def objToString(obj: MoeObject): String = obj match {
+      case i: MoeIntObject => i.getNativeValue.toString
+      case n: MoeFloatObject => n.getNativeValue.toString
+      case s: MoeStringObject => s.getNativeValue
+      case _ => throw new MoeErrors.MoeException("Could not coerce object into string")
     }
 
     def inNewEnv[T](env: MoeEnvironment)(body: MoeEnvironment => T): T = {
@@ -89,6 +97,17 @@ object Interpreter {
             .asInstanceOf[MoePairObject].getNativeValue
           ).toMap
         )
+      }
+
+      case HashValueAccessNode(hashName: String, key: AST) => {
+        val key_result = eval(runtime, env, key)
+        val hash_map = env.get(hashName) match {
+          case Some(h: MoeHashObject) => h.getNativeValue
+          case _ => throw new MoeErrors.UnexpectedType("MoeHashObject expected")
+        }
+
+        hash_map.get(Utils.objToString(key_result))
+          .getOrElse(runtime.NativeObjects.getUndef)
       }
 
       // unary operators
@@ -322,8 +341,7 @@ object Interpreter {
       case ForeachNode(topic, list, body) => {
         eval(runtime, env, list) match {
           case objects: MoeArrayObject => {
-            
-            val applyScopeInjection = { 
+            val applyScopeInjection = {
               (
                 newEnv: MoeEnvironment, 
                 name: String, 
