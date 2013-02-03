@@ -71,29 +71,25 @@ class MoeClass(
   /**
    * Gets a list of classes in method resolution order for this class.
    */
-  def getMRO: List[MoeClass] = {
-    superclass.map(s => this :: s.getMRO).getOrElse(List(this))
-  }
+  def getMRO: List[MoeClass] = superclass.map(
+      s => this :: s.getMRO
+    ).getOrElse(List(this))
 
   // Attributes
 
   /**
    * Adds an attribute to this class
    */
-  def addAttribute(attribute: MoeAttribute): Unit = {
-    attributes += (attribute.getName -> attribute)
-  }
+  def addAttribute(attribute: MoeAttribute): Unit = attributes += (attribute.getName -> attribute)
 
   /**
    * Returns this class' attribute with the specified name.
    *
    * @param name The name of the attribute to return
    */
-  def getAttribute(name: String): Option[MoeAttribute] = {
-    attributes.get(name).orElse(
+  def getAttribute(name: String): Option[MoeAttribute] = attributes.get(name).orElse(
       superclass.flatMap({ sc => sc.getAttribute(name) })
     )
-  }
 
   /**
    * Returns true if this class (or any of it's superclasses) has an attribute
@@ -107,9 +103,9 @@ class MoeClass(
    * Returns a [[scala.collection.Map]] of names and attributes for this class
    * and all of it's superclasses.
    */
-  private def collectAllAttributes: Map[String, MoeAttribute] = {
-    superclass.map({ s => s.collectAllAttributes ++ attributes }).getOrElse(attributes.clone)
-  }
+  private def collectAllAttributes: Map[String, MoeAttribute] = superclass.map(
+      { s => s.collectAllAttributes ++ attributes }
+    ).getOrElse(attributes.clone)
 
   // Instances
 
@@ -131,21 +127,16 @@ class MoeClass(
    *
    * @param method The method to add to this class
    */
-  def addMethod(method: MoeMethod): Unit = {
-    methods += (method.getName -> method)
-  }
+  def addMethod(method: MoeMethod): Unit = methods += (method.getName -> method)
 
   /**
    * Returns this class' method with the specified name.
    *
    * @param name The name of the method to return
    */
-  def getMethod(name: String): Option[MoeMethod] = {
-
-    methods.get(name).orElse(
+  def getMethod(name: String): Option[MoeMethod] = methods.get(name).orElse(
       superclass.flatMap({ sc => sc.getMethod(name) })
     )
-  }
 
   /**
    * Returns true if this class has a method with the specified name.
