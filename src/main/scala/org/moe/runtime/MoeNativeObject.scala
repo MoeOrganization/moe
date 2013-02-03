@@ -75,7 +75,7 @@ class MoeHashObject(v: Map[String, MoeObject], klass : Option[MoeClass] = None) 
     }).mkString(", ") + '}'
 }
 
-class MoePairObject(v: (String, MoeObject)) extends MoeNativeObject[(String, MoeObject)](v) {
+class MoePairObject(v: (String, MoeObject), klass : Option[MoeClass] = None) extends MoeNativeObject[(String, MoeObject)](v,) {
   override def toString: String = getNativeValue match {
     case (k, v) =>
       k + " => " + v.toString

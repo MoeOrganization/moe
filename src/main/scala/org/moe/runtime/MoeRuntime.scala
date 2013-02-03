@@ -29,8 +29,6 @@ class MoeRuntime (
   def getObjectClass = objectClass
   def getClassClass  = classClass
 
-  def getCoreClassFor (name: String): Option[MoeClass] = corePackage.getClass(name)
-
   def bootstrap() : Unit = {
     if (!is_bootstrapped) {
 
@@ -61,10 +59,12 @@ class MoeRuntime (
       val scalarClass = new MoeClass("Scalar", Some(VERSION), Some(AUTHORITY), Some(objectClass))
       val arrayClass  = new MoeClass("Array",  Some(VERSION), Some(AUTHORITY), Some(objectClass))
       val hashClass   = new MoeClass("Hash",   Some(VERSION), Some(AUTHORITY), Some(objectClass))
+      val pairClass   = new MoeClass("Pair",   Some(VERSION), Some(AUTHORITY), Some(objectClass))
 
       corePackage.addClass(scalarClass)
       corePackage.addClass(arrayClass)
       corePackage.addClass(hashClass)
+      corePackage.addClass(pairClass)
 
       val nullClass      = new MoeClass("Null",      Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val booleanClass   = new MoeClass("Boolean",   Some(VERSION), Some(AUTHORITY), Some(scalarClass))
@@ -82,6 +82,8 @@ class MoeRuntime (
     }
   }
 
+  def getCoreClassFor (name: String): Option[MoeClass] = corePackage.getClass(name)
+
   object NativeObjects {
 
     private lazy val Undef = new MoeNullObject(getCoreClassFor("Null"))
@@ -97,11 +99,14 @@ class MoeRuntime (
     def getString (value: String)  = new MoeStringObject(value, getCoreClassFor("String"))
     def getBool   (value: Boolean) = if (value) { True } else { False }
 
-    def getPair  (value: (MoeObject, MoeObject)) = new MoePairObject((value._1.asInstanceOf[MoeStringObject].getNativeValue, value._2))
     def getHash  (value: Map[String, MoeObject]) = new MoeHashObject(value, getCoreClassFor("Hash"))
     def getHash  ()                              = new MoeHashObject(Map(), getCoreClassFor("Hash"))
     def getArray (value: List[MoeObject])        = new MoeArrayObject(value, getCoreClassFor("Array"))
     def getArray ()                              = new MoeArrayObject(List(), getCoreClassFor("Array"))
+    def getPair  (value: (MoeObject, MoeObject)) = new MoePairObject(
+        (value._1.asInstanceOf[MoeStringObject].getNativeValue, value._2), 
+        getCoreClassFor("Pair")
+      )
   }
 
 }
