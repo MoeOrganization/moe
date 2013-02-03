@@ -1,5 +1,5 @@
 
-- we should avoid back-references whenever possible
+- create a MoeExceptionObject class to wrap native exceptions
 
 [DONE]
 - we should remove all exceptions in the org.moe.runtime._ classes
