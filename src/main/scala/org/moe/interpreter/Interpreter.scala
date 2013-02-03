@@ -206,7 +206,9 @@ object Interpreter {
           throw new MoeErrors.VariableNotFound(name)
         )
       case VariableAssignmentNode(name, expression) => {
-        env.set(name, eval(runtime, env, expression)).get
+        env.set(name, eval(runtime, env, expression)).getOrElse(
+          throw new MoeErrors.VariableNotFound(name)
+        )
       }
       case VariableDeclarationNode(name, expression) => {
         env.create(name, eval(runtime, env, expression)).get
