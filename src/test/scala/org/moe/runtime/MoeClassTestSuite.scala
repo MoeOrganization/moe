@@ -22,41 +22,43 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
 
   test("... test the whole thing together") {
     val klass = new MoeClass(
-      name = "TestClass",
-      version = Some("0.01"),
+      name      = "TestClass",
+      version   = Some("0.01"),
       authority = Some("cpan:STEVAN")
     )
-    klass.addMethod(new MoeMethod("ident", (inv, args) => inv))
+    val ident = new MoeMethod("ident", (inv, args) => inv)
+    klass.addMethod(ident)
     var obj = new MoeObject(Some(klass))
-    assert(obj.callMethod("ident") === obj)
+    assert(obj.callMethod(ident) === obj)
   }
 
   test("... test the whole thing together (newInstance version)") {
     val klass = new MoeClass(
-      name = "TestClass",
-      version = Some("0.01"),
+      name      = "TestClass",
+      version   = Some("0.01"),
       authority = Some("cpan:STEVAN")
     )
-    klass.addMethod(new MoeMethod("ident", (inv, args) => inv))
+    val ident = new MoeMethod("ident", (inv, args) => inv)
+    klass.addMethod(ident)
     var obj = klass.newInstance
-    assert(obj.callMethod("ident") === obj)
+    assert(obj.callMethod(ident) === obj)
   }
 
   test("... test method resolution") {
     val parent = new MoeClass(
-      name = "ParentClass",
-      version = Some("0.01"),
+      name      = "ParentClass",
+      version   = Some("0.01"),
       authority = Some("cpan:STEVAN")
     )
     val child = new MoeClass(
-      name = "ChildClass",
-      version = Some("0.01"),
-      authority = Some("cpan:STEVAN"),
+      name       = "ChildClass",
+      version    = Some("0.01"),
+      authority  = Some("cpan:STEVAN"),
       superclass = Some(parent)
     )
 
-    val method = new MoeMethod("ident", (inv, args) => inv)
-    parent.addMethod(method)
+    val ident = new MoeMethod("ident", (inv, args) => inv)
+    parent.addMethod(ident)
 
     var dad = parent.newInstance
     var son = child.newInstance
@@ -64,27 +66,23 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
     assert(parent.hasMethod("ident"))
     assert(child.hasMethod("ident"))
 
-    parent.getMethod("ident") should be (Some(method))
-    child.getMethod("ident") should be (Some(method))
+    parent.getMethod("ident") should be (Some(ident))
+    child.getMethod("ident") should be (Some(ident))
 
-    assert(dad.callMethod("ident") === dad)
-    assert(son.callMethod("ident") === son)
-
-    intercept[MoeRuntime.Errors.MethodNotFound] {
-      son.callMethod("foobar", List())
-    }
+    assert(dad.callMethod(ident) === dad)
+    assert(son.callMethod(ident) === son)
   }
 
   test("... test attribute resolution") {
     val parent = new MoeClass(
-      name = "ParentClass",
-      version = Some("0.01"),
+      name      = "ParentClass",
+      version   = Some("0.01"),
       authority = Some("cpan:STEVAN")
     )
     val child = new MoeClass(
-      name = "ChildClass",
-      version = Some("0.01"),
-      authority = Some("cpan:STEVAN"),
+      name       = "ChildClass",
+      version    = Some("0.01"),
+      authority  = Some("cpan:STEVAN"),
       superclass = Some(parent)
     )
 

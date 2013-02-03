@@ -38,7 +38,7 @@ class MoeObject(
    *
    * @param name The name of the method
    */
-  def callMethod(name: String): MoeObject = callMethod(name = name, args = List())
+  def callMethod(method: MoeMethod): MoeObject = callMethod(method, List())
 
   /**
    * Invoke the named method with the supplied arguments.
@@ -46,17 +46,7 @@ class MoeObject(
    * @param name The name of the method
    * @param args The list of arguments to provide to the method
    */
-  def callMethod(name: String, args: List[MoeObject]): MoeObject = {
-    klass.map({ k =>
-      k.getMethod(name).map({ m =>
-        m.execute(this, args)
-      }).getOrElse(
-        throw new MoeRuntime.Errors.MethodNotFound(name)
-      )
-    }).getOrElse(
-      throw new MoeRuntime.Errors.MissingClass(toString)
-    )
-  }
+  def callMethod(method: MoeMethod, args: List[MoeObject]): MoeObject = method.execute(this, args)
 
   /**
    * Returns true.

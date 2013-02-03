@@ -15,10 +15,4 @@ class MoeObjectTestSuite extends FunSuite with BeforeAndAfter {
       assert(!o.hasAssociatedClass)
   }
 
-  test("... missing class thrown") {
-    intercept[MoeRuntime.Errors.MissingClass] {
-      o.callMethod("foo", List())
-    }
-  }
-
 }
