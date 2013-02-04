@@ -34,9 +34,8 @@ trait Expressions extends Literals with JavaTokenParsers {
   def barehashKey: Parser[StringLiteralNode] =
     """[0-9\w_]*""".r ^^ StringLiteralNode
   def hashKey: Parser[StringLiteralNode] = barehashKey | string
-  // FIXME should be able to do <~ "=>".r ~> but couldn't fiddle with it enough
   def pair: Parser[PairLiteralNode] =
-    hashKey ~ "=>".r ~ expression ^^ { case a ~ b ~ c => PairLiteralNode(a, c) }
+    (hashKey <~ "=>".r) ~ expression ^^ { case k ~ v => PairLiteralNode(k, v) }
   def hashContent: Parser[List[PairLiteralNode]] =
     repsep(pair, ",")
   def hashRef: Parser[HashLiteralNode] =
