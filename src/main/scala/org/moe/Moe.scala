@@ -78,7 +78,7 @@ object Moe {
       else {
         val rest: Array[String] = cmd.getArgs()
         if (rest.length == 0) {
-          REPL.enter(runtime)
+          REPL.enter(runtime, dumpAST)
         } else {
           // TODO: invocation arguments
           val path = rest(0)
