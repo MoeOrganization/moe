@@ -73,12 +73,15 @@ object Moe {
           return
       }
       else {
+		  REPL.enter(runtime, dumpAST)
+		  /*
           val rest: Array[String] = cmd.getArgs()
           if (rest.length == 0) {
               REPL.enter(runtime, dumpAST)
           } else {
               // TODO: ... read a file and execute it
           }
+		  */
       }
 
   }
@@ -108,16 +111,27 @@ object Moe {
   */
   object REPL {
     def enter (runtime: MoeRuntime, dumpAST: Boolean = false): Unit = {
-        var ok = true
-        print("> ")
-        while (ok) {
-          val line = readLine()
-          ok = line != null
-          if (ok) {
-            evalLine(runtime, line, dumpAST)
-            print("> ")
-          }
-        }
+		import jline.console.ConsoleReader
+		
+		// When on cygwin/linux, there's interference from scala shell wrapper 
+		// setting this property to its own internal Terminal configuration.
+		// hence, explicitly setting it to AUTO.
+		System.setProperty("jline.terminal", "auto")
+		
+		val cReader:ConsoleReader = new ConsoleReader
+		val prompt = "moe> "
+		
+		cReader.setPrompt(prompt)
+		System.setProperty("jline.shutdownhook", "true")
+	
+		def loopRun() {
+			val line = cReader readLine prompt
+			if (null != line && line.length > 0) {
+				evalLine(runtime, line, dumpAST)
+				loopRun()
+			}
+		}
+		loopRun()
     }
 
     def evalLine(runtime: MoeRuntime, line: String, dumpAST: Boolean = false) = {
