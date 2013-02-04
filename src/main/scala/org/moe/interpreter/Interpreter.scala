@@ -82,8 +82,13 @@ object Interpreter {
       }
 
       case ArrayLiteralNode(values) => {
-        val array: List[MoeObject] = values.map((i) => eval(runtime, env, i))
+        val array: List[MoeObject] = values.map(eval(runtime, env, _))
         runtime.NativeObjects.getArray(array)
+      }
+
+      case ArrayRefLiteralNode(values) => {
+        val array: List[MoeObject] = values.map(eval(runtime, env, _))
+        runtime.NativeObjects.getArray(array) // XXX ref stuff?
       }
 
       case ArrayElementAccessNode(arrayName: String, index: AST) => {

@@ -10,7 +10,7 @@ trait Statements extends Expressions {
   lazy val tryBlockRule =
     "try" ~> block
   lazy val catchBlockRule =
-    ("catch" ~ "(") ~> typeLiteral ~ variable ~ (")" ~> block)
+    ("catch" ~ "(") ~> typeLiteral ~ varname ~ (")" ~> block)
   lazy val finallyBlockRule =
     "finally" ~> block
 
