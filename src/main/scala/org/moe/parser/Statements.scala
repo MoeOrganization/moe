@@ -17,10 +17,10 @@ trait Statements extends Expressions {
   // FIXME I feel skipping over blank statements doesn't
   // portray the AST completely but I might just be splitting hairs
   def statementDelim: Parser[List[String]] = rep1(";")
-  def statements: Parser[List[AST]] =
-    repsep(statement, statementDelim)
+  def statements: Parser[StatementsNode] =
+    repsep(statement, statementDelim) ^^ StatementsNode
   def blockContent: Parser[StatementsNode] =
-    statements <~ statementDelim.? ^^ { StatementsNode(_) }
+    statements <~ statementDelim.?
   def block: Parser[StatementsNode] =
     """\{""".r ~> blockContent <~ """\}""".r
 

@@ -17,11 +17,9 @@ trait InterpreterTestUtils extends FunSuite with BeforeAndAfter {
 
   def wrapSimpleAST ( nodes: List[ AST ] ) =
     CompilationUnitNode(
-        ScopeNode(
-            StatementsNode(
-                nodes
-            )
-        )
+      ScopeNode(
+        StatementsNode(nodes)
+      )
     )
 
 }

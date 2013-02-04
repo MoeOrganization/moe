@@ -85,11 +85,9 @@ object Moe {
 
           val source = Source.fromFile(path).mkString
           try {
-            val nodes = List(MoeParsers.parseFromEntry(source))
+            val nodes = MoeParsers.parseFromEntry(source)
             val ast = CompilationUnitNode(
-              ScopeNode(
-                StatementsNode(nodes)
-              )
+              ScopeNode(nodes)
             )
             if (dumpAST) {
               println(Serializer.toJSON(ast))
@@ -142,11 +140,9 @@ object Moe {
 
     def evalLine(runtime: MoeRuntime, line: String, dumpAST: Boolean = false) = {
       try {
-        val nodes = List(MoeParsers.parseFromEntry(line))
+        val nodes = MoeParsers.parseFromEntry(line)
         val ast = CompilationUnitNode(
-          ScopeNode(
-            StatementsNode(nodes)
-          )
+          ScopeNode(nodes)
         )
         if (dumpAST) {
           println(Serializer.toJSON(ast))
