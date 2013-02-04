@@ -5,7 +5,7 @@ import ParserUtils._
 import scala.util.parsing.combinator._
 import org.moe.ast._
 
-trait Expressions extends Literals with JavaTokenParsers {
+trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
 
   private lazy val array_index_rule = "@" ~
                                       (namespacedIdentifier <~ "[") ~
@@ -14,7 +14,8 @@ trait Expressions extends Literals with JavaTokenParsers {
                                      (namespacedIdentifier <~ "{") ~
                                      (expression <~ "}")
 
-  def expression: Parser[AST] = (
+  // def expression: Parser[AST] = (
+  lazy val expression: PackratParser[AST] = (
       arrayIndex
     | hashIndex
     | hash
@@ -24,6 +25,7 @@ trait Expressions extends Literals with JavaTokenParsers {
     | declaration
     | variable
     | expressionParens
+    | addLevel
   )
 
   def expressionParens: Parser[AST] = "(" ~> expression <~ ")"
@@ -75,5 +77,10 @@ trait Expressions extends Literals with JavaTokenParsers {
   }
 
   def scalar: Parser[AST] = simpleScalar | arrayIndex | hashIndex | literalValue
+
+  def addOps  = """[-+]""".r
+  lazy val addLevel = expression ~ addOps ~ expression ^^ {
+    case left ~ op ~ right => MethodCallNode(left, op, List(right))
+  }
 
 }
