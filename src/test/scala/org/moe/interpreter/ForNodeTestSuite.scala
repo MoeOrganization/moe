@@ -41,7 +41,7 @@ class ForNodeTestSuite extends FunSuite with InterpreterTestUtils {
         VariableAccessNode("$bar")
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 4)
   }
 
@@ -72,7 +72,7 @@ class ForNodeTestSuite extends FunSuite with InterpreterTestUtils {
         VariableAccessNode("$bar")
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === -10)
   }
 

@@ -5,7 +5,7 @@ import org.moe.ast._
 
 import scala.collection.mutable.HashMap
 
-object Interpreter {
+class Interpreter {
 
   val stub = new MoeObject()
 

@@ -16,7 +16,7 @@ class VariableDeclarationNodeTestSuite extends FunSuite with InterpreterTestUtil
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 42)
   }
 
@@ -33,7 +33,7 @@ class VariableDeclarationNodeTestSuite extends FunSuite with InterpreterTestUtil
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeStringObject].getNativeValue === "jason")
   }
 
