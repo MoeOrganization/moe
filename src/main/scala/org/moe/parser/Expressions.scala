@@ -14,7 +14,7 @@ trait Expressions extends Literals with JavaTokenParsers {
   def expression: Parser[AST] = (
       arrayIndex
     | array
-    | literal
+    | literalValue
     | arrayRef
     | hashRef
     | declaration
@@ -33,9 +33,9 @@ trait Expressions extends Literals with JavaTokenParsers {
   // Hash stuff
   def barehashKey: Parser[StringLiteralNode] =
     """[0-9\w_]*""".r ^^ StringLiteralNode
-  def hashKey: Parser[StringLiteralNode] = barehashKey | string
+  def hashKey: Parser[AST] = scalar | barehashKey
   def pair: Parser[PairLiteralNode] =
-    (hashKey <~ "=>".r) ~ expression ^^ { case k ~ v => PairLiteralNode(k, v) }
+    (hashKey <~ literal("=>")) ~ expression ^^ { case k ~ v => PairLiteralNode(k, v) }
   def hashContent: Parser[List[PairLiteralNode]] =
     repsep(pair, ",")
   def hashRef: Parser[HashLiteralNode] =
@@ -46,6 +46,10 @@ trait Expressions extends Literals with JavaTokenParsers {
   def varname = sigil ~ namespacedIdentifier ^^ { case a ~ b => a + b }
   def variable = varname ^^ VariableAccessNode
 
+  def simpleScalar = literal("$") ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("$" + i) }
+  def simpleArray  = literal("@") ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("@" + i) }
+  def simpleHash   = literal("%") ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("%" + i) }
+
   def declaration = "my".r ~> varname ~ ("=".r ~> expression).? ^^ {
     case v ~ expr => VariableDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
   }
@@ -53,5 +57,7 @@ trait Expressions extends Literals with JavaTokenParsers {
   def arrayIndex = array_index_rule ^^ {
     case "$" ~ i ~ expr => ArrayElementAccessNode("@" + i, expr)
   }
+
+  def scalar: Parser[AST] = simpleScalar | arrayIndex | literalValue
 
 }
