@@ -62,7 +62,7 @@ class MoeNullObject(klass : Option[MoeClass] = None) extends MoeObject(klass) {
 // write our own in the long run.
 // - SL
 class MoeArrayObject(
-    v: List[MoeObject], 
+    v: List[MoeObject],
     klass : Option[MoeClass] = None
   ) extends MoeNativeObject[List[MoeObject]](v, klass) {
   override def isFalse: Boolean = getNativeValue.size == 0
@@ -71,7 +71,7 @@ class MoeArrayObject(
 }
 
 class MoeHashObject(
-    v: Map[String, MoeObject], 
+    v: Map[String, MoeObject],
     klass : Option[MoeClass] = None
   ) extends MoeNativeObject[Map[String, MoeObject]](v, klass) {
   override def isFalse: Boolean = getNativeValue.size == 0

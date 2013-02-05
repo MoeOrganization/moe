@@ -10,9 +10,23 @@ object Interpreter {
   val stub = new MoeObject()
 
   object Utils {
-    def objToNumeric(obj: MoeObject) = obj match {
+    def objToNumeric(obj: MoeObject): Double = obj match {
       case i: MoeIntObject => i.getNativeValue.toDouble
       case n: MoeFloatObject => n.getNativeValue
+      case _ => throw new MoeErrors.MoeException("Could not coerce object into numeric")
+    }
+
+    def objToInteger(obj: MoeObject): Int = obj match {
+      case i: MoeIntObject => i.getNativeValue
+      case n: MoeFloatObject => n.getNativeValue.toInt
+      case _ => throw new MoeErrors.MoeException("Could not coerce object into integer")
+    }
+
+    def objToString(obj: MoeObject): String = obj match {
+      case i: MoeIntObject => i.getNativeValue.toString
+      case n: MoeFloatObject => n.getNativeValue.toString
+      case s: MoeStringObject => s.getNativeValue
+      case _ => throw new MoeErrors.MoeException("Could not coerce object into string")
     }
 
     def inNewEnv[T](env: MoeEnvironment)(body: MoeEnvironment => T): T = {
@@ -68,8 +82,33 @@ object Interpreter {
       }
 
       case ArrayLiteralNode(values) => {
-        val array: List[MoeObject] = values.map((i) => eval(runtime, env, i))
+        val array: List[MoeObject] = values.map(eval(runtime, env, _))
         runtime.NativeObjects.getArray(array)
+      }
+
+      case ArrayRefLiteralNode(values) => {
+        val array: List[MoeObject] = values.map(eval(runtime, env, _))
+        runtime.NativeObjects.getArray(array) // XXX ref stuff?
+      }
+
+      case ArrayElementAccessNode(arrayName: String, index: AST) => {
+        val index_result = eval(runtime, env, index)
+        val array_value = env.get(arrayName) match {
+          case Some(a: MoeArrayObject) => a.getNativeValue
+          case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
+        }
+
+        // TODO: ListBuffer probably, like stevan said - JM
+        var native_index = Utils.objToInteger(index_result)
+        while (native_index < 0) {
+          native_index += array_value.size
+        }
+        try {
+          array_value(native_index)
+        }
+        catch {
+          case _: java.lang.IndexOutOfBoundsException => runtime.NativeObjects.getUndef // TODO: warn
+        }
       }
 
       case PairLiteralNode(key, value) => runtime.NativeObjects.getPair(eval(runtime, env, key) -> eval(runtime, env, value))
@@ -89,6 +128,26 @@ object Interpreter {
             .asInstanceOf[MoePairObject].getNativeValue
           ).toMap
         )
+      }
+
+      case HashRefLiteralNode(map) => {
+        runtime.NativeObjects.getHash(
+          map.map(
+            pair => eval(runtime, env, pair)
+            .asInstanceOf[MoePairObject].getNativeValue
+          ).toMap // XXX ref stuff?
+        )
+      }
+
+      case HashValueAccessNode(hashName: String, key: AST) => {
+        val key_result = eval(runtime, env, key)
+        val hash_map = env.get(hashName) match {
+          case Some(h: MoeHashObject) => h.getNativeValue
+          case _ => throw new MoeErrors.UnexpectedType("MoeHashObject expected")
+        }
+
+        hash_map.get(Utils.objToString(key_result))
+          .getOrElse(runtime.NativeObjects.getUndef)
       }
 
       // unary operators
@@ -324,8 +383,7 @@ object Interpreter {
       case ForeachNode(topic, list, body) => {
         eval(runtime, env, list) match {
           case objects: MoeArrayObject => {
-            
-            val applyScopeInjection = { 
+            val applyScopeInjection = {
               (
                 newEnv: MoeEnvironment, 
                 name: String, 

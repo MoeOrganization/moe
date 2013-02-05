@@ -34,7 +34,7 @@ find(\&add_to_markdown, $dir);
 sub add_to_markdown
 {
 	# we only want files
-	return unless -f $_; 
+	return unless -f and /\.mo$/;
 	my $full_path = $File::Find::name;
 
 	# Find our relative path within the syntax-example dirs

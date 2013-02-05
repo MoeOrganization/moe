@@ -17,5 +17,12 @@ class HashLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     assert(key.asInstanceOf[MoeStringObject].getNativeValue === "bar")
   }
 
+  test("... basic test with hashref of a string key") {
+    val result = interpretCode("{'foo' => 'bar'}")
+    val map = result.asInstanceOf[MoeHashObject].getNativeValue
+    val key = map("foo")
+    assert(key.asInstanceOf[MoeStringObject].getNativeValue === "bar")
+  }
+
 
 }

@@ -54,7 +54,7 @@ trait Literals extends Base {
   // to have a more specific AST node I think
   def typeLiteral: Parser[String] = namespacedIdentifier
 
-  def literal: Parser[AST] = (
+  def literalValue: Parser[AST] = (
       floatNumber
     | intNumber
     | octIntNumber

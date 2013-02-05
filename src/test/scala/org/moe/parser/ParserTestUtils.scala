@@ -17,11 +17,11 @@ trait ParserTestUtils extends FunSuite with BeforeAndAfter  {
     runtime.bootstrap()
   }
 
-  def basicAST(nodes: List[AST]) =
-    CompilationUnitNode(ScopeNode(StatementsNode(nodes)))
+  def basicAST(nodes: StatementsNode) =
+    CompilationUnitNode(ScopeNode(nodes))
 
   def interpretCode(code: String): MoeObject = {
-    val ast = basicAST(List(Parser.parseStuff(code)))
+    val ast = basicAST(Parser.parseStuff(code))
     Interpreter.eval(runtime, runtime.getRootEnv, ast)
   }
 
