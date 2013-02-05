@@ -1,1 +1,1 @@
-my %currency = ( ¥ => 'yen', € => 'euro');
+my %currency = { ¥ => 'yen', € => 'euro' };

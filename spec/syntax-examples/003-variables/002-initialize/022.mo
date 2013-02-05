@@ -1,1 +1,1 @@
-my %baz = ( two => 1 + 1 );
+my %baz = { two => 1 + 1 };

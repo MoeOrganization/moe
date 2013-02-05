@@ -1,2 +1,2 @@
-my @bar; 
-$bar[0] = 10;
+my @bar;
+@bar[0] = 10;

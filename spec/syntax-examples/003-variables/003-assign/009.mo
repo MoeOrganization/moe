@@ -1,2 +1,2 @@
-my @bar; 
-@bar = ();
+my @bar;
+@bar = [];
