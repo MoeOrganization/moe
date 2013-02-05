@@ -11,6 +11,11 @@ import org.moe.parser._
 
 class IntLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils with ShouldMatchers {
 
+  test("... basic test with an 0 int") {
+    val result = interpretCode("0")
+    result.asInstanceOf[MoeIntObject].getNativeValue should equal (0)
+  }
+
   test("... basic test with an int") {
     val result = interpretCode("123")
     result.asInstanceOf[MoeIntObject].getNativeValue should equal (123)
