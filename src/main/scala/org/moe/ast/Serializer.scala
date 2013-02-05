@@ -29,9 +29,7 @@ object Serializer {
     )
 
     case ArrayLiteralNode(values)    => JSONObject(Map("ArrayLiteralNode" -> JSONArray(values.map(toJSON(_)))))
-    case ArrayRefLiteralNode(values) => JSONObject(Map("ArrayRefLiteralNode" -> JSONArray(values.map(toJSON(_)))))
     case HashLiteralNode(map)        => JSONObject(Map("HashLiteralNode" -> JSONArray(map.map(toJSON(_)))))
-    case HashRefLiteralNode(map)     => JSONObject(Map("HashRefLiteralNode" -> JSONArray(map.map(toJSON(_)))))
     case IncrementNode(receiver)     => JSONObject(Map("IncrementNode" -> toJSON(receiver)))
     case DecrementNode(receiver)     => JSONObject(Map("DecrementNode" -> toJSON(receiver)))
     case NotNode(receiver)           => JSONObject(Map("NotNode" -> toJSON(receiver)))

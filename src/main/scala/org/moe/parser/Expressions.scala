@@ -16,8 +16,6 @@ trait Expressions extends Literals with JavaTokenParsers {
     | hash
     | array
     | literalValue
-    | arrayRef
-    | hashRef
     | declaration
     | variable
     | expressionParens
@@ -27,9 +25,7 @@ trait Expressions extends Literals with JavaTokenParsers {
 
   // List stuff
   def list: Parser[List[AST]] = (literal(",").? ~> repsep(expression, ",") <~ literal(",").?)
-  def array: Parser[ArrayLiteralNode] = "(" ~> list <~ ")" ^^ ArrayLiteralNode
-  def arrayRef: Parser[ArrayRefLiteralNode] =
-    "[" ~> list <~ "]" ^^ ArrayRefLiteralNode
+  def array: Parser[ArrayLiteralNode] = "[" ~> list <~ "]" ^^ ArrayLiteralNode
 
   // Hash stuff
   def barehashKey: Parser[StringLiteralNode] =
@@ -40,9 +36,7 @@ trait Expressions extends Literals with JavaTokenParsers {
   def hashContent: Parser[List[PairLiteralNode]] =
     repsep(pair, ",")
   def hash: Parser[HashLiteralNode] =
-    "(" ~> hashContent <~ ")" ^^ HashLiteralNode
-  def hashRef: Parser[HashRefLiteralNode] =
-    "{" ~> hashContent <~ "}" ^^ HashRefLiteralNode
+    "{" ~> hashContent <~ "}" ^^ HashLiteralNode
 
   // Variable stuff
   def sigil = """[$@%]""".r
@@ -58,7 +52,7 @@ trait Expressions extends Literals with JavaTokenParsers {
   }
 
   def arrayIndex = array_index_rule ^^ {
-    case "$" ~ i ~ expr => ArrayElementAccessNode("@" + i, expr)
+    case "@" ~ i ~ expr => ArrayElementAccessNode("@" + i, expr)
   }
 
   def scalar: Parser[AST] = simpleScalar | arrayIndex | literalValue
