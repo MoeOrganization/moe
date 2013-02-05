@@ -58,11 +58,11 @@ trait Literals extends Base {
 
   def literalValue: Parser[AST] = (
       floatNumber
-    | zeroNumber
     | intNumber
     | octIntNumber
     | hexIntNumber
     | binIntNumber
+    | zeroNumber
     | constTrue
     | constFalse
     | string
