@@ -1,1 +1,1 @@
-100 unless false;
+100 unless "foobar";

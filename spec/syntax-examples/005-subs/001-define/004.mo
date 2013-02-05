@@ -1,5 +1,5 @@
 sub foo {
-    if ( true ) {
+    if ( 1 ) {
         return 10
     }
 }

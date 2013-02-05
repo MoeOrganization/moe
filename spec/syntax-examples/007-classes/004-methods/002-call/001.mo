@@ -1,1 +1,2 @@
+package Foo {}
 Foo->new();

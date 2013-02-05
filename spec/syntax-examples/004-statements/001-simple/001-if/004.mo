@@ -1,6 +1,6 @@
-if ( true ) {
+if ( "true" ) {
     10
-} elsif ( false ) {
+} elsif ( 0 ) {
     20
 } else {
     30

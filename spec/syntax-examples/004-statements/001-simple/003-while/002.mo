@@ -1,3 +1,3 @@
 do {
     100
-} while (true);
+} while ( 10 > 12 );

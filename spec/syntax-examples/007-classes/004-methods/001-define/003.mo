@@ -1,6 +1,6 @@
 class Foo {
     method bar ( $x, $y ) {
-        if ( true ) {
+        if ( $x < $y ) {
             return $x + $y;
         }
     }

@@ -1,1 +1,1 @@
-10 until false;
+10 until "foo" || "bar";

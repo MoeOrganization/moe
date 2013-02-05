@@ -1,9 +1,9 @@
 package Foo {
 
-sub bar () { 
-    "BAR"; 
-}
+    sub bar () { 
+        "BAR"; 
+    }
 
-sub baz { "BAZ" }
+    sub baz { "BAZ" }
 
 }
