@@ -8,8 +8,8 @@ import org.moe.ast._
 trait Expressions extends Literals with JavaTokenParsers {
 
   private lazy val array_index_rule = sigil ~
-                                      (namespacedIdentifier <~ literal("[")) ~
-                                      (expression <~ literal("]"))
+                                      (namespacedIdentifier <~ "[") ~
+                                      (expression <~ "]")
 
   def expression: Parser[AST] = (
       arrayIndex
@@ -23,37 +23,37 @@ trait Expressions extends Literals with JavaTokenParsers {
     | expressionParens
   )
 
-  def expressionParens: Parser[AST] = literal("(") ~> expression <~ literal(")")
+  def expressionParens: Parser[AST] = "(" ~> expression <~ ")"
 
   // List stuff
-  def list: Parser[List[AST]] = (",?".r ~> repsep(expression, ",") <~ ",?".r)
-  def array: Parser[ArrayLiteralNode] = literal("(") ~> list <~ literal(")") ^^ ArrayLiteralNode
+  def list: Parser[List[AST]] = (literal(",").? ~> repsep(expression, ",") <~ literal(",").?)
+  def array: Parser[ArrayLiteralNode] = "(" ~> list <~ ")" ^^ ArrayLiteralNode
   def arrayRef: Parser[ArrayRefLiteralNode] =
-    literal("[") ~> list <~ literal("]") ^^ ArrayRefLiteralNode
+    "[" ~> list <~ "]" ^^ ArrayRefLiteralNode
 
   // Hash stuff
   def barehashKey: Parser[StringLiteralNode] =
     """[0-9\w_]*""".r ^^ StringLiteralNode
   def hashKey: Parser[AST] = scalar | barehashKey
   def pair: Parser[PairLiteralNode] =
-    (hashKey <~ literal("=>")) ~ expression ^^ { case k ~ v => PairLiteralNode(k, v) }
+    (hashKey <~ "=>") ~ expression ^^ { case k ~ v => PairLiteralNode(k, v) }
   def hashContent: Parser[List[PairLiteralNode]] =
     repsep(pair, ",")
   def hash: Parser[HashLiteralNode] =
-    literal("(") ~> hashContent <~ literal(")") ^^ HashLiteralNode
+    "(" ~> hashContent <~ ")" ^^ HashLiteralNode
   def hashRef: Parser[HashRefLiteralNode] =
-    literal("{") ~> hashContent <~ literal("}") ^^ HashRefLiteralNode
+    "{" ~> hashContent <~ "}" ^^ HashRefLiteralNode
 
   // Variable stuff
   def sigil = """[$@%]""".r
   def varname = sigil ~ namespacedIdentifier ^^ { case a ~ b => a + b }
   def variable = varname ^^ VariableAccessNode
 
-  def simpleScalar = literal("$") ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("$" + i) }
-  def simpleArray  = literal("@") ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("@" + i) }
-  def simpleHash   = literal("%") ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("%" + i) }
+  def simpleScalar = "$" ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("$" + i) }
+  def simpleArray  = "@" ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("@" + i) }
+  def simpleHash   = "%" ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("%" + i) }
 
-  def declaration = "my".r ~> varname ~ ("=".r ~> expression).? ^^ {
+  def declaration = "my" ~> varname ~ ("=" ~> expression).? ^^ {
     case v ~ expr => VariableDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
   }
 

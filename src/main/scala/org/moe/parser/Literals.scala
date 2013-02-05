@@ -45,8 +45,8 @@ trait Literals extends Base {
   def singleQuoteStringContents: Parser[StringLiteralNode] =
     """([^'\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*""".r ^^ StringLiteralNode
 
-  def doubleQuoteString: Parser[StringLiteralNode] = "\"".r ~> doubleQuoteStringContents <~ "\"".r
-  def singleQuoteString: Parser[StringLiteralNode] = "'".r  ~> singleQuoteStringContents <~ "'".r
+  def doubleQuoteString: Parser[StringLiteralNode] = "\"" ~> doubleQuoteStringContents <~ "\""
+  def singleQuoteString: Parser[StringLiteralNode] = "'" ~> singleQuoteStringContents <~ "'"
 
   def string: Parser[StringLiteralNode] = doubleQuoteString | singleQuoteString
 

@@ -22,7 +22,7 @@ trait Statements extends Expressions {
   def blockContent: Parser[StatementsNode] =
     statements <~ statementDelim.?
   def block: Parser[StatementsNode] =
-    """\{""".r ~> blockContent <~ """\}""".r
+    "{" ~> blockContent <~ "}"
 
   def doBlock: Parser[StatementsNode] = "do".r ~> block
   def scopeBlock: Parser[ScopeNode] = block ^^ { ScopeNode(_) }
