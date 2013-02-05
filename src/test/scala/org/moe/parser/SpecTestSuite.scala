@@ -13,13 +13,25 @@ import scala.io.Source
 
 class SpecTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils {
 
+  private def recurseDirectory (f : File)(action: (File) => Unit): Unit = {
+    for ( i <- f.list.map({ p: String => new File( f.getAbsolutePath + "/" + p ) }) ) {
+      if (i.isDirectory) {
+        recurseDirectory(i)(action)
+      }
+      else {
+        action(i)    
+      }
+    }
+  }
+
   test("... test through each spec file with a matching ast file") {
     val spec_path = "spec/syntax-examples"
-    val f = new File(spec_path)
-    for (cat <- f.list.map({p: String => new File(spec_path + "/" + p)}) if cat.isDirectory) {
-      val cat_path = cat.getAbsolutePath
-      for (moe_file <- cat.list.map({p: String => new File(cat_path + "/" + p)}) if moe_file.isFile) {
-        val moe_path = moe_file.getAbsolutePath
+
+    recurseDirectory(new File(spec_path)) {
+      f: File => {
+
+        val moe_path = f.getAbsolutePath
+
         if (moe_path.endsWith(".mo")) {
           val ast_path = moe_path.replaceFirst(".mo$", ".ast")
           val ast_file = new File(ast_path)
@@ -27,14 +39,18 @@ class SpecTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils {
             val moe_content = Source.fromFile(moe_path).mkString
             val ast_content = Source.fromFile(ast_path).mkString
 
-            basicAST(Parser.parseStuff(moe_content)) match {
-              case CompilationUnitNode(scope) => scope match {
-                case ScopeNode(stmts) => {
-                  assert(Serializer.toJSON(stmts).toString().trim === ast_content.trim)
+            try { 
+              basicAST(Parser.parseStuff(moe_content)) match {
+                case CompilationUnitNode(scope) => scope match {
+                  case ScopeNode(stmts) => {
+                    assert(Serializer.toJSON(stmts).toString().trim === ast_content.trim)
+                  }
                 }
               }
+            } catch {
+              case e: java.lang.RuntimeException => throw new MoeErrors.MoeException("Parse failed on " + moe_path)
             }
-
+            
           }
         }
       }
