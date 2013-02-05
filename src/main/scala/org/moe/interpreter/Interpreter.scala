@@ -130,6 +130,15 @@ object Interpreter {
         )
       }
 
+      case HashRefLiteralNode(map) => {
+        runtime.NativeObjects.getHash(
+          map.map(
+            pair => eval(runtime, env, pair)
+            .asInstanceOf[MoePairObject].getNativeValue
+          ).toMap // XXX ref stuff?
+        )
+      }
+
       case HashValueAccessNode(hashName: String, key: AST) => {
         val key_result = eval(runtime, env, key)
         val hash_map = env.get(hashName) match {

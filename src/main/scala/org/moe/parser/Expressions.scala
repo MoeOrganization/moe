@@ -13,6 +13,7 @@ trait Expressions extends Literals with JavaTokenParsers {
 
   def expression: Parser[AST] = (
       arrayIndex
+    | hash
     | array
     | literalValue
     | arrayRef
@@ -38,8 +39,10 @@ trait Expressions extends Literals with JavaTokenParsers {
     (hashKey <~ literal("=>")) ~ expression ^^ { case k ~ v => PairLiteralNode(k, v) }
   def hashContent: Parser[List[PairLiteralNode]] =
     repsep(pair, ",")
-  def hashRef: Parser[HashLiteralNode] =
-    literal("{") ~> hashContent <~ literal("}") ^^ HashLiteralNode
+  def hash: Parser[HashLiteralNode] =
+    literal("(") ~> hashContent <~ literal(")") ^^ HashLiteralNode
+  def hashRef: Parser[HashRefLiteralNode] =
+    literal("{") ~> hashContent <~ literal("}") ^^ HashRefLiteralNode
 
   // Variable stuff
   def sigil = """[$@%]""".r
