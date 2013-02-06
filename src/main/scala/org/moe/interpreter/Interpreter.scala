@@ -238,10 +238,18 @@ class Interpreter {
       case MethodDeclarationNode(name, params, body) => stub
       // TODO: handle arguments
       case SubroutineDeclarationNode(name, params, body) => {
-        scoped { newEnv =>
+        scoped { sub_env =>
           val sub = new MoeSubroutine(
             name,
-            params => eval(runtime, newEnv, body)
+            args => {
+              // TODO make a run through after parse-time to check
+              // for argument counts at the call sites
+              val param_pairs = params zip args
+              param_pairs.foreach({ case (param, arg) =>
+                sub_env.create(param, arg)
+              })
+              eval(runtime, sub_env, body)
+            }
           )
           env.getCurrentPackage.getOrElse(
             throw new MoeErrors.PackageNotFound("__PACKAGE__")
