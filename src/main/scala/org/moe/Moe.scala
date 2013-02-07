@@ -5,9 +5,15 @@ import org.moe.parser._
 import org.moe.interpreter._
 import org.moe.runtime._
 
+/** Factory for [[org.moe.Moe]] instances. */
 object Moe {
 
+  /** Read Eval Print Loop object for [[org.moe.Moe]] runtimes. */
   object REPL {
+    /** Evaluates line of type String  and prints to stdio
+    *
+    * @param line to evaluate
+    */
     def evalLine(line: String) = {
       try {
         val nodes = List(MoeParsers.parseFromEntry(line))
@@ -25,6 +31,11 @@ object Moe {
       }
     }
   }
+
+ /** Main loop for the REPL
+  *
+  * @param arguments in an array of strings
+  */
 
   def main (args: Array[String]): Unit = {
     var ok = true
