@@ -193,7 +193,24 @@ class Interpreter {
       // value lookup, assignment and declaration
 
       case ClassAccessNode(name) => stub
-      case ClassDeclarationNode(name, superclass, body) => stub
+      case ClassDeclarationNode(name, superclass, body) => {
+        val pkg = env.getCurrentPackage.getOrElse(
+          throw new MoeErrors.PackageNotFound("__PACKAGE__")
+        )
+
+        val superclass_class: Option[MoeClass] = superclass.map(
+          pkg.getClass(_).getOrElse(
+            throw new MoeErrors.ClassNotFound(superclass.getOrElse(""))
+          )
+        )
+
+        val klass = new MoeClass(
+          name, None, None, superclass_class
+        )
+
+        pkg.addClass(klass)
+        klass
+      }
 
       case PackageDeclarationNode(name, body) => {
         scoped { newEnv =>

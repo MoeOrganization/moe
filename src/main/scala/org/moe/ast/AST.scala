@@ -53,7 +53,7 @@ case class GreaterThanNode(lhs: AST, rhs: AST) extends AST
 // value lookup, assignment and declaration
 
 case class ClassAccessNode(name: String) extends AST
-case class ClassDeclarationNode(name: String, superclass: String, body: AST) extends AST
+case class ClassDeclarationNode(name: String, superclass: Option[String], body: StatementsNode) extends AST
 case class PackageDeclarationNode(name: String, body: StatementsNode) extends AST
 
 case class ConstructorDeclarationNode(params: List[String], body: AST) extends AST
