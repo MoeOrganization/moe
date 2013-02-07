@@ -5,8 +5,12 @@ import org.moe.ast._
 
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
+import org.scalatest.matchers._
 
-trait InterpreterTestUtils extends FunSuite with BeforeAndAfter {
+trait InterpreterTestUtils
+  extends FunSuite
+  with BeforeAndAfter
+  with ShouldMatchers {
 
   var interpreter : Interpreter = _
   var runtime : MoeRuntime = _
