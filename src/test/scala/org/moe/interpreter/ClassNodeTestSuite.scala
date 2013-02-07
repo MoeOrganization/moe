@@ -33,6 +33,7 @@ class ClassNodeTestSuite
 
   test("... basic test with class and superclass") {
     // class Point { }
+    // class Point3D extends Point { }
     val ast = wrapSimpleAST(
       List(
         ClassDeclarationNode(
