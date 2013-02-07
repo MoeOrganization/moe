@@ -27,6 +27,10 @@ trait Literals extends Base {
   def constFalse: Parser[BooleanLiteralNode] =
     "false".r ^^^ BooleanLiteralNode(false)
 
+  // Undef literal
+  def constUndef: Parser[UndefLiteralNode] =
+    "undef".r ^^^ UndefLiteralNode()
+
   // String literals
 
   // NOTE:
@@ -65,6 +69,7 @@ trait Literals extends Base {
     | zeroNumber
     | constTrue
     | constFalse
+    | constUndef
     | string
   )
 }
