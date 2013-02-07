@@ -7,37 +7,12 @@ import scala.collection.mutable.HashMap
 
 class Interpreter {
 
+  import InterpreterUtils._
+
   val stub = new MoeObject()
 
-  object Utils {
-    def objToNumeric(obj: MoeObject): Double = obj match {
-      case i: MoeIntObject => i.getNativeValue.toDouble
-      case n: MoeFloatObject => n.getNativeValue
-      case _ => throw new MoeErrors.MoeException("Could not coerce object into numeric")
-    }
-
-    def objToInteger(obj: MoeObject): Int = obj match {
-      case i: MoeIntObject => i.getNativeValue
-      case n: MoeFloatObject => n.getNativeValue.toInt
-      case _ => throw new MoeErrors.MoeException("Could not coerce object into integer")
-    }
-
-    def objToString(obj: MoeObject): String = obj match {
-      case i: MoeIntObject => i.getNativeValue.toString
-      case n: MoeFloatObject => n.getNativeValue.toString
-      case s: MoeStringObject => s.getNativeValue
-      case _ => throw new MoeErrors.MoeException("Could not coerce object into string")
-    }
-
-    def inNewEnv[T](env: MoeEnvironment)(body: MoeEnvironment => T): T = {
-      val newEnv = new MoeEnvironment(Some(env))
-
-      body(env)
-    }
-  }
-
   def eval(runtime: MoeRuntime, env: MoeEnvironment, node: AST): MoeObject = {
-    val scoped = Utils.inNewEnv[MoeObject](env) _
+    val scoped = inNewEnv[MoeObject](env) _
     node match {
 
       // containers
@@ -94,7 +69,7 @@ class Interpreter {
         }
 
         // TODO: ListBuffer probably, like stevan said - JM
-        var native_index = Utils.objToInteger(index_result)
+        var native_index = objToInteger(index_result)
         while (native_index < 0) {
           native_index += array_value.size
         }
@@ -132,7 +107,7 @@ class Interpreter {
           case _ => throw new MoeErrors.UnexpectedType("MoeHashObject expected")
         }
 
-        hash_map.get(Utils.objToString(key_result))
+        hash_map.get(objToString(key_result))
           .getOrElse(runtime.NativeObjects.getUndef)
       }
 
@@ -200,16 +175,16 @@ class Interpreter {
       }
 
       case LessThanNode(lhs, rhs) => {
-        val lhs_result: Double = Utils.objToNumeric(eval(runtime, env, lhs))
-        val rhs_result: Double = Utils.objToNumeric(eval(runtime, env, rhs))
+        val lhs_result: Double = objToNumeric(eval(runtime, env, lhs))
+        val rhs_result: Double = objToNumeric(eval(runtime, env, rhs))
 
         val result = lhs_result < rhs_result
         runtime.NativeObjects.getBool(result)
       }
 
       case GreaterThanNode(lhs, rhs) => {
-        val lhs_result: Double = Utils.objToNumeric(eval(runtime, env, lhs))
-        val rhs_result: Double = Utils.objToNumeric(eval(runtime, env, rhs))
+        val lhs_result: Double = objToNumeric(eval(runtime, env, lhs))
+        val rhs_result: Double = objToNumeric(eval(runtime, env, rhs))
 
         val result = lhs_result > rhs_result
         runtime.NativeObjects.getBool(result)
