@@ -136,6 +136,14 @@ object Interpreter {
           .getOrElse(runtime.NativeObjects.getUndef)
       }
 
+      case RangeLiteralNode(start, end) => {
+        val range_start  = Utils.objToInteger(eval(runtime, env, start))
+        val range_end    = Utils.objToInteger(eval(runtime, env, end))
+        val range: Range = new Range(range_start, range_end + 1, 1)
+        val array: List[MoeObject] = range.toList.map(runtime.NativeObjects.getInt(_))
+        runtime.NativeObjects.getArray(array)
+      }
+
       // unary operators
 
       case IncrementNode(receiver: AST) => receiver match {

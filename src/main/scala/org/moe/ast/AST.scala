@@ -34,6 +34,8 @@ case class PairLiteralNode(key: AST, value: AST) extends AST
 case class ArrayLiteralNode(values: List[AST]) extends AST
 case class HashLiteralNode(map: List[AST]) extends AST
 
+case class RangeLiteralNode(start: AST, end: AST) extends AST
+
 // unary operators
 
 case class IncrementNode(receiver: AST) extends AST
