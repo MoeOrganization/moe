@@ -214,6 +214,25 @@ class Interpreter {
       // TODO: handle arguments
       case SubroutineDeclarationNode(name, params, body) => {
         scoped { sub_env =>
+          var declared: Set[String] = params.toSet
+          var closed_over: Set[String] = Set()
+          walkAST(
+            body,
+            { ast: AST =>
+              ast match {
+                case VariableDeclarationNode(varname, _) =>
+                  declared += varname
+                case VariableAccessNode(varname) =>
+                  if (env.has(varname) && !declared(varname)) {
+                    closed_over += varname
+                  }
+                  else if (!declared(varname)) {
+                    throw new MoeErrors.VariableNotFound(varname)
+                  }
+                case _ => Unit
+              }
+            }
+          )
           val sub = new MoeSubroutine(
             name,
             args => {
