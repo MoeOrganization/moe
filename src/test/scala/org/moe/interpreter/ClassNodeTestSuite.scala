@@ -62,4 +62,43 @@ class ClassNodeTestSuite
       case None => assert(false)
     }
   }
+
+  test("... basic test with class and attributes") {
+    // class Point { has $.x = 0; has $.y = 0 }
+    val ast = wrapSimpleAST(
+      List(
+        ClassDeclarationNode(
+          "Point",
+          None,
+          StatementsNode(
+            List(
+              AttributeDeclarationNode(
+                "x", //"$.x",
+                IntLiteralNode(0)
+              ),
+              AttributeDeclarationNode(
+                "y", //"$.y",
+                IntLiteralNode(0)
+              )
+            )
+          )
+        )
+      )
+    )
+    interpreter.eval(runtime, runtime.getRootEnv, ast)
+
+    val point_class = runtime.getRootPackage.getClass("Point").getOrElse(
+      throw new Exception("Class expected") // This has been tested
+    )
+
+    point_class should haveAttribute("x")
+    point_class.getAttribute("x") match {
+      case Some(attr) =>
+        attr.getDefault match {
+          case Some(attr) => attr.asInstanceOf[MoeIntObject].getNativeValue should equal (0)
+          case None => assert(false)
+        }
+      case None => assert(false)
+    }
+  }
 }

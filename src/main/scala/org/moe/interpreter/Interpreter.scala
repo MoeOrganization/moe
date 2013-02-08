@@ -192,7 +192,13 @@ class Interpreter {
 
       // value lookup, assignment and declaration
 
-      case ClassAccessNode(name) => stub
+      case ClassAccessNode(name) => {
+        env.getCurrentPackage.getOrElse(
+          throw new MoeErrors.PackageNotFound("__PACKAGE__")
+        ).getClass(name).getOrElse(
+          throw new MoeErrors.ClassNotFound(name)
+        )
+      }
       case ClassDeclarationNode(name, superclass, body) => {
         val pkg = env.getCurrentPackage.getOrElse(
           throw new MoeErrors.PackageNotFound("__PACKAGE__")
@@ -209,6 +215,13 @@ class Interpreter {
         )
 
         pkg.addClass(klass)
+
+        scoped { klass_env =>
+          klass_env.setCurrentClass(klass)
+          eval(runtime, klass_env, body)
+          klass
+        }
+
         klass
       }
 
@@ -269,9 +282,34 @@ class Interpreter {
         }
       }
 
-      case AttributeAccessNode(name) => stub
-      case AttributeAssignmentNode(name, expression) => stub
-      case AttributeDeclarationNode(name, expression) => stub
+      case AttributeAccessNode(name) => {
+        env.getCurrentClass.getOrElse(
+          throw new MoeErrors.ClassNotFound("__CLASS__")
+        ).getAttribute(name).getOrElse(
+          throw new MoeErrors.AttributeNotFound(name)
+        )
+      }
+      case AttributeAssignmentNode(name, expression) => {
+        val klass = env.getCurrentClass.getOrElse(
+          throw new MoeErrors.ClassNotFound("__CLASS__")
+        )
+        val prev_attr = klass.getAttribute(name).getOrElse(
+          throw new MoeErrors.AttributeNotFound(name)
+        )
+        val expr = eval(runtime, env, expression)
+        val attr = new MoeAttribute(name, prev_attr.getDefault)
+        klass.addAttribute(attr)
+        attr
+      }
+      case AttributeDeclarationNode(name, expression) => {
+        val klass = env.getCurrentClass.getOrElse(
+          throw new MoeErrors.ClassNotFound("__CLASS__")
+        )
+        val attr_default = eval(runtime, env, expression)
+        val attr = new MoeAttribute(name, Some(attr_default))
+        klass.addAttribute(attr)
+        attr
+      }
 
       // TODO context etc
       case VariableAccessNode(name) => env.get(name).getOrElse(

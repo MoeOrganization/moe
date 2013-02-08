@@ -46,6 +46,23 @@ import org.scalatest.matchers._
 
    def extendClass(superclass: MoeClass) = new ClassExtendsClassMatcher[MoeClass](superclass)
    def extendClass(superclass: String) = new ClassExtendsClassMatcher[String](superclass)
+
+   class ClassHasAttributeMatcher(attr: String) extends Matcher[MoeClass] {
+     def apply(left: MoeClass) = {
+       val failure_msg     = left.getName + " did not have attribute " + attr
+       val neg_failure_msg = left.getName + " had attribute " + attr
+       val check = left.hasAttribute(attr)
+       MatchResult(
+         check,
+         "Class " + failure_msg,
+         "Class " + neg_failure_msg,
+         "class " + failure_msg,
+         "class " + neg_failure_msg
+       )
+     }
+   }
+
+   def haveAttribute(attr: String) = new ClassHasAttributeMatcher(attr)
  }
 
  object ClassMatchers extends ClassMatchers
