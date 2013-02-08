@@ -172,6 +172,6 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    assert(result.asInstanceOf[ MoeNullObject ].getNativeValue === null)
+    assert(result.asInstanceOf[ MoeUndefObject ].getNativeValue === null)
   }
 }

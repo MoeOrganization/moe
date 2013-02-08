@@ -63,7 +63,7 @@ class MoeRuntime (
       val hashClass      = new MoeClass("Hash",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val pairClass      = new MoeClass("Pair",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
        
-      val nullClass      = new MoeClass("Null",       Some(VERSION), Some(AUTHORITY), Some(scalarClass))
+      val undefClass     = new MoeClass("Undef",      Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val boolClass      = new MoeClass("Bool",       Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val strClass       = new MoeClass("Str",        Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val intClass       = new MoeClass("Int",        Some(VERSION), Some(AUTHORITY), Some(scalarClass))
@@ -80,7 +80,7 @@ class MoeRuntime (
       corePackage.addClass(hashClass)
       corePackage.addClass(pairClass)
 
-      corePackage.addClass(nullClass)
+      corePackage.addClass(undefClass)
       corePackage.addClass(boolClass)
       corePackage.addClass(strClass)
       corePackage.addClass(intClass)
@@ -101,7 +101,7 @@ class MoeRuntime (
 
   object NativeObjects {
 
-    private lazy val Undef = new MoeNullObject(getCoreClassFor("Null"))
+    private lazy val Undef = new MoeUndefObject(getCoreClassFor("Undef"))
     private lazy val True  = new MoeBooleanObject(true, getCoreClassFor("Bool"))
     private lazy val False = new MoeBooleanObject(false, getCoreClassFor("Bool"))
 

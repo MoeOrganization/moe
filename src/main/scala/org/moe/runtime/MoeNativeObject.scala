@@ -45,11 +45,11 @@ class MoeBooleanObject(v: Boolean, klass : Option[MoeClass] = None) extends MoeN
 // this is the one outlyer, it doesn't need to be
 // a NativeObject because it doesn't need to actually
 // box any values, just the lack of a value
-class MoeNullObject(klass : Option[MoeClass] = None) extends MoeObject(klass) {
+class MoeUndefObject(klass : Option[MoeClass] = None) extends MoeObject(klass) {
   def getNativeValue: AnyRef  = null
   override def isFalse: Boolean = true
   override def isUndef: Boolean = true
-  override def toString: String = "null"
+  override def toString: String = "undef"
 }
 
 // Complex objects

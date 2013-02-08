@@ -58,7 +58,7 @@ class MoeRuntimeTestSuite extends FunSuite with BeforeAndAfter with ShouldMatche
     assert(corePackage.hasClass("Array"))
     assert(corePackage.hasClass("Hash"))
 
-    assert(corePackage.hasClass("Null"))
+    assert(corePackage.hasClass("Undef"))
     assert(corePackage.hasClass("Bool"))
     assert(corePackage.hasClass("Num"))
     assert(corePackage.hasClass("Int"))
