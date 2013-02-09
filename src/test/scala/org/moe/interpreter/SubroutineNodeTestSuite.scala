@@ -8,28 +8,30 @@ import org.moe.ast._
 class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
   test("... basic test with one-arg sub") {
-    // package Foo { sub inc($n) { ++$n }
-    // my $n = 1; inc(inc(n)) }
+    // package Foo { sub plus_ten($n) { $n + 10 }
+    // my $n = 10; plus_ten(plus_ten($n)) }
     val ast = wrapSimpleAST(
       List(
         SubroutineDeclarationNode(
-          "inc",
+          "plus_ten",
           List("$n"),
           StatementsNode(
             List(
-              // TODO just add one when we have addition
-              IncrementNode(VariableAccessNode("$n"))
+              MethodCallNode(
+                VariableAccessNode("$n"),
+                "+",
+                List(IntLiteralNode(10))
+              )
             )
           )
         ),
-        VariableDeclarationNode("$n", IntLiteralNode(1)),
         SubroutineCallNode(
-          "inc",
+          "plus_ten",
           List(
             SubroutineCallNode(
-              "inc",
+              "plus_ten",
               List(
-                VariableAccessNode("$n")
+                IntLiteralNode(10)
               )
             )
           )
@@ -37,7 +39,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 3)
+    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 30)
   }
 
   test("... basic test with closure") {
