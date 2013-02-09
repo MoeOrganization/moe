@@ -126,7 +126,7 @@ class MoeClass(
    */
   def getMethod(name: String): Option[MoeMethod] = methods.get(name).orElse(
       superclass.flatMap({ sc => sc.getMethod(name) })
-    )
+  )
 
   /**
    * Returns true if this class has a method with the specified name.

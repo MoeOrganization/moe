@@ -214,7 +214,7 @@ class Interpreter {
         )
 
         val klass = new MoeClass(
-          name, None, None, superclass_class
+          name, None, None, Some(superclass_class.getOrElse(runtime.getClassClass))
         )
 
         pkg.addClass(klass.newInstance)
@@ -333,12 +333,13 @@ class Interpreter {
         val invocant_object = eval(runtime, env, invocant)
         invocant_object match {
           case obj: MoeObject =>
-            val meth = obj.getAssociatedClass.getOrElse(
+            val klass = obj.getAssociatedClass.getOrElse(
               throw new MoeErrors.ClassNotFound("__CLASS__")
-            ).getMethod(method_name).getOrElse(
+            )
+            val meth = klass.getMethod(method_name).getOrElse(
               throw new MoeErrors.MethodNotFound(method_name)
             )
-            meth.execute(invocant_object, args.map(eval(runtime, env, _)))
+            invocant_object.callMethod(meth, args.map(eval(runtime, env, _)))
           case _ => throw new MoeErrors.MoeException("Object expected")
         }
       }

@@ -31,6 +31,31 @@ class ClassNodeTestSuite
     root_pkg should haveClass("Point")
   }
 
+  test("... basic test with constructor") {
+    // class Point { } Point->new
+    val ast = wrapSimpleAST(
+      List(
+        ClassDeclarationNode(
+          "Point",
+          None,
+          StatementsNode(
+            List()
+          )
+        ),
+        MethodCallNode(
+          ClassAccessNode("Point"),
+          "new",
+          List()
+        )
+      )
+    )
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    result.getAssociatedClass match {
+      case Some(klass) => klass.getName should equal ("Point")
+      case None => assert(false)
+    }
+  }
+
   test("... basic test with class and superclass") {
     // class Point { }
     // class Point3D extends Point { }
