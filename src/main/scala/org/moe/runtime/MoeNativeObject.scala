@@ -22,6 +22,25 @@ abstract class MoeNativeObject[A] (
 class MoeIntObject(v: Int, klass : Option[MoeClass] = None) extends MoeNativeObject[Int](v, klass) {
   override def isFalse: Boolean = getNativeValue == 0
   override def toString = getNativeValue.toString
+
+  klass.map({klass =>
+    klass.addMethod(
+      new MoeMethod(
+        "+",
+        { (lhs, args) =>
+          val rhs = args(0)
+          lhs match {
+            case i: MoeIntObject =>
+              rhs match {
+                case rhs_i: MoeIntObject => new MoeIntObject(i.getNativeValue + rhs_i.getNativeValue)
+                case rhs_n: MoeFloatObject => new MoeIntObject(i.getNativeValue + rhs_n.getNativeValue.toInt)
+                case _ => throw new MoeErrors.UnexpectedType(rhs.toString)
+              }
+          }
+        }
+      )
+    )
+  })
 }
 
 class MoeFloatObject(v: Double, klass : Option[MoeClass] = None) extends MoeNativeObject[Double](v, klass) {

@@ -166,6 +166,21 @@ class ClassNodeTestSuite
     counter_class should haveMethod("inc")
   }
 
+  test("... basic test with builtin method call") {
+    // class Foo { method zzz { 42 } } Foo->new->zzz()
+    val ast = wrapSimpleAST(
+      List(
+        MethodCallNode(
+          IntLiteralNode(2),
+          "+",
+          List(IntLiteralNode(2))
+        )
+      )
+    )
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    result.asInstanceOf[MoeIntObject].getNativeValue should equal (4)
+  }
+
   test("... basic test with method call") {
     // class Foo { method zzz { 42 } } Foo->new->zzz()
     val ast = wrapSimpleAST(
