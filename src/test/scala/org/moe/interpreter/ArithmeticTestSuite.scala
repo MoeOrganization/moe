@@ -28,7 +28,7 @@ class ArithmeticTestSuite
   }
 
   test("... float + int") {
-    // 2 + 2
+    // 2.5 + 2
     val ast = wrapSimpleAST(
       List(
         MethodCallNode(
@@ -43,7 +43,7 @@ class ArithmeticTestSuite
   }
 
   test("... int + float") {
-    // 2 + 2
+    // 2 + 2.5
     val ast = wrapSimpleAST(
       List(
         MethodCallNode(
@@ -58,7 +58,7 @@ class ArithmeticTestSuite
   }
 
   test("... float + float") {
-    // 2 + 2
+    // 2.5 + 2.5
     val ast = wrapSimpleAST(
       List(
         MethodCallNode(
@@ -73,7 +73,7 @@ class ArithmeticTestSuite
   }
 
   test("... int + int + int") {
-    // 2 + 2
+    // 1 + 2 + 3
     val ast = wrapSimpleAST(
       List(
         MethodCallNode(

@@ -8,8 +8,7 @@ import org.moe.ast._
 class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
   test("... basic test with one-arg sub") {
-    // package Foo { sub plus_ten($n) { $n + 10 }
-    // my $n = 10; plus_ten(plus_ten($n)) }
+    // sub plus_ten($n) { $n + 10 } plus_ten(plus_ten(10)) }
     val ast = wrapSimpleAST(
       List(
         SubroutineDeclarationNode(
@@ -43,7 +42,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
   }
 
   test("... basic test with closure") {
-    // package Foo { my $foo = 0; sub add_foo { $foo++ }
+    // my $foo = 0; sub add_foo { $foo++ }
     // add_foo(); add_foo(); add_foo(); $foo }
     val ast = wrapSimpleAST(
       List(
