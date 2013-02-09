@@ -92,7 +92,10 @@ class ClassNodeTestSuite
     )
 
     point_class should haveAttribute("x")
-    point_class.getAttribute("x") match {
+    val point_class_class = point_class.getAssociatedClass.getOrElse(
+      throw new Exception("Class expected") // This has been tested
+    )
+    point_class_class.getAttribute("x") match {
       case Some(attr) =>
         attr.getDefault match {
           case Some(attr) => attr.asInstanceOf[MoeIntObject].getNativeValue should equal (0)

@@ -206,6 +206,9 @@ class Interpreter {
 
         val superclass_class: Option[MoeClass] = superclass.map(
           pkg.getClass(_).getOrElse(
+            // FIXME error for class instance
+            throw new MoeErrors.ClassNotFound(superclass.getOrElse(""))
+          ).getAssociatedClass.getOrElse(
             throw new MoeErrors.ClassNotFound(superclass.getOrElse(""))
           )
         )
@@ -214,7 +217,7 @@ class Interpreter {
           name, None, None, superclass_class
         )
 
-        pkg.addClass(klass)
+        pkg.addClass(klass.newInstance)
 
         scoped { klass_env =>
           klass_env.setCurrentClass(klass)
@@ -326,8 +329,19 @@ class Interpreter {
       }
 
       // operations
-
-      case MethodCallNode(invocant, method_name, args) => stub
+      case MethodCallNode(invocant, method_name, args) => {
+        val invocant_object = eval(runtime, env, invocant)
+        invocant_object match {
+          case obj: MoeObject =>
+            val meth = obj.getAssociatedClass.getOrElse(
+              throw new MoeErrors.ClassNotFound("__CLASS__")
+            ).getMethod(method_name).getOrElse(
+              throw new MoeErrors.MethodNotFound(method_name)
+            )
+            meth.execute(invocant_object, args.map(eval(runtime, env, _)))
+          case _ => throw new MoeErrors.MoeException("Object expected")
+        }
+      }
       case SubroutineCallNode(function_name, args) => {
         val sub = env.getCurrentPackage.getOrElse(
             throw new MoeErrors.PackageNotFound("__PACKAGE__")

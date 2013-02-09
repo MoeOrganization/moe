@@ -15,7 +15,8 @@ class MoeObject(
   def getID: Int = id
 
   /**
-   * Returns the class associted with this object, if there is one.
+   * Returns the class associted with this object.
+   * There should always be one after the bootstrap
    */
   def getAssociatedClass: Option[MoeClass] = associatedClass
 
