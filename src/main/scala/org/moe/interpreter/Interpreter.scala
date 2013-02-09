@@ -112,8 +112,8 @@ class Interpreter {
       }
 
       case RangeLiteralNode(start, end) => {
-        val range_start  = Utils.objToInteger(eval(runtime, env, start))
-        val range_end    = Utils.objToInteger(eval(runtime, env, end))
+        val range_start  = objToInteger(eval(runtime, env, start))
+        val range_end    = objToInteger(eval(runtime, env, end))
         val range: Range = new Range(range_start, range_end + 1, 1)
         val array: List[MoeObject] = range.toList.map(runtime.NativeObjects.getInt(_))
         runtime.NativeObjects.getArray(array)
