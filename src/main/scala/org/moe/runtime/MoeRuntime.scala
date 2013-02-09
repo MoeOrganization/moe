@@ -142,7 +142,23 @@ class MoeRuntime (
           val i = lhs.asInstanceOf[MoeIntObject]
           rhs match {
             case rhs_i: MoeIntObject => new MoeIntObject(i.getNativeValue + rhs_i.getNativeValue)
-            case rhs_n: MoeFloatObject => new MoeFloatObject(i.getNativeValue + rhs_n.getNativeValue.toInt)
+            case rhs_n: MoeFloatObject => new MoeFloatObject(i.getNativeValue.toDouble + rhs_n.getNativeValue)
+            case _ => throw new MoeErrors.UnexpectedType(rhs.toString)
+          }
+        }
+      )
+    )
+
+    val num_class = associatedClassFor("Num")
+    num_class.addMethod(
+      new MoeMethod(
+        "+",
+        { (lhs, args) =>
+          val rhs = args(0)
+          val n = lhs.asInstanceOf[MoeFloatObject]
+          rhs match {
+            case rhs_n: MoeFloatObject => new MoeFloatObject(n.getNativeValue + rhs_n.getNativeValue)
+            case rhs_i: MoeIntObject => new MoeFloatObject(n.getNativeValue + rhs_i.getNativeValue.toDouble)
             case _ => throw new MoeErrors.UnexpectedType(rhs.toString)
           }
         }
