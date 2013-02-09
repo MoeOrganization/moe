@@ -117,6 +117,8 @@ class MoeRuntime (
       corePackage.addClass(numClass.newInstance)
       corePackage.addClass(exceptionClass.newInstance)
 
+      addBuiltinMethods
+
       /*
         TODO:
         bootstrap the other associtateClass for 
@@ -125,6 +127,27 @@ class MoeRuntime (
 
       is_bootstrapped = true
     }
+  }
+
+  private def addBuiltinMethods = {
+    val associatedClassFor: (String) => MoeClass =
+      ensureCoreClassFor(_).getAssociatedClass.getOrElse(unknownClass)
+
+    val int_class = associatedClassFor("Int")
+    int_class.addMethod(
+      new MoeMethod(
+        "+",
+        { (lhs, args) =>
+          val rhs = args(0)
+          val i = lhs.asInstanceOf[MoeIntObject]
+          rhs match {
+            case rhs_i: MoeIntObject => new MoeIntObject(i.getNativeValue + rhs_i.getNativeValue)
+            case rhs_n: MoeFloatObject => new MoeFloatObject(i.getNativeValue + rhs_n.getNativeValue.toInt)
+            case _ => throw new MoeErrors.UnexpectedType(rhs.toString)
+          }
+        }
+      )
+    )
   }
 
   def getCoreClassFor (name: String): Option[MoeOpaque] = corePackage.getClass(name)
