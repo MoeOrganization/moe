@@ -96,27 +96,43 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
       authority  = Some("cpan:STEVAN"),
       superclass = Some(parent)
     )
+    val grandchild = new MoeClass(
+      name       = "GrandChildClass",
+      version    = Some("0.01"),
+      authority  = Some("cpan:STEVAN"),
+      superclass = Some(child)
+    )
 
     val ident = new MoeMethod("ident", (inv, args) => inv)
     parent.addMethod(ident)
 
-    var dad = parent.newInstance
-    var son = child.newInstance
+    var dad      = parent.newInstance
+    var son      = child.newInstance
+    var grandson = grandchild.newInstance
 
     assert(parent.hasMethod("ident"))
     assert(child.hasMethod("ident"))
+    assert(grandchild.hasMethod("ident"))
 
     parent.getMethod("ident") should be (Some(ident))
     child.getMethod("ident") should be (Some(ident))
+    grandchild.getMethod("ident") should be (Some(ident))
 
     assert(dad.callMethod(ident) === dad)
     assert(son.callMethod(ident) === son)
+    assert(grandson.callMethod(ident) === grandson)
 
     assert(dad.isInstanceOf(parent))
     assert(son.isInstanceOf(parent))
+    assert(grandson.isInstanceOf(parent))
 
     assert(!dad.isInstanceOf(child))
     assert(son.isInstanceOf(child))
+    assert(grandson.isInstanceOf(child))
+
+    assert(!dad.isInstanceOf(grandchild))
+    assert(!son.isInstanceOf(grandchild))
+    assert(grandson.isInstanceOf(grandchild))
   }
 
   test("... test attribute resolution") {
