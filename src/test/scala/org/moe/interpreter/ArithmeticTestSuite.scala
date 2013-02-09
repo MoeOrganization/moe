@@ -71,4 +71,23 @@ class ArithmeticTestSuite
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     result.asInstanceOf[MoeFloatObject].getNativeValue should equal (5.0)
   }
+
+  test("... int + int + int") {
+    // 2 + 2
+    val ast = wrapSimpleAST(
+      List(
+        MethodCallNode(
+          MethodCallNode(
+            IntLiteralNode(1),
+            "+",
+            List(IntLiteralNode(2))
+          ),
+          "+",
+          List(IntLiteralNode(3))
+        )
+      )
+    )
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    result.asInstanceOf[MoeIntObject].getNativeValue should equal (6)
+  }
 }
