@@ -153,20 +153,12 @@ object Interpreter {
           case i: MoeIntObject => {
             val new_i = runtime.NativeObjects.getInt(i.getNativeValue + 1)
             env.set(varName, new_i)
-            if (prefix) {
-              new_i
-            } else {
-              i
-            }
+            if (prefix) new_i else i
           }
           case n: MoeFloatObject => {
             val new_n = runtime.NativeObjects.getFloat(n.getNativeValue + 1.0)
             env.set(varName, new_n)
-            if (prefix) {
-              new_n
-            } else {
-              n
-            }
+            if (prefix) new_n else n
           }
         }
       }
@@ -177,20 +169,12 @@ object Interpreter {
           case i: MoeIntObject => {
             val new_i = runtime.NativeObjects.getInt(i.getNativeValue - 1)
             env.set(varName, new_i)
-            if (prefix) {
-              new_i
-            } else {
-              i
-            }
+            if (prefix) new_i else i
           }
           case n: MoeFloatObject => {
             val new_n = runtime.NativeObjects.getFloat(n.getNativeValue - 1.0)
             env.set(varName, new_n)
-            if (prefix) {
-              new_n
-            } else {
-              n
-            }
+            if (prefix) new_n else n
           }
         }
       }
