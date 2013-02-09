@@ -15,7 +15,7 @@ class MoePackage(
   ) extends MoeObject {
 
   private var parent: Option[MoePackage] = None
-  private val klasses: Map[String, MoeOpaque] = new HashMap[String, MoeOpaque]()
+  private val klasses: Map[String, MoeClass] = new HashMap[String, MoeClass]()
   private val subs: Map[String, MoeSubroutine] = new HashMap[String, MoeSubroutine]()
   private val sub_packages: Map[String, MoePackage] = new HashMap[String, MoePackage]()
 
@@ -83,11 +83,8 @@ class MoePackage(
    *
    * @param klass The class
    */
-  def addClass(klass: MoeOpaque): Unit = {
-    val klass_klass = klass.getAssociatedClass.getOrElse(
-      new MoeClass("Unknown") // FIXME extract from runtime somehow?
-    )
-    klasses += (klass_klass.getName -> klass)
+  def addClass(klass: MoeClass): Unit = {
+    klasses += (klass.getName -> klass)
   }
 
   /**
@@ -95,7 +92,7 @@ class MoePackage(
    *
    * @param name The name of the class to return
    */
-  def getClass(name: String): Option[MoeOpaque] = klasses.get(name)
+  def getClass(name: String): Option[MoeClass] = klasses.get(name)
 
   /**
    * checks if a class with the specified name is in package

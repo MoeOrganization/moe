@@ -23,7 +23,7 @@ class MoePackageTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... basic package w/ class") {
-    pkg.addClass((new MoeClass("Foo")).newInstance)
+    pkg.addClass(new MoeClass("Foo"))
     assert(pkg.hasClass("Foo"))
   }
 

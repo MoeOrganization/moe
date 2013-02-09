@@ -15,12 +15,7 @@ class MoeRuntime (
 
   private val objectClass = new MoeClass("Object", Some(VERSION), Some(AUTHORITY))
   private val classClass  = new MoeClass("Class", Some(VERSION), Some(AUTHORITY), Some(objectClass))
-
-  private val unknownClass  = new MoeClass("Unknown", Some(VERSION), Some(AUTHORITY), Some(objectClass))
-
-  private val classInstance  = classClass.newInstance
-  private val objectInstance  = objectClass.newInstance
-  private val unknownInstance  = unknownClass.newInstance
+  private val unknownClass  = new MoeClass("Class", Some(VERSION), Some(AUTHORITY), Some(classClass))
 
   def getVersion     = VERSION
   def getAuthority   = AUTHORITY
@@ -35,18 +30,8 @@ class MoeRuntime (
   def getObjectClass = objectClass
   def getClassClass  = classClass
 
-  def getObjectInstance = objectInstance
-  def getClassInstance  = classInstance
-  def getUnknownInstance  = unknownInstance
-
-  implicit def unboxClass(c: Option[MoeClass]) = c.getOrElse(unknownClass)
-  implicit def unboxInstance(c: Option[MoeOpaque]) = c.getOrElse(unknownInstance)
-
   def bootstrap() : Unit = {
     if (!is_bootstrapped) {
-
-      //val unboxInstance: (Option[MoeOpaque]) => MoeOpaque = { _.getOrElse(unknownInstance) }
-      //val unboxClass: (Option[MoeClass]) => MoeClass = { _.getOrElse(unknownClass) }
 
       // setup the root package
       rootEnv.setCurrentPackage(rootPackage) // bind it to env
@@ -54,20 +39,6 @@ class MoeRuntime (
       // set up the core package
       rootPackage.addSubPackage(corePackage) // bind it to the root
       corePackage.getEnv.setCurrentPackage(corePackage) // bind it to the env
-
-      // bootstrap builtin methods
-      classClass.addMethod(
-        new MoeMethod(
-          "new",
-          { (invocant, _) => invocant.getAssociatedClass.newInstance }
-        )
-      )
-      classClass.addMethod(
-        new MoeMethod(
-          "getClass", // XXX
-          { (invocant, _) => invocant.getAssociatedClass }
-        )
-      )
 
       // tie the knot
       objectClass.setAssociatedClass(Some(classClass)) // Object is a class
@@ -101,21 +72,21 @@ class MoeRuntime (
       val exceptionClass = new MoeClass("Exception",  Some(VERSION), Some(AUTHORITY), Some(scalarClass))
 
       // add all these classes to the corePackage
-      corePackage.addClass(objectClass.newInstance)
-      corePackage.addClass(classClass.newInstance)
+      corePackage.addClass(objectClass)
+      corePackage.addClass(classClass)
 
-      corePackage.addClass(anyClass.newInstance)
-      corePackage.addClass(scalarClass.newInstance)
-      corePackage.addClass(arrayClass.newInstance)
-      corePackage.addClass(hashClass.newInstance)
-      corePackage.addClass(pairClass.newInstance)
+      corePackage.addClass(anyClass)
+      corePackage.addClass(scalarClass)
+      corePackage.addClass(arrayClass)
+      corePackage.addClass(hashClass)
+      corePackage.addClass(pairClass)
 
-      corePackage.addClass(nullClass.newInstance)
-      corePackage.addClass(boolClass.newInstance)
-      corePackage.addClass(strClass.newInstance)
-      corePackage.addClass(intClass.newInstance)
-      corePackage.addClass(numClass.newInstance)
-      corePackage.addClass(exceptionClass.newInstance)
+      corePackage.addClass(nullClass)
+      corePackage.addClass(boolClass)
+      corePackage.addClass(strClass)
+      corePackage.addClass(intClass)
+      corePackage.addClass(numClass)
+      corePackage.addClass(exceptionClass)
 
       addBuiltinMethods
 
@@ -130,10 +101,17 @@ class MoeRuntime (
   }
 
   private def addBuiltinMethods = {
-    val associatedClassFor: (String) => MoeClass =
-      ensureCoreClassFor(_).getAssociatedClass.getOrElse(unknownClass)
 
-    val int_class = associatedClassFor("Int")
+    // constructor
+    classClass.addMethod(
+      new MoeMethod(
+        "new",
+        { (invocant, _) => invocant.asInstanceOf[MoeClass].newInstance }
+      )
+    )
+
+    // arithmetic
+    val int_class = ensureCoreClassFor("Int")
     int_class.addMethod(
       new MoeMethod(
         "+",
@@ -149,7 +127,7 @@ class MoeRuntime (
       )
     )
 
-    val num_class = associatedClassFor("Num")
+    val num_class = ensureCoreClassFor("Num")
     num_class.addMethod(
       new MoeMethod(
         "+",
@@ -166,31 +144,31 @@ class MoeRuntime (
     )
   }
 
-  def getCoreClassFor (name: String): Option[MoeOpaque] = corePackage.getClass(name)
-  def ensureCoreClassFor (name: String): MoeOpaque = corePackage.getClass(name).getOrElse(unknownClass.newInstance)
+  def getCoreClassFor (name: String): Option[MoeClass] = corePackage.getClass(name)
+  def ensureCoreClassFor (name: String): MoeClass      = getCoreClassFor(name).getOrElse(unknownClass)
 
   object NativeObjects {
 
-    private lazy val Undef = new MoeNullObject(ensureCoreClassFor("Null").getAssociatedClass)
-    private lazy val True  = new MoeBooleanObject(true, ensureCoreClassFor("Bool").getAssociatedClass)
-    private lazy val False = new MoeBooleanObject(false, ensureCoreClassFor("Bool").getAssociatedClass)
+    private lazy val Undef = new MoeNullObject(getCoreClassFor("Null"))
+    private lazy val True  = new MoeBooleanObject(true, getCoreClassFor("Bool"))
+    private lazy val False = new MoeBooleanObject(false, getCoreClassFor("Bool"))
 
     def getUndef = Undef
     def getTrue  = True
     def getFalse = False
 
-    def getInt    (value: Int)     = new MoeIntObject(value, ensureCoreClassFor("Int").getAssociatedClass)
-    def getFloat  (value: Double)  = new MoeFloatObject(value, ensureCoreClassFor("Num").getAssociatedClass)
-    def getString (value: String)  = new MoeStringObject(value, ensureCoreClassFor("Str").getAssociatedClass)
+    def getInt    (value: Int)     = new MoeIntObject(value, getCoreClassFor("Int"))
+    def getFloat  (value: Double)  = new MoeFloatObject(value, getCoreClassFor("Num"))
+    def getString (value: String)  = new MoeStringObject(value, getCoreClassFor("Str"))
     def getBool   (value: Boolean) = if (value) { True } else { False }
 
-    def getHash  (value: Map[String, MoeObject]) = new MoeHashObject(value, ensureCoreClassFor("Hash").getAssociatedClass)
-    def getHash  ()                              = new MoeHashObject(Map(), ensureCoreClassFor("Hash").getAssociatedClass)
-    def getArray (value: List[MoeObject])        = new MoeArrayObject(value, ensureCoreClassFor("Array").getAssociatedClass)
-    def getArray ()                              = new MoeArrayObject(List(), ensureCoreClassFor("Array").getAssociatedClass)
+    def getHash  (value: Map[String, MoeObject]) = new MoeHashObject(value, getCoreClassFor("Hash"))
+    def getHash  ()                              = new MoeHashObject(Map(), getCoreClassFor("Hash"))
+    def getArray (value: List[MoeObject])        = new MoeArrayObject(value, getCoreClassFor("Array"))
+    def getArray ()                              = new MoeArrayObject(List(), getCoreClassFor("Array"))
     def getPair  (value: (MoeObject, MoeObject)) = new MoePairObject(
-        (value._1.asInstanceOf[MoeStringObject].getNativeValue, value._2),
-        ensureCoreClassFor("Pair").getAssociatedClass
+        (value._1.asInstanceOf[MoeStringObject].getNativeValue, value._2), 
+        getCoreClassFor("Pair")
       )
   }
 

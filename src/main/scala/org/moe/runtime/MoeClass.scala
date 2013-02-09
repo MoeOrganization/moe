@@ -103,7 +103,7 @@ class MoeClass(
   /**
    * Creates a new instance of this class.
    */
-  def newInstance: MoeOpaque = new MoeOpaque(Some(this))
+  def newInstance: MoeObject = new MoeOpaque(Some(this))
 
   // Methods ...
 
@@ -150,6 +150,8 @@ class MoeClass(
     if (klassname == name) return true
     superclass.exists(_.isClassOf(klassname))
   }
+
+  override def getAssociatedClass = Some(this)
 
   /**
    * Returns a string representation of this class.

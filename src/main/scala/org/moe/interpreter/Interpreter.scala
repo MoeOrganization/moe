@@ -206,9 +206,6 @@ class Interpreter {
 
         val superclass_class: Option[MoeClass] = superclass.map(
           pkg.getClass(_).getOrElse(
-            // FIXME error for class instance
-            throw new MoeErrors.ClassNotFound(superclass.getOrElse(""))
-          ).getAssociatedClass.getOrElse(
             throw new MoeErrors.ClassNotFound(superclass.getOrElse(""))
           )
         )
@@ -217,7 +214,7 @@ class Interpreter {
           name, None, None, Some(superclass_class.getOrElse(runtime.getClassClass))
         )
 
-        pkg.addClass(klass.newInstance)
+        pkg.addClass(klass)
 
         scoped { klass_env =>
           klass_env.setCurrentClass(klass)
