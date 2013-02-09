@@ -59,7 +59,7 @@ case class PackageDeclarationNode(name: String, body: StatementsNode) extends AS
 case class ConstructorDeclarationNode(params: List[String], body: AST) extends AST
 case class DestructorDeclarationNode(params: List[String], body: AST) extends AST
 
-case class MethodDeclarationNode(name: String, params: List[String], body: AST) extends AST
+case class MethodDeclarationNode(name: String, params: List[String], body: StatementsNode) extends AST
 case class SubroutineDeclarationNode(name: String, params: List[String], body: StatementsNode) extends AST
 
 case class AttributeAccessNode(name: String) extends AST

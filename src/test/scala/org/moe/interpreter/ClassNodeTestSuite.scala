@@ -101,4 +101,40 @@ class ClassNodeTestSuite
       case None => assert(false)
     }
   }
+
+  test("... basic test with class and methods") {
+    // class Counter { has $.n; method inc { ++$.n } }
+    val ast = wrapSimpleAST(
+      List(
+        ClassDeclarationNode(
+          "Counter",
+          None,
+          StatementsNode(
+            List(
+              AttributeDeclarationNode(
+                "n", //"$.n",
+                IntLiteralNode(0)
+              ),
+              MethodDeclarationNode(
+                "inc",
+                List(), // FIXME test with params when we have more operators :P
+                StatementsNode(
+                  List(
+                    IncrementNode(AttributeAccessNode("n"))
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    interpreter.eval(runtime, runtime.getRootEnv, ast)
+
+    val counter_class = runtime.getRootPackage.getClass("Counter").getOrElse(
+      throw new Exception("Class expected") // This has been tested
+    )
+
+    counter_class should haveMethod("inc")
+  }
 }

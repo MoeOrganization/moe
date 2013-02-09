@@ -157,5 +157,26 @@ object InterpreterUtils {
       case _ => return
     }
   }
+
+  // Throw an exception if a variable isn't closed over at declaration time
+  // This is to prevent variables in the same env but after declaration getting
+  // sucked into the closure and causing unexpected behavior.
+  def throwForUndeclaredVars(env: MoeEnvironment, params: List[String], body: StatementsNode): Unit = {
+      var declared: Set[String] = params.toSet
+      walkAST(
+        body,
+        { ast: AST =>
+          ast match {
+            case VariableDeclarationNode(varname, _) =>
+              declared += varname
+            case VariableAccessNode(varname) =>
+              if (!env.has(varname) && !declared(varname)) {
+                throw new MoeErrors.VariableNotFound(varname)
+              }
+            case _ => Unit
+          }
+        }
+      )
+  }
 }
 

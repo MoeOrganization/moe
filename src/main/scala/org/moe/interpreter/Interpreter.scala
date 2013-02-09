@@ -240,34 +240,35 @@ class Interpreter {
       case ConstructorDeclarationNode(params, body) => stub
       case DestructorDeclarationNode(params, body) => stub
 
-      case MethodDeclarationNode(name, params, body) => stub
-      // TODO: handle arguments
-      case SubroutineDeclarationNode(name, params, body) => {
-        scoped { sub_env =>
-          var declared: Set[String] = params.toSet
-          var closed_over: Set[String] = Set()
-          walkAST(
-            body,
-            { ast: AST =>
-              ast match {
-                case VariableDeclarationNode(varname, _) =>
-                  declared += varname
-                case VariableAccessNode(varname) =>
-                  if (env.has(varname) && !declared(varname)) {
-                    closed_over += varname
-                  }
-                  else if (!declared(varname)) {
-                    throw new MoeErrors.VariableNotFound(varname)
-                  }
-                case _ => Unit
-              }
+      case MethodDeclarationNode(name, params, body) => {
+        val klass = env.getCurrentClass.getOrElse(
+          throw new MoeErrors.ClassNotFound("__CLASS__")
+        )
+        throwForUndeclaredVars(env, params, body)
+        scoped { method_env =>
+          val method = new MoeMethod(
+            name,
+            (invocant, args) => {
+              val param_pairs = params zip args
+              param_pairs.foreach({ case (param, arg) =>
+                method_env.create(param, arg)
+              })
+              method_env.setCurrentInvocant(invocant)
+              eval(runtime, method_env, body)
             }
           )
+          env.getCurrentClass.getOrElse(
+            throw new MoeErrors.ClassNotFound("__CLASS__")
+          ).addMethod(method)
+          method
+        }
+      }
+      case SubroutineDeclarationNode(name, params, body) => {
+        throwForUndeclaredVars(env, params, body)
+        scoped { sub_env =>
           val sub = new MoeSubroutine(
             name,
             args => {
-              // TODO make a run through after parse-time to check
-              // for argument counts at the call sites
               val param_pairs = params zip args
               param_pairs.foreach({ case (param, arg) =>
                 sub_env.create(param, arg)

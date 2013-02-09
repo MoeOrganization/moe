@@ -63,6 +63,23 @@ import org.scalatest.matchers._
    }
 
    def haveAttribute(attr: String) = new ClassHasAttributeMatcher(attr)
+
+   class ClassHasMethodMatcher(meth: String) extends Matcher[MoeClass] {
+     def apply(left: MoeClass) = {
+       val failure_msg     = left.getName + " did not have method " + meth
+       val neg_failure_msg = left.getName + " had method " + meth
+       val check = left.hasMethod(meth)
+       MatchResult(
+         check,
+         "Class " + failure_msg,
+         "Class " + neg_failure_msg,
+         "class " + failure_msg,
+         "class " + neg_failure_msg
+       )
+     }
+   }
+
+   def haveMethod(attr: String) = new ClassHasMethodMatcher(attr)
  }
 
  object ClassMatchers extends ClassMatchers
