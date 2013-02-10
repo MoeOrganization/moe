@@ -146,27 +146,35 @@ object Interpreter {
 
       // unary operators
 
-      case IncrementNode(receiver: AST) => receiver match {
+      case IncrementNode(receiver: AST, is_prefix) => receiver match {
         case VariableAccessNode(varName) => env.get(varName).getOrElse(
           throw new MoeErrors.VariableNotFound(varName)
         ) match {
           case i: MoeIntObject => {
-            env.set(varName, runtime.NativeObjects.getInt(i.getNativeValue + 1)).get
+            val new_i = runtime.NativeObjects.getInt(i.getNativeValue + 1)
+            env.set(varName, new_i)
+            if (is_prefix) new_i else i
           }
           case n: MoeFloatObject => {
-            env.set(varName, runtime.NativeObjects.getFloat(n.getNativeValue + 1.0)).get
+            val new_n = runtime.NativeObjects.getFloat(n.getNativeValue + 1.0)
+            env.set(varName, new_n)
+            if (is_prefix) new_n else n
           }
         }
       }
-      case DecrementNode(receiver: AST) => receiver match {
+      case DecrementNode(receiver: AST, is_prefix) => receiver match {
         case VariableAccessNode(varName) => env.get(varName).getOrElse(
           throw new MoeErrors.VariableNotFound(varName)
         ) match {
           case i: MoeIntObject => {
-            env.set(varName, runtime.NativeObjects.getInt(i.getNativeValue - 1)).get
+            val new_i = runtime.NativeObjects.getInt(i.getNativeValue - 1)
+            env.set(varName, new_i)
+            if (is_prefix) new_i else i
           }
           case n: MoeFloatObject => {
-            env.set(varName, runtime.NativeObjects.getFloat(n.getNativeValue - 1.0)).get
+            val new_n = runtime.NativeObjects.getFloat(n.getNativeValue - 1.0)
+            env.set(varName, new_n)
+            if (is_prefix) new_n else n
           }
         }
       }
