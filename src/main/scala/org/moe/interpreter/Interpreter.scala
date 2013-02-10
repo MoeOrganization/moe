@@ -284,23 +284,34 @@ class Interpreter {
       }
 
       case AttributeAccessNode(name) => {
-        env.getCurrentClass.getOrElse(
+        val klass = env.getCurrentClass.getOrElse(
           throw new MoeErrors.ClassNotFound("__CLASS__")
-        ).getAttribute(name).getOrElse(
+        )
+        val attr = klass.getAttribute(name).getOrElse(
           throw new MoeErrors.AttributeNotFound(name)
         )
+        val invocant = env.getCurrentInvocant
+        invocant match {
+          case Some(invocant: MoeOpaque) =>
+            invocant.getValue(name).getOrElse(attr.getDefault.getOrElse(runtime.NativeObjects.getUndef))
+          case _ => throw new MoeErrors.UnexpectedType(invocant.getOrElse("(undef)").toString)
+        }
       }
       case AttributeAssignmentNode(name, expression) => {
         val klass = env.getCurrentClass.getOrElse(
           throw new MoeErrors.ClassNotFound("__CLASS__")
         )
-        val prev_attr = klass.getAttribute(name).getOrElse(
+        val attr = klass.getAttribute(name).getOrElse(
           throw new MoeErrors.AttributeNotFound(name)
         )
         val expr = eval(runtime, env, expression)
-        val attr = new MoeAttribute(name, prev_attr.getDefault)
-        klass.addAttribute(attr)
-        attr
+        env.getCurrentInvocant match {
+          case Some(invocant: MoeOpaque) => invocant.setValue(name, expr)
+                                            // XXX attr."setDefault"(expr) ?
+          case Some(invocant)            => throw new MoeErrors.UnexpectedType(invocant.toString)
+          case None                      => throw new MoeErrors.MoeException("Attribute default already declared")
+        }
+        expr
       }
       case AttributeDeclarationNode(name, expression) => {
         val klass = env.getCurrentClass.getOrElse(
