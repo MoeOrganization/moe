@@ -109,29 +109,30 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(o.getAssociatedClass.get === c)
   }
 
-  test("... simple Null object") {
-    val o = new MoeNullObject()
+  test("... simple Undef object") {
+    val o = new MoeUndefObject()
     assert(o.getNativeValue === null)
     assert(!o.isTrue)
     assert(o.isFalse)
     assert(o.isUndef)
+    assert(o.toString === "undef")
   }
 
-  test("... simple Null object with class") {
-    val c = new MoeClass("Null")
-    val o = new MoeNullObject(Some(c))
+  test("... simple Undef object with class") {
+    val c = new MoeClass("Undef")
+    val o = new MoeUndefObject(Some(c))
     assert(o.getAssociatedClass.get === c)
   }
 
   test("... simple Array object") {
     val o = new MoeArrayObject(
       List(
-        new MoeNullObject(),
+        new MoeUndefObject(),
         new MoeIntObject(10)
       )
     )
     val array = o.getNativeValue
-    assert(array(0).asInstanceOf[ MoeNullObject ].getNativeValue === null)
+    assert(array(0).asInstanceOf[ MoeUndefObject ].getNativeValue === null)
     assert(array(1).asInstanceOf[ MoeIntObject ].getNativeValue === 10)
     assert(o.isTrue)
     assert(!o.isFalse)
@@ -174,12 +175,12 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
   test("... simple Hash object") {
     val o = new MoeHashObject(
       Map(
-        "foo" -> new MoeNullObject(),
+        "foo" -> new MoeUndefObject(),
         "bar" -> new MoeIntObject(10)
       )
     )
     val hash = o.getNativeValue
-    assert(hash("foo").asInstanceOf[ MoeNullObject ].getNativeValue === null)
+    assert(hash("foo").asInstanceOf[ MoeUndefObject ].getNativeValue === null)
     assert(hash("bar").asInstanceOf[ MoeIntObject ].getNativeValue === 10)
     assert(o.isTrue)
     assert(!o.isFalse)
@@ -204,7 +205,7 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
       Map(
         "foo" -> new MoeArrayObject(
           List(
-            new MoeNullObject(),
+            new MoeUndefObject(),
             new MoeIntObject(10)
           )
         ),
@@ -214,7 +215,7 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
     val hash = o.getNativeValue
     assert(hash("bar").asInstanceOf[ MoeIntObject ].getNativeValue === 10)
     val nested = hash("foo").asInstanceOf[ MoeArrayObject ].getNativeValue
-    assert(nested(0).asInstanceOf[ MoeNullObject ].getNativeValue === null)
+    assert(nested(0).asInstanceOf[ MoeUndefObject ].getNativeValue === null)
     assert(nested(1).asInstanceOf[ MoeIntObject ].getNativeValue === 10)
     assert(o.isTrue)
     assert(!o.isFalse)
