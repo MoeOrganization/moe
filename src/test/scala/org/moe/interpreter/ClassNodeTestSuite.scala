@@ -127,6 +127,61 @@ class ClassNodeTestSuite
     }
   }
 
+  test("... basic test with one-arg constructor") {
+    // class Point { } Point->new
+    val ast = wrapSimpleAST(
+      List(
+        ClassDeclarationNode(
+          "Point",
+          None,
+          StatementsNode(
+            List(
+              AttributeDeclarationNode("x", IntLiteralNode(0)),
+              AttributeDeclarationNode("y", IntLiteralNode(0)),
+              ConstructorDeclarationNode(
+                List("$x", "$y"),
+                StatementsNode(
+                  List(
+                    AttributeAssignmentNode("x", VariableAccessNode("$x")),
+                    AttributeAssignmentNode("y", VariableAccessNode("$y"))
+                  )
+                )
+              ),
+              MethodDeclarationNode(
+                "coords",
+                List(),
+                StatementsNode(
+                  List(
+                    ArrayLiteralNode(
+                      List(
+                        AttributeAccessNode("x"),
+                        AttributeAccessNode("y")
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        ),
+        MethodCallNode(
+          MethodCallNode(
+            ClassAccessNode("Point"),
+            "new",
+            List(IntLiteralNode(150), IntLiteralNode(250))
+          ),
+          "coords",
+          List()
+        )
+      )
+    )
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val coords = result.asInstanceOf[MoeArrayObject].getNativeValue
+
+    coords(0).asInstanceOf[MoeIntObject].getNativeValue should equal (150)
+    coords(1).asInstanceOf[MoeIntObject].getNativeValue should equal (250)
+  }
+
   test("... basic test with class and methods") {
     // class Counter { has $.n; method inc { ++$.n } }
     val ast = wrapSimpleAST(

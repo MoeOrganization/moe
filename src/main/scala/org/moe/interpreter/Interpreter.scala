@@ -237,7 +237,32 @@ class Interpreter {
         }
       }
 
-      case ConstructorDeclarationNode(params, body) => stub
+      // TODO: constructor overloading
+      case ConstructorDeclarationNode(params, body) => {
+        val klass = env.getCurrentClass.getOrElse(
+          throw new MoeErrors.ClassNotFound("__CLASS__")
+        )
+        throwForUndeclaredVars(env, params, body)
+        scoped { constructor_env =>
+          val method = new MoeMethod(
+            "new",
+            (invocant, args) => {
+              val param_pairs = params zip args
+              param_pairs.foreach({ case (param, arg) =>
+                constructor_env.create(param, arg)
+              })
+              val instance = klass.newInstance
+              constructor_env.setCurrentInvocant(instance)
+              eval(runtime, constructor_env, body)
+              instance
+            }
+          )
+          env.getCurrentClass.getOrElse(
+            throw new MoeErrors.ClassNotFound("__CLASS__")
+          ).addMethod(method)
+          method
+        }
+      }
       case DestructorDeclarationNode(params, body) => stub
 
       case MethodDeclarationNode(name, params, body) => {
