@@ -38,8 +38,8 @@ case class RangeLiteralNode(start: AST, end: AST) extends AST
 
 // unary operators
 
-case class IncrementNode(receiver: AST) extends AST
-case class DecrementNode(receiver: AST) extends AST
+case class IncrementNode(receiver: AST, is_prefix: Boolean = false) extends AST
+case class DecrementNode(receiver: AST, is_prefix: Boolean = false) extends AST
 case class NotNode(receiver: AST) extends AST
 
 

@@ -17,6 +17,9 @@ class MoeClass(
     private var superclass: Option[MoeClass] = None
   ) extends MoeObject {
 
+  private var constructor: Option[MoeMethod] = None // BUILD
+  private var destructor: Option[MoeMethod] = None  // DEMOLISH
+
   private val methods: Map[String,MoeMethod] = new HashMap[String, MoeMethod]()
   private val attributes: Map[String,MoeAttribute] = new HashMap[String, MoeAttribute]()
 
@@ -60,6 +63,28 @@ class MoeClass(
   def getMRO: List[MoeClass] = superclass.map(
       s => this :: s.getMRO
     ).getOrElse(List(this))
+
+  // Constructor
+
+  def getConstructor: Option[MoeMethod] = constructor
+
+  def setContructor(c: Option[MoeMethod]) = constructor = c
+
+  /**
+   * TODO: add a BUILDALL style method that 
+   * walks the MRO and calls all constructors
+   */
+
+  // Destructor
+
+  def getDestructor: Option[MoeMethod] = destructor
+
+  def setDestructor(d: Option[MoeMethod]) = destructor = d
+
+  /**
+   * TODO: add a DEMOLISHALL style method that 
+   * walks the MRO and calls all destructors
+   */
 
   // Attributes
 

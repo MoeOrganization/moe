@@ -113,7 +113,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
                 List(),
                 StatementsNode(
                   List(
-                    IncrementNode(VariableAccessNode("$n"))
+                    IncrementNode(VariableAccessNode("$n"), true)
                   )
                 )
               )
@@ -194,11 +194,11 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
                 List("$a"),
                 StatementsNode(
                   List(
-                    IncrementNode(VariableAccessNode("$a"))
+                    IncrementNode(VariableAccessNode("$a"), true)
                   )
                 )
               ),
-              IncrementNode(VariableAccessNode("$a"))
+              IncrementNode(VariableAccessNode("$a"), true)
             )
           )
         ),

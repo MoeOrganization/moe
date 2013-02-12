@@ -44,8 +44,8 @@ object InterpreterUtils {
       case ArrayLiteralNode(values)    => values.foreach(walkAST(_, callback))
       case HashLiteralNode(map)        => map.foreach(walkAST(_, callback))
 
-      case IncrementNode(receiver)     => walkAST(receiver, callback)
-      case DecrementNode(receiver)     => walkAST(receiver, callback)
+      case IncrementNode(receiver, _)     => walkAST(receiver, callback)
+      case DecrementNode(receiver, _)     => walkAST(receiver, callback)
       case NotNode(receiver)           => walkAST(receiver, callback)
 
       case AndNode(lhs, rhs) => {
