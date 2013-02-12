@@ -59,7 +59,7 @@ class HashLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
             )
           )
         ),
-        HashValueAccessNode(
+        HashElementAccessNode(
           "%hash",
           StringLiteralNode("foo")
         )

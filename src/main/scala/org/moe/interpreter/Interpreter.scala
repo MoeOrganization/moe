@@ -100,7 +100,7 @@ class Interpreter {
         )
       }
 
-      case HashValueAccessNode(hashName: String, key: AST) => {
+      case HashElementAccessNode(hashName: String, key: AST) => {
         val key_result = eval(runtime, env, key)
         val hash_map = env.get(hashName) match {
           case Some(h: MoeHashObject) => h.getNativeValue

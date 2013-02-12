@@ -79,7 +79,7 @@ object InterpreterUtils {
       case VariableAssignmentNode(name, expression) => walkAST(expression, callback)
       case VariableDeclarationNode(name, expression) => walkAST(expression, callback)
 
-      case HashValueAccessNode(hashName, key) => walkAST(key, callback)
+      case HashElementAccessNode(hashName, key) => walkAST(key, callback)
       case ArrayElementAccessNode(arrayName, index) => walkAST(index, callback)
       // ^ Maybe we need to walk VariableAccessNode(arrayName)? Not sure.
 

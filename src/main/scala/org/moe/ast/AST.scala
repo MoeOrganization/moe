@@ -70,7 +70,7 @@ case class VariableAccessNode(name: String) extends AST
 case class VariableAssignmentNode(name: String, expression: AST) extends AST
 case class VariableDeclarationNode(name: String, expression: AST) extends AST
 
-case class HashValueAccessNode(hashName: String, key: AST) extends AST
+case class HashElementAccessNode(hashName: String, key: AST) extends AST
 case class ArrayElementAccessNode(arrayName: String, index: AST) extends AST
 
 // operations

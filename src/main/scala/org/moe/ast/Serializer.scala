@@ -201,9 +201,9 @@ object Serializer {
       )
     )
 
-    case HashValueAccessNode(hashName, key) => JSONObject(
+    case HashElementAccessNode(hashName, key) => JSONObject(
       Map(
-        "HashValueAccessNode" -> JSONObject(
+        "HashElementAccessNode" -> JSONObject(
           Map(
             "hashname" -> hashName,
             "key"      -> toJSON(key)
