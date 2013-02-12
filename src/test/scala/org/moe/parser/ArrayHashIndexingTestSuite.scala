@@ -45,7 +45,7 @@ class ArrayHashIndexingTestSuite extends FunSuite with BeforeAndAfter with Parse
   test("... basic test with a simple array (indexing 3)") {
     val result = interpretCode("my @x = [1, 2, 3]; @x[3]")
 
-    assert(result.asInstanceOf[MoeNullObject] === runtime.NativeObjects.getUndef);
+    assert(result.asInstanceOf[MoeUndefObject] === runtime.NativeObjects.getUndef);
   }
 
   // hashes
@@ -71,7 +71,7 @@ class ArrayHashIndexingTestSuite extends FunSuite with BeforeAndAfter with Parse
   test("... basic test with a simple hash (indexing three)") {
     val result = interpretCode(""" my %x = { one => 1, two => 2 }; %x{"three"} """)
 
-    assert(result.asInstanceOf[MoeNullObject] === runtime.NativeObjects.getUndef);
+    assert(result.asInstanceOf[MoeUndefObject] === runtime.NativeObjects.getUndef);
   }
 
   // Both
