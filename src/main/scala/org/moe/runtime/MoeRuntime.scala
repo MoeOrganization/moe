@@ -101,7 +101,25 @@ class MoeRuntime (
 
   def getCoreClassFor (name: String): Option[MoeClass] = corePackage.getClass(name)
 
-  private def setupBuiltins = new MoeBuiltins(this)
+  private def setupBuiltins = {
+    import org.moe.runtime.builtins._
+
+    ClassClass(this) 
+    ObjectClass(this)
+
+    AnyClass(this)
+    ScalarClass(this)
+    ArrayClass(this)
+    HashClass(this)
+    PairClass(this)
+
+    UndefClass(this)
+    BoolClass(this)
+    StrClass(this)
+    IntClass(this)
+    NumClass(this)
+    ExceptionClass(this)
+  }
 
   object NativeObjects {
 
