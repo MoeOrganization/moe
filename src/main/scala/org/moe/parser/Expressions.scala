@@ -7,12 +7,16 @@ import org.moe.ast._
 
 trait Expressions extends Literals with JavaTokenParsers {
 
-  private lazy val array_index_rule = sigil ~
+  private lazy val array_index_rule = "@" ~
                                       (namespacedIdentifier <~ "[") ~
                                       (expression <~ "]")
+  private lazy val hash_index_rule = "%" ~
+                                     (namespacedIdentifier <~ "{") ~
+                                     (expression <~ "}")
 
   def expression: Parser[AST] = (
       arrayIndex
+    | hashIndex
     | hash
     | array
     | range
@@ -66,6 +70,10 @@ trait Expressions extends Literals with JavaTokenParsers {
     case "@" ~ i ~ expr => ArrayElementAccessNode("@" + i, expr)
   }
 
-  def scalar: Parser[AST] = simpleScalar | arrayIndex | literalValue
+  def hashIndex = hash_index_rule ^^ {
+    case "%" ~ i ~ expr => HashElementAccessNode("%" + i, expr)
+  }
+
+  def scalar: Parser[AST] = simpleScalar | arrayIndex | hashIndex | literalValue
 
 }
