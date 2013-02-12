@@ -87,7 +87,7 @@ class MoeRuntime (
       corePackage.addClass(numClass)
       corePackage.addClass(exceptionClass)
 
-      addBuiltinMethods
+      setupBuiltins
 
       /*
         TODO:
@@ -99,52 +99,9 @@ class MoeRuntime (
     }
   }
 
-  private def addBuiltinMethods = {
-
-    // constructor
-    classClass.addMethod(
-      new MoeMethod(
-        "new",
-        { (invocant, _) => invocant.asInstanceOf[MoeClass].newInstance }
-      )
-    )
-
-    // arithmetic
-    val int_class = ensureCoreClassFor("Int")
-    int_class.addMethod(
-      new MoeMethod(
-        "+",
-        { (lhs, args) =>
-          val rhs = args(0)
-          val i = lhs.asInstanceOf[MoeIntObject]
-          rhs match {
-            case rhs_i: MoeIntObject => NativeObjects.getInt(i.getNativeValue + rhs_i.getNativeValue)
-            case rhs_n: MoeFloatObject => NativeObjects.getFloat(i.getNativeValue.toDouble + rhs_n.getNativeValue)
-            case _ => throw new MoeErrors.UnexpectedType(rhs.toString)
-          }
-        }
-      )
-    )
-
-    val num_class = ensureCoreClassFor("Num")
-    num_class.addMethod(
-      new MoeMethod(
-        "+",
-        { (lhs, args) =>
-          val rhs = args(0)
-          val n = lhs.asInstanceOf[MoeFloatObject]
-          rhs match {
-            case rhs_n: MoeFloatObject => NativeObjects.getFloat(n.getNativeValue + rhs_n.getNativeValue)
-            case rhs_i: MoeIntObject => NativeObjects.getFloat(n.getNativeValue + rhs_i.getNativeValue.toDouble)
-            case _ => throw new MoeErrors.UnexpectedType(rhs.toString)
-          }
-        }
-      )
-    )
-  }
-
   def getCoreClassFor (name: String): Option[MoeClass] = corePackage.getClass(name)
-  def ensureCoreClassFor (name: String): MoeClass      = getCoreClassFor(name).getOrElse(unknownClass)
+
+  private def setupBuiltins = new MoeBuiltins(this)
 
   object NativeObjects {
 

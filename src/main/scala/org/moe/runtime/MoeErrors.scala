@@ -14,6 +14,8 @@ object MoeErrors {
   // MoeProblems is derived from MoeMoney - RIP B.I.G
   class MoeProblems           (msg: String) extends MoeMoney(msg)
 
+  class MoeStartupError       (msg: String) extends MoeProblems(msg)
+
   class NotAllowed            (msg: String) extends MoeProblems(msg)
   class MethodNotAllowed      (msg: String) extends NotAllowed(msg)
 
