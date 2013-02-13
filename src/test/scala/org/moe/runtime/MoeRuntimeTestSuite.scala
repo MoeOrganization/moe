@@ -97,4 +97,50 @@ class MoeRuntimeTestSuite extends FunSuite with BeforeAndAfter with ShouldMatche
     assert(outStream.toString() === out)
   }
 
+  test("... runtime print") {
+    val outStream = new java.io.ByteArrayOutputStream()
+    val msg       = "HELLO PRINT WORLD";
+    val msgs      = Array("HELLO", "PRINT", "WORLD")
+
+    val runtime = new MoeRuntime(
+      system = new MoeSystem(
+        STDOUT = new java.io.PrintStream(outStream)
+      )
+    )
+    runtime.bootstrap()
+    assert(runtime.isBootstrapped)
+    assert(runtime.areWarningsEnabled)
+
+    var out = msg
+    runtime.print(msg)
+    assert(outStream.toString() === out)
+
+    out += msgs.mkString
+    runtime.print(msgs)
+    assert(outStream.toString() === out)
+  }
+
+  test("... runtime say") {
+    val outStream = new java.io.ByteArrayOutputStream()
+    val msg       = "HELLO PRINT WORLD";
+    val msgs      = Array("HELLO", "PRINT", "WORLD")
+
+    val runtime = new MoeRuntime(
+      system = new MoeSystem(
+        STDOUT = new java.io.PrintStream(outStream)
+      )
+    )
+    runtime.bootstrap()
+    assert(runtime.isBootstrapped)
+    assert(runtime.areWarningsEnabled)
+
+    var out = msg + "\n"
+    runtime.say(msg)
+    assert(outStream.toString() === out)
+
+    out += msgs.mkString + "\n"
+    runtime.say(msgs)
+    assert(outStream.toString() === out)
+  }
+
 }

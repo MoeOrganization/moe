@@ -114,6 +114,12 @@ class MoeRuntime (
     system.getSTDERR.println(out)
   }
 
+  def print(msg: String): Unit = print(Array(msg))
+  def print(msg: Array[String]): Unit = system.getSTDOUT.print(msg.mkString)
+
+  def say(msg: String): Unit = say(Array(msg))
+  def say(msg: Array[String]): Unit = system.getSTDOUT.println(msg.mkString)
+
   private def setupBuiltins = new MoeBuiltins(this)
 
   object NativeObjects {
