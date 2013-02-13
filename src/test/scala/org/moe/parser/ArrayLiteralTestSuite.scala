@@ -28,7 +28,7 @@ class ArrayLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
     assert(elems(3).asInstanceOf[MoeBooleanObject].getNativeValue === true);
   }
 
-  test("... basic test with nested arrayrefs") {
+  test("... basic test with a nested arrayref") {
     val result = interpretCode("""[42, ['jason', "may"], true]""")
     val elems = result.asInstanceOf[MoeArrayObject].getNativeValue
 
@@ -39,6 +39,18 @@ class ArrayLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
     assert(nested_elems(1).asInstanceOf[MoeStringObject].getNativeValue === "may");
 
     assert(elems(2).asInstanceOf[MoeBooleanObject].getNativeValue === true);
+  }
+
+  test("... basic test with a nested hashref") {
+    val result = interpretCode("""[42, {'jason' => "may"}, false]""")
+    val elems = result.asInstanceOf[MoeArrayObject].getNativeValue
+
+    assert(elems(0).asInstanceOf[MoeIntObject].getNativeValue === 42);
+
+    val nested_hash = elems(1).asInstanceOf[MoeHashObject].getNativeValue
+    val key = nested_hash("jason")
+    assert(key.asInstanceOf[MoeStringObject].getNativeValue === "may")
+    assert(elems(2).asInstanceOf[MoeBooleanObject].getNativeValue === false);
   }
 
   test("... basic test with arrayref containing a right-trailing list") {
