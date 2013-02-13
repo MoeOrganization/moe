@@ -9,7 +9,7 @@ trait Literals extends Base {
 
   // Numeric literals
   def zeroNumber: Parser[IntLiteralNode]   =
-    """0""".r ^^ { n => IntLiteralNode(0) }
+    """-?0""".r ^^ { n => IntLiteralNode(0) }
   def intNumber: Parser[IntLiteralNode]   =
     """-?[1-9][0-9_]*""".r ^^ { n => IntLiteralNode(formatInt(n)) }
   def octIntNumber: Parser[IntLiteralNode] =
