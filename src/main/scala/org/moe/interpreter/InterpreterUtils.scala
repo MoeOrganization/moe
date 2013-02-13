@@ -29,130 +29,131 @@ object InterpreterUtils {
     body(env)
   }
 
-  def walkAST(ast: AST, callback: (AST) => Unit): Unit = {
-    callback(ast)
+  def walkAST(ast: AST, callback: (AST, Int) => Unit, level: Int = 0): Unit = {
+    callback(ast, level)
+    val walknext: (AST) => Unit = walkAST(_, callback, level + 1)
     ast match {
-      case CompilationUnitNode(body) => walkAST(body, callback)
-      case ScopeNode(body)           => walkAST(body, callback)
-      case StatementsNode(nodes)     => nodes.foreach(walkAST(_, callback))
+      case CompilationUnitNode(body) => walknext(body)
+      case ScopeNode(body)           => walknext(body)
+      case StatementsNode(nodes)     => nodes.foreach(walknext(_))
 
       case PairLiteralNode(key, value) => {
-        walkAST(key, callback)
-        walkAST(value, callback)
+        walknext(key)
+        walknext(value)
       }
 
-      case ArrayLiteralNode(values)    => values.foreach(walkAST(_, callback))
-      case HashLiteralNode(map)        => map.foreach(walkAST(_, callback))
+      case ArrayLiteralNode(values)    => values.foreach(walknext(_))
+      case HashLiteralNode(map)        => map.foreach(walknext(_))
 
-      case IncrementNode(receiver, _)     => walkAST(receiver, callback)
-      case DecrementNode(receiver, _)     => walkAST(receiver, callback)
-      case NotNode(receiver)           => walkAST(receiver, callback)
+      case IncrementNode(receiver, _)     => walknext(receiver)
+      case DecrementNode(receiver, _)     => walknext(receiver)
+      case NotNode(receiver)           => walknext(receiver)
 
       case AndNode(lhs, rhs) => {
-        walkAST(lhs, callback)
-        walkAST(rhs, callback)
+        walknext(lhs)
+        walknext(rhs)
       }
       case OrNode(lhs, rhs) => {
-        walkAST(lhs, callback)
-        walkAST(rhs, callback)
+        walknext(lhs)
+        walknext(rhs)
       }
       case LessThanNode(lhs, rhs) => {
-        walkAST(lhs, callback)
-        walkAST(rhs, callback)
+        walknext(lhs)
+        walknext(rhs)
       }
       case GreaterThanNode(lhs, rhs) => {
-        walkAST(lhs, callback)
-        walkAST(rhs, callback)
+        walknext(lhs)
+        walknext(rhs)
       }
 
-      case ClassDeclarationNode(name, superclass, body) => walkAST(body, callback)
+      case ClassDeclarationNode(name, superclass, body) => walknext(body)
 
-      case PackageDeclarationNode(_, body) => walkAST(body, callback)
-      case ConstructorDeclarationNode(_, body) => walkAST(body, callback)
-      case DestructorDeclarationNode(_, body) => walkAST(body, callback)
-      case MethodDeclarationNode(_, _, body) => walkAST(body, callback)
-      case SubroutineDeclarationNode(_, _, body) => walkAST(body, callback)
+      case PackageDeclarationNode(_, body) => walknext(body)
+      case ConstructorDeclarationNode(_, body) => walknext(body)
+      case DestructorDeclarationNode(_, body) => walknext(body)
+      case MethodDeclarationNode(_, _, body) => walknext(body)
+      case SubroutineDeclarationNode(_, _, body) => walknext(body)
 
-      case AttributeAssignmentNode(name, expression) => walkAST(expression, callback)
-      case AttributeDeclarationNode(name, expression) => walkAST(expression, callback)
+      case AttributeAssignmentNode(name, expression) => walknext(expression)
+      case AttributeDeclarationNode(name, expression) => walknext(expression)
 
-      case VariableAssignmentNode(name, expression) => walkAST(expression, callback)
-      case VariableDeclarationNode(name, expression) => walkAST(expression, callback)
+      case VariableAssignmentNode(name, expression) => walknext(expression)
+      case VariableDeclarationNode(name, expression) => walknext(expression)
 
-      case HashValueAccessNode(hashName, key) => walkAST(key, callback)
-      case ArrayElementAccessNode(arrayName, index) => walkAST(index, callback)
+      case HashValueAccessNode(hashName, key) => walknext(key)
+      case ArrayElementAccessNode(arrayName, index) => walknext(index)
       // ^ Maybe we need to walk VariableAccessNode(arrayName)? Not sure.
 
       case MethodCallNode(invocant, method_name, args) => {
-        walkAST(invocant, callback)
-        args.foreach(walkAST(_, callback))
+        walknext(invocant)
+        args.foreach(walknext(_))
       }
       case SubroutineCallNode(method_name, args) => {
-        args.foreach(walkAST(_, callback))
+        args.foreach(walknext(_))
       }
 
       case IfNode(if_condition, if_body) => {
-        walkAST(if_condition, callback)
-        walkAST(if_body, callback)
+        walknext(if_condition)
+        walknext(if_body)
       }
       case IfElseNode(if_condition, if_body, else_body) => {
-        walkAST(if_condition, callback)
-        walkAST(if_body, callback)
-        walkAST(else_body, callback)
+        walknext(if_condition)
+        walknext(if_body)
+        walknext(else_body)
       }
       case IfElsifNode(if_condition, if_body, elsif_condition, elsif_body) => {
-        walkAST(if_condition, callback)
-        walkAST(if_body, callback)
-        walkAST(elsif_condition, callback)
-        walkAST(elsif_body, callback)
+        walknext(if_condition)
+        walknext(if_body)
+        walknext(elsif_condition)
+        walknext(elsif_body)
       }
       case IfElsifElseNode(if_condition, if_body, elsif_condition, elsif_body, else_body) => {
-        walkAST(if_condition, callback)
-        walkAST(if_body, callback)
-        walkAST(elsif_condition, callback)
-        walkAST(elsif_body, callback)
-        walkAST(else_body, callback)
+        walknext(if_condition)
+        walknext(if_body)
+        walknext(elsif_condition)
+        walknext(elsif_body)
+        walknext(else_body)
       }
 
       case UnlessNode(unless_condition, unless_body) => {
-        walkAST(unless_condition, callback)
-        walkAST(unless_body, callback)
+        walknext(unless_condition)
+        walknext(unless_body)
       }
       case UnlessElseNode(unless_condition, unless_body, else_body) => {
-        walkAST(unless_condition, callback)
-        walkAST(unless_body, callback)
-        walkAST(else_body, callback)
+        walknext(unless_condition)
+        walknext(unless_body)
+        walknext(else_body)
       }
 
       case TryNode(body, catch_nodes, finally_nodes) => {
-        walkAST(body, callback)
-        catch_nodes.foreach(walkAST(_, callback))
-        finally_nodes.foreach(walkAST(_, callback))
+        walknext(body)
+        catch_nodes.foreach(walknext(_))
+        finally_nodes.foreach(walknext(_))
       }
       case CatchNode(_, _, body) => {
-        walkAST(body, callback)
+        walknext(body)
       }
-      case FinallyNode(body) => walkAST(body, callback)
+      case FinallyNode(body) => walknext(body)
 
       case WhileNode(condition, body) => {
-        walkAST(condition, callback)
-        walkAST(body, callback)
+        walknext(condition)
+        walknext(body)
       }
       case DoWhileNode(condition, body) => {
-        walkAST(body, callback)
-        walkAST(condition, callback)
+        walknext(body)
+        walknext(condition)
       }
 
       case ForeachNode(topic, list, body) => {
-        walkAST(topic, callback)
-        walkAST(list, callback)
-        walkAST(body, callback)
+        walknext(topic)
+        walknext(list)
+        walknext(body)
       }
       case ForNode(init, condition, update, body) => {
-        walkAST(init, callback)
-        walkAST(condition, callback)
-        walkAST(update, callback)
-        walkAST(body, callback)
+        walknext(init)
+        walknext(condition)
+        walknext(update)
+        walknext(body)
       }
       case _ => return
     }
@@ -165,7 +166,7 @@ object InterpreterUtils {
       var declared: Set[String] = params.toSet
       walkAST(
         body,
-        { ast: AST =>
+        { (ast: AST, _) =>
           ast match {
             case VariableDeclarationNode(varname, _) =>
               declared += varname

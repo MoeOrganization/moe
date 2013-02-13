@@ -11,10 +11,10 @@ class InterpreterUtilsTestSuite extends FunSuite with ShouldMatchers {
   test("... test walking ASTs") {
     var cb_count = 0
     var node_list: List[String] = List()
-    val cb: (AST) => Unit = { ast: AST =>
+    val cb: (AST, Int) => Unit = { (ast, level) =>
       cb_count += 1
       Serializer.toJSON(ast) match {
-        case JSONObject(map) => node_list ++= map.keys
+        case JSONObject(map) => node_list ++= map.keys.map(level.toString + "-" + _)
       }
     }
     InterpreterUtils.walkAST(
@@ -37,14 +37,14 @@ class InterpreterUtilsTestSuite extends FunSuite with ShouldMatchers {
     cb_count should equal (8)
     node_list should equal (
       List(
-        "StatementsNode",
-        "VariableDeclarationNode",
-        "IntLiteralNode",
-        "WhileNode",
-        "BooleanLiteralNode",
-        "StatementsNode",
-        "IncrementNode",
-        "VariableAccessNode"
+        "0-StatementsNode",
+        "1-VariableDeclarationNode",
+        "2-IntLiteralNode",
+        "1-WhileNode",
+        "2-BooleanLiteralNode",
+        "2-StatementsNode",
+        "3-IncrementNode",
+        "4-VariableAccessNode"
       )
     )
   }
