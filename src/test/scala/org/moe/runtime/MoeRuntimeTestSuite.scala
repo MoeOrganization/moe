@@ -10,6 +10,15 @@ class MoeRuntimeTestSuite extends FunSuite with BeforeAndAfter with ShouldMatche
     val runtime = new MoeRuntime()
     runtime.bootstrap()
     assert(runtime.isBootstrapped)
+    assert(runtime.areWarningsEnabled)
+    assert(runtime.getSystem != null)
+  }
+
+  test("... basic runtime test (warnings disabled)") {
+    val runtime = new MoeRuntime(warnings = false)
+    runtime.bootstrap()
+    assert(runtime.isBootstrapped)
+    assert(!runtime.areWarningsEnabled)
     assert(runtime.getSystem != null)
   }
 
@@ -63,6 +72,75 @@ class MoeRuntimeTestSuite extends FunSuite with BeforeAndAfter with ShouldMatche
     assert(corePackage.hasClass("Num"))
     assert(corePackage.hasClass("Int"))
     assert(corePackage.hasClass("Str"))
+  }
+
+  test("... runtime warn") {
+    val outStream = new java.io.ByteArrayOutputStream()
+    val msg       = "HELLO WARN WORLD";
+    val msgs      = Array("HELLO", "WARN", "WORLD")
+
+    val runtime = new MoeRuntime(
+      system = new MoeSystem(
+        STDERR = new java.io.PrintStream(outStream)
+      )
+    )
+    runtime.bootstrap()
+    assert(runtime.isBootstrapped)
+    assert(runtime.areWarningsEnabled)
+
+    var out = msg + "\n"
+    runtime.warn(msg)
+    assert(outStream.toString() === out)
+
+    out += msgs.mkString + "\n"
+    runtime.warn(msgs)
+    assert(outStream.toString() === out)
+  }
+
+  test("... runtime print") {
+    val outStream = new java.io.ByteArrayOutputStream()
+    val msg       = "HELLO PRINT WORLD";
+    val msgs      = Array("HELLO", "PRINT", "WORLD")
+
+    val runtime = new MoeRuntime(
+      system = new MoeSystem(
+        STDOUT = new java.io.PrintStream(outStream)
+      )
+    )
+    runtime.bootstrap()
+    assert(runtime.isBootstrapped)
+    assert(runtime.areWarningsEnabled)
+
+    var out = msg
+    runtime.print(msg)
+    assert(outStream.toString() === out)
+
+    out += msgs.mkString
+    runtime.print(msgs)
+    assert(outStream.toString() === out)
+  }
+
+  test("... runtime say") {
+    val outStream = new java.io.ByteArrayOutputStream()
+    val msg       = "HELLO PRINT WORLD";
+    val msgs      = Array("HELLO", "PRINT", "WORLD")
+
+    val runtime = new MoeRuntime(
+      system = new MoeSystem(
+        STDOUT = new java.io.PrintStream(outStream)
+      )
+    )
+    runtime.bootstrap()
+    assert(runtime.isBootstrapped)
+    assert(runtime.areWarningsEnabled)
+
+    var out = msg + "\n"
+    runtime.say(msg)
+    assert(outStream.toString() === out)
+
+    out += msgs.mkString + "\n"
+    runtime.say(msgs)
+    assert(outStream.toString() === out)
   }
 
 }

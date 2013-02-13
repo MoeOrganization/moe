@@ -1,7 +1,8 @@
 package org.moe.runtime
 
 class MoeRuntime (
-    private val system: MoeSystem = new MoeSystem()
+    private val system: MoeSystem = new MoeSystem(),
+    private val warnings: Boolean = true
   ) {
 
   private val VERSION         = "0.0.0"
@@ -16,10 +17,11 @@ class MoeRuntime (
   private val objectClass = new MoeClass("Object", Some(VERSION), Some(AUTHORITY))
   private val classClass  = new MoeClass("Class", Some(VERSION), Some(AUTHORITY), Some(objectClass))
 
+  def isBootstrapped     = is_bootstrapped
+  def areWarningsEnabled = warnings
+
   def getVersion     = VERSION
   def getAuthority   = AUTHORITY
-
-  def isBootstrapped = is_bootstrapped
 
   def getSystem      = system
   def getRootEnv     = rootEnv
@@ -29,7 +31,7 @@ class MoeRuntime (
   def getObjectClass = objectClass
   def getClassClass  = classClass
 
-  def bootstrap() : Unit = {
+  def bootstrap(): Unit = {
     if (!is_bootstrapped) {
 
       // setup the root package
@@ -100,6 +102,23 @@ class MoeRuntime (
   }
 
   def getCoreClassFor (name: String): Option[MoeClass] = corePackage.getClass(name)
+
+  def warn(msg: String): Unit = warn(Array(msg))
+  def warn(msg: Array[String]): Unit = {
+    val out = msg.mkString
+    // TODO:
+    // add line numbers and such
+    // to the message, when we have
+    // actual line numbers that is
+    // - SL
+    system.getSTDERR.println(out)
+  }
+
+  def print(msg: String): Unit = print(Array(msg))
+  def print(msg: Array[String]): Unit = system.getSTDOUT.print(msg.mkString)
+
+  def say(msg: String): Unit = say(Array(msg))
+  def say(msg: Array[String]): Unit = system.getSTDOUT.println(msg.mkString)
 
   private def setupBuiltins = {
     import org.moe.runtime.builtins._

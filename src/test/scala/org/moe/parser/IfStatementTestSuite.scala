@@ -25,4 +25,19 @@ class IfStatementTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 200)
   }
 
+  test("... nested if true in if false ") {
+    val result = interpretCode("if (false) { if ( true ) { 200 } }")
+    assert(result.asInstanceOf[MoeUndefObject] === runtime.NativeObjects.getUndef)
+  }
+
+  test("... nested if false in if true") {
+    val result = interpretCode("if (true) { if ( false ) { 200 } }")
+    assert(result.asInstanceOf[MoeUndefObject] === runtime.NativeObjects.getUndef)
+  }
+
+  test("... nested if false in if false ") {
+        val result = interpretCode("if (false) { if ( true ) { 200 } }")
+        assert(result.asInstanceOf[MoeUndefObject] === runtime.NativeObjects.getUndef)
+      }
+
 }

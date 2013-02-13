@@ -19,6 +19,7 @@ object Moe {
       options.addOption("h", false, "display this message")
       options.addOption("v", false, "display version information")
       options.addOption("u", false, "dump the AST after parsing")
+      options.addOption("w", false, "enable many useful warnings")
 
       val e = new Option("e", "code to evaluate")
       e.setArgs(1)
@@ -62,7 +63,9 @@ object Moe {
       }
 
       val interpreter = new Interpreter()
-      val runtime = new MoeRuntime()
+      val runtime     = new MoeRuntime(
+        warnings = cmd.hasOption("w")
+      )
 
       if (cmd.hasOption("v")) {
           printVersionInformation(runtime)
