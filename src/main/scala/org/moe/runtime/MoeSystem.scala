@@ -15,3 +15,8 @@ class MoeSystem(
   def exit ()            = sys.exit()
   def exit (status: Int) = sys.exit(status)
 }
+
+/*
+ * Might be useful to steal much of what is in here:
+ * https://github.com/scala/scala/blob/v2.10.0/src/library/scala/Console.scala
+ */
