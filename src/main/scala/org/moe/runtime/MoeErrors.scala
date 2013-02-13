@@ -43,5 +43,4 @@ object MoeErrors {
   class MissingClass          (msg: String) extends MissingValue(msg)
 
   class UnexpectedType        (msg: String) extends MoeTypeError(msg)
-  class BadTypeCoercion       (msg: String) extends MoeTypeError(msg)
 }
