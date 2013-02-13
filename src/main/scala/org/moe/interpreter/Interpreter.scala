@@ -100,12 +100,18 @@ class Interpreter {
       case HashElementAccessNode(hashName: String, key: AST) => {
         val key_result = eval(runtime, env, key)
         val hash_map = env.get(hashName) match {
-          case Some(h: MoeHashObject) => h.getNativeValue
+          case Some(h: MoeHashObject) => h
           case _ => throw new MoeErrors.UnexpectedType("MoeHashObject expected")
         }
 
-        hash_map.get(objToString(key_result))
-          .getOrElse(runtime.NativeObjects.getUndef)
+        hash_map.callMethod(
+          hash_map.getAssociatedClass.getOrElse(
+            throw new MoeErrors.ClassNotFound("Hash")
+          ).getMethod("postcircumfix:<{}>").getOrElse(
+            throw new MoeErrors.MethodNotFound("postcircumfix:<{}>")
+          ), 
+          List(key_result)
+        )
       }
 
       case RangeLiteralNode(start, end) => {
