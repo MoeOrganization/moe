@@ -14,8 +14,11 @@ object MoeErrors {
   // MoeProblems is derived from MoeMoney - RIP B.I.G
   class MoeProblems           (msg: String) extends MoeMoney(msg)
 
+  // Moe internal errors
   class MoeStartupError       (msg: String) extends MoeProblems(msg)
+  class MoeTypeError          (msg: String) extends MoeProblems(msg)
 
+  // Runtime errors
   class NotAllowed            (msg: String) extends MoeProblems(msg)
   class MethodNotAllowed      (msg: String) extends NotAllowed(msg)
 
@@ -39,5 +42,6 @@ object MoeErrors {
   class MissingValue          (msg: String) extends MoeProblems(msg)
   class MissingClass          (msg: String) extends MissingValue(msg)
 
-  class UnexpectedType        (msg: String) extends MoeProblems(msg)
+  class UnexpectedType        (msg: String) extends MoeTypeError(msg)
+  class BadTypeCoercion       (msg: String) extends MoeTypeError(msg)
 }

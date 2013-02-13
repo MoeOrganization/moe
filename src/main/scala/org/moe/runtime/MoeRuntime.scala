@@ -141,9 +141,34 @@ class MoeRuntime (
     def getArray (value: List[MoeObject])        = new MoeArrayObject(value, getCoreClassFor("Array"))
     def getArray ()                              = new MoeArrayObject(List(), getCoreClassFor("Array"))
     def getPair  (value: (MoeObject, MoeObject)) = new MoePairObject(
-        (value._1.asInstanceOf[MoeStringObject].getNativeValue, value._2), 
-        getCoreClassFor("Pair")
-      )
+      (value._1.asInstanceOf[MoeStringObject].getNativeValue, value._2), 
+      getCoreClassFor("Pair")
+    )
+
+    object Coercions {
+      def toDouble(obj: MoeObject): Double = obj match {
+        case i: MoeIntObject    => i.getNativeValue.toDouble
+        case n: MoeFloatObject  => n.getNativeValue
+        case s: MoeStringObject => try { s.getNativeValue.toDouble } catch { case e => 0 } // TODO: warn
+        case _ => throw new MoeErrors.BadTypeCoercion("to Double")
+      }
+
+      def toInt(obj: MoeObject): Int = obj match {
+        case i: MoeIntObject    => i.getNativeValue
+        case n: MoeFloatObject  => n.getNativeValue.toInt
+        case s: MoeStringObject => try { s.getNativeValue.toInt } catch { case e => 0 } // TODO: warn
+        case _ => throw new MoeErrors.BadTypeCoercion("to Int")
+      }
+
+      def toString(obj: MoeObject): String = obj match {
+        case i: MoeIntObject    => i.getNativeValue.toString
+        case n: MoeFloatObject  => n.getNativeValue.toString
+        case s: MoeStringObject => s.getNativeValue
+        case _ => throw new MoeErrors.BadTypeCoercion("to String")
+      }
+
+    }
+
   }
 
 }
