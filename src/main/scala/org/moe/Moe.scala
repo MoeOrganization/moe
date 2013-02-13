@@ -93,6 +93,7 @@ object Moe {
             if (dumpAST) {
               println(Serializer.toJSON(ast))
             }
+            interpreter.validate(runtime, runtime.getRootEnv, ast)
             interpreter.eval(runtime, runtime.getRootEnv, ast)
           }
           catch {
@@ -148,6 +149,7 @@ object Moe {
         if (dumpAST) {
           println(Serializer.toJSON(ast))
         }
+        interpreter.validate(runtime, runtime.getRootEnv, ast)
         val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
         println(result.toString)
       }

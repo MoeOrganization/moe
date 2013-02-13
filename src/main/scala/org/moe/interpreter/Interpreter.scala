@@ -5,7 +5,7 @@ import org.moe.ast._
 
 import scala.collection.mutable.HashMap
 
-class Interpreter {
+class Interpreter extends Validator {
 
   import InterpreterUtils._
 

@@ -28,5 +28,8 @@ trait InterpreterTestUtils
       )
     )
 
-  def runSimpleAST(ast: AST) = interpreter.eval(runtime, runtime.getRootEnv, ast)
+  def runSimpleAST(ast: AST) = {
+    interpreter.validate(runtime, runtime.getRootEnv, ast)
+    interpreter.eval(runtime, runtime.getRootEnv, ast)
+  }
 }

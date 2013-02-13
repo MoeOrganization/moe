@@ -238,4 +238,27 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
     val result = runSimpleAST(ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 2)
   }
+
+  test("... basic test against sub foo { sub bar {} }") {
+    val ast = wrapSimpleAST(
+      List(
+        SubroutineDeclarationNode(
+          "foo",
+          List(),
+          StatementsNode(
+            List(
+              SubroutineDeclarationNode(
+                "bar",
+                List(),
+                StatementsNode(List())
+              )
+            )
+          )
+        )
+      )
+    )
+    intercept[MoeErrors.NotAllowed] {
+      runSimpleAST(ast)
+    }
+  }
 }
