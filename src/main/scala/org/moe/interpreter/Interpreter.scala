@@ -64,21 +64,18 @@ class Interpreter {
       case ArrayElementAccessNode(arrayName: String, index: AST) => {
         val index_result = eval(runtime, env, index)
         val array_value = env.get(arrayName) match {
-          case Some(a: MoeArrayObject) => a.getNativeValue
+          case Some(a: MoeArrayObject) => a
           case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
         }
 
-        // TODO: ListBuffer probably, like stevan said - JM
-        var native_index = objToInteger(index_result)
-        while (native_index < 0) {
-          native_index += array_value.size
-        }
-        try {
-          array_value(native_index)
-        }
-        catch {
-          case _: java.lang.IndexOutOfBoundsException => runtime.NativeObjects.getUndef // TODO: warn
-        }
+        array_value.callMethod(
+          array_value.getAssociatedClass.getOrElse(
+            throw new MoeErrors.ClassNotFound("Array")
+          ).getMethod("postcircumfix:<[]>").getOrElse(
+            throw new MoeErrors.MethodNotFound("postcircumfix:<[]>")
+          ), 
+          List(index_result)
+        )
       }
 
       case PairLiteralNode(key, value) => runtime.NativeObjects.getPair(eval(runtime, env, key) -> eval(runtime, env, value))
