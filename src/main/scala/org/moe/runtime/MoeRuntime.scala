@@ -106,8 +106,8 @@ class MoeRuntime (
   def warn(msg: String): Unit = warn(Array(msg))
   def warn(msg: Array[String]): Unit = {
     val out = msg.mkString
-    // TODO:
-    // add line numbers and such
+    // TODO: 
+    // add line numbers and such 
     // to the message, when we have
     // actual line numbers that is
     // - SL
@@ -165,25 +165,75 @@ class MoeRuntime (
     )
 
     object Coercions {
-      def toDouble(obj: MoeObject): Double = obj match {
-        case i: MoeIntObject    => i.getNativeValue.toDouble
-        case n: MoeFloatObject  => n.getNativeValue
-        case s: MoeStringObject => try { s.getNativeValue.toDouble } catch { case e => 0 } // TODO: warn
-        case _ => throw new MoeErrors.BadTypeCoercion("to Double")
+
+      /**
+       * NOTE:
+       * So I am not sure this is the right thing to do
+       * but the idea below here is that if we can reliably 
+       * coerce it into a sane value that is actually useful
+       * then we do it, if we can't then we return None to 
+       * signal that the callee has to think about this more
+       * and decide what to do on their own. That may just
+       * be calling .toString, or ignoring it, or whatever
+       * but we won't make that call here.
+       * 
+       * Also might be a good idea to add polymorphic methods
+       * to MoeObject (and therefore MoeNativeObject) to allow
+       * better handling at the call site. Not 100% sure of 
+       * that yet though, time will tell.
+       *
+       * Also, I bet we could do better with the type here, 
+       * the MoeObject arg type is not right, it should be 
+       * MoeNativeObject, but the type parameter is messing 
+       * me up, I need Scala help.
+       */
+
+      def toDouble(obj: MoeObject): Option[Double] = obj match {
+        case i: MoeIntObject     => Some(i.getNativeValue.toDouble)
+        case f: MoeFloatObject   => Some(f.getNativeValue)
+        case s: MoeStringObject  => try { Some(s.getNativeValue.toDouble) } catch { case e: Throwable => None } 
+        case u: MoeUndefObject   => None
+        case b: MoeBooleanObject => None
+        case a: MoeArrayObject   => None
+        case h: MoeHashObject    => None
+        case p: MoePairObject    => None
+        case _ => throw new MoeErrors.UnexpectedType("Expected MoeNativeObject[A] and got " + obj.toString)
       }
 
-      def toInt(obj: MoeObject): Int = obj match {
-        case i: MoeIntObject    => i.getNativeValue
-        case n: MoeFloatObject  => n.getNativeValue.toInt
-        case s: MoeStringObject => try { s.getNativeValue.toInt } catch { case e => 0 } // TODO: warn
-        case _ => throw new MoeErrors.BadTypeCoercion("to Int")
+      def toInt(obj: MoeObject): Option[Int] = obj match {
+        case i: MoeIntObject     => Some(i.getNativeValue)
+        case f: MoeFloatObject   => Some(f.getNativeValue.toInt)
+        case s: MoeStringObject  => try { Some(s.getNativeValue.toInt) } catch { case e: Throwable => None } 
+        case u: MoeUndefObject   => None
+        case b: MoeBooleanObject => None
+        case a: MoeArrayObject   => None
+        case h: MoeHashObject    => None
+        case p: MoePairObject    => None
+        case _ => throw new MoeErrors.UnexpectedType("Expected MoeNativeObject[A] and got " + obj.toString)
       }
 
-      def toString(obj: MoeObject): String = obj match {
-        case i: MoeIntObject    => i.getNativeValue.toString
-        case n: MoeFloatObject  => n.getNativeValue.toString
-        case s: MoeStringObject => s.getNativeValue
-        case _ => throw new MoeErrors.BadTypeCoercion("to String")
+      def toString(obj: MoeObject): Option[String] = obj match {
+        case i: MoeIntObject     => Some(i.getNativeValue.toString)
+        case f: MoeFloatObject   => Some(f.getNativeValue.toString)
+        case s: MoeStringObject  => Some(s.getNativeValue)
+        case u: MoeUndefObject   => None
+        case b: MoeBooleanObject => None
+        case a: MoeArrayObject   => None
+        case h: MoeHashObject    => None
+        case p: MoePairObject    => None
+        case _ => throw new MoeErrors.UnexpectedType("Expected MoeNativeObject[A] and got " + obj.toString)
+      }
+
+      def toBool(obj: MoeObject): Option[Boolean] = obj match {
+        case i: MoeIntObject     => Some(i.isTrue)
+        case f: MoeFloatObject   => Some(f.isTrue)
+        case s: MoeStringObject  => Some(s.isTrue)
+        case u: MoeUndefObject   => Some(u.isTrue)
+        case b: MoeBooleanObject => Some(b.isTrue)
+        case a: MoeArrayObject   => Some(a.isTrue)
+        case h: MoeHashObject    => Some(h.isTrue)
+        case p: MoePairObject    => Some(p.isTrue)
+        case _ => throw new MoeErrors.UnexpectedType("Expected MoeNativeObject[A] and got " + obj.toString) 
       }
 
     }
