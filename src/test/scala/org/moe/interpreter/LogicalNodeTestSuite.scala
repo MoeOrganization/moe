@@ -13,7 +13,7 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
         NotNode(BooleanLiteralNode(true))
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     assert(result.asInstanceOf[ MoeBooleanObject ].getNativeValue === false)
   }
 
@@ -23,7 +23,7 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
         NotNode(BooleanLiteralNode(false))
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 
@@ -36,7 +36,7 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
   }
 
@@ -52,7 +52,7 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 100)
   }
 
@@ -65,7 +65,7 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 

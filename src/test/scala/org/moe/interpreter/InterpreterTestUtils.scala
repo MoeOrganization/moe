@@ -21,11 +21,12 @@ trait InterpreterTestUtils
     runtime.bootstrap()
   }
 
-  def wrapSimpleAST ( nodes: List[ AST ] ) =
+  def wrapSimpleAST(nodes: List[AST]) =
     CompilationUnitNode(
       ScopeNode(
         StatementsNode(nodes)
       )
     )
 
+  def runSimpleAST(ast: AST) = interpreter.eval(runtime, runtime.getRootEnv, ast)
 }

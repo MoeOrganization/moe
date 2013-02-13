@@ -35,7 +35,7 @@ class WhileNodeTestSuite extends FunSuite with InterpreterTestUtils {
         VariableAccessNode("$bar")
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === -10)
   }
 

@@ -23,7 +23,7 @@ class ArithmeticTestSuite
         )
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     result.asInstanceOf[MoeIntObject].getNativeValue should equal (4)
   }
 
@@ -38,7 +38,7 @@ class ArithmeticTestSuite
         )
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     result.asInstanceOf[MoeFloatObject].getNativeValue should equal (4.5)
   }
 
@@ -53,7 +53,7 @@ class ArithmeticTestSuite
         )
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     result.asInstanceOf[MoeFloatObject].getNativeValue should equal (4.5)
   }
 
@@ -68,7 +68,7 @@ class ArithmeticTestSuite
         )
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     result.asInstanceOf[MoeFloatObject].getNativeValue should equal (5.0)
   }
 
@@ -87,7 +87,7 @@ class ArithmeticTestSuite
         )
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     result.asInstanceOf[MoeIntObject].getNativeValue should equal (6)
   }
 }

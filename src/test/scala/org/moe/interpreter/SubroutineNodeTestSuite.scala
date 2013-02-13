@@ -37,7 +37,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 30)
   }
 
@@ -65,7 +65,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
         VariableAccessNode("$foo")
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 3)
   }
 
@@ -92,7 +92,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     intercept[MoeErrors.VariableNotFound] {
-      interpreter.eval(runtime, runtime.getRootEnv, ast)
+      runSimpleAST(ast)
     }
   }
 
@@ -131,7 +131,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 3)
   }
 
@@ -173,7 +173,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 0)
   }
 
@@ -235,7 +235,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 2)
   }
 }

@@ -16,7 +16,7 @@ class MiscNodeTestSuite extends FunSuite with InterpreterTestUtils {
         StringLiteralNode("WORLD")
       )
     )
-    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = runSimpleAST(ast)
     assert(result.asInstanceOf[MoeStringObject].getNativeValue === "WORLD")
   }
 
@@ -27,7 +27,7 @@ class MiscNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     intercept[MoeErrors.UnknownNode] {
-      interpreter.eval(runtime, runtime.getRootEnv, ast)
+      runSimpleAST(ast)
     }
   }
 

@@ -25,7 +25,7 @@ class PackageNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    interpreter.eval(runtime, runtime.getRootEnv, ast)
+    runSimpleAST(ast)
     assert(runtime.getRootPackage.hasSubPackage("Foo"), "core package has package Foo")
     assert(runtime.getRootPackage.getSubPackage("Foo").exists(_.hasSubroutine("my_sub")), "Foo has sub my_sub")
   }
