@@ -35,7 +35,7 @@ class IfStatementTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     assert(result.asInstanceOf[MoeUndefObject] === runtime.NativeObjects.getUndef)
   }
 
-/bin/bash: :w: command not found
+  test("... nested if false in if false ") {
         val result = interpretCode("if (false) { if ( true ) { 200 } }")
         assert(result.asInstanceOf[MoeUndefObject] === runtime.NativeObjects.getUndef)
       }
