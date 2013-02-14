@@ -1,7 +1,6 @@
 package org.moe.runtime.builtins
 
 import org.moe.runtime._
-import org.moe.interpreter.InterpreterUtils._
 
 /**
   * setup class Array
@@ -13,17 +12,16 @@ object ArrayClass {
       throw new MoeErrors.MoeStartupError("Could not find class Array")
     )
 
+    import r.NativeObjects.Unbox._
+
     // basic access
     arrayClass.addMethod(
       new MoeMethod(
         "postcircumfix:<[]>",
         { (invocant, args) => 
 
-            var index = objToInteger(args(0))
-            val array = invocant match {
-              case a: MoeArrayObject => a.getNativeValue
-              case _                 => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
-            }
+            var index = toInt(args(0)).get
+            val array = toArray(invocant).get
 
             while (index < 0) {
               index += array.size
