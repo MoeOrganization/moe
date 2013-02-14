@@ -35,7 +35,7 @@ class DoWhileNodeTestSuite extends FunSuite with InterpreterTestUtils {
         VariableAccessNode("$bar")
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === -1)
   }
 

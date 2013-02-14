@@ -18,7 +18,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
     val array: List[MoeObject] = result.asInstanceOf[MoeArrayObject].getNativeValue
 
@@ -42,7 +42,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
     val array: List[ MoeObject ] = result.asInstanceOf[MoeArrayObject].getNativeValue
 
@@ -70,7 +70,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         ArrayElementAccessNode("@array", IntLiteralNode(0))
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
     assert(result.asInstanceOf[ MoeIntObject ].getNativeValue === 10)
   }
@@ -90,7 +90,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         ArrayElementAccessNode("@array", IntLiteralNode(1))
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
     assert(result.asInstanceOf[ MoeIntObject ].getNativeValue === 20)
   }
@@ -110,7 +110,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         ArrayElementAccessNode("@array", IntLiteralNode(-1))
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
     assert(result.asInstanceOf[ MoeIntObject ].getNativeValue === 20)
   }
@@ -130,7 +130,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         ArrayElementAccessNode("@array", IntLiteralNode(-2))
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
     assert(result.asInstanceOf[ MoeIntObject ].getNativeValue === 10)
   }
@@ -150,7 +150,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         ArrayElementAccessNode("@array", IntLiteralNode(-3))
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
     assert(result.asInstanceOf[ MoeIntObject ].getNativeValue === 20)
   }
@@ -170,8 +170,8 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         ArrayElementAccessNode("@array", IntLiteralNode(2))
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    assert(result.asInstanceOf[ MoeNullObject ].getNativeValue === null)
+    assert(result.asInstanceOf[ MoeUndefObject ].getNativeValue === null)
   }
 }

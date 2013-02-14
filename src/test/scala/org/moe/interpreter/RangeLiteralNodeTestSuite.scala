@@ -16,7 +16,7 @@ class RangeLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
     val array: List[MoeObject] = result.asInstanceOf[MoeArrayObject].getNativeValue
 
@@ -35,7 +35,7 @@ class RangeLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
     val array: List[MoeObject] = result.asInstanceOf[MoeArrayObject].getNativeValue
 

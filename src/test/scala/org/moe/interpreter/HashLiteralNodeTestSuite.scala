@@ -18,7 +18,7 @@ class HashLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
     val hash: Map[String, MoeObject] = result.asInstanceOf[MoeHashObject].getNativeValue
     assert(hash("foo").asInstanceOf[MoeIntObject].getNativeValue === 10)
@@ -38,7 +38,7 @@ class HashLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
     val hash: Map[String, MoeObject] = result.asInstanceOf[MoeHashObject].getNativeValue
     assert(hash("foo").asInstanceOf[MoeIntObject].getNativeValue === 10)
@@ -59,13 +59,13 @@ class HashLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
             )
           )
         ),
-        HashValueAccessNode(
+        HashElementAccessNode(
           "%hash",
           StringLiteralNode("foo")
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeIntObject].getNativeValue === 10)
   }
 }

@@ -41,9 +41,10 @@ object Serializer {
       )
     )
 
-    case IncrementNode(receiver) => JSONObject(Map("IncrementNode" -> toJSON(receiver)))
-    case DecrementNode(receiver) => JSONObject(Map("DecrementNode" -> toJSON(receiver)))
-    case NotNode(receiver)       => JSONObject(Map("NotNode" -> toJSON(receiver)))
+    // TODO we should probably be storing the "is_prefix" in the serialized JSON (not sure how to do that)
+    case IncrementNode(receiver, is_prefix) => JSONObject(Map("IncrementNode" -> toJSON(receiver)))
+    case DecrementNode(receiver, is_prefix) => JSONObject(Map("DecrementNode" -> toJSON(receiver)))
+    case NotNode(receiver)                  => JSONObject(Map("NotNode" -> toJSON(receiver)))
 
     case AndNode(lhs, rhs) => JSONObject(
       Map(
@@ -200,9 +201,9 @@ object Serializer {
       )
     )
 
-    case HashValueAccessNode(hashName, key) => JSONObject(
+    case HashElementAccessNode(hashName, key) => JSONObject(
       Map(
-        "HashValueAccessNode" -> JSONObject(
+        "HashElementAccessNode" -> JSONObject(
           Map(
             "hashname" -> hashName,
             "key"      -> toJSON(key)

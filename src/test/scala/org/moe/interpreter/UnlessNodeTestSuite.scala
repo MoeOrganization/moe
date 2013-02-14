@@ -16,7 +16,7 @@ class UnlessNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast )
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast )
     assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 42 )
   }
 
@@ -29,7 +29,7 @@ class UnlessNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast )
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast )
     assert( result === runtime.NativeObjects.getUndef )
   }
 
@@ -43,7 +43,7 @@ class UnlessNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast )
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast )
     assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 42 )
   }
 
@@ -57,7 +57,7 @@ class UnlessNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast )
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast )
     assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 21 )
   }
 

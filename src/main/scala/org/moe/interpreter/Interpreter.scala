@@ -5,97 +5,14 @@ import org.moe.ast._
 
 import scala.collection.mutable.HashMap
 
-object Interpreter {
+class Interpreter {
+
+  import InterpreterUtils._
 
   val stub = new MoeObject()
 
-  object Utils {
-    def objToNumeric(obj: MoeObject): Double = obj match {
-      case i: MoeIntObject => i.getNativeValue.toDouble
-      case n: MoeFloatObject => n.getNativeValue
-      case _ => throw new MoeErrors.MoeException("Could not coerce object into numeric")
-    }
-
-    def objToInteger(obj: MoeObject): Int = obj match {
-      case i: MoeIntObject => i.getNativeValue
-      case n: MoeFloatObject => n.getNativeValue.toInt
-      case _ => throw new MoeErrors.MoeException("Could not coerce object into integer")
-    }
-
-    def objToString(obj: MoeObject): String = obj match {
-      case i: MoeIntObject => i.getNativeValue.toString
-      case n: MoeFloatObject => n.getNativeValue.toString
-      case s: MoeStringObject => s.getNativeValue
-      case _ => throw new MoeErrors.MoeException("Could not coerce object into string")
-    }
-
-    def inNewEnv[T](env: MoeEnvironment)(body: MoeEnvironment => T): T = {
-      val newEnv = new MoeEnvironment(Some(env))
-
-      body(env)
-    }
-
-    // strings matching the alphanumeric pattern /^[a-zA-Z]*[0-9]*\z/
-    // are incrementable
-
-    import scala.util.matching.Regex
-
-    def magicalStringIncrement(str: String): String = {
-      def incr_numeric_part(n: String) = {
-        val len = n.length
-        ("%0" + len + "d").format(n.toInt + 1).toString
-      }
-
-      def incr_alpha_part(s: String) = {
-
-        def succ(c: Char, carry: Boolean): (Char, Boolean) = {
-          if (carry)
-            c match {
-              case 'z' => ('a', true)
-              case 'Z' => ('A', true)
-              case _   => ((c.toInt + 1).toChar, false)
-            }
-          else
-            (c, false)
-        }
-
-        var carry = true
-        val incremented = (for (c <- s.reverse) yield {
-          val succ_c = succ(c, carry)
-          carry = succ_c._2
-          succ_c._1
-        }).reverse
-        (if (carry) (incremented.head.toString ++ incremented) else incremented).mkString
-      }
-
-      def increment_in_parts(alpha: String, numeric: String) = {
-        if (alpha.isEmpty) {
-          // no alpha prefix; increment as numeric
-          incr_numeric_part(numeric)
-        } else if (numeric.isEmpty) {
-          // only alpha part
-          incr_alpha_part(alpha)
-        } else {
-          // both alpha and numeric parts exist. increment numeric
-          // part first; if it carries over then increment alpha part
-          val next_n = incr_numeric_part(numeric)
-          if (next_n.length == numeric.length)
-            alpha + next_n
-          else
-            incr_alpha_part(alpha) + next_n.tail
-        }
-      }
-
-      val alpha_numeric = """^([a-zA-Z]*)([0-9]*)\z""".r
-      str match {
-        case alpha_numeric(alpha, numeric) => increment_in_parts(alpha, numeric)
-        case _ => throw new MoeErrors.MoeException("string is not incrementable")
-      }
-    }
-  }
-
   def eval(runtime: MoeRuntime, env: MoeEnvironment, node: AST): MoeObject = {
-    val scoped = Utils.inNewEnv[MoeObject](env) _
+    val scoped = inNewEnv[MoeObject](env) _
     node match {
 
       // containers
@@ -152,7 +69,7 @@ object Interpreter {
         }
 
         // TODO: ListBuffer probably, like stevan said - JM
-        var native_index = Utils.objToInteger(index_result)
+        var native_index = objToInteger(index_result)
         while (native_index < 0) {
           native_index += array_value.size
         }
@@ -183,14 +100,14 @@ object Interpreter {
         )
       }
 
-      case HashValueAccessNode(hashName: String, key: AST) => {
+      case HashElementAccessNode(hashName: String, key: AST) => {
         val key_result = eval(runtime, env, key)
         val hash_map = env.get(hashName) match {
           case Some(h: MoeHashObject) => h.getNativeValue
           case _ => throw new MoeErrors.UnexpectedType("MoeHashObject expected")
         }
 
-        hash_map.get(Utils.objToString(key_result))
+        hash_map.get(objToString(key_result))
           .getOrElse(runtime.NativeObjects.getUndef)
       }
 
@@ -199,15 +116,15 @@ object Interpreter {
         val e = eval(runtime, env, end)
         (s, e) match {
           case (s: MoeIntObject, e: MoeIntObject) => {
-            val range_start  = Utils.objToInteger(s)
-            val range_end    = Utils.objToInteger(e)
+            val range_start  = objToInteger(s)
+            val range_end    = objToInteger(e)
             val range: Range = new Range(range_start, range_end + 1, 1)
             val array: List[MoeObject] = range.toList.map(runtime.NativeObjects.getInt(_))
             runtime.NativeObjects.getArray(array)
           }
           case (s: MoeStringObject, e: MoeStringObject) => {
-            val range_start = Utils.objToString(s)
-            val range_end   = Utils.objToString(e)
+            val range_start = objToString(s)
+            val range_end   = objToString(e)
 
             if (range_start.length > range_end.length)
               runtime.NativeObjects.getArray()
@@ -216,7 +133,7 @@ object Interpreter {
               var str = range_start
               while (str <= range_end || str.length < range_end.length) {
                 elems = elems :+ str
-                str = Utils.magicalStringIncrement(str)
+                str = magicalStringIncrement(str)
               }
               runtime.NativeObjects.getArray(elems.map(runtime.NativeObjects.getString(_)))
             }
@@ -227,30 +144,38 @@ object Interpreter {
 
       // unary operators
 
-      case IncrementNode(receiver: AST) => receiver match {
+      case IncrementNode(receiver: AST, is_prefix) => receiver match {
         case VariableAccessNode(varName) => env.get(varName).getOrElse(
           throw new MoeErrors.VariableNotFound(varName)
         ) match {
           case i: MoeIntObject => {
-            env.set(varName, runtime.NativeObjects.getInt(i.getNativeValue + 1)).get
+            val new_i = runtime.NativeObjects.getInt(i.getNativeValue + 1)
+            env.set(varName, new_i)
+            if (is_prefix) new_i else i
           }
           case n: MoeFloatObject => {
-            env.set(varName, runtime.NativeObjects.getFloat(n.getNativeValue + 1.0)).get
+            val new_n = runtime.NativeObjects.getFloat(n.getNativeValue + 1.0)
+            env.set(varName, new_n)
+            if (is_prefix) new_n else n
           }
           case s: MoeStringObject => {
-            env.set(varName, runtime.NativeObjects.getString(Utils.magicalStringIncrement(s.getNativeValue))).get
+            env.set(varName, runtime.NativeObjects.getString(magicalStringIncrement(s.getNativeValue))).get
           }
         }
       }
-      case DecrementNode(receiver: AST) => receiver match {
+      case DecrementNode(receiver: AST, is_prefix) => receiver match {
         case VariableAccessNode(varName) => env.get(varName).getOrElse(
           throw new MoeErrors.VariableNotFound(varName)
         ) match {
           case i: MoeIntObject => {
-            env.set(varName, runtime.NativeObjects.getInt(i.getNativeValue - 1)).get
+            val new_i = runtime.NativeObjects.getInt(i.getNativeValue - 1)
+            env.set(varName, new_i)
+            if (is_prefix) new_i else i
           }
           case n: MoeFloatObject => {
-            env.set(varName, runtime.NativeObjects.getFloat(n.getNativeValue - 1.0)).get
+            val new_n = runtime.NativeObjects.getFloat(n.getNativeValue - 1.0)
+            env.set(varName, new_n)
+            if (is_prefix) new_n else n
           }
         }
       }
@@ -284,16 +209,16 @@ object Interpreter {
       }
 
       case LessThanNode(lhs, rhs) => {
-        val lhs_result: Double = Utils.objToNumeric(eval(runtime, env, lhs))
-        val rhs_result: Double = Utils.objToNumeric(eval(runtime, env, rhs))
+        val lhs_result: Double = objToNumeric(eval(runtime, env, lhs))
+        val rhs_result: Double = objToNumeric(eval(runtime, env, rhs))
 
         val result = lhs_result < rhs_result
         runtime.NativeObjects.getBool(result)
       }
 
       case GreaterThanNode(lhs, rhs) => {
-        val lhs_result: Double = Utils.objToNumeric(eval(runtime, env, lhs))
-        val rhs_result: Double = Utils.objToNumeric(eval(runtime, env, rhs))
+        val lhs_result: Double = objToNumeric(eval(runtime, env, lhs))
+        val rhs_result: Double = objToNumeric(eval(runtime, env, rhs))
 
         val result = lhs_result > rhs_result
         runtime.NativeObjects.getBool(result)
@@ -301,8 +226,38 @@ object Interpreter {
 
       // value lookup, assignment and declaration
 
-      case ClassAccessNode(name) => stub
-      case ClassDeclarationNode(name, superclass, body) => stub
+      case ClassAccessNode(name) => {
+        env.getCurrentPackage.getOrElse(
+          throw new MoeErrors.PackageNotFound("__PACKAGE__")
+        ).getClass(name).getOrElse(
+          throw new MoeErrors.ClassNotFound(name)
+        )
+      }
+      case ClassDeclarationNode(name, superclass, body) => {
+        val pkg = env.getCurrentPackage.getOrElse(
+          throw new MoeErrors.PackageNotFound("__PACKAGE__")
+        )
+
+        val superclass_class: Option[MoeClass] = superclass.map(
+          pkg.getClass(_).getOrElse(
+            throw new MoeErrors.ClassNotFound(superclass.getOrElse(""))
+          )
+        )
+
+        val klass = new MoeClass(
+          name, None, None, Some(superclass_class.getOrElse(runtime.getClassClass))
+        )
+
+        pkg.addClass(klass)
+
+        scoped { klass_env =>
+          klass_env.setCurrentClass(klass)
+          eval(runtime, klass_env, body)
+          klass
+        }
+
+        klass
+      }
 
       case PackageDeclarationNode(name, body) => {
         scoped { newEnv =>
@@ -316,16 +271,69 @@ object Interpreter {
         }
       }
 
-      case ConstructorDeclarationNode(params, body) => stub
+      // TODO: constructor overloading
+      case ConstructorDeclarationNode(params, body) => {
+        val klass = env.getCurrentClass.getOrElse(
+          throw new MoeErrors.ClassNotFound("__CLASS__")
+        )
+        throwForUndeclaredVars(env, params, body)
+        scoped { constructor_env =>
+          val method = new MoeMethod(
+            "new",
+            (invocant, args) => {
+              val param_pairs = params zip args
+              param_pairs.foreach({ case (param, arg) =>
+                constructor_env.create(param, arg)
+              })
+              val instance = klass.newInstance
+              constructor_env.setCurrentInvocant(instance)
+              eval(runtime, constructor_env, body)
+              instance
+            }
+          )
+          env.getCurrentClass.getOrElse(
+            throw new MoeErrors.ClassNotFound("__CLASS__")
+          ).addMethod(method)
+          method
+        }
+      }
       case DestructorDeclarationNode(params, body) => stub
 
-      case MethodDeclarationNode(name, params, body) => stub
-      // TODO: handle arguments
+      case MethodDeclarationNode(name, params, body) => {
+        val klass = env.getCurrentClass.getOrElse(
+          throw new MoeErrors.ClassNotFound("__CLASS__")
+        )
+        throwForUndeclaredVars(env, params, body)
+        scoped { method_env =>
+          val method = new MoeMethod(
+            name,
+            (invocant, args) => {
+              val param_pairs = params zip args
+              param_pairs.foreach({ case (param, arg) =>
+                method_env.create(param, arg)
+              })
+              method_env.setCurrentInvocant(invocant)
+              eval(runtime, method_env, body)
+            }
+          )
+          env.getCurrentClass.getOrElse(
+            throw new MoeErrors.ClassNotFound("__CLASS__")
+          ).addMethod(method)
+          method
+        }
+      }
       case SubroutineDeclarationNode(name, params, body) => {
-        scoped { newEnv =>
+        throwForUndeclaredVars(env, params, body)
+        scoped { sub_env =>
           val sub = new MoeSubroutine(
             name,
-            params => eval(runtime, newEnv, body)
+            args => {
+              val param_pairs = params zip args
+              param_pairs.foreach({ case (param, arg) =>
+                sub_env.create(param, arg)
+              })
+              eval(runtime, sub_env, body)
+            }
           )
           env.getCurrentPackage.getOrElse(
             throw new MoeErrors.PackageNotFound("__PACKAGE__")
@@ -334,9 +342,45 @@ object Interpreter {
         }
       }
 
-      case AttributeAccessNode(name) => stub
-      case AttributeAssignmentNode(name, expression) => stub
-      case AttributeDeclarationNode(name, expression) => stub
+      case AttributeAccessNode(name) => {
+        val klass = env.getCurrentClass.getOrElse(
+          throw new MoeErrors.ClassNotFound("__CLASS__")
+        )
+        val attr = klass.getAttribute(name).getOrElse(
+          throw new MoeErrors.AttributeNotFound(name)
+        )
+        val invocant = env.getCurrentInvocant
+        invocant match {
+          case Some(invocant: MoeOpaque) =>
+            invocant.getValue(name).getOrElse(attr.getDefault.getOrElse(runtime.NativeObjects.getUndef))
+          case _ => throw new MoeErrors.UnexpectedType(invocant.getOrElse("(undef)").toString)
+        }
+      }
+      case AttributeAssignmentNode(name, expression) => {
+        val klass = env.getCurrentClass.getOrElse(
+          throw new MoeErrors.ClassNotFound("__CLASS__")
+        )
+        val attr = klass.getAttribute(name).getOrElse(
+          throw new MoeErrors.AttributeNotFound(name)
+        )
+        val expr = eval(runtime, env, expression)
+        env.getCurrentInvocant match {
+          case Some(invocant: MoeOpaque) => invocant.setValue(name, expr)
+                                            // XXX attr."setDefault"(expr) ?
+          case Some(invocant)            => throw new MoeErrors.UnexpectedType(invocant.toString)
+          case None                      => throw new MoeErrors.MoeException("Attribute default already declared")
+        }
+        expr
+      }
+      case AttributeDeclarationNode(name, expression) => {
+        val klass = env.getCurrentClass.getOrElse(
+          throw new MoeErrors.ClassNotFound("__CLASS__")
+        )
+        val attr_default = eval(runtime, env, expression)
+        val attr = new MoeAttribute(name, Some(attr_default))
+        klass.addAttribute(attr)
+        attr
+      }
 
       // TODO context etc
       case VariableAccessNode(name) => env.get(name).getOrElse(
@@ -352,8 +396,20 @@ object Interpreter {
       }
 
       // operations
-
-      case MethodCallNode(invocant, method_name, args) => stub
+      case MethodCallNode(invocant, method_name, args) => {
+        val invocant_object = eval(runtime, env, invocant)
+        invocant_object match {
+          case obj: MoeObject =>
+            val klass = obj.getAssociatedClass.getOrElse(
+              throw new MoeErrors.ClassNotFound("__CLASS__")
+            )
+            val meth = klass.getMethod(method_name).getOrElse(
+              throw new MoeErrors.MethodNotFound(method_name)
+            )
+            invocant_object.callMethod(meth, args.map(eval(runtime, env, _)))
+          case _ => throw new MoeErrors.MoeException("Object expected")
+        }
+      }
       case SubroutineCallNode(function_name, args) => {
         val sub = env.getCurrentPackage.getOrElse(
             throw new MoeErrors.PackageNotFound("__PACKAGE__")

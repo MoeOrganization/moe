@@ -16,7 +16,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 
@@ -29,7 +29,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
   }
 
@@ -42,7 +42,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 
@@ -55,7 +55,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
   }
 
@@ -68,7 +68,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 
@@ -81,7 +81,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
   }
 
@@ -94,7 +94,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
   }
 
@@ -107,7 +107,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
   }
 

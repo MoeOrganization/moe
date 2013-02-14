@@ -6,8 +6,7 @@ import org.moe.runtime._
 import org.moe.ast._
 
 class PackageNodeTestSuite extends FunSuite with InterpreterTestUtils {
-
-  test("... basic test with package and closure") {
+  test("... basic test with package and single sub") {
     // package Foo { my $foo = 0; sub add_foo { $foo++ }
     // add_foo(); add_foo(); add_foo(); $foo }
     val ast = wrapSimpleAST(
@@ -16,30 +15,19 @@ class PackageNodeTestSuite extends FunSuite with InterpreterTestUtils {
           "Foo",
           StatementsNode(
             List(
-              VariableDeclarationNode(
-                "$foo",
-                IntLiteralNode(0)
-              ),
               SubroutineDeclarationNode(
-                "add_foo",
+                "my_sub",
                 List(),
-                StatementsNode(
-                  List(
-                    IncrementNode(VariableAccessNode("$foo"))
-                  )
-                )
-              ),
-              SubroutineCallNode("add_foo", List()),
-              SubroutineCallNode("add_foo", List()),
-              SubroutineCallNode("add_foo", List()),
-              VariableAccessNode("$foo")
+                StatementsNode(List())
+              )
             )
           )
         )
       )
     )
-    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 3)
+    interpreter.eval(runtime, runtime.getRootEnv, ast)
+    assert(runtime.getRootPackage.hasSubPackage("Foo"), "core package has package Foo")
+    assert(runtime.getRootPackage.getSubPackage("Foo").exists(_.hasSubroutine("my_sub")), "Foo has sub my_sub")
   }
 
 }

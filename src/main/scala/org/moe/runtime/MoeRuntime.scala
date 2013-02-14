@@ -1,7 +1,8 @@
 package org.moe.runtime
 
 class MoeRuntime (
-    private val system: MoeSystem = new MoeSystem()
+    private val system: MoeSystem = new MoeSystem(),
+    private val warnings: Boolean = true
   ) {
 
   private val VERSION         = "0.0.0"
@@ -16,10 +17,11 @@ class MoeRuntime (
   private val objectClass = new MoeClass("Object", Some(VERSION), Some(AUTHORITY))
   private val classClass  = new MoeClass("Class", Some(VERSION), Some(AUTHORITY), Some(objectClass))
 
+  def isBootstrapped     = is_bootstrapped
+  def areWarningsEnabled = warnings
+
   def getVersion     = VERSION
   def getAuthority   = AUTHORITY
-
-  def isBootstrapped = is_bootstrapped
 
   def getSystem      = system
   def getRootEnv     = rootEnv
@@ -29,7 +31,7 @@ class MoeRuntime (
   def getObjectClass = objectClass
   def getClassClass  = classClass
 
-  def bootstrap() : Unit = {
+  def bootstrap(): Unit = {
     if (!is_bootstrapped) {
 
       // setup the root package
@@ -57,13 +59,13 @@ class MoeRuntime (
        */
 
       val anyClass       = new MoeClass("Any",        Some(VERSION), Some(AUTHORITY), Some(objectClass))
-           
+
       val scalarClass    = new MoeClass("Scalar",     Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val arrayClass     = new MoeClass("Array",      Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val hashClass      = new MoeClass("Hash",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val pairClass      = new MoeClass("Pair",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
        
-      val nullClass      = new MoeClass("Null",       Some(VERSION), Some(AUTHORITY), Some(scalarClass))
+      val undefClass     = new MoeClass("Undef",      Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val boolClass      = new MoeClass("Bool",       Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val strClass       = new MoeClass("Str",        Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val intClass       = new MoeClass("Int",        Some(VERSION), Some(AUTHORITY), Some(scalarClass))
@@ -80,12 +82,14 @@ class MoeRuntime (
       corePackage.addClass(hashClass)
       corePackage.addClass(pairClass)
 
-      corePackage.addClass(nullClass)
+      corePackage.addClass(undefClass)
       corePackage.addClass(boolClass)
       corePackage.addClass(strClass)
       corePackage.addClass(intClass)
       corePackage.addClass(numClass)
       corePackage.addClass(exceptionClass)
+
+      setupBuiltins
 
       /*
         TODO:
@@ -99,9 +103,28 @@ class MoeRuntime (
 
   def getCoreClassFor (name: String): Option[MoeClass] = corePackage.getClass(name)
 
+  def warn(msg: String): Unit = warn(Array(msg))
+  def warn(msg: Array[String]): Unit = {
+    val out = msg.mkString
+    // TODO: 
+    // add line numbers and such 
+    // to the message, when we have
+    // actual line numbers that is
+    // - SL
+    system.getSTDERR.println(out)
+  }
+
+  def print(msg: String): Unit = print(Array(msg))
+  def print(msg: Array[String]): Unit = system.getSTDOUT.print(msg.mkString)
+
+  def say(msg: String): Unit = say(Array(msg))
+  def say(msg: Array[String]): Unit = system.getSTDOUT.println(msg.mkString)
+
+  private def setupBuiltins = new MoeBuiltins(this)
+
   object NativeObjects {
 
-    private lazy val Undef = new MoeNullObject(getCoreClassFor("Null"))
+    private lazy val Undef = new MoeUndefObject(getCoreClassFor("Undef"))
     private lazy val True  = new MoeBooleanObject(true, getCoreClassFor("Bool"))
     private lazy val False = new MoeBooleanObject(false, getCoreClassFor("Bool"))
 

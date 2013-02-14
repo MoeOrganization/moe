@@ -38,8 +38,8 @@ case class RangeLiteralNode(start: AST, end: AST) extends AST
 
 // unary operators
 
-case class IncrementNode(receiver: AST) extends AST
-case class DecrementNode(receiver: AST) extends AST
+case class IncrementNode(receiver: AST, is_prefix: Boolean = false) extends AST
+case class DecrementNode(receiver: AST, is_prefix: Boolean = false) extends AST
 case class NotNode(receiver: AST) extends AST
 
 
@@ -53,13 +53,13 @@ case class GreaterThanNode(lhs: AST, rhs: AST) extends AST
 // value lookup, assignment and declaration
 
 case class ClassAccessNode(name: String) extends AST
-case class ClassDeclarationNode(name: String, superclass: String, body: AST) extends AST
+case class ClassDeclarationNode(name: String, superclass: Option[String], body: StatementsNode) extends AST
 case class PackageDeclarationNode(name: String, body: StatementsNode) extends AST
 
-case class ConstructorDeclarationNode(params: List[String], body: AST) extends AST
-case class DestructorDeclarationNode(params: List[String], body: AST) extends AST
+case class ConstructorDeclarationNode(params: List[String], body: StatementsNode) extends AST
+case class DestructorDeclarationNode(params: List[String], body: StatementsNode) extends AST
 
-case class MethodDeclarationNode(name: String, params: List[String], body: AST) extends AST
+case class MethodDeclarationNode(name: String, params: List[String], body: StatementsNode) extends AST
 case class SubroutineDeclarationNode(name: String, params: List[String], body: StatementsNode) extends AST
 
 case class AttributeAccessNode(name: String) extends AST
@@ -70,7 +70,7 @@ case class VariableAccessNode(name: String) extends AST
 case class VariableAssignmentNode(name: String, expression: AST) extends AST
 case class VariableDeclarationNode(name: String, expression: AST) extends AST
 
-case class HashValueAccessNode(hashName: String, key: AST) extends AST
+case class HashElementAccessNode(hashName: String, key: AST) extends AST
 case class ArrayElementAccessNode(arrayName: String, index: AST) extends AST
 
 // operations
