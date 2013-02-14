@@ -16,7 +16,6 @@ object MoeErrors {
 
   // Moe internal errors
   class MoeStartupError       (msg: String) extends MoeProblems(msg)
-  class MoeTypeError          (msg: String) extends MoeProblems(msg)
 
   // Runtime errors
   class NotAllowed            (msg: String) extends MoeProblems(msg)
@@ -42,5 +41,7 @@ object MoeErrors {
   class MissingValue          (msg: String) extends MoeProblems(msg)
   class MissingClass          (msg: String) extends MissingValue(msg)
 
-  class UnexpectedType        (msg: String) extends MoeTypeError(msg)
+  class TypeError             (msg: String) extends MoeProblems(msg)
+  class UnexpectedType        (msg: String) extends TypeError(msg)
+  class IncompatibleType      (msg: String) extends TypeError(msg)
 }
