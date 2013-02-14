@@ -12,6 +12,8 @@ object NumClass {
       throw new MoeErrors.MoeStartupError("Could not find class Num")
     )
 
+    import r.NativeObjects._
+
     numClass.addMethod(
       new MoeMethod(
         "+",
@@ -19,9 +21,9 @@ object NumClass {
           val rhs = args(0)
           val n = lhs.asInstanceOf[MoeFloatObject]
           rhs match {
-            case rhs_n: MoeFloatObject => r.NativeObjects.getFloat(n.getNativeValue + rhs_n.getNativeValue)
-            case rhs_i: MoeIntObject => r.NativeObjects.getFloat(n.getNativeValue + rhs_i.getNativeValue.toDouble)
-            case _ => throw new MoeErrors.UnexpectedType(rhs.toString)
+            case rhs_n: MoeFloatObject => getFloat(n.getNativeValue + rhs_n.getNativeValue)
+            case rhs_i: MoeIntObject   => getFloat(n.getNativeValue + rhs_i.getNativeValue.toDouble)
+            case _                     => throw new MoeErrors.UnexpectedType(rhs.toString)
           }
         }
       )
