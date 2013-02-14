@@ -147,4 +147,18 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
     assert(result.asInstanceOf[MoeStringObject].getNativeValue === "aaa")
   }
 
+  test("... basic test with variable increment (string) #7") {
+    val ast = wrapSimpleAST(
+      List(
+        VariableDeclarationNode(
+          "$foo",
+          StringLiteralNode("01")
+        ),
+        IncrementNode(VariableAccessNode("$foo"))
+      )
+    )
+    val result = Interpreter.eval(runtime, runtime.getRootEnv, ast)
+    assert(result.asInstanceOf[MoeStringObject].getNativeValue === "02")
+  }
+
 }

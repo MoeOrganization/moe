@@ -41,7 +41,10 @@ object Interpreter {
     import scala.util.matching.Regex
 
     def magicalStringIncrement(str: String): String = {
-      def incr_numeric_part(n: String) = (n.toInt + 1).toString
+      def incr_numeric_part(n: String) = {
+        val len = n.length
+        ("%0" + len + "d").format(n.toInt + 1).toString
+      }
 
       def incr_alpha_part(s: String) = {
 
