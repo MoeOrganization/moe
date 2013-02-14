@@ -209,18 +209,17 @@ object Interpreter {
             val range_start = Utils.objToString(s)
             val range_end   = Utils.objToString(e)
 
-            // return the successor of the string ("abc" => "abd")
-            def succ(str: String) = str.init + (str.last.toInt + 1).toChar
-
-            // this is totally non-functional, imperative style code,
-            // not in Scala spirit; but will do, for now
-            var elems: List[String] = List()
-            var str = range_start
-            while (str <= range_end) {
-              elems = elems :+ str
-              str = succ(str)
+            if (range_start.length > range_end.length)
+              runtime.NativeObjects.getArray()
+            else {
+              var elems: List[String] = List()
+              var str = range_start
+              while (str <= range_end || str.length < range_end.length) {
+                elems = elems :+ str
+                str = Utils.magicalStringIncrement(str)
+              }
+              runtime.NativeObjects.getArray(elems.map(runtime.NativeObjects.getString(_)))
             }
-            runtime.NativeObjects.getArray(elems.map(runtime.NativeObjects.getString(_)))
           }
           case _ => throw new MoeErrors.UnexpectedType("Pair of MoeIntObject or MoeStringObject expected")
         }
