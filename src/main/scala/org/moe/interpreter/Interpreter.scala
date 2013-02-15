@@ -159,7 +159,9 @@ class Interpreter {
             if (is_prefix) new_n else n
           }
           case s: MoeStringObject => {
-            env.set(varName, runtime.NativeObjects.getString(magicalStringIncrement(s.getNativeValue))).get
+            val new_s = runtime.NativeObjects.getString(magicalStringIncrement(s.getNativeValue))
+            env.set(varName, new_s)
+            if (is_prefix) new_s else s
           }
         }
       }
