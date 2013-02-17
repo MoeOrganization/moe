@@ -13,15 +13,32 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   private lazy val hash_index_rule = "%" ~
                                      (namespacedIdentifier <~ "{") ~
                                      (expression <~ "}")
+  
+  lazy val expression: PackratParser[AST] = addOp
 
-  // def expression: Parser[AST] = (
-  lazy val expression: PackratParser[AST] = (
+  // This is what I want
+  // def binOpResult = { case left ~ op ~ right => MethodCallNode(left, op, List(right)) }
+  // lazy val addOp: PackratParser[AST] = addOp ~ "[-+]".r ~ mulOp            ^^ binOpResult | mulOp
+  // lazy val mulOp: PackratParser[AST] = mulOp ~ "[*/]".r ~ simpleExpression ^^ binOpResult | simpleExpression
+
+  lazy val addOp: PackratParser[AST] = addOp ~ "[-+]".r ~ mulOp            ^^ {
+    case left ~ op ~ right => MethodCallNode(left, op, List(right))
+  }| mulOp
+
+  lazy val mulOp: PackratParser[AST] = mulOp ~ "[*/]".r ~ simpleExpression ^^ {
+    case left ~ op ~ right => MethodCallNode(left, op, List(right))
+  } | applyOp
+
+  lazy val applyOp: PackratParser[AST] = (mulOp <~ "->") ~ identifier ^^ {
+    case thingie ~ method => MethodCallNode(thingie, method, List())
+  } | simpleExpression
+
+  lazy val simpleExpression: PackratParser[AST] = (
       arrayIndex
     | hashIndex
     | hash
     | array
     | range
-    | addLevelOp
     | literalValue
     | declaration
     | variable
@@ -78,9 +95,6 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
 
   def scalar: Parser[AST] = simpleScalar | arrayIndex | hashIndex | literalValue
 
-  def addOps  = """[-+]""".r
-  lazy val addLevelOp = expression ~ addOps ~ expression ^^ {
-    case left ~ op ~ right => MethodCallNode(left, op, List(right))
-  }
+
 
 }

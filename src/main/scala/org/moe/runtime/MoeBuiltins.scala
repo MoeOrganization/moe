@@ -39,6 +39,21 @@ class MoeBuiltins (private val runtime: MoeRuntime) {
     )
   )
 
+  intClass.addMethod(
+    new MoeMethod(
+      "*",
+      { (lhs, args) =>
+        val rhs = args(0)
+        val i = lhs.asInstanceOf[MoeIntObject]
+        rhs match {
+          case rhs_i: MoeIntObject => runtime.NativeObjects.getInt(i.getNativeValue * rhs_i.getNativeValue)
+          case rhs_n: MoeFloatObject => runtime.NativeObjects.getFloat(i.getNativeValue.toDouble * rhs_n.getNativeValue)
+          case _ => throw new MoeErrors.UnexpectedType(rhs.toString)
+        }
+      }
+    )
+  )
+
   /**
    * setup class Num
    */
