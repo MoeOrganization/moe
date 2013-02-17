@@ -1,11 +1,47 @@
 package org.moe.runtime
 
+import scala.util.{Try, Success, Failure}
+
+trait UnboxMoeToNative {
+  def unboxToBoolean: Try[Boolean] = Failure(
+    new MoeErrors.IncompatibleType("Cannot convert to Boolean")
+  )    
+
+  def unboxToString: Try[String] = Failure(
+    new MoeErrors.IncompatibleType("Cannot convert to String")
+  )    
+
+  def unboxToInt: Try[Int] = Failure(
+    new MoeErrors.IncompatibleType("Cannot convert to Int")
+  )    
+
+  def unboxToDouble: Try[Double] = Failure(
+    new MoeErrors.IncompatibleType("Cannot convert to Double")
+  )
+
+  def unboxToUndef: Try[Null] = Failure(
+    new MoeErrors.IncompatibleType("Cannot convert to Null")
+  )
+
+  def unboxToArray: Try[List[MoeObject]] = Failure(
+    new MoeErrors.IncompatibleType("Cannot convert to List[MoeObject]")
+  )
+
+  def unboxToHash: Try[Map[String, MoeObject]] = Failure(
+    new MoeErrors.IncompatibleType("Cannot convert to Map[String, MoeObject]")
+  )
+
+  def unboxToPair: Try[(String, MoeObject)] = Failure(
+    new MoeErrors.IncompatibleType("Cannot convert to (String, MoeObject)")
+  )
+}
+
 /** An object!
  * @param associatedClass The class to associated with this object.
  */
 class MoeObject(
     private var associatedClass: Option[MoeClass] = None
-  ) {
+  ) extends UnboxMoeToNative {
 
   private val id: Int = System.identityHashCode(this)
 
@@ -73,4 +109,10 @@ class MoeObject(
   override def toString: String = {
     "{ #instance(" + id + ")" + associatedClass.map({ k => k.toString }).getOrElse("") + " }"
   }
+
+  // unboxing
+
+  override def unboxToBoolean: Try[Boolean] = Success(isTrue)
+  override def unboxToString: Try[String] = Success(toString)
+
 }
