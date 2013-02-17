@@ -123,7 +123,6 @@ object Moe {
 
   /*
     TODO:
-    - would be good to be able to exit the REPL
     - would be nice to have line editing capabilities
       - this presents a problem under sbt since sbt wants
         to own the line editing capabilities
@@ -136,6 +135,9 @@ object Moe {
           val line = readLine()
           ok = line != null
           if (ok) {
+            if ( line == "exit" ) {
+              return
+            }
             evalLine(interpreter, runtime, line, dumpAST)
             print("> ")
           }
