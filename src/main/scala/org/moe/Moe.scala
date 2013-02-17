@@ -66,6 +66,7 @@ object Moe {
     val runtime     = new MoeRuntime(
       warnings = cmd.hasOption("w")
     )
+    runtime.bootstrap()
 
     if (cmd.hasOption("v")) {
       printVersionInformation(runtime)
