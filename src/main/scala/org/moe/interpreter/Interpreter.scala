@@ -115,11 +115,34 @@ class Interpreter {
       }
 
       case RangeLiteralNode(start, end) => {
-        val range_start  = objToInteger(eval(runtime, env, start))
-        val range_end    = objToInteger(eval(runtime, env, end))
-        val range: Range = new Range(range_start, range_end + 1, 1)
-        val array: List[MoeObject] = range.toList.map(runtime.NativeObjects.getInt(_))
-        runtime.NativeObjects.getArray(array)
+        val s = eval(runtime, env, start)
+        val e = eval(runtime, env, end)
+        (s, e) match {
+          case (s: MoeIntObject, e: MoeIntObject) => {
+            val range_start  = objToInteger(s)
+            val range_end    = objToInteger(e)
+            val range: Range = new Range(range_start, range_end + 1, 1)
+            val array: List[MoeObject] = range.toList.map(runtime.NativeObjects.getInt(_))
+            runtime.NativeObjects.getArray(array)
+          }
+          case (s: MoeStringObject, e: MoeStringObject) => {
+            val range_start = objToString(s)
+            val range_end   = objToString(e)
+
+            if (range_start.length > range_end.length)
+              runtime.NativeObjects.getArray()
+            else {
+              var elems: List[String] = List()
+              var str = range_start
+              while (str <= range_end || str.length < range_end.length) {
+                elems = elems :+ str
+                str = magicalStringIncrement(str)
+              }
+              runtime.NativeObjects.getArray(elems.map(runtime.NativeObjects.getString(_)))
+            }
+          }
+          case _ => throw new MoeErrors.UnexpectedType("Pair of MoeIntObject or MoeStringObject expected")
+        }
       }
 
       // unary operators
@@ -137,6 +160,11 @@ class Interpreter {
             val new_n = runtime.NativeObjects.getFloat(n.getNativeValue + 1.0)
             env.set(varName, new_n)
             if (is_prefix) new_n else n
+          }
+          case s: MoeStringObject => {
+            val new_s = runtime.NativeObjects.getString(magicalStringIncrement(s.getNativeValue))
+            env.set(varName, new_s)
+            if (is_prefix) new_s else s
           }
         }
       }
