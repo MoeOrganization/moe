@@ -97,8 +97,7 @@ class Interpreter {
         // - SL
         getHash(
           map.map(
-            pair => eval(runtime, env, pair)
-            .asInstanceOf[MoePairObject].getNativeValue
+            pair => eval(runtime, env, pair).unboxToPair.get
           ).toMap
         )
       }
@@ -158,17 +157,17 @@ class Interpreter {
           throw new MoeErrors.VariableNotFound(varName)
         ) match {
           case i: MoeIntObject => {
-            val new_i = getInt(i.getNativeValue + 1)
+            val new_i = getInt(i.unboxToInt.get + 1)
             env.set(varName, new_i)
             if (is_prefix) new_i else i
           }
           case n: MoeFloatObject => {
-            val new_n = getFloat(n.getNativeValue + 1.0)
+            val new_n = getFloat(n.unboxToDouble.get + 1.0)
             env.set(varName, new_n)
             if (is_prefix) new_n else n
           }
           case s: MoeStringObject => {
-            val new_s = getString(magicalStringIncrement(s.getNativeValue))
+            val new_s = getString(magicalStringIncrement(s.unboxToString.get))
             env.set(varName, new_s)
             if (is_prefix) new_s else s
           }
@@ -179,12 +178,12 @@ class Interpreter {
           throw new MoeErrors.VariableNotFound(varName)
         ) match {
           case i: MoeIntObject => {
-            val new_i = getInt(i.getNativeValue - 1)
+            val new_i = getInt(i.unboxToInt.get - 1)
             env.set(varName, new_i)
             if (is_prefix) new_i else i
           }
           case n: MoeFloatObject => {
-            val new_n = getFloat(n.getNativeValue - 1.0)
+            val new_n = getFloat(n.unboxToDouble.get - 1.0)
             env.set(varName, new_n)
             if (is_prefix) new_n else n
           }
