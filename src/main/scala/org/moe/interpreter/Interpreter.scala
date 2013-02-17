@@ -119,15 +119,15 @@ class Interpreter {
         val e = eval(runtime, env, end)
         (s, e) match {
           case (s: MoeIntObject, e: MoeIntObject) => {
-            val range_start  = objToInteger(s)
-            val range_end    = objToInteger(e)
+            val range_start  = s.unboxToInt.get
+            val range_end    = e.unboxToInt.get
             val range: Range = new Range(range_start, range_end + 1, 1)
             val array: List[MoeObject] = range.toList.map(runtime.NativeObjects.getInt(_))
             runtime.NativeObjects.getArray(array)
           }
           case (s: MoeStringObject, e: MoeStringObject) => {
-            val range_start = objToString(s)
-            val range_end   = objToString(e)
+            val range_start = s.unboxToString.get
+            val range_end   = e.unboxToString.get
 
             if (range_start.length > range_end.length)
               runtime.NativeObjects.getArray()
@@ -214,16 +214,16 @@ class Interpreter {
       }
 
       case LessThanNode(lhs, rhs) => {
-        val lhs_result: Double = objToNumeric(eval(runtime, env, lhs))
-        val rhs_result: Double = objToNumeric(eval(runtime, env, rhs))
+        val lhs_result: Double = eval(runtime, env, lhs).unboxToDouble.get
+        val rhs_result: Double = eval(runtime, env, rhs).unboxToDouble.get
 
         val result = lhs_result < rhs_result
         runtime.NativeObjects.getBool(result)
       }
 
       case GreaterThanNode(lhs, rhs) => {
-        val lhs_result: Double = objToNumeric(eval(runtime, env, lhs))
-        val rhs_result: Double = objToNumeric(eval(runtime, env, rhs))
+        val lhs_result: Double = eval(runtime, env, lhs).unboxToDouble.get
+        val rhs_result: Double = eval(runtime, env, rhs).unboxToDouble.get
 
         val result = lhs_result > rhs_result
         runtime.NativeObjects.getBool(result)
