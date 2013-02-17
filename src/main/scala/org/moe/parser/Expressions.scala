@@ -21,11 +21,11 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
     | hash
     | array
     | range
+    | addLevelOp
     | literalValue
     | declaration
     | variable
     | expressionParens
-    | addLevel
   )
 
   def expressionParens: Parser[AST] = "(" ~> expression <~ ")"
@@ -79,7 +79,7 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   def scalar: Parser[AST] = simpleScalar | arrayIndex | hashIndex | literalValue
 
   def addOps  = """[-+]""".r
-  lazy val addLevel = expression ~ addOps ~ expression ^^ {
+  lazy val addLevelOp = expression ~ addOps ~ expression ^^ {
     case left ~ op ~ right => MethodCallNode(left, op, List(right))
   }
 
