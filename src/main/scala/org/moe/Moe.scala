@@ -88,19 +88,9 @@ object Moe {
           val path = rest(0)
 
           val source = Source.fromFile(path).mkString
-          try {
-            val nodes = MoeParsers.parseFromEntry(source)
-            val ast = CompilationUnitNode(
-              ScopeNode(nodes)
-            )
-            if (dumpAST) {
-              println(Serializer.toJSON(ast))
-            }
-            interpreter.eval(runtime, runtime.getRootEnv, ast)
-          }
-          catch {
-            case e: Exception => System.err.println(e)
-          }
+          val printOutput = false
+
+          REPL.evalLine(interpreter, runtime, source, dumpAST, printOutput)
         }
       }
   }
@@ -140,7 +130,7 @@ object Moe {
       }
     }
 
-    def evalLine(interpreter: Interpreter, runtime: MoeRuntime, line: String, dumpAST: Boolean = false) = {
+    def evalLine(interpreter: Interpreter, runtime: MoeRuntime, line: String, dumpAST: Boolean = false, printOutput: Boolean = true) = {
       try {
         val nodes = MoeParsers.parseFromEntry(line)
         val ast = CompilationUnitNode(
@@ -150,7 +140,9 @@ object Moe {
           println(Serializer.toJSON(ast))
         }
         val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-        println(result.toString)
+        if( printOutput ) {
+          println(result.toString)
+        }
       }
       catch {
         case e: Exception => System.err.println(e)
