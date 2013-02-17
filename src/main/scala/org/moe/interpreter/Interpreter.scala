@@ -12,7 +12,13 @@ class Interpreter {
   val stub = new MoeObject()
 
   def eval(runtime: MoeRuntime, env: MoeEnvironment, node: AST): MoeObject = {
+
+    // no need to do all that typing ..
+    import runtime.NativeObjects._
+
     val scoped = inNewEnv[MoeObject](env) _
+
+    // interpret ..
     node match {
 
       // containers
@@ -28,19 +34,19 @@ class Interpreter {
         // finding a sum of a list.  In thise case we don't acculate, we just
         // return the result of each eval.  Therefore the final result will be
         // the result of the last eval.
-        nodes.foldLeft[MoeObject](runtime.NativeObjects.getUndef)(
+        nodes.foldLeft[MoeObject](getUndef)(
           (_, node) => eval(runtime, env, node)
         )
       }
 
       // literals
 
-      case IntLiteralNode(value)     => runtime.NativeObjects.getInt(value)
-      case FloatLiteralNode(value)   => runtime.NativeObjects.getFloat(value)
-      case StringLiteralNode(value)  => runtime.NativeObjects.getString(value)
-      case BooleanLiteralNode(value) => runtime.NativeObjects.getBool(value)
+      case IntLiteralNode(value)     => getInt(value)
+      case FloatLiteralNode(value)   => getFloat(value)
+      case StringLiteralNode(value)  => getString(value)
+      case BooleanLiteralNode(value) => getBool(value)
 
-      case UndefLiteralNode() => runtime.NativeObjects.getUndef
+      case UndefLiteralNode() => getUndef
       case SelfLiteralNode()  => env.getCurrentInvocant.getOrElse(
           throw new MoeErrors.InvocantNotFound("__SELF__")
         )
@@ -58,7 +64,7 @@ class Interpreter {
 
       case ArrayLiteralNode(values) => {
         val array: List[MoeObject] = values.map(eval(runtime, env, _))
-        runtime.NativeObjects.getArray(array)
+        getArray(array)
       }
 
       case ArrayElementAccessNode(arrayName: String, index: AST) => {
@@ -78,7 +84,7 @@ class Interpreter {
         )
       }
 
-      case PairLiteralNode(key, value) => runtime.NativeObjects.getPair(eval(runtime, env, key) -> eval(runtime, env, value))
+      case PairLiteralNode(key, value) => getPair(eval(runtime, env, key) -> eval(runtime, env, value))
 
       case HashLiteralNode(map) => {
         // NOTE:
@@ -89,7 +95,7 @@ class Interpreter {
         // for it to evaluate into many
         // MoePairObject instances as well
         // - SL
-        runtime.NativeObjects.getHash(
+        getHash(
           map.map(
             pair => eval(runtime, env, pair)
             .asInstanceOf[MoePairObject].getNativeValue
@@ -122,15 +128,15 @@ class Interpreter {
             val range_start  = s.unboxToInt.get
             val range_end    = e.unboxToInt.get
             val range: Range = new Range(range_start, range_end + 1, 1)
-            val array: List[MoeObject] = range.toList.map(runtime.NativeObjects.getInt(_))
-            runtime.NativeObjects.getArray(array)
+            val array: List[MoeObject] = range.toList.map(getInt(_))
+            getArray(array)
           }
           case (s: MoeStringObject, e: MoeStringObject) => {
             val range_start = s.unboxToString.get
             val range_end   = e.unboxToString.get
 
             if (range_start.length > range_end.length)
-              runtime.NativeObjects.getArray()
+              getArray()
             else {
               var elems: List[String] = List()
               var str = range_start
@@ -138,7 +144,7 @@ class Interpreter {
                 elems = elems :+ str
                 str = magicalStringIncrement(str)
               }
-              runtime.NativeObjects.getArray(elems.map(runtime.NativeObjects.getString(_)))
+              getArray(elems.map(getString(_)))
             }
           }
           case _ => throw new MoeErrors.UnexpectedType("Pair of MoeIntObject or MoeStringObject expected")
@@ -152,17 +158,17 @@ class Interpreter {
           throw new MoeErrors.VariableNotFound(varName)
         ) match {
           case i: MoeIntObject => {
-            val new_i = runtime.NativeObjects.getInt(i.getNativeValue + 1)
+            val new_i = getInt(i.getNativeValue + 1)
             env.set(varName, new_i)
             if (is_prefix) new_i else i
           }
           case n: MoeFloatObject => {
-            val new_n = runtime.NativeObjects.getFloat(n.getNativeValue + 1.0)
+            val new_n = getFloat(n.getNativeValue + 1.0)
             env.set(varName, new_n)
             if (is_prefix) new_n else n
           }
           case s: MoeStringObject => {
-            val new_s = runtime.NativeObjects.getString(magicalStringIncrement(s.getNativeValue))
+            val new_s = getString(magicalStringIncrement(s.getNativeValue))
             env.set(varName, new_s)
             if (is_prefix) new_s else s
           }
@@ -173,12 +179,12 @@ class Interpreter {
           throw new MoeErrors.VariableNotFound(varName)
         ) match {
           case i: MoeIntObject => {
-            val new_i = runtime.NativeObjects.getInt(i.getNativeValue - 1)
+            val new_i = getInt(i.getNativeValue - 1)
             env.set(varName, new_i)
             if (is_prefix) new_i else i
           }
           case n: MoeFloatObject => {
-            val new_n = runtime.NativeObjects.getFloat(n.getNativeValue - 1.0)
+            val new_n = getFloat(n.getNativeValue - 1.0)
             env.set(varName, new_n)
             if (is_prefix) new_n else n
           }
@@ -187,9 +193,9 @@ class Interpreter {
 
       case NotNode(receiver) => {
         if(eval(runtime, env, receiver).isTrue) {
-          runtime.NativeObjects.getFalse
+          getFalse
         } else {
-          runtime.NativeObjects.getTrue
+          getTrue
         }
       }
 
@@ -218,7 +224,7 @@ class Interpreter {
         val rhs_result: Double = eval(runtime, env, rhs).unboxToDouble.get
 
         val result = lhs_result < rhs_result
-        runtime.NativeObjects.getBool(result)
+        getBool(result)
       }
 
       case GreaterThanNode(lhs, rhs) => {
@@ -226,7 +232,7 @@ class Interpreter {
         val rhs_result: Double = eval(runtime, env, rhs).unboxToDouble.get
 
         val result = lhs_result > rhs_result
-        runtime.NativeObjects.getBool(result)
+        getBool(result)
       }
 
       // value lookup, assignment and declaration
@@ -357,7 +363,7 @@ class Interpreter {
         val invocant = env.getCurrentInvocant
         invocant match {
           case Some(invocant: MoeOpaque) =>
-            invocant.getValue(name).getOrElse(attr.getDefault.getOrElse(runtime.NativeObjects.getUndef))
+            invocant.getValue(name).getOrElse(attr.getDefault.getOrElse(getUndef))
           case _ => throw new MoeErrors.UnexpectedType(invocant.getOrElse("(undef)").toString)
         }
       }
@@ -506,7 +512,7 @@ class Interpreter {
           while (eval(runtime, newEnv, condition).isTrue) {
             eval(runtime, newEnv, body)
           }
-          runtime.NativeObjects.getUndef // XXX
+          getUndef // XXX
         }
       }
 
@@ -515,7 +521,7 @@ class Interpreter {
           do {
             eval(runtime, newEnv, body)
           } while (eval(runtime, newEnv, condition).isTrue)
-          runtime.NativeObjects.getUndef // XXX
+          getUndef // XXX
         }
       }
 
@@ -544,7 +550,7 @@ class Interpreter {
                   case VariableAccessNode(name) =>
                     applyScopeInjection(newEnv, name, o, (_.set(_, _)))
                 }
-              runtime.NativeObjects.getUndef // XXX
+              getUndef // XXX
             }
           }
         }
@@ -557,7 +563,7 @@ class Interpreter {
               eval(runtime, newEnv, body)
               eval(runtime, newEnv, update)
             }
-            runtime.NativeObjects.getUndef
+            getUndef
           }
         )
 
