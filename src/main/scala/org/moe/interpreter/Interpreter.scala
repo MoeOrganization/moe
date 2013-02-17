@@ -152,6 +152,8 @@ class Interpreter {
 
       // unary operators
 
+      // TODO - these three should be converted to methods of Int,Float and String
+
       case IncrementNode(receiver: AST, is_prefix) => receiver match {
         case VariableAccessNode(varName) => env.get(varName).getOrElse(
           throw new MoeErrors.VariableNotFound(varName)
@@ -190,6 +192,7 @@ class Interpreter {
         }
       }
 
+      // TODO - these should be converted to method of Any
       case NotNode(receiver) => {
         if(eval(runtime, env, receiver).isTrue) {
           getFalse
@@ -199,6 +202,8 @@ class Interpreter {
       }
 
       // binary operators
+
+      // TODO - these two should be converted to methods of Any
 
       case AndNode(lhs, rhs) => {
         val left_result = eval(runtime, env, lhs)
@@ -217,6 +222,8 @@ class Interpreter {
           eval(runtime, env, rhs)
         }
       }
+
+      // TODO - these two should be converted to methods of Int,Float and String
 
       case LessThanNode(lhs, rhs) => {
         val lhs_result: Double = eval(runtime, env, lhs).unboxToDouble.get
