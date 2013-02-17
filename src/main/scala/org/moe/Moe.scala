@@ -129,19 +129,15 @@ object Moe {
   */
   object REPL {
     def enter (interpreter: Interpreter, runtime: MoeRuntime, dumpAST: Boolean = false): Unit = {
-        var ok = true
-        print("> ")
-        while (ok) {
-          val line = readLine()
-          ok = line != null
-          if (ok) {
-            if ( line == "exit" ) {
-              return
-            }
-            evalLine(interpreter, runtime, line, dumpAST)
-            print("> ")
-          }
+      while (true) {
+        val line = readLine("> ")
+        if (line != null && line != "exit") {
+          evalLine(interpreter, runtime, line, dumpAST)
         }
+        else {
+          return
+        }
+      }
     }
 
     def evalLine(interpreter: Interpreter, runtime: MoeRuntime, line: String, dumpAST: Boolean = false) = {
