@@ -1,7 +1,5 @@
 package org.moe.runtime
 
-import scala.util.{Try, Success, Failure}
-
 class MoeRuntime (
     private val system: MoeSystem = new MoeSystem(),
     private val warnings: Boolean = true
@@ -165,114 +163,6 @@ class MoeRuntime (
       (value._1.asInstanceOf[MoeStringObject].getNativeValue, value._2), 
       getCoreClassFor("Pair")
     )
-
-    object Unbox {
-
-      /**
-       * NOTE:
-       * I bet we could do better with the type here, 
-       * the MoeObject arg type is not right, it should be 
-       * MoeNativeObject, but the type parameter is messing 
-       * me up, I need Scala help.
-       */
-
-      def toInt(obj: MoeObject): Try[Int] = obj match {
-        case i: MoeIntObject     => Success(i.getNativeValue)
-        case f: MoeFloatObject   => Success(f.getNativeValue.toInt)
-        case s: MoeStringObject  => Try(s.getNativeValue.toInt)
-        case u: MoeUndefObject   => Failure(new MoeErrors.IncompatibleType("Undef"))
-        case b: MoeBooleanObject => Failure(new MoeErrors.IncompatibleType("Bool"))
-        case a: MoeArrayObject   => Failure(new MoeErrors.IncompatibleType("Array"))
-        case h: MoeHashObject    => Failure(new MoeErrors.IncompatibleType("Hash"))
-        case p: MoePairObject    => Failure(new MoeErrors.IncompatibleType("Pair"))
-        case _ => Failure(new MoeErrors.UnexpectedType("Expected MoeNativeObject[A] and got " + obj.toString))
-      }
-
-      def toDouble(obj: MoeObject): Try[Double] = obj match {
-        case i: MoeIntObject     => Success(i.getNativeValue.toDouble)
-        case f: MoeFloatObject   => Success(f.getNativeValue)
-        case s: MoeStringObject  => Try(s.getNativeValue.toDouble)
-        case u: MoeUndefObject   => Failure(new MoeErrors.IncompatibleType("Undef"))
-        case b: MoeBooleanObject => Failure(new MoeErrors.IncompatibleType("Bool"))
-        case a: MoeArrayObject   => Failure(new MoeErrors.IncompatibleType("Array"))
-        case h: MoeHashObject    => Failure(new MoeErrors.IncompatibleType("Hash"))
-        case p: MoePairObject    => Failure(new MoeErrors.IncompatibleType("Pair"))
-        case _ => Failure(new MoeErrors.UnexpectedType("Expected MoeNativeObject[A] and got " + obj.toString))
-      }
-
-      def toString(obj: MoeObject): Try[String] = obj match {
-        case i: MoeIntObject     => Success(i.getNativeValue.toString)
-        case f: MoeFloatObject   => Success(f.getNativeValue.toString)
-        case s: MoeStringObject  => Success(s.getNativeValue)
-        case u: MoeUndefObject   => Failure(new MoeErrors.IncompatibleType("Undef"))
-        case b: MoeBooleanObject => Failure(new MoeErrors.IncompatibleType("Bool"))
-        case a: MoeArrayObject   => Failure(new MoeErrors.IncompatibleType("Array"))
-        case h: MoeHashObject    => Failure(new MoeErrors.IncompatibleType("Hash"))
-        case p: MoePairObject    => Failure(new MoeErrors.IncompatibleType("Pair"))
-        case _ => Failure(new MoeErrors.UnexpectedType("Expected MoeNativeObject[A] and got " + obj.toString))
-      }
-
-      def toUndef(obj: MoeObject): Try[Null] = obj match {
-        case i: MoeIntObject     => Failure(new MoeErrors.IncompatibleType("Int"))
-        case f: MoeFloatObject   => Failure(new MoeErrors.IncompatibleType("Undef"))
-        case s: MoeStringObject  => Failure(new MoeErrors.IncompatibleType("Str"))
-        case u: MoeUndefObject   => Success(null)
-        case b: MoeBooleanObject => Failure(new MoeErrors.IncompatibleType("Bool"))
-        case a: MoeArrayObject   => Failure(new MoeErrors.IncompatibleType("Array"))
-        case h: MoeHashObject    => Failure(new MoeErrors.IncompatibleType("Hash"))
-        case p: MoePairObject    => Failure(new MoeErrors.IncompatibleType("Pair"))
-        case _ => Failure(new MoeErrors.UnexpectedType("Expected MoeNativeObject[A] and got " + obj.toString))
-      }
-
-      def toBool(obj: MoeObject): Try[Boolean] = obj match {
-        case i: MoeIntObject     => Success(i.isTrue)
-        case f: MoeFloatObject   => Success(f.isTrue)
-        case s: MoeStringObject  => Success(s.isTrue)
-        case u: MoeUndefObject   => Success(u.isTrue)
-        case b: MoeBooleanObject => Success(b.isTrue)
-        case a: MoeArrayObject   => Success(a.isTrue)
-        case h: MoeHashObject    => Success(h.isTrue)
-        case p: MoePairObject    => Success(p.isTrue)
-        case _ => Failure(new MoeErrors.UnexpectedType("Expected MoeNativeObject[A] and got " + obj.toString))
-      }
-
-      def toArray(obj: MoeObject): Try[List[MoeObject]] = obj match {
-        case i: MoeIntObject     => Failure(new MoeErrors.IncompatibleType("Int"))
-        case f: MoeFloatObject   => Failure(new MoeErrors.IncompatibleType("Undef"))
-        case s: MoeStringObject  => Failure(new MoeErrors.IncompatibleType("Str"))
-        case u: MoeUndefObject   => Failure(new MoeErrors.IncompatibleType("Undef"))
-        case b: MoeBooleanObject => Failure(new MoeErrors.IncompatibleType("Bool"))
-        case a: MoeArrayObject   => Success(a.getNativeValue)
-        case h: MoeHashObject    => Failure(new MoeErrors.IncompatibleType("Hash"))
-        case p: MoePairObject    => Failure(new MoeErrors.IncompatibleType("Pair"))
-        case _ => Failure(new MoeErrors.UnexpectedType("Expected MoeNativeObject[A] and got " + obj.toString))
-      }
-
-      def toHash(obj: MoeObject): Try[Map[String, MoeObject]] = obj match {
-        case i: MoeIntObject     => Failure(new MoeErrors.IncompatibleType("Int"))
-        case f: MoeFloatObject   => Failure(new MoeErrors.IncompatibleType("Undef"))
-        case s: MoeStringObject  => Failure(new MoeErrors.IncompatibleType("Str"))
-        case u: MoeUndefObject   => Failure(new MoeErrors.IncompatibleType("Undef"))
-        case b: MoeBooleanObject => Failure(new MoeErrors.IncompatibleType("Bool"))
-        case a: MoeArrayObject   => Failure(new MoeErrors.IncompatibleType("Array"))
-        case h: MoeHashObject    => Success(h.getNativeValue)
-        case p: MoePairObject    => Failure(new MoeErrors.IncompatibleType("Pair"))
-        case _ => Failure(new MoeErrors.UnexpectedType("Expected MoeNativeObject[A] and got " + obj.toString))
-      }
-
-      def toPair(obj: MoeObject): Try[(String, MoeObject)] = obj match {
-        case i: MoeIntObject     => Failure(new MoeErrors.IncompatibleType("Int"))
-        case f: MoeFloatObject   => Failure(new MoeErrors.IncompatibleType("Undef"))
-        case s: MoeStringObject  => Failure(new MoeErrors.IncompatibleType("Str"))
-        case u: MoeUndefObject   => Failure(new MoeErrors.IncompatibleType("Undef"))
-        case b: MoeBooleanObject => Failure(new MoeErrors.IncompatibleType("Bool"))
-        case a: MoeArrayObject   => Failure(new MoeErrors.IncompatibleType("Array"))
-        case h: MoeHashObject    => Failure(new MoeErrors.IncompatibleType("Hash"))
-        case p: MoePairObject    => Success(p.getNativeValue)
-        case _ => Failure(new MoeErrors.UnexpectedType("Expected MoeNativeObject[A] and got " + obj.toString))
-      }
-
-    }
 
   }
 
