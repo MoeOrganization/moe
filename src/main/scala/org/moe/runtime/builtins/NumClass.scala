@@ -17,13 +17,11 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "+",
-        { (lhs, args) =>
-          val rhs = args(0)
-          val n = lhs.asInstanceOf[MoeFloatObject]
-          rhs match {
-            case rhs_n: MoeFloatObject => getFloat(n.getNativeValue + rhs_n.getNativeValue)
-            case rhs_i: MoeIntObject   => getFloat(n.getNativeValue + rhs_i.getNativeValue.toDouble)
-            case _                     => throw new MoeErrors.UnexpectedType(rhs.toString)
+        { (invocant, args) =>
+          args(0) match {
+            case i: MoeIntObject   => getFloat(invocant.unboxToDouble.get + i.unboxToDouble.get)
+            case f: MoeFloatObject => getFloat(invocant.unboxToDouble.get + f.unboxToDouble.get)
+            case _                 => throw new MoeErrors.UnexpectedType(invocant.toString)
           }
         }
       )

@@ -20,11 +20,8 @@ object HashClass {
         "postcircumfix:<{}>",
         { (invocant, args) => 
 
-            var key  = objToString(args(0))
-            val hash = invocant match {
-              case h: MoeHashObject => h.getNativeValue
-              case _                => throw new MoeErrors.UnexpectedType("MoeHashObject expected")
-            }
+            var key  = args(0).unboxToString.get
+            val hash = invocant.unboxToHash.get
 
             hash.get(key).getOrElse(r.NativeObjects.getUndef)
         }

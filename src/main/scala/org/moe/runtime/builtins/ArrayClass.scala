@@ -12,21 +12,16 @@ object ArrayClass {
       throw new MoeErrors.MoeStartupError("Could not find class Array")
     )
 
-    import r.NativeObjects.Unbox._
-
     // basic access
     arrayClass.addMethod(
       new MoeMethod(
         "postcircumfix:<[]>",
         { (invocant, args) => 
 
-            var index = toInt(args(0)).get
-            val array = toArray(invocant).get
+            var index = args(0).unboxToInt.get
+            val array = invocant.unboxToArray.get
 
-            while (index < 0) {
-              index += array.size
-            }
-
+            while (index < 0) index += array.size
             try {
               array(index)
             } catch {
