@@ -21,7 +21,7 @@ object NumClass {
           args(0) match {
             case i: MoeIntObject   => getFloat(invocant.unboxToDouble.get + i.unboxToDouble.get)
             case f: MoeFloatObject => getFloat(invocant.unboxToDouble.get + f.unboxToDouble.get)
-            case _                 => throw new MoeErrors.UnexpectedType(invocant.toString)
+            case _                 => throw new MoeErrors.UnexpectedType(args(0).toString)
           }
         }
       )
