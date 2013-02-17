@@ -1,5 +1,7 @@
 package org.moe.runtime
 
+import scala.util.{Try, Success, Failure}
+
 abstract class MoeNativeObject[A] (
   private val value: A,
   private var associatedClass: Option[MoeClass] = None)
@@ -22,11 +24,17 @@ abstract class MoeNativeObject[A] (
 class MoeIntObject(v: Int, klass : Option[MoeClass] = None) extends MoeNativeObject[Int](v, klass) {
   override def isFalse: Boolean = getNativeValue == 0
   override def toString = getNativeValue.toString
+  // unboxing
+  override def unboxToInt: Try[Int] = Success(getNativeValue)
+  override def unboxToDouble: Try[Double] = Success(getNativeValue.toDouble)
 }
 
 class MoeFloatObject(v: Double, klass : Option[MoeClass] = None) extends MoeNativeObject[Double](v, klass) {
   override def isFalse: Boolean = getNativeValue == 0
   override def toString = getNativeValue.toString
+  // unboxing
+  override def unboxToInt: Try[Int] = Success(getNativeValue.toInt)
+  override def unboxToDouble: Try[Double] = Success(getNativeValue)
 }
 
 class MoeStringObject(v: String, klass : Option[MoeClass] = None) extends MoeNativeObject[String](v, klass) {
@@ -34,7 +42,11 @@ class MoeStringObject(v: String, klass : Option[MoeClass] = None) extends MoeNat
     case "" | "0" => true
     case _        => false
   }
-  override def toString = '"' + getNativeValue + '"'
+  override def toString = "\"" + getNativeValue + "\""
+  // unboxing
+  override def unboxToString: Try[String] = Success(getNativeValue)
+  override def unboxToInt: Try[Int] = Try(getNativeValue.toInt)
+  override def unboxToDouble: Try[Double] = Try(getNativeValue.toDouble)
 }
 
 class MoeBooleanObject(v: Boolean, klass : Option[MoeClass] = None) extends MoeNativeObject[Boolean](v, klass) {
@@ -50,6 +62,8 @@ class MoeUndefObject(klass : Option[MoeClass] = None) extends MoeObject(klass) {
   override def isFalse: Boolean = true
   override def isUndef: Boolean = true
   override def toString: String = "undef"
+  // unboxing 
+  override def unboxToString: Try[String] = Success(null)
 }
 
 // Complex objects
@@ -68,6 +82,8 @@ class MoeArrayObject(
   override def isFalse: Boolean = getNativeValue.size == 0
   override def toString: String =
     '[' + getNativeValue.map(_.toString).mkString(", ") + ']'
+  // unboxing
+  override def unboxToArray: Try[List[MoeObject]] = Success(getNativeValue)
 }
 
 class MoeHashObject(
@@ -79,6 +95,8 @@ class MoeHashObject(
     '{' + getNativeValue.map({
       case (k, v) => k + " => " + v.toString
     }).mkString(", ") + '}'
+  // unboxing
+  override def unboxToHash: Try[Map[String, MoeObject]] = Success(getNativeValue)
 }
 
 class MoePairObject(
@@ -89,4 +107,6 @@ class MoePairObject(
     case (k, v) =>
       k + " => " + v.toString
   }
+  // unboxing
+  override def unboxToPair: Try[(String, MoeObject)] = Success(getNativeValue)
 }
