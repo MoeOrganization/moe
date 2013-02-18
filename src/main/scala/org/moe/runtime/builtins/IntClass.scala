@@ -18,7 +18,7 @@ object IntClass {
     
     intClass.addMethod(
       new MoeMethod(
-        "+",
+        "infix:<+>",
         { (invocant, args) =>
           args(0) match {
             case i: MoeIntObject   => getInt(invocant.unboxToInt.get + i.unboxToInt.get)
@@ -31,7 +31,7 @@ object IntClass {
 
     intClass.addMethod(
       new MoeMethod(
-        "*",
+        "infix:<*>",
         { (invocant, args) =>
           args(0) match {
             case i: MoeIntObject   => getInt(invocant.unboxToInt.get * i.unboxToInt.get)

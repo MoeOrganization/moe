@@ -16,7 +16,7 @@ object NumClass {
 
     numClass.addMethod(
       new MoeMethod(
-        "+",
+        "infix:<+>",
         { (invocant, args) =>
           args(0) match {
             case i: MoeIntObject   => getFloat(invocant.unboxToDouble.get + i.unboxToDouble.get)

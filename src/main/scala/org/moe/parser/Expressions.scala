@@ -22,15 +22,15 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   // lazy val mulOp: PackratParser[AST] = mulOp ~ "[*/]".r ~ simpleExpression ^^ binOpResult | simpleExpression
 
   lazy val addOp: PackratParser[AST] = addOp ~ "[-+]".r ~ mulOp            ^^ {
-    case left ~ op ~ right => MethodCallNode(left, op, List(right))
+    case left ~ op ~ right => MethodCallNode(left, "infix:<" + op + ">", List(right))
   }| mulOp
 
   lazy val mulOp: PackratParser[AST] = mulOp ~ "[*/]".r ~ simpleExpression ^^ {
-    case left ~ op ~ right => MethodCallNode(left, op, List(right))
+    case left ~ op ~ right => MethodCallNode(left, "infix:<" + op + ">", List(right))
   } | applyOp
 
   lazy val applyOp: PackratParser[AST] = (mulOp <~ "->") ~ identifier ^^ {
-    case thingie ~ method => MethodCallNode(thingie, method, List())
+    case invocant ~ method => MethodCallNode(invocant, method, List())
   } | simpleExpression
 
   lazy val simpleExpression: PackratParser[AST] = (

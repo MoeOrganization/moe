@@ -18,7 +18,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
             List(
               MethodCallNode(
                 VariableAccessNode("$n"),
-                "+",
+                "infix:<+>",
                 List(IntLiteralNode(10))
               )
             )

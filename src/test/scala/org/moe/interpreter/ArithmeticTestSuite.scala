@@ -18,7 +18,7 @@ class ArithmeticTestSuite
       List(
         MethodCallNode(
           IntLiteralNode(2),
-          "+",
+          "infix:<+>",
           List(IntLiteralNode(2))
         )
       )
@@ -33,7 +33,7 @@ class ArithmeticTestSuite
       List(
         MethodCallNode(
           FloatLiteralNode(2.5),
-          "+",
+          "infix:<+>",
           List(IntLiteralNode(2))
         )
       )
@@ -48,7 +48,7 @@ class ArithmeticTestSuite
       List(
         MethodCallNode(
           IntLiteralNode(2),
-          "+",
+          "infix:<+>",
           List(FloatLiteralNode(2.5))
         )
       )
@@ -63,7 +63,7 @@ class ArithmeticTestSuite
       List(
         MethodCallNode(
           FloatLiteralNode(2.5),
-          "+",
+          "infix:<+>",
           List(FloatLiteralNode(2.5))
         )
       )
@@ -79,10 +79,10 @@ class ArithmeticTestSuite
         MethodCallNode(
           MethodCallNode(
             IntLiteralNode(1),
-            "+",
+            "infix:<+>",
             List(IntLiteralNode(2))
           ),
-          "+",
+          "infix:<+>",
           List(IntLiteralNode(3))
         )
       )
