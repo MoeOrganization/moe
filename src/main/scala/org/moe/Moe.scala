@@ -115,9 +115,9 @@ object Moe {
 
   /*
    TODO:
-   - would be nice to have line editing capabilities
-     - this presents a problem under sbt since sbt wants
-       to own the line editing capabilities
+    - would be nice to have line editing capabilities
+    - this presents a problem under sbt since sbt wants
+      to own the line editing capabilities
    */
   object REPL {
     def enter (interpreter: Interpreter, runtime: MoeRuntime, dumpAST: Boolean = false): Unit = {
