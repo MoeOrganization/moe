@@ -12,6 +12,15 @@ object BoolClass {
       throw new MoeErrors.MoeStartupError("Could not find class Bool")
     )
 
+    // MRO: Bool, Scalar, Any, Object
+
+    /**
+     * List of Methods to support:
+     * 
+     *
+     * See the following for details:
+     * - https://github.com/rakudo/rakudo/blob/nom/src/core/Bool.pm
+     */
   }
 
 }

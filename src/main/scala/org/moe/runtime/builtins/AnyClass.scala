@@ -12,6 +12,25 @@ object AnyClass {
       throw new MoeErrors.MoeStartupError("Could not find class Any")
     )
 
-  }
+    // MRO: Any, Object
 
+    /**
+     * List of Operators to support:
+     # NOTE: these next 3 cause boolification
+     * - infix:<&&> 
+     * - infix:<||>
+     * - prefix:<!>
+     *
+     * List of Methods to support:
+     * - defined
+     # NOTE: these next 3 cause stringification
+     * - say
+     * - print
+     * - warn
+     *
+     * See the following for details:
+     * - https://metacpan.org/release/autobox-Core
+     * - https://github.com/rakudo/rakudo/blob/nom/src/core/Any.pm
+     */
+  }
 }

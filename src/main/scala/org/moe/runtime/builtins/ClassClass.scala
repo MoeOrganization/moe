@@ -12,6 +12,8 @@ object ClassClass {
       throw new MoeErrors.MoeStartupError("Could not find class Class")
     )
 
+    // MRO: Class, Object
+
     // constructor
     classClass.addMethod(
       new MoeMethod(
@@ -19,6 +21,12 @@ object ClassClass {
         { (invocant, _) => invocant.asInstanceOf[MoeClass].newInstance }
       )
     )  
+
+    /**
+     * List of Methods to support:
+     * 
+     *
+     */
   }
 
 }
