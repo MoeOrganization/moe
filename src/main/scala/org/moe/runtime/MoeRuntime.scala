@@ -64,6 +64,7 @@ class MoeRuntime (
       val arrayClass     = new MoeClass("Array",      Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val hashClass      = new MoeClass("Hash",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val pairClass      = new MoeClass("Pair",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
+      val ioClass        = new MoeClass("IO",         Some(VERSION), Some(AUTHORITY), Some(anyClass))
        
       val undefClass     = new MoeClass("Undef",      Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val boolClass      = new MoeClass("Bool",       Some(VERSION), Some(AUTHORITY), Some(scalarClass))
@@ -81,6 +82,7 @@ class MoeRuntime (
       corePackage.addClass(arrayClass)
       corePackage.addClass(hashClass)
       corePackage.addClass(pairClass)
+      corePackage.addClass(ioClass)
 
       corePackage.addClass(undefClass)
       corePackage.addClass(boolClass)
@@ -93,8 +95,8 @@ class MoeRuntime (
 
       /*
         TODO:
-        bootstrap the other associtateClass for 
-        MoeClass, MoeAttribute,MoeMethod, etc.
+        - bootstrap the other associtateClass for MoeClass, MoeAttribute,MoeMethod, etc.
+        - wrap STDIN, STDOUT, STDERR from MoeSystem in an IO class before they are exposed
       */
 
       is_bootstrapped = true
@@ -131,6 +133,7 @@ class MoeRuntime (
     ArrayClass(this)
     HashClass(this)
     PairClass(this)
+    IOClass(this)
 
     UndefClass(this)
     BoolClass(this)
