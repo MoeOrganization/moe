@@ -1,12 +1,14 @@
 package org.moe.runtime
 
+import org.moe.runtime.nativeobjects._
+
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
 
 class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... simple String object") {
-    val o = new MoeStringObject("Hello World")
+    val o = new MoeStrObject("Hello World")
     assert(o.getNativeValue === "Hello World")
     assert(o.isTrue)
     assert(!o.isFalse)
@@ -15,12 +17,12 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... simple String object with class") {
     val c = new MoeClass("String")
-    val o = new MoeStringObject("Hello World", Some(c))
+    val o = new MoeStrObject("Hello World", Some(c))
     assert(o.getAssociatedClass.get === c)
   }
 
   test("... false String object - empty string") {
-    val o = new MoeStringObject("")
+    val o = new MoeStrObject("")
     assert(o.getNativeValue === "")
     assert(!o.isTrue)
     assert(o.isFalse)
@@ -28,7 +30,7 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... false String object - zero") {
-    val o = new MoeStringObject("0")
+    val o = new MoeStrObject("0")
     assert(o.getNativeValue === "0")
     assert(!o.isTrue)
     assert(o.isFalse)
@@ -36,7 +38,7 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... false String object - zerozero") {
-    val o = new MoeStringObject("00")
+    val o = new MoeStrObject("00")
     assert(o.getNativeValue === "00")
     assert(o.isTrue)
     assert(!o.isFalse)
@@ -66,7 +68,7 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple Float object") {
-    val o = new MoeFloatObject(10.5)
+    val o = new MoeNumObject(10.5)
     assert(o.getNativeValue === 10.5)
     assert(o.isTrue)
     assert(!o.isFalse)
@@ -75,12 +77,12 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... simple Float object with class") {
     val c = new MoeClass("Number")
-    val o = new MoeFloatObject(10.5, Some(c))
+    val o = new MoeNumObject(10.5, Some(c))
     assert(o.getAssociatedClass.get === c)
   }
 
   test("... false Float object") {
-    val o = new MoeFloatObject(0.0)
+    val o = new MoeNumObject(0.0)
     assert(o.getNativeValue === 0.0)
     assert(!o.isTrue)
     assert(o.isFalse)
@@ -88,7 +90,7 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple Boolean object") {
-    val o = new MoeBooleanObject(true)
+    val o = new MoeBoolObject(true)
     assert(o.getNativeValue === true)
     assert(o.isTrue)
     assert(!o.isFalse)
@@ -96,7 +98,7 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... false Boolean object") {
-    val o = new MoeBooleanObject(false)
+    val o = new MoeBoolObject(false)
     assert(o.getNativeValue === false)
     assert(!o.isTrue)
     assert(o.isFalse)
@@ -105,13 +107,13 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... simple Boolean object with class") {
     val c = new MoeClass("Boolean")
-    val o = new MoeBooleanObject(false, Some(c))
+    val o = new MoeBoolObject(false, Some(c))
     assert(o.getAssociatedClass.get === c)
   }
 
   test("... simple Undef object") {
     val o = new MoeUndefObject()
-    assert(o.getNativeValue === null)
+    assert(o.getNativeValue == null)
     assert(!o.isTrue)
     assert(o.isFalse)
     assert(o.isUndef)
@@ -236,29 +238,29 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert((new MoeIntObject(42)).toString == "42")
     assert((new MoeIntObject(-42)).toString == "-42")
 
-    assert((new MoeFloatObject(0.42)).toString == "0.42")
-    assert((new MoeFloatObject(-0.42)).toString == "-0.42")
+    assert((new MoeNumObject(0.42)).toString == "0.42")
+    assert((new MoeNumObject(-0.42)).toString == "-0.42")
 
-    assert((new MoeBooleanObject(true)).toString == "true")
-    assert((new MoeBooleanObject(false)).toString == "false")
+    assert((new MoeBoolObject(true)).toString == "true")
+    assert((new MoeBoolObject(false)).toString == "false")
 
-    assert((new MoeStringObject("jason")).toString == "\"jason\"")
+    assert((new MoeStrObject("jason")).toString == "\"jason\"")
   }
 
   test("... test complex native object dump output") {
     val array = new MoeArrayObject(
       List(
         new MoeIntObject(42),
-        new MoeFloatObject(98.6),
-        new MoeStringObject("moe")
+        new MoeNumObject(98.6),
+        new MoeStrObject("moe")
       )
     )
     assert(array.toString == """[42, 98.6, "moe"]""")
 
     val hash = new MoeHashObject(
       Map(
-        "name" -> new MoeStringObject("moe"),
-        "awesome" -> new MoeBooleanObject(true)
+        "name" -> new MoeStrObject("moe"),
+        "awesome" -> new MoeBoolObject(true)
       )
     )
     assert(

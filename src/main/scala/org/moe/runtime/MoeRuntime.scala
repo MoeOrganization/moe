@@ -144,18 +144,19 @@ class MoeRuntime (
   }
 
   object NativeObjects {
+    import org.moe.runtime.nativeobjects._
 
     private lazy val Undef = new MoeUndefObject(getCoreClassFor("Undef"))
-    private lazy val True  = new MoeBooleanObject(true, getCoreClassFor("Bool"))
-    private lazy val False = new MoeBooleanObject(false, getCoreClassFor("Bool"))
+    private lazy val True  = new MoeBoolObject(true, getCoreClassFor("Bool"))
+    private lazy val False = new MoeBoolObject(false, getCoreClassFor("Bool"))
 
     def getUndef = Undef
     def getTrue  = True
     def getFalse = False
 
     def getInt    (value: Int)     = new MoeIntObject(value, getCoreClassFor("Int"))
-    def getFloat  (value: Double)  = new MoeFloatObject(value, getCoreClassFor("Num"))
-    def getString (value: String)  = new MoeStringObject(value, getCoreClassFor("Str"))
+    def getFloat  (value: Double)  = new MoeNumObject(value, getCoreClassFor("Num"))
+    def getString (value: String)  = new MoeStrObject(value, getCoreClassFor("Str"))
     def getBool   (value: Boolean) = if (value) { True } else { False }
 
     def getHash  (value: Map[String, MoeObject]) = new MoeHashObject(value, getCoreClassFor("Hash"))

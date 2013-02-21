@@ -1,6 +1,7 @@
 package org.moe.runtime.builtins
 
 import org.moe.runtime._
+import org.moe.runtime.nativeobjects._
 
 /**
   * setup class Int 
@@ -24,7 +25,7 @@ object IntClass {
         { (invocant, args) =>
           args(0) match {
             case i: MoeIntObject   => getInt(invocant.unboxToInt.get + i.unboxToInt.get)
-            case f: MoeFloatObject => getFloat(invocant.unboxToDouble.get + f.unboxToDouble.get)
+            case f: MoeNumObject => getFloat(invocant.unboxToDouble.get + f.unboxToDouble.get)
             case _                 => throw new MoeErrors.UnexpectedType(args(0).toString)
           }
         }
@@ -37,7 +38,7 @@ object IntClass {
         { (invocant, args) =>
           args(0) match {
             case i: MoeIntObject   => getInt(invocant.unboxToInt.get * i.unboxToInt.get)
-            case f: MoeFloatObject => getFloat(invocant.unboxToDouble.get * f.unboxToDouble.get)
+            case f: MoeNumObject => getFloat(invocant.unboxToDouble.get * f.unboxToDouble.get)
             case _                 => throw new MoeErrors.UnexpectedType(args(0).toString)
           }
         }

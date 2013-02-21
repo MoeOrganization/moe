@@ -1,6 +1,7 @@
 package org.moe.interpreter
 
 import org.moe.runtime._
+import org.moe.runtime.nativeobjects._
 import org.moe.ast._
 
 import scala.collection.mutable.HashMap
@@ -130,7 +131,7 @@ class Interpreter {
             val array: List[MoeObject] = range.toList.map(getInt(_))
             getArray(array)
           }
-          case (s: MoeStringObject, e: MoeStringObject) => {
+          case (s: MoeStrObject, e: MoeStrObject) => {
             val range_start = s.unboxToString.get
             val range_end   = e.unboxToString.get
 
@@ -146,7 +147,7 @@ class Interpreter {
               getArray(elems.map(getString(_)))
             }
           }
-          case _ => throw new MoeErrors.UnexpectedType("Pair of MoeIntObject or MoeStringObject expected")
+          case _ => throw new MoeErrors.UnexpectedType("Pair of MoeIntObject or MoeStrObject expected")
         }
       }
 
@@ -163,12 +164,12 @@ class Interpreter {
             env.set(varName, new_i)
             if (is_prefix) new_i else i
           }
-          case n: MoeFloatObject => {
+          case n: MoeNumObject => {
             val new_n = getFloat(n.unboxToDouble.get + 1.0)
             env.set(varName, new_n)
             if (is_prefix) new_n else n
           }
-          case s: MoeStringObject => {
+          case s: MoeStrObject => {
             val new_s = getString(magicalStringIncrement(s.unboxToString.get))
             env.set(varName, new_s)
             if (is_prefix) new_s else s
@@ -184,7 +185,7 @@ class Interpreter {
             env.set(varName, new_i)
             if (is_prefix) new_i else i
           }
-          case n: MoeFloatObject => {
+          case n: MoeNumObject => {
             val new_n = getFloat(n.unboxToDouble.get - 1.0)
             env.set(varName, new_n)
             if (is_prefix) new_n else n
