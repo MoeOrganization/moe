@@ -1,3 +1,4 @@
 target/
 .ensime
 .ensime_lucene
+.#*
