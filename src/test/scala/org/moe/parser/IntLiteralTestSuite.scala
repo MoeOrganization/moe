@@ -13,68 +13,68 @@ class IntLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTestUt
 
   test("... basic test with an 0 int") {
     val result = interpretCode("0")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (0)
+    result.unboxToInt.get should equal (0)
   }
 
   test("... basic test with an -0 int") {
     val result = interpretCode("-0")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (0)
+    result.unboxToInt.get should equal (0)
   }
 
 
   test("... basic test with an int") {
     val result = interpretCode("123")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (123)
+    result.unboxToInt.get should equal (123)
   }
 
   test("... basic test with a negative int") {
     val result = interpretCode("-123")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (-123)
+    result.unboxToInt.get should equal (-123)
   }
 
   test("... basic test with an int - embedded underscore") {
     val result = interpretCode("123_456")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (123456)
+    result.unboxToInt.get should equal (123456)
   }
 
   test("... basic test with an octal int") {
     val result = interpretCode("0123")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (83)
+    result.unboxToInt.get should equal (83)
   }
 
   test("... basic test with an octal int - embedded underscore") {
     val result = interpretCode("0123_456")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (42798)
+    result.unboxToInt.get should equal (42798)
   }
 
   test("... basic test with an hexadecimal int") {
     val result = interpretCode("0x123")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (0x123)
+    result.unboxToInt.get should equal (0x123)
   }
 
   test("... basic test with an hexadecimal int - 2") {
     val result = interpretCode("0xFFFF")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (0xFFFF)
+    result.unboxToInt.get should equal (0xFFFF)
   }
 
   test("... basic test with an hexadecimal int - embedded underscore") {
     val result = interpretCode("0x123_456")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (0x123456)
+    result.unboxToInt.get should equal (0x123456)
   }
 
   test("... basic test with an hexadecimal int - embedded underscore - 2") {
     val result = interpretCode("0xAB_CDEF")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (0xABCDEF)
+    result.unboxToInt.get should equal (0xABCDEF)
   }
 
   test("... basic test with an binary int literal") {
     val result = interpretCode("0b10110")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (22)
+    result.unboxToInt.get should equal (22)
   }
 
   test("... basic test with an binary int literal - embedded underscore") {
     val result = interpretCode("0b1011_0110")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (182)
+    result.unboxToInt.get should equal (182)
   }
 
 }

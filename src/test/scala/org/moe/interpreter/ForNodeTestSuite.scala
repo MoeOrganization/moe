@@ -42,7 +42,7 @@ class ForNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 4)
+    assert(result.unboxToInt.get === 4)
   }
 
   test("... basic test with C-style for loop") {
@@ -73,7 +73,7 @@ class ForNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === -10)
+    assert(result.unboxToInt.get === -10)
   }
 
 

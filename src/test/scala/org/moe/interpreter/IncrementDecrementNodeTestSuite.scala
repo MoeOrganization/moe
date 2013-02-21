@@ -20,7 +20,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 43)
+    assert(result.unboxToInt.get === 43)
   }
 
   test("... variable post-increment return value") {
@@ -34,7 +34,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 42)
+    assert(result.unboxToInt.get === 42)
   }
 
 // integer pre-increment tests
@@ -50,7 +50,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 43)
+    assert(result.unboxToInt.get === 43)
   }
 
   test("... variable pre-increment return value") {
@@ -64,7 +64,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 43)
+    assert(result.unboxToInt.get === 43)
   }
 
 // float post-increment tests
@@ -80,7 +80,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeFloatObject].getNativeValue === 99.6)
+    assert(result.unboxToDouble.get === 99.6)
   }
 
   test("... variable post-increment return value (float)") {
@@ -94,7 +94,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeFloatObject].getNativeValue === 98.6)
+    assert(result.unboxToDouble.get === 98.6)
   }
 
 // float pre-increment tests
@@ -110,7 +110,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeFloatObject].getNativeValue === 99.6)
+    assert(result.unboxToDouble.get === 99.6)
   }
 
   test("... variable pre-increment return value (float)") {
@@ -124,7 +124,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeFloatObject].getNativeValue === 99.6)
+    assert(result.unboxToDouble.get === 99.6)
   }
 
 // integer post-decrement tests
@@ -140,7 +140,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 41)
+    assert(result.unboxToInt.get === 41)
   }
 
   test("... variable post-decrement return value") {
@@ -154,7 +154,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 42)
+    assert(result.unboxToInt.get === 42)
   }
 
 // integer pre-decrement tests
@@ -170,7 +170,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 41)
+    assert(result.unboxToInt.get === 41)
   }
 
   test("... variable pre-decrement return value") {
@@ -184,7 +184,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 41)
+    assert(result.unboxToInt.get === 41)
   }
 
 // float post-decrement tests
@@ -200,7 +200,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeFloatObject].getNativeValue === 97.6)
+    assert(result.unboxToDouble.get === 97.6)
   }
 
   test("... variable post-decrement return value (float)") {
@@ -214,7 +214,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeFloatObject].getNativeValue === 98.6)
+    assert(result.unboxToDouble.get === 98.6)
   }
 
 // float pre-decrement tests
@@ -230,7 +230,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeFloatObject].getNativeValue === 97.6)
+    assert(result.unboxToDouble.get === 97.6)
   }
 
   test("... variable pre-decrement return value (float)") {
@@ -244,7 +244,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeFloatObject].getNativeValue === 97.6)
+    assert(result.unboxToDouble.get === 97.6)
   }
 
   test("... basic test with variable increment (string)") {
@@ -258,7 +258,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeStringObject].getNativeValue === "124")
+    assert(result.unboxToString.get === "124")
   }
 
   test("... basic test with variable increment (string) #2") {
@@ -272,7 +272,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeStringObject].getNativeValue === "100")
+    assert(result.unboxToString.get === "100")
   }
 
   test("... basic test with variable increment (string) #3") {
@@ -286,7 +286,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeStringObject].getNativeValue === "100")
+    assert(result.unboxToString.get === "100")
   }
 
   test("... basic test with variable increment (string) #4") {
@@ -300,7 +300,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeStringObject].getNativeValue === "a1")
+    assert(result.unboxToString.get === "a1")
   }
 
   test("... basic test with variable increment (string) #5") {
@@ -314,7 +314,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeStringObject].getNativeValue === "Ba")
+    assert(result.unboxToString.get === "Ba")
   }
 
   test("... basic test with variable increment (string) #6") {
@@ -328,7 +328,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeStringObject].getNativeValue === "aaa")
+    assert(result.unboxToString.get === "aaa")
   }
 
   test("... basic test with variable increment (string) #7") {
@@ -342,7 +342,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeStringObject].getNativeValue === "02")
+    assert(result.unboxToString.get === "02")
   }
 
 }

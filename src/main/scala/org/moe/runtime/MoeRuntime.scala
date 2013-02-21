@@ -164,7 +164,7 @@ class MoeRuntime (
     def getArray (value: List[MoeObject])        = new MoeArrayObject(value, getCoreClassFor("Array"))
     def getArray ()                              = new MoeArrayObject(List(), getCoreClassFor("Array"))
     def getPair  (value: (MoeObject, MoeObject)) = new MoePairObject(
-      (value._1.asInstanceOf[MoeStringObject].getNativeValue, value._2), 
+      (value._1.unboxToString.get, value._2), 
       getCoreClassFor("Pair")
     )
 

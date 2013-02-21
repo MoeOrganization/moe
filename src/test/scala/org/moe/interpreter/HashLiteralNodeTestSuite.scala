@@ -20,9 +20,9 @@ class HashLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    val hash: Map[String, MoeObject] = result.asInstanceOf[MoeHashObject].getNativeValue
-    assert(hash("foo").asInstanceOf[MoeIntObject].getNativeValue === 10)
-    assert(hash("bar").asInstanceOf[MoeIntObject].getNativeValue === 20)
+    val hash: Map[String, MoeObject] = result.unboxToHash.get
+    assert(hash("foo").unboxToInt.get === 10)
+    assert(hash("bar").unboxToInt.get === 20)
   }
 
   test("... basic test with Hash of variable values") {
@@ -40,9 +40,9 @@ class HashLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    val hash: Map[String, MoeObject] = result.asInstanceOf[MoeHashObject].getNativeValue
-    assert(hash("foo").asInstanceOf[MoeIntObject].getNativeValue === 10)
-    assert(hash("bar").asInstanceOf[MoeIntObject].getNativeValue === 20)
+    val hash: Map[String, MoeObject] = result.unboxToHash.get
+    assert(hash("foo").unboxToInt.get === 10)
+    assert(hash("bar").unboxToInt.get === 20)
   }
 
   test("... basic test with accessed hash values") {
@@ -66,6 +66,6 @@ class HashLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 10)
+    assert(result.unboxToInt.get === 10)
   }
 }

@@ -18,12 +18,12 @@ class RangeLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    val array: List[MoeObject] = result.asInstanceOf[MoeArrayObject].getNativeValue
+    val array: List[MoeObject] = result.unboxToArray.get
 
     assert(array.size === 3)
-    assert(array(0).asInstanceOf[MoeIntObject].getNativeValue === 1)
-    assert(array(1).asInstanceOf[MoeIntObject].getNativeValue === 2)
-    assert(array(2).asInstanceOf[MoeIntObject].getNativeValue === 3)
+    assert(array(0).unboxToInt.get === 1)
+    assert(array(1).unboxToInt.get === 2)
+    assert(array(2).unboxToInt.get === 3)
   }
 
   test("... basic test with String Range") {
@@ -37,12 +37,12 @@ class RangeLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    val array: List[MoeObject] = result.asInstanceOf[MoeArrayObject].getNativeValue
+    val array: List[MoeObject] = result.unboxToArray.get
 
     assert(array.size === 3)
-    assert(array(0).asInstanceOf[MoeStringObject].getNativeValue === "a")
-    assert(array(1).asInstanceOf[MoeStringObject].getNativeValue === "b")
-    assert(array(2).asInstanceOf[MoeStringObject].getNativeValue === "c")
+    assert(array(0).unboxToString.get === "a")
+    assert(array(1).unboxToString.get === "b")
+    assert(array(2).unboxToString.get === "c")
   }
 
 }

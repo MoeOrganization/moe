@@ -17,7 +17,7 @@ class UnlessNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast )
-    assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 42 )
+    assert( result.unboxToInt.get === 42 )
   }
 
   test("... basic (true) test with Unless") {
@@ -44,7 +44,7 @@ class UnlessNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast )
-    assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 42 )
+    assert( result.unboxToInt.get === 42 )
   }
 
   test("... basic (true) test with UnlessElse") {
@@ -58,7 +58,7 @@ class UnlessNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast )
-    assert( result.asInstanceOf[ MoeIntObject ].getNativeValue === 21 )
+    assert( result.unboxToInt.get === 21 )
   }
 
 }

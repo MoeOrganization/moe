@@ -120,7 +120,7 @@ class ClassNodeTestSuite
     point_class.getAttribute("x") match {
       case Some(attr) =>
         attr.getDefault match {
-          case Some(attr) => attr.asInstanceOf[MoeIntObject].getNativeValue should equal (0)
+          case Some(attr) => attr.unboxToInt.get should equal (0)
           case None => assert(false)
         }
       case None => assert(false)
@@ -176,10 +176,10 @@ class ClassNodeTestSuite
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    val coords = result.asInstanceOf[MoeArrayObject].getNativeValue
+    val coords = result.unboxToArray.get
 
-    coords(0).asInstanceOf[MoeIntObject].getNativeValue should equal (150)
-    coords(1).asInstanceOf[MoeIntObject].getNativeValue should equal (250)
+    coords(0).unboxToInt.get should equal (150)
+    coords(1).unboxToInt.get should equal (250)
   }
 
   test("... basic test with class and methods") {
@@ -251,6 +251,6 @@ class ClassNodeTestSuite
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (42)
+    result.unboxToInt.get should equal (42)
   }
 }

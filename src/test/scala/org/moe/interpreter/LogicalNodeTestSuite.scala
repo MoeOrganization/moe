@@ -14,7 +14,7 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[ MoeBooleanObject ].getNativeValue === false)
+    assert(result.unboxToBoolean.get === false)
   }
 
   test("... basic (false) test with Not") {
@@ -24,7 +24,7 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
+    assert(result.unboxToBoolean.get === true)
   }
 
   test("... basic test with And") {
@@ -37,7 +37,7 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
+    assert(result.unboxToBoolean.get === false)
   }
 
   test("... basic test with nested And") {
@@ -53,7 +53,7 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 100)
+    assert(result.unboxToInt.get === 100)
   }
 
   test("... basic test with Or") {
@@ -66,7 +66,7 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
+    assert(result.unboxToBoolean.get === true)
   }
 
 }

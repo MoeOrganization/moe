@@ -20,11 +20,11 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    val array: List[MoeObject] = result.asInstanceOf[MoeArrayObject].getNativeValue
+    val array: List[MoeObject] = result.unboxToArray.get
 
     assert(array.size === 2)
-    assert(array(0).asInstanceOf[MoeIntObject].getNativeValue === 10)
-    assert(array(1).asInstanceOf[MoeIntObject].getNativeValue === 20)
+    assert(array(0).unboxToInt.get === 10)
+    assert(array(1).unboxToInt.get === 20)
   }
 
   test("... complex test with Array") {
@@ -44,15 +44,15 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    val array: List[ MoeObject ] = result.asInstanceOf[MoeArrayObject].getNativeValue
+    val array: List[ MoeObject ] = result.unboxToArray.get
 
     assert(array.size === 2)
-    assert(array(0).asInstanceOf[ MoeIntObject ].getNativeValue === 10)
+    assert(array(0).unboxToInt.get === 10)
 
-    val nested = array(1).asInstanceOf[ MoeArrayObject ].getNativeValue
+    val nested = array(1).unboxToArray.get
 
     assert(nested.size === 1)
-    assert(nested(0).asInstanceOf[ MoeIntObject ].getNativeValue === 20)
+    assert(nested(0).unboxToInt.get === 20)
   }
 
   test("... basic test with Array accessing element 0") {
@@ -72,7 +72,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    assert(result.asInstanceOf[ MoeIntObject ].getNativeValue === 10)
+    assert(result.unboxToInt.get === 10)
   }
 
   test("... basic test with Array accessing element 1") {
@@ -92,7 +92,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    assert(result.asInstanceOf[ MoeIntObject ].getNativeValue === 20)
+    assert(result.unboxToInt.get === 20)
   }
 
   test("... basic test with Array accessing last element with -1") {
@@ -112,7 +112,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    assert(result.asInstanceOf[ MoeIntObject ].getNativeValue === 20)
+    assert(result.unboxToInt.get === 20)
   }
 
   test("... basic test with Array accessing last element with -2") {
@@ -132,7 +132,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    assert(result.asInstanceOf[ MoeIntObject ].getNativeValue === 10)
+    assert(result.unboxToInt.get === 10)
   }
 
   test("... basic test with Array accessing last element with -3") {
@@ -152,7 +152,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    assert(result.asInstanceOf[ MoeIntObject ].getNativeValue === 20)
+    assert(result.unboxToInt.get === 20)
   }
 
   test("... basic test with Array accessing last out of bounds") {
@@ -172,6 +172,6 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    assert(result.asInstanceOf[ MoeUndefObject ].getNativeValue === null)
+    assert(result.isUndef)
   }
 }

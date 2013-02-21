@@ -13,60 +13,60 @@ class ArrayLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
   test("... basic test with a one-element arrayref") {
     val result = interpretCode("[42]")
 
-    val listElement = result.asInstanceOf[MoeArrayObject].getNativeValue(0)
-    assert(listElement.asInstanceOf[MoeIntObject].getNativeValue === 42);
+    val listElement = result.unboxToArray.get(0)
+    assert(listElement.unboxToInt.get === 42);
   }
 
   test("... basic test with a four-element arrayref") {
     val result = interpretCode("""[42, 'jason', "may", true]""")
-    val elems = result.asInstanceOf[MoeArrayObject].getNativeValue
+    val elems = result.unboxToArray.get
 
-    assert(elems(0).asInstanceOf[MoeIntObject].getNativeValue === 42);
+    assert(elems(0).unboxToInt.get === 42);
 
-    assert(elems(1).asInstanceOf[MoeStringObject].getNativeValue === "jason");
-    assert(elems(2).asInstanceOf[MoeStringObject].getNativeValue === "may");
-    assert(elems(3).asInstanceOf[MoeBooleanObject].getNativeValue === true);
+    assert(elems(1).unboxToString.get === "jason");
+    assert(elems(2).unboxToString.get === "may");
+    assert(elems(3).unboxToBoolean.get === true);
   }
 
   test("... basic test with a nested arrayref") {
     val result = interpretCode("""[42, ['jason', "may"], true]""")
-    val elems = result.asInstanceOf[MoeArrayObject].getNativeValue
+    val elems = result.unboxToArray.get
 
-    assert(elems(0).asInstanceOf[MoeIntObject].getNativeValue === 42);
+    assert(elems(0).unboxToInt.get === 42);
 
-    val nested_elems = elems(1).asInstanceOf[MoeArrayObject].getNativeValue
-    assert(nested_elems(0).asInstanceOf[MoeStringObject].getNativeValue === "jason");
-    assert(nested_elems(1).asInstanceOf[MoeStringObject].getNativeValue === "may");
+    val nested_elems = elems(1).unboxToArray.get
+    assert(nested_elems(0).unboxToString.get === "jason");
+    assert(nested_elems(1).unboxToString.get === "may");
 
-    assert(elems(2).asInstanceOf[MoeBooleanObject].getNativeValue === true);
+    assert(elems(2).unboxToBoolean.get === true);
   }
 
   test("... basic test with a nested hashref") {
     val result = interpretCode("""[42, {'jason' => "may"}, false]""")
-    val elems = result.asInstanceOf[MoeArrayObject].getNativeValue
+    val elems = result.unboxToArray.get
 
-    assert(elems(0).asInstanceOf[MoeIntObject].getNativeValue === 42);
+    assert(elems(0).unboxToInt.get === 42);
 
-    val nested_hash = elems(1).asInstanceOf[MoeHashObject].getNativeValue
+    val nested_hash = elems(1).unboxToHash.get
     val key = nested_hash("jason")
-    assert(key.asInstanceOf[MoeStringObject].getNativeValue === "may")
-    assert(elems(2).asInstanceOf[MoeBooleanObject].getNativeValue === false);
+    assert(key.unboxToString.get === "may")
+    assert(elems(2).unboxToBoolean.get === false);
   }
 
   test("... basic test with arrayref containing a right-trailing list") {
     val result = interpretCode("[42, true, ]")
-    val elems = result.asInstanceOf[MoeArrayObject].getNativeValue
+    val elems = result.unboxToArray.get
 
-    assert(elems(0).asInstanceOf[MoeIntObject].getNativeValue === 42);
-    assert(elems(1).asInstanceOf[MoeBooleanObject].getNativeValue === true);
+    assert(elems(0).unboxToInt.get === 42);
+    assert(elems(1).unboxToBoolean.get === true);
   }
 
   test("... basic test with arrayref containing a left-trailing list") {
     val result = interpretCode("[, 42, true]")
-    val elems = result.asInstanceOf[MoeArrayObject].getNativeValue
+    val elems = result.unboxToArray.get
 
-    assert(elems(0).asInstanceOf[MoeIntObject].getNativeValue === 42);
-    assert(elems(1).asInstanceOf[MoeBooleanObject].getNativeValue === true);
+    assert(elems(0).unboxToInt.get === 42);
+    assert(elems(1).unboxToBoolean.get === true);
   }
 
 

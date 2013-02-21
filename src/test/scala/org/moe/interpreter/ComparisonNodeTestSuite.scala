@@ -17,7 +17,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
+    assert(result.unboxToBoolean.get === true)
   }
 
   test("... basic (false) test with <") {
@@ -30,7 +30,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
+    assert(result.unboxToBoolean.get === false)
   }
 
   test("... basic test with < between int and float") {
@@ -43,7 +43,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
+    assert(result.unboxToBoolean.get === true)
   }
 
   test("... basic test with < of equal floats") {
@@ -56,7 +56,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
+    assert(result.unboxToBoolean.get === false)
   }
 
   test("... basic test with >") {
@@ -69,7 +69,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
+    assert(result.unboxToBoolean.get === true)
   }
 
   test("... basic (false) test with >") {
@@ -82,7 +82,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
+    assert(result.unboxToBoolean.get === false)
   }
 
   test("... basic test with > between int and float") {
@@ -95,7 +95,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
+    assert(result.unboxToBoolean.get === true)
   }
 
   test("... basic test with > of equal floats") {
@@ -108,7 +108,7 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
+    assert(result.unboxToBoolean.get === false)
   }
 
 

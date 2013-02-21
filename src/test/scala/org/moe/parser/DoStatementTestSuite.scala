@@ -13,22 +13,22 @@ class DoStatementTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
   // TODO test environment stack via syntax when we are far enough
   test("... a do block") {
     val result = interpretCode("do { 100 }")
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 100)
+    assert(result.unboxToInt.get === 100)
   }
 
   test("... a multi-statement do block") {
     val result = interpretCode("do { 100; 200 }")
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 200)
+    assert(result.unboxToInt.get === 200)
   }
 
   test("... a do block with semicolons at the end") {
     val result = interpretCode("do { 100; 200; }")
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 200)
+    assert(result.unboxToInt.get === 200)
   }
 
   test("... a do block with multiple semicolons at the end") {
     val result = interpretCode("do { 100; 200;; }")
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 200)
+    assert(result.unboxToInt.get === 200)
   }
 
 

@@ -12,16 +12,16 @@ class BooleanLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTe
 
   test("... basic test with a true") {
     val result = interpretCode("true")
-    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === true)
+    assert(result.unboxToBoolean.get === true)
   }
 
   test("... basic test with a false") {
     val result = interpretCode("false")
-    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
+    assert(result.unboxToBoolean.get === false)
   }
   test("... basic test with a not true") {
     val result = interpretCode(" false ")
-    assert(result.asInstanceOf[MoeBooleanObject].getNativeValue === false)
+    assert(result.unboxToBoolean.get === false)
   }
 
 }

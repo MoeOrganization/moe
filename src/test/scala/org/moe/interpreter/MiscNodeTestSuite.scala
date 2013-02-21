@@ -17,7 +17,7 @@ class MiscNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeStringObject].getNativeValue === "WORLD")
+    assert(result.unboxToString.get === "WORLD")
   }
 
   test("... unknown node") {

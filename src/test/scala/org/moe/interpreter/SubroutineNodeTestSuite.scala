@@ -38,7 +38,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 30)
+    assert(result.unboxToInt.get === 30)
   }
 
   test("... basic test with closure") {
@@ -66,7 +66,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 3)
+    assert(result.unboxToInt.get === 3)
   }
 
   test("... basic test with var declared too late") {
@@ -132,7 +132,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 3)
+    assert(result.unboxToInt.get === 3)
   }
 
   test("... basic test with sub checking for avoided closure collision") {
@@ -174,7 +174,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 0)
+    assert(result.unboxToInt.get === 0)
   }
 
   test("... basic test checking that param var is used") {
@@ -236,6 +236,6 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 2)
+    assert(result.unboxToInt.get === 2)
   }
 }

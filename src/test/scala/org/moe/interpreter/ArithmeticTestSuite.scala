@@ -24,7 +24,7 @@ class ArithmeticTestSuite
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (4)
+    result.unboxToInt.get should equal (4)
   }
 
   test("... float + int") {
@@ -39,7 +39,7 @@ class ArithmeticTestSuite
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    result.asInstanceOf[MoeFloatObject].getNativeValue should equal (4.5)
+    result.unboxToDouble.get should equal (4.5)
   }
 
   test("... int + float") {
@@ -54,7 +54,7 @@ class ArithmeticTestSuite
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    result.asInstanceOf[MoeFloatObject].getNativeValue should equal (4.5)
+    result.unboxToDouble.get should equal (4.5)
   }
 
   test("... float + float") {
@@ -69,7 +69,7 @@ class ArithmeticTestSuite
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    result.asInstanceOf[MoeFloatObject].getNativeValue should equal (5.0)
+    result.unboxToDouble.get should equal (5.0)
   }
 
   test("... int + int + int") {
@@ -88,6 +88,6 @@ class ArithmeticTestSuite
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (6)
+    result.unboxToInt.get should equal (6)
   }
 }

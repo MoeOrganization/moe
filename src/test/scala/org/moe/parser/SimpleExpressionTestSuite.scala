@@ -13,22 +13,22 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
 
   test("... literal int addition") {
     val result = interpretCode("2+2")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (4)
+    result.unboxToInt.get should equal (4)
   }
 
   test("... literal int multiplication") {
     val result = interpretCode("3*3")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (9)
+    result.unboxToInt.get should equal (9)
   }
 
   test("... order of operations, addition first") {
     val result = interpretCode("2+3*4")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (14)
+    result.unboxToInt.get should equal (14)
   }
 
   test("... order of operations, multiplication first") {
     val result = interpretCode("2*3+4")
-    result.asInstanceOf[MoeIntObject].getNativeValue should equal (10)
+    result.unboxToInt.get should equal (10)
   }
 
 }

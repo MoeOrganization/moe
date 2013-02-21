@@ -17,7 +17,7 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 1)
+    assert(result.unboxToInt.get === 1)
   }
 
   test("... basic (false) test with If") {
@@ -44,7 +44,7 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 2)
+    assert(result.unboxToInt.get === 2)
   }
 
   test("... basic (false) test with IfElse") {
@@ -58,7 +58,7 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 3)
+    assert(result.unboxToInt.get === 3)
   }
 
   test("... basic (true/true) test with IfElsif (true/true)") {
@@ -73,7 +73,7 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 5)
+    assert(result.unboxToInt.get === 5)
   }
 
   test("... basic (false/true) test with IfElsif") {
@@ -88,7 +88,7 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 8)
+    assert(result.unboxToInt.get === 8)
   }
 
   test("... basic (false/false) test with IfElseIf") {
@@ -119,7 +119,7 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 34)
+    assert(result.unboxToInt.get === 34)
   }
 
   test("... basic (false/true) test with IfElsifElse") {
@@ -135,7 +135,7 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 55)
+    assert(result.unboxToInt.get === 55)
   }
 
   test("... basic (false/false) test with IfElsifElse") {
@@ -151,7 +151,7 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === 89)
+    assert(result.unboxToInt.get === 89)
   }
 
 }

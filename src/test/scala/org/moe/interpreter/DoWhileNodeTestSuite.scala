@@ -36,7 +36,7 @@ class DoWhileNodeTestSuite extends FunSuite with InterpreterTestUtils {
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    assert(result.asInstanceOf[MoeIntObject].getNativeValue === -1)
+    assert(result.unboxToInt.get === -1)
   }
 
 }
