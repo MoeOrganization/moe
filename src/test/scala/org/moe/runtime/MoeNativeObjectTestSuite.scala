@@ -167,7 +167,7 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
      )
     val array = o.getNativeValue
     assert(array(0).unboxToInt.get === 10)
-    val nested = array(1).unboxToArray.get
+    val nested = array(1).unboxToList.get
     assert(nested(0).unboxToInt.get === 42)
     assert(o.isTrue)
     assert(!o.isFalse)
@@ -216,7 +216,7 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
     )
     val hash = o.getNativeValue
     assert(hash("bar").unboxToInt.get === 10)
-    val nested = hash("foo").unboxToArray.get
+    val nested = hash("foo").unboxToList.get
     assert(nested(0).isUndef)
     assert(nested(1).unboxToInt.get === 10)
     assert(o.isTrue)

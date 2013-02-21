@@ -12,14 +12,14 @@ class HashLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
 
   test("... basic test with hashref") {
     val result = interpretCode("{foo => 'bar'}")
-    val map = result.unboxToHash.get
+    val map = result.unboxToMap.get
     val key = map("foo")
     assert(key.unboxToString.get === "bar")
   }
 
   test("... basic test with hashref of a string key") {
     val result = interpretCode("{'foo' => 'bar'}")
-    val map = result.unboxToHash.get
+    val map = result.unboxToMap.get
     val key = map("foo")
     assert(key.unboxToString.get === "bar")
   }

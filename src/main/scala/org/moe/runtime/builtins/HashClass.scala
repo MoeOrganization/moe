@@ -31,7 +31,7 @@ object HashClass {
         { (invocant, args) => 
 
             var key  = args(0).unboxToString.get
-            val hash = invocant.unboxToHash.get
+            val hash = invocant.unboxToMap.get
 
             hash.get(key).getOrElse(r.NativeObjects.getUndef)
         }

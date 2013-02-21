@@ -25,5 +25,5 @@ class MoeArrayObject(
   
   // unboxing
   
-  override def unboxToArray: Try[List[MoeObject]] = Success(getNativeValue)
+  override def unboxToList: Try[List[MoeObject]] = Success(getNativeValue)
 }

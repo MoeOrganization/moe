@@ -30,7 +30,7 @@ object ArrayClass {
         { (invocant, args) => 
 
             var index = args(0).unboxToInt.get
-            val array = invocant.unboxToArray.get
+            val array = invocant.unboxToList.get
 
             while (index < 0) index += array.size
             try {

@@ -19,5 +19,5 @@ class MoeHashObject(
 
   // unboxing
   
-  override def unboxToHash: Try[Map[String, MoeObject]] = Success(getNativeValue)
+  override def unboxToMap: Try[Map[String, MoeObject]] = Success(getNativeValue)
 }

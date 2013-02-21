@@ -20,7 +20,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    val array: List[MoeObject] = result.unboxToArray.get
+    val array: List[MoeObject] = result.unboxToList.get
 
     assert(array.size === 2)
     assert(array(0).unboxToInt.get === 10)
@@ -44,12 +44,12 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    val array: List[ MoeObject ] = result.unboxToArray.get
+    val array: List[ MoeObject ] = result.unboxToList.get
 
     assert(array.size === 2)
     assert(array(0).unboxToInt.get === 10)
 
-    val nested = array(1).unboxToArray.get
+    val nested = array(1).unboxToList.get
 
     assert(nested.size === 1)
     assert(nested(0).unboxToInt.get === 20)

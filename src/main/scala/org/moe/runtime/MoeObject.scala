@@ -19,19 +19,19 @@ trait UnboxMoeToNative {
     new MoeErrors.IncompatibleType("Cannot convert to Double")
   )
 
-  def unboxToUndef: Try[Null] = Failure(
+  def unboxToNull: Try[Null] = Failure(
     new MoeErrors.IncompatibleType("Cannot convert to Null")
   )
 
-  def unboxToArray: Try[List[MoeObject]] = Failure(
+  def unboxToList: Try[List[MoeObject]] = Failure(
     new MoeErrors.IncompatibleType("Cannot convert to List[MoeObject]")
   )
 
-  def unboxToHash: Try[Map[String, MoeObject]] = Failure(
+  def unboxToMap: Try[Map[String, MoeObject]] = Failure(
     new MoeErrors.IncompatibleType("Cannot convert to Map[String, MoeObject]")
   )
 
-  def unboxToPair: Try[(String, MoeObject)] = Failure(
+  def unboxToTuple: Try[(String, MoeObject)] = Failure(
     new MoeErrors.IncompatibleType("Cannot convert to (String, MoeObject)")
   )
 }

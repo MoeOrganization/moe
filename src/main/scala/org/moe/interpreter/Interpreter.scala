@@ -98,7 +98,7 @@ class Interpreter {
         // - SL
         getHash(
           map.map(
-            pair => eval(runtime, env, pair).unboxToPair.get
+            pair => eval(runtime, env, pair).unboxToTuple.get
           ).toMap
         )
       }

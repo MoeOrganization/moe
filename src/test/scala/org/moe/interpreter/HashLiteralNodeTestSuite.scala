@@ -20,7 +20,7 @@ class HashLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    val hash: Map[String, MoeObject] = result.unboxToHash.get
+    val hash: Map[String, MoeObject] = result.unboxToMap.get
     assert(hash("foo").unboxToInt.get === 10)
     assert(hash("bar").unboxToInt.get === 20)
   }
@@ -40,7 +40,7 @@ class HashLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    val hash: Map[String, MoeObject] = result.unboxToHash.get
+    val hash: Map[String, MoeObject] = result.unboxToMap.get
     assert(hash("foo").unboxToInt.get === 10)
     assert(hash("bar").unboxToInt.get === 20)
   }
