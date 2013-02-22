@@ -69,4 +69,103 @@ class HashLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
     assert(result.unboxToInt.get === 10)
   }
+
+  test("... basic test with calling at_key method on hash") {
+    val ast = wrapSimpleAST(
+      List(
+        VariableDeclarationNode(
+          "%hash",
+          HashLiteralNode(
+          List(
+            PairLiteralNode(StringLiteralNode("foo"), IntLiteralNode(10)),
+            PairLiteralNode(StringLiteralNode("bar"), IntLiteralNode(20))
+          )
+        )
+        ),
+        MethodCallNode(
+          VariableAccessNode("%hash"),
+          "at_key",
+          List(StringLiteralNode("foo"))
+        )
+      )
+    )
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    assert(result.unboxToInt.get === 10)
+  }
+
+  test("... basic test with calling at_key method on hash (with miss)") {
+    val ast = wrapSimpleAST(
+      List(
+        VariableDeclarationNode(
+          "%hash",
+          HashLiteralNode(
+          List(
+            PairLiteralNode(StringLiteralNode("foo"), IntLiteralNode(10)),
+            PairLiteralNode(StringLiteralNode("bar"), IntLiteralNode(20))
+          )
+        )
+        ),
+        MethodCallNode(
+          VariableAccessNode("%hash"),
+          "at_key",
+          List(StringLiteralNode("baz"))
+        )
+      )
+    )
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    assert(result.isUndef)
+  }
+
+  test("... basic test with calling bind_key method on hash") {
+    val ast = wrapSimpleAST(
+      List(
+        VariableDeclarationNode(
+          "%hash",
+          HashLiteralNode(
+          List(
+            PairLiteralNode(StringLiteralNode("foo"), IntLiteralNode(10)),
+            PairLiteralNode(StringLiteralNode("bar"), IntLiteralNode(20))
+          )
+        )
+        ),
+        MethodCallNode(
+          VariableAccessNode("%hash"),
+          "bind_key",
+          List(StringLiteralNode("bar"), IntLiteralNode(30))
+        ),
+        HashElementAccessNode(
+          "%hash",
+          StringLiteralNode("bar")
+        )
+      )
+    )
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    assert(result.unboxToInt.get === 30)
+  }
+
+  test("... basic test with calling keys method on hash") {
+    val ast = wrapSimpleAST(
+      List(
+        VariableDeclarationNode(
+          "%hash",
+          HashLiteralNode(
+          List(
+            PairLiteralNode(StringLiteralNode("foo"), IntLiteralNode(10)),
+            PairLiteralNode(StringLiteralNode("bar"), IntLiteralNode(20))
+          )
+        )
+        ),
+        MethodCallNode(
+          VariableAccessNode("%hash"),
+          "keys",
+          List()
+        )
+      )
+    )
+    val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
+    val keys   = result.unboxToList.get
+    assert(keys(0).unboxToString.get === "foo")
+    assert(keys(1).unboxToString.get === "bar")
+  }
+
 }

@@ -1,6 +1,7 @@
 package org.moe.runtime.builtins
 
 import org.moe.runtime._
+import org.moe.runtime.nativeobjects._
 
 /**
   * setup class Hash
@@ -29,9 +30,9 @@ object HashClass {
     hashClass.addMethod(
       new MoeMethod(
         "postcircumfix:<{}>",
-        { (invocant, args) => 
+        { (self, args) => 
           val key  = args(0).unboxToString.get
-          val hash = invocant.unboxToMap.get
+          val hash = self.unboxToMap.get
           hash.get(key).getOrElse(r.NativeObjects.getUndef)
         }
       )
@@ -40,46 +41,24 @@ object HashClass {
     hashClass.addMethod(
       new MoeMethod(
         "at_key", // ($key)
-        { (invocant, args) => 
-          val key  = args(0).unboxToString.get
-          val hash = invocant.unboxToMap.get
-          hash.get(key).getOrElse(r.NativeObjects.getUndef)
-        }
+        (self, args) => self.asInstanceOf[MoeHashObject].at_key(args(0).asInstanceOf[MoeStrObject])
       )
     )
 
     hashClass.addMethod(
       new MoeMethod(
         "bind_key", // ($key, $value)
-        { (invocant, args) => 
-          val key   = args(0).unboxToString.get
-          val value = args(1)
-          val hash  = invocant.unboxToMap.get
-          hash.put(key, value)
-          value
-        }
+        (self, args) => self.asInstanceOf[MoeHashObject].bind_key(args(0).asInstanceOf[MoeStrObject], args(1))
       )
     )
 
-    hashClass.addMethod(new MoeMethod("keys", { (invocant, _) => 
-      getArray(invocant.unboxToMap.get.keys.map(getString(_)).toList)
-    }))
+    hashClass.addMethod(new MoeMethod("keys", (self, _) => self.asInstanceOf[MoeHashObject].keys))
 
-    hashClass.addMethod(new MoeMethod("values",{ (invocant, _) => 
-      getArray(invocant.unboxToMap.get.values.map(x => x).toList)
-    }))
+    hashClass.addMethod(new MoeMethod("values", (self, _) => self.asInstanceOf[MoeHashObject].values))
 
-    hashClass.addMethod(new MoeMethod("kv",{ (invocant, _) => 
-      getArray(invocant.unboxToMap.get.toList.map(
-        p => getArray(List(getString(p._1), p._2))
-      ))
-    }))
+    hashClass.addMethod(new MoeMethod("kv", (self, _) => self.asInstanceOf[MoeHashObject].kv))
 
-    hashClass.addMethod(new MoeMethod("pairs",{ (invocant, _) => 
-      getArray(invocant.unboxToMap.get.toList.map(
-        p => getPair(getString(p._1) -> p._2)
-      ))
-    }))
+    hashClass.addMethod(new MoeMethod("pairs", (self, _) => self.asInstanceOf[MoeHashObject].pairs))
 
     /**
      * List of Methods to support:
