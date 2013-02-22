@@ -1,5 +1,7 @@
 package org.moe.runtime
 
+import scala.collection.mutable.HashMap
+
 class MoeRuntime (
     private val system: MoeSystem = new MoeSystem(),
     private val warnings: Boolean = true
@@ -159,11 +161,11 @@ class MoeRuntime (
     def getString (value: String)  = new MoeStrObject(value, getCoreClassFor("Str"))
     def getBool   (value: Boolean) = if (value) { True } else { False }
 
-    def getHash  (value: Map[String, MoeObject]) = new MoeHashObject(value, getCoreClassFor("Hash"))
-    def getHash  ()                              = new MoeHashObject(Map(), getCoreClassFor("Hash"))
-    def getArray (value: List[MoeObject])        = new MoeArrayObject(value, getCoreClassFor("Array"))
-    def getArray ()                              = new MoeArrayObject(List(), getCoreClassFor("Array"))
-    def getPair  (value: (MoeObject, MoeObject)) = new MoePairObject(
+    def getHash  (value: HashMap[String, MoeObject]) = new MoeHashObject(value, getCoreClassFor("Hash"))
+    def getHash  ()                                  = new MoeHashObject(HashMap(), getCoreClassFor("Hash"))
+    def getArray (value: List[MoeObject])            = new MoeArrayObject(value, getCoreClassFor("Array"))
+    def getArray ()                                  = new MoeArrayObject(List(), getCoreClassFor("Array"))
+    def getPair  (value: (MoeObject, MoeObject))     = new MoePairObject(
       (value._1.unboxToString.get, value._2), 
       getCoreClassFor("Pair")
     )

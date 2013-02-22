@@ -40,6 +40,7 @@ object MoeErrors {
 
   class MissingValue          (msg: String) extends MoeProblems(msg)
   class MissingClass          (msg: String) extends MissingValue(msg)
+  class MissingParameter      (msg: String) extends MissingValue(msg)
 
   class TypeError             (msg: String) extends MoeProblems(msg)
   class UnexpectedType        (msg: String) extends TypeError(msg)

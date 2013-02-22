@@ -2,12 +2,13 @@ package org.moe.runtime.nativeobjects
 
 import org.moe.runtime._
 
+import scala.collection.mutable.HashMap
 import scala.util.{Try, Success, Failure}
 
 class MoeHashObject(
-    v: Map[String, MoeObject],
+    v: HashMap[String, MoeObject],
     klass : Option[MoeClass] = None
-  ) extends MoeNativeObject[Map[String, MoeObject]](v, klass) {
+  ) extends MoeNativeObject[HashMap[String, MoeObject]](v, klass) {
 
   // MoeObject overrides 
 
@@ -19,5 +20,5 @@ class MoeHashObject(
 
   // unboxing
   
-  override def unboxToMap: Try[Map[String, MoeObject]] = Success(getNativeValue)
+  override def unboxToMap: Try[HashMap[String, MoeObject]] = Success(getNativeValue)
 }

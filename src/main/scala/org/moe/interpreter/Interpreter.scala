@@ -88,19 +88,9 @@ class Interpreter {
       case PairLiteralNode(key, value) => getPair(eval(runtime, env, key) -> eval(runtime, env, value))
 
       case HashLiteralNode(map) => {
-        // NOTE:
-        // forcing each element to become
-        // a single MoePairObject might be
-        // a little too restrictive, it
-        // should (in theory) be possible
-        // for it to evaluate into many
-        // MoePairObject instances as well
-        // - SL
-        getHash(
-          map.map(
-            pair => eval(runtime, env, pair).unboxToTuple.get
-          ).toMap
-        )
+        val hash = new HashMap[String,MoeObject]()
+        map.foreach(pair => hash += eval(runtime, env, pair).unboxToTuple.get)
+        getHash(hash)
       }
 
       case HashElementAccessNode(hashName: String, key: AST) => {

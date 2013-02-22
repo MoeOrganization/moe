@@ -1,5 +1,6 @@
 package org.moe.runtime
 
+import scala.collection.mutable.HashMap
 import org.moe.runtime.nativeobjects._
 
 import org.scalatest.FunSuite
@@ -176,7 +177,7 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... simple Hash object") {
     val o = new MoeHashObject(
-      Map(
+      HashMap(
         "foo" -> new MoeUndefObject(),
         "bar" -> new MoeIntObject(10)
       )
@@ -191,12 +192,12 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... simple Hash object with class") {
     val c = new MoeClass("Hash")
-    val o = new MoeHashObject(Map(), Some(c))
+    val o = new MoeHashObject(HashMap(), Some(c))
     assert(o.getAssociatedClass.get === c)
   }
 
   test("... false Hash object") {
-    val o = new MoeHashObject(Map())
+    val o = new MoeHashObject(HashMap())
     assert(!o.isTrue)
     assert(o.isFalse)
     assert(!o.isUndef)
@@ -204,7 +205,7 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... complex Hash object") {
     val o = new MoeHashObject(
-      Map(
+      HashMap(
         "foo" -> new MoeArrayObject(
           List(
             new MoeUndefObject(),
@@ -258,7 +259,7 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(array.toString == """[42, 98.6, "moe"]""")
 
     val hash = new MoeHashObject(
-      Map(
+      HashMap(
         "name" -> new MoeStrObject("moe"),
         "awesome" -> new MoeBoolObject(true)
       )
@@ -290,12 +291,12 @@ class MoeNativeObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(arrayInArray.toString == """[10, 20, [42, 98.6, "moe"]]""")
 
     val arrayInHash = new MoeHashObject(
-      Map("my_hash" -> array)
+      HashMap("my_hash" -> array)
     )
     assert(arrayInHash.toString == """{my_hash => [42, 98.6, "moe"]}""")
 
     val hashInHash = new MoeHashObject(
-      Map("my_hash" -> hash)
+      HashMap("my_hash" -> hash)
     )
     assert(
       hashInHash.toString ==
