@@ -121,12 +121,18 @@ object Moe {
    */
   object REPL {
     def enter (interpreter: Interpreter, runtime: MoeRuntime, dumpAST: Boolean = false): Unit = {
+      import jline.ConsoleReader
+
+      val cReader: ConsoleReader = new ConsoleReader
+      val prompt = "moe> "
+
       while (true) {
-        val line = readLine("> ")
-        if (line != null && line != "exit") {
+        val line = cReader readLine prompt
+        if (line != null && line.length > 0 && line != "exit") {
           evalLine(interpreter, runtime, line, dumpAST)
         }
         else {
+          if (line != "exit") println()
           return
         }
       }
