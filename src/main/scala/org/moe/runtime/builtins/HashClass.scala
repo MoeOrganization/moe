@@ -19,13 +19,7 @@ object HashClass {
 
     /**
      * NOTE: 
-     * postcircumfix:<{}> needs to also 
-     * support multiple keys, not just 
-     * as single key indexing.
-     * It should also support lvalue 
-     * assignment as well.
-     * It should delegate to the methods
-     * below.
+     * This should also support lvalue assignment.
      */
     hashClass.addMethod(
       new MoeMethod(
