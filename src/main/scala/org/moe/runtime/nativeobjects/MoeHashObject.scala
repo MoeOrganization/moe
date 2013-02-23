@@ -15,26 +15,43 @@ class MoeHashObject(
 
   // Runtime methods
 
-  def at_key(k: MoeStrObject): MoeObject = {
-    hash.get(k.unboxToString.get).getOrElse(new MoeUndefObject())
+  def at_key(r: MoeRuntime, k: MoeStrObject): MoeObject = {
+    hash.get(k.unboxToString.get).getOrElse(r.NativeObjects.getUndef)
   }
 
-  def bind_key(k: MoeStrObject, v: MoeObject): MoeObject = {
+  def bind_key(r: MoeRuntime, k: MoeStrObject, v: MoeObject): MoeObject = {
     hash.put(k.unboxToString.get, v)
     v
   }
 
-  def keys: MoeObject = new MoeArrayObject(hash.keys.map(s => new MoeStrObject(s)).toList)
+  def exists(r: MoeRuntime, k: MoeStrObject): MoeBoolObject = {
+    if (hash.contains(k.unboxToString.get)) r.NativeObjects.getTrue else r.NativeObjects.getFalse
+  }
 
-  def values: MoeObject = new MoeArrayObject(hash.values.map(x => x).toList)
+  def slice(r: MoeRuntime, keys: List[MoeStrObject]) = r.NativeObjects.getArray(keys.map(at_key(r, _)))
 
-  def kv: MoeObject = new MoeArrayObject(
-    hash.toList.map(
-      p => new MoeArrayObject(List(new MoeStrObject(p._1), p._2))
-    )
+  def clear(r: MoeRuntime) = { 
+    hash.clear()
+    r.NativeObjects.getUndef
+  }
+
+  def keys(r: MoeRuntime) = r.NativeObjects.getArray(
+    hash.keys.map(s => r.NativeObjects.getStr(s)).toList
   )
 
-  def pairs: MoeObject = new MoeArrayObject(hash.toList.map(p => new MoePairObject(p)))
+  def values(r: MoeRuntime) = r.NativeObjects.getArray(hash.values.map(x => x).toList)
+
+  def pairs(r: MoeRuntime) = r.NativeObjects.getArray(
+    hash.toList.map(p => r.NativeObjects.getPair(p))
+  )
+
+  def kv(r: MoeRuntime) = r.NativeObjects.getArray(
+    hash.toList.map(
+      p => r.NativeObjects.getArray(
+        List(r.NativeObjects.getStr(p._1), p._2)
+      )
+    )
+  )
 
   // MoeObject overrides 
 

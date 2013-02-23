@@ -31,9 +31,13 @@ object HashClass {
       new MoeMethod(
         "postcircumfix:<{}>",
         { (self, args) => 
-          val key  = args(0).unboxToString.get
-          val hash = self.unboxToMap.get
-          hash.get(key).getOrElse(r.NativeObjects.getUndef)
+          val hash = self.asInstanceOf[MoeHashObject]
+          if (args.length == 1) {
+            hash.at_key(r, args(0).asInstanceOf[MoeStrObject])
+          }
+          else {
+            hash.slice(r, args.map(_.asInstanceOf[MoeStrObject]))
+          }
         }
       )
     )
@@ -41,33 +45,41 @@ object HashClass {
     hashClass.addMethod(
       new MoeMethod(
         "at_key", // ($key)
-        (self, args) => self.asInstanceOf[MoeHashObject].at_key(args(0).asInstanceOf[MoeStrObject])
+        (self, args) => self.asInstanceOf[MoeHashObject].at_key(r, args(0).asInstanceOf[MoeStrObject])
       )
     )
 
     hashClass.addMethod(
       new MoeMethod(
         "bind_key", // ($key, $value)
-        (self, args) => self.asInstanceOf[MoeHashObject].bind_key(args(0).asInstanceOf[MoeStrObject], args(1))
+        (self, args) => self.asInstanceOf[MoeHashObject].bind_key(r, args(0).asInstanceOf[MoeStrObject], args(1))
       )
     )
 
-    hashClass.addMethod(new MoeMethod("keys", (self, _) => self.asInstanceOf[MoeHashObject].keys))
+    hashClass.addMethod(
+      new MoeMethod(
+        "exists", // ($key)
+        (self, args) => self.asInstanceOf[MoeHashObject].exists(r, args(0).asInstanceOf[MoeStrObject])
+      )
+    )
 
-    hashClass.addMethod(new MoeMethod("values", (self, _) => self.asInstanceOf[MoeHashObject].values))
+    hashClass.addMethod(
+      new MoeMethod(
+        "slice", // ($key)
+        (self, args) => self.asInstanceOf[MoeHashObject].slice(r, args.map(_.asInstanceOf[MoeStrObject]))
+      )
+    )
 
-    hashClass.addMethod(new MoeMethod("kv", (self, _) => self.asInstanceOf[MoeHashObject].kv))
-
-    hashClass.addMethod(new MoeMethod("pairs", (self, _) => self.asInstanceOf[MoeHashObject].pairs))
+    hashClass.addMethod(new MoeMethod("clear",  (self, _) => self.asInstanceOf[MoeHashObject].clear(r)))
+    hashClass.addMethod(new MoeMethod("keys",   (self, _) => self.asInstanceOf[MoeHashObject].keys(r)))
+    hashClass.addMethod(new MoeMethod("values", (self, _) => self.asInstanceOf[MoeHashObject].values(r)))
+    hashClass.addMethod(new MoeMethod("kv",     (self, _) => self.asInstanceOf[MoeHashObject].kv(r)))
+    hashClass.addMethod(new MoeMethod("pairs",  (self, _) => self.asInstanceOf[MoeHashObject].pairs(r)))
 
     /**
      * List of Methods to support:
      * - each ($callback)
      * - delete ($key | @keys)
-     * - exists ($key)
-     * - slice (@keys)
-     * - clear     
-     * - delete ($key | @keys) 
      *
      * See the following for details:
      * - https://metacpan.org/release/autobox-Core
