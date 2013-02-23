@@ -25,7 +25,7 @@ object IntClass {
         { (invocant, args) =>
           args(0) match {
             case i: MoeIntObject   => getInt(invocant.unboxToInt.get + i.unboxToInt.get)
-            case f: MoeNumObject => getFloat(invocant.unboxToDouble.get + f.unboxToDouble.get)
+            case f: MoeNumObject => getNum(invocant.unboxToDouble.get + f.unboxToDouble.get)
             case _                 => throw new MoeErrors.UnexpectedType(args(0).toString)
           }
         }
@@ -38,7 +38,7 @@ object IntClass {
         { (invocant, args) =>
           args(0) match {
             case i: MoeIntObject   => getInt(invocant.unboxToInt.get * i.unboxToInt.get)
-            case f: MoeNumObject => getFloat(invocant.unboxToDouble.get * f.unboxToDouble.get)
+            case f: MoeNumObject => getNum(invocant.unboxToDouble.get * f.unboxToDouble.get)
             case _                 => throw new MoeErrors.UnexpectedType(args(0).toString)
           }
         }

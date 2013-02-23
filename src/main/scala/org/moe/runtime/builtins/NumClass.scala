@@ -20,7 +20,7 @@ object NumClass {
       new MoeMethod(
         "infix:<+>",
         { (invocant, args) =>
-          getFloat(invocant.unboxToDouble.get + args(0).unboxToDouble.get)
+          getNum(invocant.unboxToDouble.get + args(0).unboxToDouble.get)
         }
       )
     )
