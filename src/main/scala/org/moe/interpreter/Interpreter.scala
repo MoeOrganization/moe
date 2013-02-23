@@ -62,29 +62,31 @@ class Interpreter {
       case ClassLiteralNode() => envClass()
       case SuperLiteralNode() => {
         val klass = envClass()
-        klass.getSuperclass.getOrElse(
+        klass.getSuperclass getOrElse {
           throw new MoeErrors.SuperclassNotFound(klass.getName)
-        )
+        }
       }
 
       case ArrayLiteralNode(values) => {
-        val array: List[MoeObject] = values.map(eval(runtime, env, _))
+        val array: List[MoeObject] = values map { eval(runtime, env, _) }
         getArray(array)
       }
 
       case ArrayElementAccessNode(arrayName: String, index: AST) => {
         val index_result = eval(runtime, env, index)
-        val array_value = env.get(arrayName) match {
+        val array_value = env get arrayName match {
           case Some(a: MoeArrayObject) => a
           case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
         }
 
         array_value.callMethod(
-          array_value.getAssociatedClass.getOrElse(
+          array_value.getAssociatedClass map {
+            _.getMethod("postcircumfix:<[]>") getOrElse {
+              throw new MoeErrors.MethodNotFound("postcircumfix:<[]>")
+            }
+          } getOrElse {
             throw new MoeErrors.ClassNotFound("Array")
-          ).getMethod("postcircumfix:<[]>").getOrElse(
-            throw new MoeErrors.MethodNotFound("postcircumfix:<[]>")
-          ), 
+          },
           List(index_result)
         )
       }
@@ -99,17 +101,19 @@ class Interpreter {
 
       case HashElementAccessNode(hashName: String, key: AST) => {
         val key_result = eval(runtime, env, key)
-        val hash_map = env.get(hashName) match {
+        val hash_map = env get hashName match {
           case Some(h: MoeHashObject) => h
           case _ => throw new MoeErrors.UnexpectedType("MoeHashObject expected")
         }
 
         hash_map.callMethod(
-          hash_map.getAssociatedClass.getOrElse(
+          hash_map.getAssociatedClass map {
+            _.getMethod("postcircumfix:<{}>") getOrElse {
+              throw new MoeErrors.MethodNotFound("postcircumfix:<{}>")
+            }
+          } getOrElse {
             throw new MoeErrors.ClassNotFound("Hash")
-          ).getMethod("postcircumfix:<{}>").getOrElse(
-            throw new MoeErrors.MethodNotFound("postcircumfix:<{}>")
-          ), 
+          },
           List(key_result)
         )
       }
@@ -122,7 +126,7 @@ class Interpreter {
             val range_start  = s.unboxToInt.get
             val range_end    = e.unboxToInt.get
             val range: Range = new Range(range_start, range_end + 1, 1)
-            val array: List[MoeObject] = range.toList.map(getInt(_))
+            val array: List[MoeObject] = range.toList map getInt
             getArray(array)
           }
           case (s: MoeStrObject, e: MoeStrObject) => {
@@ -138,7 +142,7 @@ class Interpreter {
                 elems = elems :+ str
                 str = magicalStringIncrement(str)
               }
-              getArray(elems.map(getStr(_)))
+              getArray(elems map getStr)
             }
           }
           case _ => throw new MoeErrors.UnexpectedType("Pair of MoeIntObject or MoeStrObject expected")
@@ -150,9 +154,7 @@ class Interpreter {
       // TODO - these three should be converted to methods of Int,Float and String
 
       case IncrementNode(receiver: AST, is_prefix) => receiver match {
-        case VariableAccessNode(varName) => env.get(varName).getOrElse(
-          throw new MoeErrors.VariableNotFound(varName)
-        ) match {
+        case VariableAccessNode(varName) => env get varName map {
           case i: MoeIntObject => {
             val new_i = getInt(i.unboxToInt.get + 1)
             env.set(varName, new_i)
@@ -168,12 +170,12 @@ class Interpreter {
             env.set(varName, new_s)
             if (is_prefix) new_s else s
           }
+        } getOrElse {
+          throw new MoeErrors.VariableNotFound(varName)
         }
       }
       case DecrementNode(receiver: AST, is_prefix) => receiver match {
-        case VariableAccessNode(varName) => env.get(varName).getOrElse(
-          throw new MoeErrors.VariableNotFound(varName)
-        ) match {
+        case VariableAccessNode(varName) => env get varName map {
           case i: MoeIntObject => {
             val new_i = getInt(i.unboxToInt.get - 1)
             env.set(varName, new_i)
@@ -184,6 +186,8 @@ class Interpreter {
             env.set(varName, new_n)
             if (is_prefix) new_n else n
           }
+        } getOrElse {
+          throw new MoeErrors.VariableNotFound(varName)
         }
       }
 
@@ -239,26 +243,26 @@ class Interpreter {
       // value lookup, assignment and declaration
 
       case ClassAccessNode(name) => {
-        envPackage().getClass(name).getOrElse(
+        envPackage().getClass(name) getOrElse {
           throw new MoeErrors.ClassNotFound(name)
-        )
+        }
       }
       case ClassDeclarationNode(name, superclass, body) => {
         val pkg = envPackage()
-        val superclass_class: Option[MoeClass] = superclass.map(
-          pkg.getClass(_).getOrElse(
+        val superclass_class: Option[MoeClass] = superclass map {
+          pkg getClass(_) getOrElse {
             throw new MoeErrors.ClassNotFound(superclass.getOrElse(""))
-          )
-        )
+          }
+        }
 
         val klass = new MoeClass(
-          name, None, None, Some(superclass_class.getOrElse(runtime.getClassClass))
+          name, None, None, Some(superclass_class getOrElse runtime.getClassClass)
         )
 
         pkg.addClass(klass)
 
         scoped { klass_env =>
-          klass_env.setCurrentClass(klass)
+          klass_env setCurrentClass klass
           eval(runtime, klass_env, body)
           klass
         }
@@ -270,8 +274,8 @@ class Interpreter {
         scoped { newEnv =>
           val parent = envPackage()
           val pkg    = new MoePackage(name, newEnv)
-          parent.addSubPackage(pkg)
-          newEnv.setCurrentPackage(pkg)
+          parent addSubPackage pkg
+          newEnv setCurrentPackage pkg
           eval(runtime, newEnv, body)
         }
       }
@@ -285,16 +289,16 @@ class Interpreter {
             "new",
             (invocant, args) => {
               val param_pairs = params zip args
-              param_pairs.foreach({ case (param, arg) =>
-                constructor_env.create(param, arg)
-              })
+              param_pairs foreach { case (param, arg) =>
+                constructor_env create(param, arg)
+              }
               val instance = klass.newInstance
-              constructor_env.setCurrentInvocant(instance)
+              constructor_env setCurrentInvocant instance
               eval(runtime, constructor_env, body)
               instance
             }
           )
-          envClass().addMethod(method)
+          envClass() addMethod method
           method
         }
       }
@@ -308,14 +312,14 @@ class Interpreter {
             name,
             (invocant, args) => {
               val param_pairs = params zip args
-              param_pairs.foreach({ case (param, arg) =>
-                method_env.create(param, arg)
-              })
-              method_env.setCurrentInvocant(invocant)
+              param_pairs foreach { case (param, arg) =>
+                method_env create(param, arg)
+              }
+              method_env setCurrentInvocant invocant
               eval(runtime, method_env, body)
             }
           )
-          envClass().addMethod(method)
+          envClass() addMethod method
           method
         }
       }
@@ -326,34 +330,34 @@ class Interpreter {
             name,
             args => {
               val param_pairs = params zip args
-              param_pairs.foreach({ case (param, arg) =>
-                sub_env.create(param, arg)
-              })
+              param_pairs.foreach { case (param, arg) =>
+                sub_env create(param, arg)
+              }
               eval(runtime, sub_env, body)
             }
           )
-          envPackage().addSubroutine( sub )
+          envPackage() addSubroutine sub
           sub
         }
       }
 
       case AttributeAccessNode(name) => {
         val klass = envClass()
-        val attr = klass.getAttribute(name).getOrElse(
+        val attr = klass getAttribute name getOrElse {
           throw new MoeErrors.AttributeNotFound(name)
-        )
+        }
         val invocant = env.getCurrentInvocant
         invocant match {
           case Some(invocant: MoeOpaque) =>
-            invocant.getValue(name).getOrElse(attr.getDefault.getOrElse(getUndef))
-          case _ => throw new MoeErrors.UnexpectedType(invocant.getOrElse("(undef)").toString)
+            invocant getValue name getOrElse { attr.getDefault getOrElse getUndef }
+          case _ => throw new MoeErrors.UnexpectedType(invocant map { _.toString } getOrElse "(undef)")
         }
       }
       case AttributeAssignmentNode(name, expression) => {
         val klass = envClass()
-        val attr = klass.getAttribute(name).getOrElse(
+        val attr = klass getAttribute name getOrElse {
           throw new MoeErrors.AttributeNotFound(name)
-        )
+        }
         val expr = eval(runtime, env, expression)
         env.getCurrentInvocant match {
           case Some(invocant: MoeOpaque) => invocant.setValue(name, expr)
@@ -367,18 +371,18 @@ class Interpreter {
         val klass = envClass()
         val attr_default = eval(runtime, env, expression)
         val attr = new MoeAttribute(name, Some(attr_default))
-        klass.addAttribute(attr)
+        klass addAttribute attr
         attr
       }
 
       // TODO context etc
-      case VariableAccessNode(name) => env.get(name).getOrElse(
+      case VariableAccessNode(name) => env get name getOrElse {
           throw new MoeErrors.VariableNotFound(name)
-        )
+      }
       case VariableAssignmentNode(name, expression) => {
-        env.set(name, eval(runtime, env, expression)).getOrElse(
+        env.set(name, eval(runtime, env, expression)) getOrElse {
           throw new MoeErrors.VariableNotFound(name)
-        )
+        }
       }
       case VariableDeclarationNode(name, expression) => {
         env.create(name, eval(runtime, env, expression)).get
@@ -389,20 +393,20 @@ class Interpreter {
         val invocant_object = eval(runtime, env, invocant)
         invocant_object match {
           case obj: MoeObject =>
-            val klass = obj.getAssociatedClass.getOrElse(
+            val klass = obj.getAssociatedClass getOrElse {
               throw new MoeErrors.ClassNotFound("__CLASS__")
-            )
-            val meth = klass.getMethod(method_name).getOrElse(
+            }
+            val meth = klass getMethod method_name getOrElse {
               throw new MoeErrors.MethodNotFound(method_name)
-            )
-            invocant_object.callMethod(meth, args.map(eval(runtime, env, _)))
+            }
+            invocant_object.callMethod(meth, args map(eval(runtime, env, _)))
           case _ => throw new MoeErrors.MoeException("Object expected")
         }
       }
       case SubroutineCallNode(function_name, args) => {
-        val sub = envPackage().getSubroutine(function_name).getOrElse(
+        val sub = envPackage() getSubroutine function_name getOrElse {
             throw new MoeErrors.SubroutineNotFound(function_name)
-        )
+        }
         // NOTE:
         // I think we might need to eval these
         // in the context of the sub body, and
@@ -410,7 +414,7 @@ class Interpreter {
         // add the args to the environment as 
         // well.
         // - SL
-        sub.execute(args.map(eval(runtime, env, _)))
+        sub.execute(args map(eval(runtime, env, _)))
       }
 
       // statements
