@@ -19,6 +19,16 @@ class Interpreter {
 
     val scoped = inNewEnv[MoeObject](env) _
 
+    val envInvocant: () => MoeObject = () => env.getCurrentInvocant getOrElse {
+      throw new MoeErrors.InvocantNotFound("__SELF__")
+    }
+    val envClass: () => MoeClass = () => env.getCurrentClass getOrElse {
+      throw new MoeErrors.ClassNotFound("__CLASS__")
+    }
+    val envPackage: () => MoePackage = () => env.getCurrentPackage getOrElse {
+      throw new MoeErrors.PackageNotFound("__PACKAGE__")
+    }
+
     // interpret ..
     node match {
 
@@ -48,18 +58,12 @@ class Interpreter {
       case BooleanLiteralNode(value) => getBool(value)
 
       case UndefLiteralNode() => getUndef
-      case SelfLiteralNode()  => env.getCurrentInvocant.getOrElse(
-          throw new MoeErrors.InvocantNotFound("__SELF__")
-        )
-      case ClassLiteralNode() => env.getCurrentClass.getOrElse(
-          throw new MoeErrors.ClassNotFound("__CLASS__")
-        )
+      case SelfLiteralNode()  => envInvocant()
+      case ClassLiteralNode() => envClass()
       case SuperLiteralNode() => {
-        val klass = env.getCurrentClass
-        klass.getOrElse(
-          throw new MoeErrors.ClassNotFound("__CLASS__")
-        ).getSuperclass.getOrElse(
-          throw new MoeErrors.SuperclassNotFound(klass.get.getName)
+        val klass = envClass()
+        klass.getSuperclass.getOrElse(
+          throw new MoeErrors.SuperclassNotFound(klass.getName)
         )
       }
 
@@ -235,17 +239,12 @@ class Interpreter {
       // value lookup, assignment and declaration
 
       case ClassAccessNode(name) => {
-        env.getCurrentPackage.getOrElse(
-          throw new MoeErrors.PackageNotFound("__PACKAGE__")
-        ).getClass(name).getOrElse(
+        envPackage().getClass(name).getOrElse(
           throw new MoeErrors.ClassNotFound(name)
         )
       }
       case ClassDeclarationNode(name, superclass, body) => {
-        val pkg = env.getCurrentPackage.getOrElse(
-          throw new MoeErrors.PackageNotFound("__PACKAGE__")
-        )
-
+        val pkg = envPackage()
         val superclass_class: Option[MoeClass] = superclass.map(
           pkg.getClass(_).getOrElse(
             throw new MoeErrors.ClassNotFound(superclass.getOrElse(""))
@@ -269,9 +268,7 @@ class Interpreter {
 
       case PackageDeclarationNode(name, body) => {
         scoped { newEnv =>
-          val parent = env.getCurrentPackage.getOrElse(
-            throw new MoeErrors.PackageNotFound("__PACKAGE__")
-          )
+          val parent = envPackage()
           val pkg    = new MoePackage(name, newEnv)
           parent.addSubPackage(pkg)
           newEnv.setCurrentPackage(pkg)
@@ -281,9 +278,7 @@ class Interpreter {
 
       // TODO: constructor overloading
       case ConstructorDeclarationNode(params, body) => {
-        val klass = env.getCurrentClass.getOrElse(
-          throw new MoeErrors.ClassNotFound("__CLASS__")
-        )
+        val klass = envClass()
         throwForUndeclaredVars(env, params, body)
         scoped { constructor_env =>
           val method = new MoeMethod(
@@ -299,18 +294,14 @@ class Interpreter {
               instance
             }
           )
-          env.getCurrentClass.getOrElse(
-            throw new MoeErrors.ClassNotFound("__CLASS__")
-          ).addMethod(method)
+          envClass().addMethod(method)
           method
         }
       }
       case DestructorDeclarationNode(params, body) => stub
 
       case MethodDeclarationNode(name, params, body) => {
-        val klass = env.getCurrentClass.getOrElse(
-          throw new MoeErrors.ClassNotFound("__CLASS__")
-        )
+        val klass = envClass()
         throwForUndeclaredVars(env, params, body)
         scoped { method_env =>
           val method = new MoeMethod(
@@ -324,9 +315,7 @@ class Interpreter {
               eval(runtime, method_env, body)
             }
           )
-          env.getCurrentClass.getOrElse(
-            throw new MoeErrors.ClassNotFound("__CLASS__")
-          ).addMethod(method)
+          envClass().addMethod(method)
           method
         }
       }
@@ -343,17 +332,13 @@ class Interpreter {
               eval(runtime, sub_env, body)
             }
           )
-          env.getCurrentPackage.getOrElse(
-            throw new MoeErrors.PackageNotFound("__PACKAGE__")
-          ).addSubroutine( sub )
+          envPackage().addSubroutine( sub )
           sub
         }
       }
 
       case AttributeAccessNode(name) => {
-        val klass = env.getCurrentClass.getOrElse(
-          throw new MoeErrors.ClassNotFound("__CLASS__")
-        )
+        val klass = envClass()
         val attr = klass.getAttribute(name).getOrElse(
           throw new MoeErrors.AttributeNotFound(name)
         )
@@ -365,9 +350,7 @@ class Interpreter {
         }
       }
       case AttributeAssignmentNode(name, expression) => {
-        val klass = env.getCurrentClass.getOrElse(
-          throw new MoeErrors.ClassNotFound("__CLASS__")
-        )
+        val klass = envClass()
         val attr = klass.getAttribute(name).getOrElse(
           throw new MoeErrors.AttributeNotFound(name)
         )
@@ -381,9 +364,7 @@ class Interpreter {
         expr
       }
       case AttributeDeclarationNode(name, expression) => {
-        val klass = env.getCurrentClass.getOrElse(
-          throw new MoeErrors.ClassNotFound("__CLASS__")
-        )
+        val klass = envClass()
         val attr_default = eval(runtime, env, expression)
         val attr = new MoeAttribute(name, Some(attr_default))
         klass.addAttribute(attr)
@@ -419,9 +400,7 @@ class Interpreter {
         }
       }
       case SubroutineCallNode(function_name, args) => {
-        val sub = env.getCurrentPackage.getOrElse(
-            throw new MoeErrors.PackageNotFound("__PACKAGE__")
-          ).getSubroutine(function_name).getOrElse(
+        val sub = envPackage().getSubroutine(function_name).getOrElse(
             throw new MoeErrors.SubroutineNotFound(function_name)
         )
         // NOTE:
