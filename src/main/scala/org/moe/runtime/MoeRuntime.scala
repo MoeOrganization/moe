@@ -165,10 +165,7 @@ class MoeRuntime (
     def getHash  ()                                  = new MoeHashObject(HashMap(), getCoreClassFor("Hash"))
     def getArray (value: List[MoeObject])            = new MoeArrayObject(value, getCoreClassFor("Array"))
     def getArray ()                                  = new MoeArrayObject(List(), getCoreClassFor("Array"))
-    def getPair  (value: (MoeObject, MoeObject))     = new MoePairObject(
-      (value._1.unboxToString.get, value._2), 
-      getCoreClassFor("Pair")
-    )
+    def getPair  (value: (String, MoeObject))        = new MoePairObject((value._1, value._2), getCoreClassFor("Pair"))
 
   }
 

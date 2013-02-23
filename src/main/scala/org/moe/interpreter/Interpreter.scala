@@ -85,7 +85,9 @@ class Interpreter {
         )
       }
 
-      case PairLiteralNode(key, value) => getPair(eval(runtime, env, key) -> eval(runtime, env, value))
+      case PairLiteralNode(key, value) => getPair(
+        eval(runtime, env, key).unboxToString.get -> eval(runtime, env, value)
+      )
 
       case HashLiteralNode(map) => {
         val hash = new HashMap[String,MoeObject]()
