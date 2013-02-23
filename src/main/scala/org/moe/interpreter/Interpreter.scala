@@ -43,8 +43,8 @@ class Interpreter {
       // literals
 
       case IntLiteralNode(value)     => getInt(value)
-      case FloatLiteralNode(value)   => getFloat(value)
-      case StringLiteralNode(value)  => getString(value)
+      case FloatLiteralNode(value)   => getNum(value)
+      case StringLiteralNode(value)  => getStr(value)
       case BooleanLiteralNode(value) => getBool(value)
 
       case UndefLiteralNode() => getUndef
@@ -134,7 +134,7 @@ class Interpreter {
                 elems = elems :+ str
                 str = magicalStringIncrement(str)
               }
-              getArray(elems.map(getString(_)))
+              getArray(elems.map(getStr(_)))
             }
           }
           case _ => throw new MoeErrors.UnexpectedType("Pair of MoeIntObject or MoeStrObject expected")
@@ -155,12 +155,12 @@ class Interpreter {
             if (is_prefix) new_i else i
           }
           case n: MoeNumObject => {
-            val new_n = getFloat(n.unboxToDouble.get + 1.0)
+            val new_n = getNum(n.unboxToDouble.get + 1.0)
             env.set(varName, new_n)
             if (is_prefix) new_n else n
           }
           case s: MoeStrObject => {
-            val new_s = getString(magicalStringIncrement(s.unboxToString.get))
+            val new_s = getStr(magicalStringIncrement(s.unboxToString.get))
             env.set(varName, new_s)
             if (is_prefix) new_s else s
           }
@@ -176,7 +176,7 @@ class Interpreter {
             if (is_prefix) new_i else i
           }
           case n: MoeNumObject => {
-            val new_n = getFloat(n.unboxToDouble.get - 1.0)
+            val new_n = getNum(n.unboxToDouble.get - 1.0)
             env.set(varName, new_n)
             if (is_prefix) new_n else n
           }
