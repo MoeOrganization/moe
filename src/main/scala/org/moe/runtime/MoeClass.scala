@@ -103,9 +103,9 @@ class MoeClass(
    *
    * @param name The name of the attribute to return
    */
-  def getAttribute(name: String): Option[MoeAttribute] = attributes.get(name).orElse(
-      superclass.flatMap({ sc => sc.getAttribute(name) })
-    )
+  def getAttribute(name: String): Option[MoeAttribute] = attributes get name orElse {
+    superclass flatMap { sc => sc getAttribute name }
+  }
 
   /**
    * Returns true if this class (or any of it's superclasses) has an attribute
@@ -119,9 +119,9 @@ class MoeClass(
    * Returns a [[scala.collection.Map]] of names and attributes for this class
    * and all of it's superclasses.
    */
-  def collectAllAttributes: Map[String, MoeAttribute] = superclass.map(
-      { s => s.collectAllAttributes ++ attributes }
-    ).getOrElse(attributes.clone)  
+  def collectAllAttributes: Map[String, MoeAttribute] = superclass map {
+    s => s.collectAllAttributes ++ attributes
+  } getOrElse attributes.clone
 
   // Instances
 
@@ -149,9 +149,9 @@ class MoeClass(
    *
    * @param name The name of the method to return
    */
-  def getMethod(name: String): Option[MoeMethod] = methods.get(name).orElse(
-      superclass.flatMap({ sc => sc.getMethod(name) })
-  )
+  def getMethod(name: String): Option[MoeMethod] = methods get name orElse {
+      superclass flatMap(_.getMethod(name))
+  }
 
   /**
    * Returns true if this class has a method with the specified name.
@@ -164,9 +164,9 @@ class MoeClass(
    * Returns a [[scala.collection.Map]] of names and methods for this class
    * and all of it's superclasses.
    */
-  def collectAllMethods: Map[String, MoeMethod] = superclass.map(
-      { s => s.collectAllMethods ++ methods }
-    ).getOrElse(methods.clone)  
+  def collectAllMethods: Map[String, MoeMethod] = superclass map {
+      _.collectAllMethods ++ methods
+  } getOrElse methods.clone
 
   // Utils ...
 

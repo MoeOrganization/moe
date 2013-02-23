@@ -67,7 +67,7 @@ class MoeRuntime (
       val hashClass      = new MoeClass("Hash",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val pairClass      = new MoeClass("Pair",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val ioClass        = new MoeClass("IO",         Some(VERSION), Some(AUTHORITY), Some(anyClass))
-       
+
       val undefClass     = new MoeClass("Undef",      Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val boolClass      = new MoeClass("Bool",       Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val strClass       = new MoeClass("Str",        Some(VERSION), Some(AUTHORITY), Some(scalarClass))
@@ -76,22 +76,22 @@ class MoeRuntime (
       val exceptionClass = new MoeClass("Exception",  Some(VERSION), Some(AUTHORITY), Some(scalarClass))
 
       // add all these classes to the corePackage
-      corePackage.addClass(objectClass)
-      corePackage.addClass(classClass)
+      corePackage addClass objectClass
+      corePackage addClass classClass
 
-      corePackage.addClass(anyClass)
-      corePackage.addClass(scalarClass)
-      corePackage.addClass(arrayClass)
-      corePackage.addClass(hashClass)
-      corePackage.addClass(pairClass)
-      corePackage.addClass(ioClass)
+      corePackage addClass anyClass
+      corePackage addClass scalarClass
+      corePackage addClass arrayClass
+      corePackage addClass hashClass
+      corePackage addClass pairClass
+      corePackage addClass ioClass
 
-      corePackage.addClass(undefClass)
-      corePackage.addClass(boolClass)
-      corePackage.addClass(strClass)
-      corePackage.addClass(intClass)
-      corePackage.addClass(numClass)
-      corePackage.addClass(exceptionClass)
+      corePackage addClass undefClass
+      corePackage addClass boolClass
+      corePackage addClass strClass
+      corePackage addClass intClass
+      corePackage addClass numClass
+      corePackage addClass exceptionClass
 
       setupBuiltins
 
@@ -105,7 +105,7 @@ class MoeRuntime (
     }
   }
 
-  def getCoreClassFor (name: String): Option[MoeClass] = corePackage.getClass(name)
+  def getCoreClassFor (name: String): Option[MoeClass] = corePackage getClass name
 
   def warn(msg: String): Unit = warn(Array(msg))
   def warn(msg: Array[String]): Unit = {
@@ -115,19 +115,19 @@ class MoeRuntime (
     // to the message, when we have
     // actual line numbers that is
     // - SL
-    system.getSTDERR.println(out)
+    system.getSTDERR println out
   }
 
   def print(msg: String): Unit = print(Array(msg))
-  def print(msg: Array[String]): Unit = system.getSTDOUT.print(msg.mkString)
+  def print(msg: Array[String]): Unit = system.getSTDOUT print msg.mkString
 
   def say(msg: String): Unit = say(Array(msg))
-  def say(msg: Array[String]): Unit = system.getSTDOUT.println(msg.mkString)
+  def say(msg: Array[String]): Unit = system.getSTDOUT println msg.mkString
 
   private def setupBuiltins = {
     import org.moe.runtime.builtins._
 
-    ClassClass(this) 
+    ClassClass(this)
     ObjectClass(this)
 
     AnyClass(this)
@@ -166,7 +166,7 @@ class MoeRuntime (
     def getArray (value: List[MoeObject])            = new MoeArrayObject(value, getCoreClassFor("Array"))
     def getArray ()                                  = new MoeArrayObject(List(), getCoreClassFor("Array"))
     def getPair  (value: (MoeObject, MoeObject))     = new MoePairObject(
-      (value._1.unboxToString.get, value._2), 
+      (value._1.unboxToString.get, value._2),
       getCoreClassFor("Pair")
     )
 

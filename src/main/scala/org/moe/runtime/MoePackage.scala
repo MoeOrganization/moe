@@ -64,7 +64,7 @@ class MoePackage(
    *
    * @param name The name of the subroutine to return
    */
-  def getSubroutine(name: String): Option[MoeSubroutine] = subs.get(name)
+  def getSubroutine(name: String): Option[MoeSubroutine] = subs get name
 
   /**
    * checks if a subroutine with the specified name is in package
@@ -72,7 +72,7 @@ class MoePackage(
    * @param name The name of the subroutine to check for
    */
   def hasSubroutine(name: String): Boolean = {
-    if (subs.contains(name)) return true
+    if (subs contains name) return true
     false
   }
 
@@ -92,7 +92,7 @@ class MoePackage(
    *
    * @param name The name of the class to return
    */
-  def getClass(name: String): Option[MoeClass] = klasses.get(name)
+  def getClass(name: String): Option[MoeClass] = klasses get name
 
   /**
    * checks if a class with the specified name is in package

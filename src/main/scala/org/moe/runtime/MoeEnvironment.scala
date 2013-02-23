@@ -57,8 +57,8 @@ class MoeEnvironment(
     }
   }
 
-  private def getLocal(name: String): Option[MoeObject] = pad.get(name)
-  private def hasLocal(name: String): Boolean           = pad.contains(name)
+  private def getLocal(name: String): Option[MoeObject] = pad get name
+  private def hasLocal(name: String): Boolean           = pad contains name
   private def setLocal(name: String, value: MoeObject): Option[MoeObject] = {
     pad += (name -> value)
     Some(value)
