@@ -40,15 +40,21 @@ case class RangeLiteralNode(start: AST, end: AST) extends AST
 
 case class IncrementNode(receiver: AST, is_prefix: Boolean = false) extends AST
 case class DecrementNode(receiver: AST, is_prefix: Boolean = false) extends AST
-case class NotNode(receiver: AST) extends AST
 
+case class NotNode(receiver: AST) extends AST
 
 // binary operators
 
 case class AndNode(lhs: AST, rhs: AST) extends AST
 case class OrNode(lhs: AST, rhs: AST) extends AST
+
+case class EqualToNode(lhs: AST, rhs: AST) extends AST
+case class NotEqualToNode(lhs: AST, rhs: AST) extends AST
+
 case class LessThanNode(lhs: AST, rhs: AST) extends AST
+case class LessThanOrEqualToNode(lhs: AST, rhs: AST) extends AST
 case class GreaterThanNode(lhs: AST, rhs: AST) extends AST
+case class GreaterThanOrEqualToNode(lhs: AST, rhs: AST) extends AST
 
 // value lookup, assignment and declaration
 
