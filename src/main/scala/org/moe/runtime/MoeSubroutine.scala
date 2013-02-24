@@ -9,7 +9,7 @@ package org.moe.runtime
 
 class MoeSubroutine (
     private val name: String,
-    private val signature: MoeSignature,
+    private val signature: MoeSignature, // = new MoeSignature(List(new MoeParameter("@_"))),
     private val body: (MoeEnvironment) => MoeObject
   ) extends MoeObject {
 
