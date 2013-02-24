@@ -113,41 +113,43 @@ object Serializer {
       )
     )
 
-    case ConstructorDeclarationNode(params, body) => JSONObject(
+    case ParameterNode(name) => name
+    case SignatureNode(params) => JSONArray(params)
+
+    case ConstructorDeclarationNode(signature, body) => JSONObject(
       Map(
         "ConstructorDeclarationNode" -> JSONObject(
           Map(
-            "params" -> JSONArray(params),
-            "body"   -> toJSON(body)
+            "signature" -> signature,
+            "body"      -> toJSON(body)
           )
         )
       )
     )
-    case DestructorDeclarationNode(params, body) => JSONObject(
-        Map(
-          "DestructorDeclarationNode" -> JSONObject(
-            Map(
-              "params" -> JSONArray(params),
-              "body"   -> toJSON(body)
-              )
-            )
+
+    case DestructorDeclarationNode(signature, body) => JSONObject(
+      Map(
+        "DestructorDeclarationNode" -> JSONObject(
+          Map(
+            "signature" -> signature,
+            "body"      -> toJSON(body)
           )
         )
+      )
+    )
 
-    case MethodDeclarationNode(name, params, body) => JSONObject(
-        Map(
-          "MethodDeclarationNode" -> JSONObject(
-            Map(
-              "name"   -> name,
-              "params" -> JSONArray(params),
-              "body"   -> toJSON(body)
-              )
-            )
+    case MethodDeclarationNode(name, signature, body) => JSONObject(
+      Map(
+        "MethodDeclarationNode" -> JSONObject(
+          Map(
+            "name"      -> name,
+            "signature" -> signature,
+            "body"      -> toJSON(body)
           )
         )
+      )
+    )
 
-    case ParameterNode(name) => name
-    case SignatureNode(params) => JSONArray(params)
     case SubroutineDeclarationNode(name, signature, body) => JSONObject(
       Map(
         "SubroutineDeclarationNode" -> JSONObject(
