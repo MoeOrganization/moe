@@ -87,7 +87,7 @@ class MoeObject(
    * @param name The name of the method
    * @param args The list of arguments to provide to the method
    */
-  def callMethod(method: MoeMethod, args: List[MoeObject]): MoeObject = method.execute(this, args)
+  def callMethod(method: MoeMethod, args: List[MoeObject]): MoeObject = method.execute(new MoeArguments(args, Some(this)))
 
   /**
    * Returns true.
