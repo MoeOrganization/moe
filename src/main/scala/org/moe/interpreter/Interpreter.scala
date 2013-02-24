@@ -281,78 +281,92 @@ class Interpreter {
         }
       }
 
-      // TODO: constructor overloading
-      case ConstructorDeclarationNode(params, body) => {
-        val klass = env.getCurrentClass.getOrElse(
-          throw new MoeErrors.ClassNotFound("__CLASS__")
-        )
-        throwForUndeclaredVars(env, params, body)
-        scoped { constructor_env =>
-          val method = new MoeMethod(
-            "new",
-            (invocant, args) => {
-              val param_pairs = params zip args
-              param_pairs.foreach({ case (param, arg) =>
-                constructor_env.create(param, arg)
-              })
-              val instance = klass.newInstance
-              constructor_env.setCurrentInvocant(instance)
-              eval(runtime, constructor_env, body)
-              instance
-            }
-          )
-          env.getCurrentClass.getOrElse(
-            throw new MoeErrors.ClassNotFound("__CLASS__")
-          ).addMethod(method)
-          method
-        }
-      }
-      case DestructorDeclarationNode(params, body) => stub
-
-      case MethodDeclarationNode(name, params, body) => {
-        val klass = env.getCurrentClass.getOrElse(
-          throw new MoeErrors.ClassNotFound("__CLASS__")
-        )
-        throwForUndeclaredVars(env, params, body)
-        scoped { method_env =>
-          val method = new MoeMethod(
-            name,
-            (invocant, args) => {
-              val param_pairs = params zip args
-              param_pairs.foreach({ case (param, arg) =>
-                method_env.create(param, arg)
-              })
-              method_env.setCurrentInvocant(invocant)
-              eval(runtime, method_env, body)
-            }
-          )
-          env.getCurrentClass.getOrElse(
-            throw new MoeErrors.ClassNotFound("__CLASS__")
-          ).addMethod(method)
-          method
-        }
-      }
-
       case ParameterNode(name)   => new MoeParameter(name)
       case SignatureNode(params) => new MoeSignature(
         params.map(eval(runtime, env, _).asInstanceOf[MoeParameter])
       )
 
+      case ConstructorDeclarationNode(signature, body) => {
+        val klass = env.getCurrentClass.getOrElse(
+          throw new MoeErrors.ClassNotFound("__CLASS__")
+        )
+        val sig = eval(runtime, env, signature).asInstanceOf[MoeSignature]
+        throwForUndeclaredVars(env, sig, body)
+
+        val constructor = new MoeMethod(
+          name            = "BUILD",
+          signature       = sig,
+          declaration_env = env,
+          body            = (e) => eval(runtime, e, body)
+        )
+        klass.setConstructor(Some(constructor))
+
+        val new_method = new MoeMethod(
+          name            = "new",
+          signature       = sig,
+          declaration_env = env,
+          body            = {
+            (env) => 
+              val c = env.getCurrentInvocant.get.asInstanceOf[MoeClass]
+              val i = c.newInstance
+              val e = new MoeEnvironment(Some(env))
+              e.setCurrentInvocant(i)
+              c.getConstructor.map(_.executeBody(e))
+              i
+          }
+        )
+        klass.addMethod(new_method)
+        
+        constructor
+      }
+
+      case DestructorDeclarationNode(signature, body) => {
+        val klass = env.getCurrentClass.getOrElse(
+          throw new MoeErrors.ClassNotFound("__CLASS__")
+        )
+        val sig = eval(runtime, env, signature).asInstanceOf[MoeSignature]
+        throwForUndeclaredVars(env, sig, body)
+        val destructor = new MoeMethod(
+          name            = "DEMOLISH",
+          signature       = sig,
+          declaration_env = env,
+          body            = (e) => eval(runtime, e, body)
+        )
+        klass.setDestructor(Some(destructor))
+        destructor
+      }
+
+      case MethodDeclarationNode(name, signature, body) => {
+        val klass = env.getCurrentClass.getOrElse(
+          throw new MoeErrors.ClassNotFound("__CLASS__")
+        )
+        val sig = eval(runtime, env, signature).asInstanceOf[MoeSignature]
+        throwForUndeclaredVars(env, sig, body)
+        val method = new MoeMethod(
+          name            = name,
+          signature       = sig,
+          declaration_env = env,
+          body            = (e) => eval(runtime, e, body)
+        )
+        klass.addMethod(method)
+        method
+      }
+
       case SubroutineDeclarationNode(name, signature, body) => {
         val sig = eval(runtime, env, signature).asInstanceOf[MoeSignature]
         throwForUndeclaredVars(env, sig, body)
         val sub = new MoeSubroutine(
-          name         = name,
-          signature    = sig,
-          captured_env = env,
-          body         = (e) => eval(runtime, e, body)
+          name            = name,
+          signature       = sig,
+          declaration_env = env,
+          body            = (e) => eval(runtime, e, body)
         )
         env.getCurrentPackage.getOrElse(
           throw new MoeErrors.PackageNotFound("__PACKAGE__")
         ).addSubroutine( sub )
         sub
       }
-
+      
       case AttributeAccessNode(name) => {
         val klass = env.getCurrentClass.getOrElse(
           throw new MoeErrors.ClassNotFound("__CLASS__")
@@ -417,24 +431,18 @@ class Interpreter {
             val meth = klass.getMethod(method_name).getOrElse(
               throw new MoeErrors.MethodNotFound(method_name)
             )
-            invocant_object.callMethod(meth, args.map(eval(runtime, env, _)))
+            obj.callMethod(meth, args.map(eval(runtime, env, _)))
           case _ => throw new MoeErrors.MoeException("Object expected")
         }
       }
+
       case SubroutineCallNode(function_name, args) => {
         val sub = env.getCurrentPackage.getOrElse(
             throw new MoeErrors.PackageNotFound("__PACKAGE__")
           ).getSubroutine(function_name).getOrElse(
             throw new MoeErrors.SubroutineNotFound(function_name)
         )
-        // NOTE:
-        // I think we might need to eval these
-        // in the context of the sub body, and
-        // we also need to make sure that we 
-        // add the args to the environment as 
-        // well.
-        // - SL
-        sub.execute(args.map(eval(runtime, env, _)))
+        sub.execute(new MoeArguments(args.map(eval(runtime, env, _))))
       }
 
       // statements

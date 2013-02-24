@@ -9,12 +9,12 @@ class MoeSubroutineTestSuite extends FunSuite with BeforeAndAfter {
     val env    = new MoeEnvironment()
     val value  = new MoeObject()
     val sub    = new MoeSubroutine(
-      name         = "ident", 
-      signature    = new MoeSignature(List(new MoeParameter(name = "$x"))),
-      captured_env = env,
-      body         = (e) => e.get("$x").get
+      name            = "ident", 
+      signature       = new MoeSignature(List(new MoeParameter(name = "$x"))),
+      declaration_env = env,
+      body            = (e) => e.get("$x").get
     )
-    val result = sub.execute(List(value))
+    val result = sub.execute(new MoeArguments(List(value)))
     assert(result === value)
   }
 
@@ -23,13 +23,13 @@ class MoeSubroutineTestSuite extends FunSuite with BeforeAndAfter {
     r.bootstrap()
 
     val sub = new MoeSubroutine(
-      name         = "adder", 
-      signature    = new MoeSignature(List(
+      name            = "adder", 
+      declaration_env = r.getRootEnv,
+      signature       = new MoeSignature(List(
         new MoeParameter(name = "$x"),
         new MoeParameter(name = "$y")
       )),
-      captured_env = r.getRootEnv,
-      body         = { e => 
+      body = { e => 
         r.NativeObjects.getInt(
           e.get("$x").get.unboxToInt.get 
           + 
@@ -38,10 +38,10 @@ class MoeSubroutineTestSuite extends FunSuite with BeforeAndAfter {
       }
     )
     val result = sub.execute(
-      List(
+      new MoeArguments(List(
         r.NativeObjects.getInt(1),
         r.NativeObjects.getInt(1)
-      )
+      ))
     )
     assert(result.unboxToInt.get === 2)
   }

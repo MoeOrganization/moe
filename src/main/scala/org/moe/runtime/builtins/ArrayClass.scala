@@ -8,6 +8,7 @@ import org.moe.runtime._
 object ArrayClass {
 
   def apply(r: MoeRuntime): Unit = {
+    val env        = new MoeEnvironment(Some(r.getCorePackage.getEnv))
     val arrayClass = r.getCoreClassFor("Array").getOrElse(
       throw new MoeErrors.MoeStartupError("Could not find class Array")
     )
@@ -27,10 +28,11 @@ object ArrayClass {
     arrayClass.addMethod(
       new MoeMethod(
         "postcircumfix:<[]>",
-        { (invocant, args) => 
-
-            var index = args(0).unboxToInt.get
-            val array = invocant.unboxToList.get
+        new MoeSignature(List(new MoeParameter("$i"))),
+        env,
+        { (e) => 
+            var index = e.get("$i").get.unboxToInt.get
+            val array = e.getCurrentInvocant.get.unboxToList.get
 
             while (index < 0) index += array.size
             try {

@@ -8,6 +8,7 @@ import org.moe.runtime._
 object ExceptionClass {
 
   def apply(r: MoeRuntime): Unit = {
+    val env            = new MoeEnvironment(Some(r.getCorePackage.getEnv))
     val exceptionClass = r.getCoreClassFor("Exception").getOrElse(
       throw new MoeErrors.MoeStartupError("Could not find class Exception")
     )

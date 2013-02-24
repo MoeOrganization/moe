@@ -9,6 +9,7 @@ import org.moe.runtime.nativeobjects._
 object IntClass {
 
   def apply(r: MoeRuntime): Unit = {
+    val env      = new MoeEnvironment(Some(r.getCorePackage.getEnv))
     val intClass = r.getCoreClassFor("Int").getOrElse(
       throw new MoeErrors.MoeStartupError("Could not find class Int")
     )
@@ -22,11 +23,13 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<+>",
-        { (invocant, args) =>
-          args(0) match {
-            case i: MoeIntObject   => getInt(invocant.unboxToInt.get + i.unboxToInt.get)
-            case f: MoeNumObject => getNum(invocant.unboxToDouble.get + f.unboxToDouble.get)
-            case _                 => throw new MoeErrors.UnexpectedType(args(0).toString)
+        new MoeSignature(List(new MoeParameter("$other"))), 
+        env, 
+        { (e) =>
+          e.get("$other").get match {
+            case i: MoeIntObject   => getInt(e.getCurrentInvocant.get.unboxToInt.get + i.unboxToInt.get)
+            case f: MoeNumObject => getNum(e.getCurrentInvocant.get.unboxToDouble.get + f.unboxToDouble.get)
+            case _                 => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
           }
         }
       )
@@ -35,11 +38,13 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<*>",
-        { (invocant, args) =>
-          args(0) match {
-            case i: MoeIntObject   => getInt(invocant.unboxToInt.get * i.unboxToInt.get)
-            case f: MoeNumObject => getNum(invocant.unboxToDouble.get * f.unboxToDouble.get)
-            case _                 => throw new MoeErrors.UnexpectedType(args(0).toString)
+        new MoeSignature(List(new MoeParameter("$other"))), 
+        env, 
+        { (e) =>
+          e.get("$other").get match {
+            case i: MoeIntObject   => getInt(e.getCurrentInvocant.get.unboxToInt.get * i.unboxToInt.get)
+            case f: MoeNumObject => getNum(e.getCurrentInvocant.get.unboxToDouble.get * f.unboxToDouble.get)
+            case _                 => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
           }
         }
       )

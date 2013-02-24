@@ -20,10 +20,10 @@ class MoePackageTestSuite extends FunSuite with BeforeAndAfter {
   test("... basic package w/ subroutine") {
     pkg.addSubroutine(
       new MoeSubroutine(
-        name         = "ident", 
-        captured_env = new MoeEnvironment(),
-        signature    = new MoeSignature(List(new MoeParameter(name = "$x"))),
-        body         = (e) => e.get("$x").get
+        name            = "ident", 
+        declaration_env = new MoeEnvironment(),
+        signature       = new MoeSignature(List(new MoeParameter(name = "$x"))),
+        body            = (e) => e.get("$x").get
       )
     )
     assert(pkg.hasSubroutine("ident"))

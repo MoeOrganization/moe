@@ -8,6 +8,7 @@ import org.moe.runtime._
 object AnyClass {
 
   def apply(r: MoeRuntime): Unit = {
+    val env      = new MoeEnvironment(Some(r.getCorePackage.getEnv))
     val anyClass = r.getCoreClassFor("Any").getOrElse(
       throw new MoeErrors.MoeStartupError("Could not find class Any")
     )

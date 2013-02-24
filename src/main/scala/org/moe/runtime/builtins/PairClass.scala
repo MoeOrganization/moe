@@ -8,6 +8,7 @@ import org.moe.runtime._
 object PairClass {
 
   def apply(r: MoeRuntime): Unit = {
+    val env       = new MoeEnvironment(Some(r.getCorePackage.getEnv))
     val pairClass = r.getCoreClassFor("Pair").getOrElse(
       throw new MoeErrors.MoeStartupError("Could not find class Pair")
     )
