@@ -13,7 +13,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
       List(
         SubroutineDeclarationNode(
           "plus_ten",
-          List("$n"),
+          SignatureNode(List(ParameterNode("$n"))),
           StatementsNode(
             List(
               MethodCallNode(
@@ -52,16 +52,16 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
         ),
         SubroutineDeclarationNode(
           "add_foo",
-          List(),
+          SignatureNode(List()),
           StatementsNode(
             List(
               IncrementNode(VariableAccessNode("$foo"))
             )
           )
         ),
-        SubroutineCallNode("add_foo", List(VariableAccessNode("$foo"))),
-        SubroutineCallNode("add_foo", List(VariableAccessNode("$foo"))),
-        SubroutineCallNode("add_foo", List(VariableAccessNode("$foo"))),
+        SubroutineCallNode("add_foo", List()),
+        SubroutineCallNode("add_foo", List()),
+        SubroutineCallNode("add_foo", List()),
         VariableAccessNode("$foo")
       )
     )
@@ -76,7 +76,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
       List(
         SubroutineDeclarationNode(
           "add_foo",
-          List(),
+          SignatureNode(List()),
           StatementsNode(
             List(
               IncrementNode(VariableAccessNode("$foo"))
@@ -110,7 +110,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
               ),
               SubroutineDeclarationNode(
                 "inc",
-                List(),
+                SignatureNode(List()),
                 StatementsNode(
                   List(
                     IncrementNode(VariableAccessNode("$n"), true)
@@ -149,7 +149,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
               ),
               SubroutineDeclarationNode(
                 "inc",
-                List(),
+                SignatureNode(List()),
                 StatementsNode(
                   List(
                     IncrementNode(VariableAccessNode("$n"))
@@ -191,7 +191,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
               ),
               SubroutineDeclarationNode(
                 "f",
-                List("$a"),
+                SignatureNode(List(ParameterNode("$a"))),
                 StatementsNode(
                   List(
                     IncrementNode(VariableAccessNode("$a"), true)

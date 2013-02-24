@@ -142,8 +142,8 @@ object InterpreterUtils {
   // Throw an exception if a variable isn't closed over at declaration time
   // This is to prevent variables in the same env but after declaration getting
   // sucked into the closure and causing unexpected behavior.
-  def throwForUndeclaredVars(env: MoeEnvironment, params: List[String], body: StatementsNode): Unit = {
-      var declared: Set[String] = params.toSet
+  def throwForUndeclaredVars(env: MoeEnvironment, signature: MoeSignature, body: StatementsNode): Unit = {
+      var declared: Set[String] = signature.getParams.map(_.getName).toSet
       walkAST(
         body,
         { ast: AST =>

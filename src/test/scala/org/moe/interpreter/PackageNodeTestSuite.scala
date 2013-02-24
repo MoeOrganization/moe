@@ -17,7 +17,7 @@ class PackageNodeTestSuite extends FunSuite with InterpreterTestUtils {
             List(
               SubroutineDeclarationNode(
                 "my_sub",
-                List(),
+                SignatureNode(List()),
                 StatementsNode(List())
               )
             )

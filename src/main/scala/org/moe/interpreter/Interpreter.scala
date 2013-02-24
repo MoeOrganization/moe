@@ -332,24 +332,25 @@ class Interpreter {
           method
         }
       }
-      case SubroutineDeclarationNode(name, params, body) => {
-        throwForUndeclaredVars(env, params, body)
-        scoped { sub_env =>
-          val sub = new MoeSubroutine(
-            name,
-            args => {
-              val param_pairs = params zip args
-              param_pairs.foreach({ case (param, arg) =>
-                sub_env.create(param, arg)
-              })
-              eval(runtime, sub_env, body)
-            }
-          )
-          env.getCurrentPackage.getOrElse(
-            throw new MoeErrors.PackageNotFound("__PACKAGE__")
-          ).addSubroutine( sub )
-          sub
-        }
+
+      case ParameterNode(name)   => new MoeParameter(name)
+      case SignatureNode(params) => new MoeSignature(
+        params.map(eval(runtime, env, _).asInstanceOf[MoeParameter])
+      )
+
+      case SubroutineDeclarationNode(name, signature, body) => {
+        val sig = eval(runtime, env, signature).asInstanceOf[MoeSignature]
+        throwForUndeclaredVars(env, sig, body)
+        val sub = new MoeSubroutine(
+          name         = name,
+          signature    = sig,
+          captured_env = env,
+          body         = (e) => eval(runtime, e, body)
+        )
+        env.getCurrentPackage.getOrElse(
+          throw new MoeErrors.PackageNotFound("__PACKAGE__")
+        ).addSubroutine( sub )
+        sub
       }
 
       case AttributeAccessNode(name) => {

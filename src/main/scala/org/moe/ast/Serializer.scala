@@ -145,13 +145,16 @@ object Serializer {
             )
           )
         )
-    case SubroutineDeclarationNode(name, params, body) => JSONObject(
+
+    case ParameterNode(name) => name
+    case SignatureNode(params) => JSONArray(params)
+    case SubroutineDeclarationNode(name, signature, body) => JSONObject(
       Map(
         "SubroutineDeclarationNode" -> JSONObject(
           Map(
-            "name" -> name,
-            "params" -> JSONArray(params),
-            "body" -> toJSON(body)
+            "name"      -> name,
+            "signature" -> signature,
+            "body"      -> toJSON(body)
           )
         )
       )

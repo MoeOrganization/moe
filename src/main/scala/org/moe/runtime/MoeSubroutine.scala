@@ -10,6 +10,7 @@ package org.moe.runtime
 class MoeSubroutine (
     private val name: String,
     private val signature: MoeSignature, // = new MoeSignature(List(new MoeParameter("@_"))),
+    private val captured_env: MoeEnvironment,
     private val body: (MoeEnvironment) => MoeObject
   ) extends MoeObject {
 
@@ -24,6 +25,11 @@ class MoeSubroutine (
   def getSignature: MoeSignature = signature
 
   /**
+   * Returns the captured environment in which this subroutine was created
+   */
+  def getCapturedEnvironment: MoeEnvironment = captured_env
+
+  /**
    * Returns the executable body of this subroutine
    */
   def getBody: (MoeEnvironment) => MoeObject = body
@@ -31,7 +37,9 @@ class MoeSubroutine (
   /**
    * Executes the body of this subroutine passing in a list of arguments
    */
-  def execute (env: MoeEnvironment, args : List[MoeObject]): MoeObject = {
+  def execute (args : List[MoeObject]): MoeObject = {
+
+    val exec_env = new MoeEnvironment(Some(captured_env))
 
     if (signature.getArity != args.length) 
       throw new MoeErrors.MoeProblems("not enought arguments")
@@ -39,9 +47,9 @@ class MoeSubroutine (
     val params = signature.getParams
 
     for (i <- 0.until(signature.getArity)) {
-      env.create(params(i).getName, args(i))
+      exec_env.create(params(i).getName, args(i))
     }
 
-    body(env)
+    body(exec_env)
   }
 }
