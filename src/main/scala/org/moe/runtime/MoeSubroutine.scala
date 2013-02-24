@@ -39,7 +39,7 @@ class MoeSubroutine (
     val params = signature.getParams
 
     for (i <- 0.until(signature.getArity)) {
-      env.create(params(i), args(i))
+      env.create(params(i).getName, args(i))
     }
 
     body(env)
