@@ -3,10 +3,8 @@ package org.moe.runtime
 /**
  * MoeSubroutine: Class for moe subroutine!
  *
- * @param name MoeSubroutine
- * @param version None
- * @param authority None
- * @param superclass None
+ * @param name method name
+ * @param body executable body of method 
  */
 
 class MoeSubroutine (
