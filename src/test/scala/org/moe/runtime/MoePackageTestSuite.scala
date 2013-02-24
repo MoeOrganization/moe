@@ -18,7 +18,13 @@ class MoePackageTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... basic package w/ subroutine") {
-    pkg.addSubroutine(new MoeSubroutine("ident", (args) => args(0)))
+    pkg.addSubroutine(
+      new MoeSubroutine(
+        "ident", 
+        new MoeSignature(List("$x")),
+        (e) => e.get("$x").get
+      )
+    )
     assert(pkg.hasSubroutine("ident"))
   }
 
