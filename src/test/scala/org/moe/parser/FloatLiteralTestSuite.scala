@@ -20,6 +20,11 @@ class FloatLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
     assert(result.unboxToDouble.get === -123.5)
   }
 
+  test("... basic test with a positive float") {
+    val result = interpretCode("+123.5")
+    assert(result.unboxToDouble.get === 123.5)
+  }
+
   test("... basic test with a float - 2") {
     val result = interpretCode(".5678")
     assert(result.unboxToDouble.get === .5678)
