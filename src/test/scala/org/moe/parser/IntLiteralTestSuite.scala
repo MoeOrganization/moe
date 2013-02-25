@@ -21,6 +21,10 @@ class IntLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTestUt
     result.unboxToInt.get should equal (0)
   }
 
+  test("... basic test with an +0 int") {
+    val result = interpretCode("+0")
+    result.unboxToInt.get should equal (0)
+  }
 
   test("... basic test with an int") {
     val result = interpretCode("123")
@@ -30,6 +34,11 @@ class IntLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTestUt
   test("... basic test with a negative int") {
     val result = interpretCode("-123")
     result.unboxToInt.get should equal (-123)
+  }
+
+  test("... basic test with a positive int") {
+    val result = interpretCode("+123")
+    result.unboxToInt.get should equal (123)
   }
 
   test("... basic test with an int - embedded underscore") {
