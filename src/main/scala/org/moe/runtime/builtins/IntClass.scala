@@ -72,11 +72,7 @@ object IntClass {
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
         { (e) =>
-          e.get("$other").get match {
-            case i: MoeIntObject => getNum(e.getCurrentInvocant.get.unboxToInt.get / i.unboxToInt.get.toDouble)
-            case f: MoeNumObject => getNum(e.getCurrentInvocant.get.unboxToDouble.get / f.unboxToDouble.get)
-            case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
-          }
+          getNum(e.getCurrentInvocant.get.unboxToInt.get / e.get("$other").get.unboxToDouble.get)
         }
       )
     )
@@ -87,11 +83,7 @@ object IntClass {
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
         { (e) =>
-          e.get("$other").get match {
-            case i: MoeIntObject => getInt(perlModuloOp(e.getCurrentInvocant.get.unboxToInt.get, i.unboxToInt.get))
-            case f: MoeNumObject => getInt(perlModuloOp(e.getCurrentInvocant.get.unboxToDouble.get.toInt, f.unboxToDouble.get.toInt))
-            case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
-          }
+          getInt(perlModuloOp(e.getCurrentInvocant.get.unboxToInt.get, e.get("$other").get.unboxToInt.get))
         }
       )
     )
