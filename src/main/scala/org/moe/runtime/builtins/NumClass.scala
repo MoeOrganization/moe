@@ -23,9 +23,7 @@ object NumClass {
         "infix:<+>",
         new MoeSignature(List(new MoeParameter("$other"))),
         env,
-        { (e) =>
-          getNum(e.getCurrentInvocant.get.unboxToDouble.get + e.get("$other").get.unboxToDouble.get)
-        }
+        (e) => getNum(e.getCurrentInvocant.get.unboxToDouble.get + e.get("$other").get.unboxToDouble.get)
       )
     )
 
@@ -34,9 +32,7 @@ object NumClass {
         "infix:<->",
         new MoeSignature(List(new MoeParameter("$other"))),
         env,
-        { (e) =>
-          getNum(e.getCurrentInvocant.get.unboxToDouble.get - e.get("$other").get.unboxToDouble.get)
-        }
+        (e) => getNum(e.getCurrentInvocant.get.unboxToDouble.get - e.get("$other").get.unboxToDouble.get)
       )
     )
 
@@ -45,9 +41,7 @@ object NumClass {
         "infix:<*>",
         new MoeSignature(List(new MoeParameter("$other"))),
         env,
-        { (e) =>
-          getNum(e.getCurrentInvocant.get.unboxToDouble.get * e.get("$other").get.unboxToDouble.get)
-        }
+        (e) => getNum(e.getCurrentInvocant.get.unboxToDouble.get * e.get("$other").get.unboxToDouble.get)
       )
     )
 
@@ -56,9 +50,7 @@ object NumClass {
         "infix:</>",
         new MoeSignature(List(new MoeParameter("$other"))),
         env,
-        { (e) =>
-          getNum(e.getCurrentInvocant.get.unboxToDouble.get / e.get("$other").get.unboxToDouble.get)
-        }
+        (e) => getNum(e.getCurrentInvocant.get.unboxToDouble.get / e.get("$other").get.unboxToDouble.get)
       )
     )
 
@@ -67,9 +59,7 @@ object NumClass {
         "infix:<%>",
         new MoeSignature(List(new MoeParameter("$other"))),
         env,
-        { (e) =>
-          getInt(perlModuloOp(e.getCurrentInvocant.get.unboxToInt.get, e.get("$other").get.unboxToInt.get))
-        }
+        (e) => getInt(perlModuloOp(e.getCurrentInvocant.get.unboxToInt.get, e.get("$other").get.unboxToInt.get))
       )
     )
 
@@ -78,9 +68,7 @@ object NumClass {
         "infix:<**>",
         new MoeSignature(List(new MoeParameter("$other"))),
         env,
-        { (e) =>
-          getNum(Math.pow(e.getCurrentInvocant.get.unboxToDouble.get, e.get("$other").get.unboxToDouble.get))
-        }
+        (e) => getNum(Math.pow(e.getCurrentInvocant.get.unboxToDouble.get, e.get("$other").get.unboxToDouble.get))
       )
     )
 
@@ -91,9 +79,7 @@ object NumClass {
         "infix:<<>",
         new MoeSignature(List(new MoeParameter("$other"))),
         env,
-        { (e) =>
-          getBool(e.getCurrentInvocant.get.unboxToDouble.get < e.get("$other").get.unboxToDouble.get)
-        }
+        (e) => getBool(e.getCurrentInvocant.get.unboxToDouble.get < e.get("$other").get.unboxToDouble.get)
       )
     )
 
@@ -102,9 +88,7 @@ object NumClass {
         "infix:<>>",
         new MoeSignature(List(new MoeParameter("$other"))),
         env,
-        { (e) =>
-          getBool(e.getCurrentInvocant.get.unboxToDouble.get > e.get("$other").get.unboxToDouble.get)
-        }
+        (e) => getBool(e.getCurrentInvocant.get.unboxToDouble.get > e.get("$other").get.unboxToDouble.get)
       )
     )
 
@@ -113,9 +97,7 @@ object NumClass {
         "infix:<<=>",
         new MoeSignature(List(new MoeParameter("$other"))),
         env,
-        { (e) =>
-          getBool(e.getCurrentInvocant.get.unboxToDouble.get <= e.get("$other").get.unboxToDouble.get)
-        }
+        (e) => getBool(e.getCurrentInvocant.get.unboxToDouble.get <= e.get("$other").get.unboxToDouble.get)
       )
     )
 
@@ -124,9 +106,7 @@ object NumClass {
         "infix:<>=>",
         new MoeSignature(List(new MoeParameter("$other"))),
         env,
-        { (e) =>
-          getBool(e.getCurrentInvocant.get.unboxToDouble.get >= e.get("$other").get.unboxToDouble.get)
-        }
+        (e) => getBool(e.getCurrentInvocant.get.unboxToDouble.get >= e.get("$other").get.unboxToDouble.get)
       )
     )
 
@@ -135,9 +115,7 @@ object NumClass {
         "infix:<==>",
         new MoeSignature(List(new MoeParameter("$other"))),
         env,
-        { (e) =>
-          getBool(e.getCurrentInvocant.get.unboxToDouble.get == e.get("$other").get.unboxToDouble.get)
-        }
+        (e) => getBool(e.getCurrentInvocant.get.unboxToDouble.get == e.get("$other").get.unboxToDouble.get)
       )
     )
 
@@ -146,30 +124,17 @@ object NumClass {
         "infix:<!=>",
         new MoeSignature(List(new MoeParameter("$other"))),
         env,
-        { (e) =>
-          getBool(e.getCurrentInvocant.get.unboxToDouble.get != e.get("$other").get.unboxToDouble.get)
-        }
+        (e) => getBool(e.getCurrentInvocant.get.unboxToDouble.get != e.get("$other").get.unboxToDouble.get)
       )
     )
 
     /**
      * List of Operators to support:
-     * - infix:<*> 
-     * - infix:<-> 
-     * - infix:</>
-     * - infix:<%>
      * - prefix:<++>
      * - postfix:<++>
      * - prefix:<-->
      * - postfix:<-->
      * - prefix:<->
-     * - infix:<**>
-     * - infix:<==>
-     * - infix:<!=>
-     * - infix:<<>
-     * - infix:<>>
-     * - infix:<<=>
-     * - infix:<>=>
      * - infix:<<=>>
      * NOTE: probably need the bitwise stuff too
      *

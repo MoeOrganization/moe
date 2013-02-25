@@ -26,12 +26,10 @@ object IntClass {
         "infix:<+>",
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
-        { (e) =>
-          e.get("$other").get match {
-            case i: MoeIntObject => getInt(e.getCurrentInvocant.get.unboxToInt.get + i.unboxToInt.get)
-            case f: MoeNumObject => getNum(e.getCurrentInvocant.get.unboxToDouble.get + f.unboxToDouble.get)
-            case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
-          }
+        (e) => e.get("$other").get match {
+          case i: MoeIntObject => getInt(e.getCurrentInvocant.get.unboxToInt.get + i.unboxToInt.get)
+          case f: MoeNumObject => getNum(e.getCurrentInvocant.get.unboxToDouble.get + f.unboxToDouble.get)
+          case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
         }
       )
     )
@@ -41,12 +39,10 @@ object IntClass {
         "infix:<->",
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
-        { (e) =>
-          e.get("$other").get match {
-            case i: MoeIntObject => getInt(e.getCurrentInvocant.get.unboxToInt.get - i.unboxToInt.get)
-            case f: MoeNumObject => getNum(e.getCurrentInvocant.get.unboxToDouble.get - f.unboxToDouble.get)
-            case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
-          }
+        (e) => e.get("$other").get match {
+          case i: MoeIntObject => getInt(e.getCurrentInvocant.get.unboxToInt.get - i.unboxToInt.get)
+          case f: MoeNumObject => getNum(e.getCurrentInvocant.get.unboxToDouble.get - f.unboxToDouble.get)
+          case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
         }
       )
     )
@@ -56,12 +52,10 @@ object IntClass {
         "infix:<*>",
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
-        { (e) =>
-          e.get("$other").get match {
-            case i: MoeIntObject => getInt(e.getCurrentInvocant.get.unboxToInt.get * i.unboxToInt.get)
-            case f: MoeNumObject => getNum(e.getCurrentInvocant.get.unboxToDouble.get * f.unboxToDouble.get)
-            case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
-          }
+        (e) => e.get("$other").get match {
+          case i: MoeIntObject => getInt(e.getCurrentInvocant.get.unboxToInt.get * i.unboxToInt.get)
+          case f: MoeNumObject => getNum(e.getCurrentInvocant.get.unboxToDouble.get * f.unboxToDouble.get)
+          case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
         }
       )
     )
@@ -71,9 +65,7 @@ object IntClass {
         "infix:</>",
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
-        { (e) =>
-          getNum(e.getCurrentInvocant.get.unboxToInt.get / e.get("$other").get.unboxToDouble.get)
-        }
+        (e) => getNum(e.getCurrentInvocant.get.unboxToInt.get / e.get("$other").get.unboxToDouble.get)
       )
     )
 
@@ -82,9 +74,7 @@ object IntClass {
         "infix:<%>",
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
-        { (e) =>
-          getInt(perlModuloOp(e.getCurrentInvocant.get.unboxToInt.get, e.get("$other").get.unboxToInt.get))
-        }
+        (e) => getInt(perlModuloOp(e.getCurrentInvocant.get.unboxToInt.get, e.get("$other").get.unboxToInt.get))
       )
     )
 
@@ -93,12 +83,10 @@ object IntClass {
         "infix:<**>",
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
-        { (e) =>
-          e.get("$other").get match {
-            case i: MoeIntObject => getInt(Math.pow(e.getCurrentInvocant.get.unboxToInt.get, i.unboxToInt.get).toInt)
-            case f: MoeNumObject => getNum(Math.pow(e.getCurrentInvocant.get.unboxToInt.get, f.unboxToDouble.get))
-            case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
-          }
+        (e) => e.get("$other").get match {
+          case i: MoeIntObject => getInt(Math.pow(e.getCurrentInvocant.get.unboxToInt.get, i.unboxToInt.get).toInt)
+          case f: MoeNumObject => getNum(Math.pow(e.getCurrentInvocant.get.unboxToInt.get, f.unboxToDouble.get))
+          case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
         }
       )
     )
@@ -110,12 +98,10 @@ object IntClass {
         "infix:<<>",
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
-        { (e) =>
-          e.get("$other").get match {
-            case i: MoeIntObject => getBool(e.getCurrentInvocant.get.unboxToInt.get < i.unboxToInt.get)
-            case f: MoeNumObject => getBool(e.getCurrentInvocant.get.unboxToDouble.get < f.unboxToDouble.get)
-            case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
-          }
+        (e) => e.get("$other").get match {
+          case i: MoeIntObject => getBool(e.getCurrentInvocant.get.unboxToInt.get < i.unboxToInt.get)
+          case f: MoeNumObject => getBool(e.getCurrentInvocant.get.unboxToDouble.get < f.unboxToDouble.get)
+          case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
         }
       )
     )
@@ -125,12 +111,10 @@ object IntClass {
         "infix:<<>",
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
-        { (e) =>
-          e.get("$other").get match {
-            case i: MoeIntObject => getBool(e.getCurrentInvocant.get.unboxToInt.get < i.unboxToInt.get)
-            case f: MoeNumObject => getBool(e.getCurrentInvocant.get.unboxToDouble.get < f.unboxToDouble.get)
-            case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
-          }
+        (e) => e.get("$other").get match {
+          case i: MoeIntObject => getBool(e.getCurrentInvocant.get.unboxToInt.get < i.unboxToInt.get)
+          case f: MoeNumObject => getBool(e.getCurrentInvocant.get.unboxToDouble.get < f.unboxToDouble.get)
+          case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
         }
       )
     )
@@ -140,12 +124,10 @@ object IntClass {
         "infix:<>>",
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
-        { (e) =>
-          e.get("$other").get match {
-            case i: MoeIntObject => getBool(e.getCurrentInvocant.get.unboxToInt.get > i.unboxToInt.get)
-            case f: MoeNumObject => getBool(e.getCurrentInvocant.get.unboxToDouble.get > f.unboxToDouble.get)
-            case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
-          }
+        (e) => e.get("$other").get match {
+          case i: MoeIntObject => getBool(e.getCurrentInvocant.get.unboxToInt.get > i.unboxToInt.get)
+          case f: MoeNumObject => getBool(e.getCurrentInvocant.get.unboxToDouble.get > f.unboxToDouble.get)
+          case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
         }
       )
     )
@@ -155,12 +137,10 @@ object IntClass {
         "infix:<<=>",
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
-        { (e) =>
-          e.get("$other").get match {
-            case i: MoeIntObject => getBool(e.getCurrentInvocant.get.unboxToInt.get <= i.unboxToInt.get)
-            case f: MoeNumObject => getBool(e.getCurrentInvocant.get.unboxToDouble.get <= f.unboxToDouble.get)
-            case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
-          }
+        (e) => e.get("$other").get match {
+          case i: MoeIntObject => getBool(e.getCurrentInvocant.get.unboxToInt.get <= i.unboxToInt.get)
+          case f: MoeNumObject => getBool(e.getCurrentInvocant.get.unboxToDouble.get <= f.unboxToDouble.get)
+          case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
         }
       )
     )
@@ -170,12 +150,10 @@ object IntClass {
         "infix:<>=>",
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
-        { (e) =>
-          e.get("$other").get match {
-            case i: MoeIntObject => getBool(e.getCurrentInvocant.get.unboxToInt.get >= i.unboxToInt.get)
-            case f: MoeNumObject => getBool(e.getCurrentInvocant.get.unboxToDouble.get >= f.unboxToDouble.get)
-            case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
-          }
+        (e) => e.get("$other").get match {
+          case i: MoeIntObject => getBool(e.getCurrentInvocant.get.unboxToInt.get >= i.unboxToInt.get)
+          case f: MoeNumObject => getBool(e.getCurrentInvocant.get.unboxToDouble.get >= f.unboxToDouble.get)
+          case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
         }
       )
     )
@@ -185,12 +163,10 @@ object IntClass {
         "infix:<==>",
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
-        { (e) =>
-          e.get("$other").get match {
-            case i: MoeIntObject => getBool(e.getCurrentInvocant.get.unboxToInt.get == i.unboxToInt.get)
-            case f: MoeNumObject => getBool(e.getCurrentInvocant.get.unboxToDouble.get == f.unboxToDouble.get)
-            case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
-          }
+        (e) => e.get("$other").get match {
+          case i: MoeIntObject => getBool(e.getCurrentInvocant.get.unboxToInt.get == i.unboxToInt.get)
+          case f: MoeNumObject => getBool(e.getCurrentInvocant.get.unboxToDouble.get == f.unboxToDouble.get)
+          case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
         }
       )
     )
@@ -200,33 +176,21 @@ object IntClass {
         "infix:<!=>",
         new MoeSignature(List(new MoeParameter("$other"))), 
         env, 
-        { (e) =>
-          e.get("$other").get match {
-            case i: MoeIntObject => getBool(e.getCurrentInvocant.get.unboxToInt.get != i.unboxToInt.get)
-            case f: MoeNumObject => getBool(e.getCurrentInvocant.get.unboxToDouble.get != f.unboxToDouble.get)
-            case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
-          }
+        (e) => e.get("$other").get match {
+          case i: MoeIntObject => getBool(e.getCurrentInvocant.get.unboxToInt.get != i.unboxToInt.get)
+          case f: MoeNumObject => getBool(e.getCurrentInvocant.get.unboxToDouble.get != f.unboxToDouble.get)
+          case _               => throw new MoeErrors.UnexpectedType(e.get("$other").get.toString)
         }
       )
     )
 
     /**
      * List of Operators to support:
-     * - infix:<-> 
-     * - infix:</>
-     * - infix:<%>
      * - prefix:<++>
      * - postfix:<++>
      * - prefix:<-->
      * - postfix:<-->
      * - prefix:<->
-     * - infix:<**>
-     * - infix:<==>
-     * - infix:<!=>
-     * - infix:<<>
-     * - infix:<>>
-     * - infix:<<=>
-     * - infix:<>=>
      * - infix:<<=>>
      * NOTE: probably need the bitwise stuff too
      *
