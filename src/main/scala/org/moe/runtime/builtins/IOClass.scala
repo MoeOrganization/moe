@@ -8,6 +8,7 @@ import org.moe.runtime._
 object IOClass {
 
   def apply(r: MoeRuntime): Unit = {
+    val env     = new MoeEnvironment(Some(r.getCorePackage.getEnv))
     val ioClass = r.getCoreClassFor("IO").getOrElse(
       throw new MoeErrors.MoeStartupError("Could not find class IO")
     )

@@ -8,6 +8,7 @@ import org.moe.runtime._
 object BoolClass {
 
   def apply(r: MoeRuntime): Unit = {
+    val env       = new MoeEnvironment(Some(r.getCorePackage.getEnv))
     val boolClass = r.getCoreClassFor("Bool").getOrElse(
       throw new MoeErrors.MoeStartupError("Could not find class Bool")
     )

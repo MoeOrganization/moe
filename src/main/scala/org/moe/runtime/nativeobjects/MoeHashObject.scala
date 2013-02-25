@@ -28,7 +28,9 @@ class MoeHashObject(
     if (hash.contains(k.unboxToString.get)) r.NativeObjects.getTrue else r.NativeObjects.getFalse
   }
 
-  def slice(r: MoeRuntime, keys: List[MoeStrObject]) = r.NativeObjects.getArray(keys.map(at_key(r, _)))
+  def slice(r: MoeRuntime, keys: MoeArrayObject) = r.NativeObjects.getArray(
+    keys.unboxToList.get.map(k => at_key(r, k.asInstanceOf[MoeStrObject]))
+  )
 
   def clear(r: MoeRuntime) = { 
     hash.clear()

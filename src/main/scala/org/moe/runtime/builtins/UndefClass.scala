@@ -8,6 +8,7 @@ import org.moe.runtime._
 object UndefClass {
 
   def apply(r: MoeRuntime): Unit = {
+    val env        = new MoeEnvironment(Some(r.getCorePackage.getEnv))
     val undefClass = r.getCoreClassFor("Undef").getOrElse(
       throw new MoeErrors.MoeStartupError("Could not find class Undef")
     )

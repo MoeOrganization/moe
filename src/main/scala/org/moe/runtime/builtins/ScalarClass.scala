@@ -8,6 +8,7 @@ import org.moe.runtime._
 object ScalarClass {
 
   def apply(r: MoeRuntime): Unit = {
+    val env         = new MoeEnvironment(Some(r.getCorePackage.getEnv))
     val scalarClass = r.getCoreClassFor("Scalar").getOrElse(
       throw new MoeErrors.MoeStartupError("Could not find class Scalar")
     )

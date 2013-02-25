@@ -127,7 +127,7 @@ class ClassNodeTestSuite
     }
   }
 
-  test("... basic test with one-arg constructor") {
+  test("... basic test with two-arg constructor") {
     // class Point { } Point->new
     val ast = wrapSimpleAST(
       List(
@@ -139,7 +139,7 @@ class ClassNodeTestSuite
               AttributeDeclarationNode("x", IntLiteralNode(0)),
               AttributeDeclarationNode("y", IntLiteralNode(0)),
               ConstructorDeclarationNode(
-                List("$x", "$y"),
+                SignatureNode(List(ParameterNode("$x"), ParameterNode("$y"))),
                 StatementsNode(
                   List(
                     AttributeAssignmentNode("x", VariableAccessNode("$x")),
@@ -149,7 +149,7 @@ class ClassNodeTestSuite
               ),
               MethodDeclarationNode(
                 "coords",
-                List(),
+                SignatureNode(List()),
                 StatementsNode(
                   List(
                     ArrayLiteralNode(
@@ -197,7 +197,7 @@ class ClassNodeTestSuite
               ),
               MethodDeclarationNode(
                 "inc",
-                List(), // FIXME test with params when we have more operators :P
+                SignatureNode(List()), // FIXME test with params when we have more operators :P
                 StatementsNode(
                   List(
                     IncrementNode(AttributeAccessNode("n"))
@@ -229,7 +229,7 @@ class ClassNodeTestSuite
             List(
               MethodDeclarationNode(
                 "zzz",
-                List(),
+                SignatureNode(List()),
                 StatementsNode(
                   List(
                     IntLiteralNode(42)

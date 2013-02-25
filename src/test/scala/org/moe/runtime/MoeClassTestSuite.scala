@@ -57,12 +57,13 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
   }
 
   test("... test the whole thing together") {
+    val env   = new MoeEnvironment()
     val klass = new MoeClass(
       name      = "TestClass",
       version   = Some("0.01"),
       authority = Some("cpan:STEVAN")
     )
-    val ident = new MoeMethod("ident", (inv, args) => inv)
+    val ident = new MoeMethod("ident", new MoeSignature(), env, (e) => e.getCurrentInvocant.get)
     klass.addMethod(ident)
     var obj = new MoeObject(Some(klass))
     assert(obj.isInstanceOf(klass))
@@ -71,12 +72,13 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
   }
 
   test("... test the whole thing together (newInstance version)") {
+    val env   = new MoeEnvironment()
     val klass = new MoeClass(
       name      = "TestClass",
       version   = Some("0.01"),
       authority = Some("cpan:STEVAN")
     )
-    val ident = new MoeMethod("ident", (inv, args) => inv)
+    val ident = new MoeMethod("ident", new MoeSignature(), env, (e) => e.getCurrentInvocant.get)
     klass.addMethod(ident)
     var obj = klass.newInstance
     assert(obj.isInstanceOf(klass))
@@ -85,6 +87,7 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
   }
 
   test("... test method resolution") {
+    val env    = new MoeEnvironment()
     val parent = new MoeClass(
       name      = "ParentClass",
       version   = Some("0.01"),
@@ -103,7 +106,7 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
       superclass = Some(child)
     )
 
-    val ident = new MoeMethod("ident", (inv, args) => inv)
+    val ident = new MoeMethod("ident", new MoeSignature(), env, (e) => e.getCurrentInvocant.get)
     parent.addMethod(ident)
 
     var dad      = parent.newInstance

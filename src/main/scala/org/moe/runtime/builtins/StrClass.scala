@@ -8,6 +8,7 @@ import org.moe.runtime._
 object StrClass {
 
   def apply(r: MoeRuntime): Unit = {
+    val env      = new MoeEnvironment(Some(r.getCorePackage.getEnv))
     val strClass = r.getCoreClassFor("Str").getOrElse(
       throw new MoeErrors.MoeStartupError("Could not find class Str")
     )

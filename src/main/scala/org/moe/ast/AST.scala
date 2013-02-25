@@ -62,13 +62,13 @@ case class ClassAccessNode(name: String) extends AST
 case class ClassDeclarationNode(name: String, superclass: Option[String], body: StatementsNode) extends AST
 case class PackageDeclarationNode(name: String, body: StatementsNode) extends AST
 
-case class ConstructorDeclarationNode(params: List[String], body: StatementsNode) extends AST
-case class DestructorDeclarationNode(params: List[String], body: StatementsNode) extends AST
-
 case class ParameterNode(name: String) extends AST
 case class SignatureNode(params: List[ParameterNode]) extends AST
 
-case class MethodDeclarationNode(name: String, params: List[String], body: StatementsNode) extends AST
+case class ConstructorDeclarationNode(signature: SignatureNode, body: StatementsNode) extends AST
+case class DestructorDeclarationNode(signature: SignatureNode, body: StatementsNode) extends AST
+
+case class MethodDeclarationNode(name: String, signature: SignatureNode, body: StatementsNode) extends AST
 case class SubroutineDeclarationNode(name: String, signature: SignatureNode, body: StatementsNode) extends AST
 
 case class AttributeAccessNode(name: String) extends AST

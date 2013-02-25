@@ -68,7 +68,7 @@ class MoeClass(
 
   def getConstructor: Option[MoeMethod] = constructor
 
-  def setContructor(c: Option[MoeMethod]) = constructor = c
+  def setConstructor(c: Option[MoeMethod]) = constructor = c
 
   /**
    * TODO: add a BUILDALL style method that 

@@ -8,6 +8,7 @@ import org.moe.runtime._
 object NumClass {
 
   def apply(r: MoeRuntime): Unit = {
+    val env      = new MoeEnvironment(Some(r.getCorePackage.getEnv))
     val numClass = r.getCoreClassFor("Num").getOrElse(
       throw new MoeErrors.MoeStartupError("Could not find class Num")
     )
@@ -19,8 +20,10 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<+>",
-        { (invocant, args) =>
-          getNum(invocant.unboxToDouble.get + args(0).unboxToDouble.get)
+        new MoeSignature(List(new MoeParameter("$other"))), 
+        env, 
+        { (e) =>
+          getNum(e.getCurrentInvocant.get.unboxToDouble.get + e.get("$other").get.unboxToDouble.get)
         }
       )
     )

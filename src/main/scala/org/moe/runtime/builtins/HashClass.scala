@@ -9,6 +9,7 @@ import org.moe.runtime.nativeobjects._
 object HashClass {
 
   def apply(r: MoeRuntime): Unit = {
+    val env       = new MoeEnvironment(Some(r.getCorePackage.getEnv))
     val hashClass = r.getCoreClassFor("Hash").getOrElse(
       throw new MoeErrors.MoeStartupError("Could not find class Hash")
     )
@@ -19,56 +20,61 @@ object HashClass {
 
     /**
      * NOTE: 
-     * This should also support lvalue assignment.
+     * This should also support slice and lvalue assignment.
      */
     hashClass.addMethod(
       new MoeMethod(
         "postcircumfix:<{}>",
-        { (self, args) => 
-          val hash = self.asInstanceOf[MoeHashObject]
-          if (args.length == 1) {
-            hash.at_key(r, args(0).asInstanceOf[MoeStrObject])
-          }
-          else {
-            hash.slice(r, args.map(_.asInstanceOf[MoeStrObject]))
-          }
+        new MoeSignature(List(new MoeParameter("$key"))),
+        env,
+        { (e) => 
+          val hash = e.getCurrentInvocant.get.asInstanceOf[MoeHashObject]
+          hash.at_key(r, e.get("$key").get.asInstanceOf[MoeStrObject])
         }
       )
     )
 
     hashClass.addMethod(
       new MoeMethod(
-        "at_key", // ($key)
-        (self, args) => self.asInstanceOf[MoeHashObject].at_key(r, args(0).asInstanceOf[MoeStrObject])
+        "at_key", 
+        new MoeSignature(List(new MoeParameter("$key"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].at_key(r, e.get("$key").get.asInstanceOf[MoeStrObject])
       )
     )
 
     hashClass.addMethod(
       new MoeMethod(
-        "bind_key", // ($key, $value)
-        (self, args) => self.asInstanceOf[MoeHashObject].bind_key(r, args(0).asInstanceOf[MoeStrObject], args(1))
+        "bind_key", 
+        new MoeSignature(List(new MoeParameter("$key"), new MoeParameter("$value"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].bind_key(r, e.get("$key").get.asInstanceOf[MoeStrObject], e.get("$value").get)
       )
     )
 
     hashClass.addMethod(
       new MoeMethod(
-        "exists", // ($key)
-        (self, args) => self.asInstanceOf[MoeHashObject].exists(r, args(0).asInstanceOf[MoeStrObject])
+        "exists",
+        new MoeSignature(List(new MoeParameter("$key"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].exists(r, e.get("$key").get.asInstanceOf[MoeStrObject])
       )
     )
 
     hashClass.addMethod(
       new MoeMethod(
-        "slice", // ($key)
-        (self, args) => self.asInstanceOf[MoeHashObject].slice(r, args.map(_.asInstanceOf[MoeStrObject]))
+        "slice",
+        new MoeSignature(List(new MoeParameter("@keys"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].slice(r, e.get("@keys").get.asInstanceOf[MoeArrayObject])
       )
     )
 
-    hashClass.addMethod(new MoeMethod("clear",  (self, _) => self.asInstanceOf[MoeHashObject].clear(r)))
-    hashClass.addMethod(new MoeMethod("keys",   (self, _) => self.asInstanceOf[MoeHashObject].keys(r)))
-    hashClass.addMethod(new MoeMethod("values", (self, _) => self.asInstanceOf[MoeHashObject].values(r)))
-    hashClass.addMethod(new MoeMethod("kv",     (self, _) => self.asInstanceOf[MoeHashObject].kv(r)))
-    hashClass.addMethod(new MoeMethod("pairs",  (self, _) => self.asInstanceOf[MoeHashObject].pairs(r)))
+    hashClass.addMethod(new MoeMethod("clear",  new MoeSignature(List()), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].clear(r)))
+    hashClass.addMethod(new MoeMethod("keys",   new MoeSignature(List()), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].keys(r)))
+    hashClass.addMethod(new MoeMethod("values", new MoeSignature(List()), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].values(r)))
+    hashClass.addMethod(new MoeMethod("kv",     new MoeSignature(List()), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].kv(r)))
+    hashClass.addMethod(new MoeMethod("pairs",  new MoeSignature(List()), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].pairs(r)))
 
     /**
      * List of Methods to support:
