@@ -16,10 +16,10 @@ class ArithmeticTestSuite
     // 2 + 2
     val ast = wrapSimpleAST(
       List(
-        MethodCallNode(
+        BinaryOpNode(
           IntLiteralNode(2),
-          "infix:<+>",
-          List(IntLiteralNode(2))
+          "+",
+          IntLiteralNode(2)
         )
       )
     )
@@ -31,10 +31,10 @@ class ArithmeticTestSuite
     // 2.5 + 2
     val ast = wrapSimpleAST(
       List(
-        MethodCallNode(
+        BinaryOpNode(
           FloatLiteralNode(2.5),
-          "infix:<+>",
-          List(IntLiteralNode(2))
+          "+",
+          IntLiteralNode(2)
         )
       )
     )
@@ -46,10 +46,10 @@ class ArithmeticTestSuite
     // 2 + 2.5
     val ast = wrapSimpleAST(
       List(
-        MethodCallNode(
+        BinaryOpNode(
           IntLiteralNode(2),
-          "infix:<+>",
-          List(FloatLiteralNode(2.5))
+          "+",
+          FloatLiteralNode(2.5)
         )
       )
     )
@@ -61,10 +61,10 @@ class ArithmeticTestSuite
     // 2.5 + 2.5
     val ast = wrapSimpleAST(
       List(
-        MethodCallNode(
+        BinaryOpNode(
           FloatLiteralNode(2.5),
-          "infix:<+>",
-          List(FloatLiteralNode(2.5))
+          "+",
+          FloatLiteralNode(2.5)
         )
       )
     )
@@ -76,14 +76,14 @@ class ArithmeticTestSuite
     // 1 + 2 + 3
     val ast = wrapSimpleAST(
       List(
-        MethodCallNode(
-          MethodCallNode(
+        BinaryOpNode(
+          BinaryOpNode(
             IntLiteralNode(1),
-            "infix:<+>",
-            List(IntLiteralNode(2))
+            "+",
+            IntLiteralNode(2)
           ),
-          "infix:<+>",
-          List(IntLiteralNode(3))
+          "+",
+          IntLiteralNode(3)
         )
       )
     )

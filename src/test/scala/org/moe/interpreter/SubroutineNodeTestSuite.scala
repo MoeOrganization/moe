@@ -16,10 +16,10 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
           SignatureNode(List(ParameterNode("$n"))),
           StatementsNode(
             List(
-              MethodCallNode(
+              BinaryOpNode(
                 VariableAccessNode("$n"),
-                "infix:<+>",
-                List(IntLiteralNode(10))
+                "+",
+                IntLiteralNode(10)
               )
             )
           )

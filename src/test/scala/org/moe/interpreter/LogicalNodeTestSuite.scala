@@ -10,7 +10,7 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic test with Not") {
     val ast = wrapSimpleAST(
       List(
-        NotNode(BooleanLiteralNode(true))
+        PrefixUnaryOpNode(BooleanLiteralNode(true), "!")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -20,7 +20,7 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic (false) test with Not") {
     val ast = wrapSimpleAST(
       List(
-        NotNode(BooleanLiteralNode(false))
+        PrefixUnaryOpNode(BooleanLiteralNode(false), "!")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -30,8 +30,9 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic test with And") {
     val ast = wrapSimpleAST(
       List(
-        AndNode(
+        BinaryOpNode(
           BooleanLiteralNode(true),
+          "&&",
           BooleanLiteralNode(false)
         )
       )
@@ -43,10 +44,12 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic test with nested And") {
     val ast = wrapSimpleAST(
       List(
-        AndNode(
+        BinaryOpNode(
           BooleanLiteralNode(true),
-          AndNode(
+          "&&",
+          BinaryOpNode(
             BooleanLiteralNode(true),
+            "&&",
             IntLiteralNode(100)
           )
         )
@@ -59,8 +62,9 @@ class LogicalNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic test with Or") {
     val ast = wrapSimpleAST(
       List(
-        OrNode(
+        BinaryOpNode(
           BooleanLiteralNode(true),
+          "||",
           BooleanLiteralNode(false)
         )
       )

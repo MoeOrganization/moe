@@ -168,6 +168,7 @@ class Interpreter {
           }
         }
       }
+      
       case DecrementNode(receiver: AST, is_prefix) => receiver match {
         case VariableAccessNode(varName) => env.get(varName).getOrElse(
           throw new MoeErrors.VariableNotFound(varName)
@@ -185,53 +186,43 @@ class Interpreter {
         }
       }
 
-      // TODO - these should be converted to method of Any
-      case NotNode(receiver) => {
-        if(eval(runtime, env, receiver).isTrue) {
-          getFalse
-        } else {
-          getTrue
-        }
+      case PrefixUnaryOpNode(lhs: AST, operator: String) => {
+        val receiver = eval(runtime, env, lhs)
+        receiver.callMethod(
+          receiver.getAssociatedClass.getOrElse(
+            throw new MoeErrors.ClassNotFound(receiver.toString)
+          ).getMethod("prefix:<" + operator + ">").getOrElse(
+            throw new MoeErrors.MethodNotFound("prefix:<" + operator + ">")
+          ), 
+          List()
+        )
+      }
+
+      case PostfixUnaryOpNode(lhs: AST, operator: String) => {
+        val receiver = eval(runtime, env, lhs)
+        receiver.callMethod(
+          receiver.getAssociatedClass.getOrElse(
+            throw new MoeErrors.ClassNotFound(receiver.toString)
+          ).getMethod("postfix:<" + operator + ">").getOrElse(
+            throw new MoeErrors.MethodNotFound("postfix:<" + operator + ">")
+          ), 
+          List()
+        )
       }
 
       // binary operators
 
-      // TODO - these two should be converted to methods of Any
-
-      case AndNode(lhs, rhs) => {
-        val left_result = eval(runtime, env, lhs)
-        if(left_result.isTrue) {
-          eval(runtime, env, rhs)
-        } else {
-          left_result
-        }
-      }
-
-      case OrNode(lhs, rhs) => {
-        val left_result = eval(runtime, env, lhs)
-        if(left_result.isTrue) {
-          left_result
-        } else {
-          eval(runtime, env, rhs)
-        }
-      }
-
-      // TODO - these two should be converted to methods of Int,Float and String
-
-      case LessThanNode(lhs, rhs) => {
-        val lhs_result: Double = eval(runtime, env, lhs).unboxToDouble.get
-        val rhs_result: Double = eval(runtime, env, rhs).unboxToDouble.get
-
-        val result = lhs_result < rhs_result
-        getBool(result)
-      }
-
-      case GreaterThanNode(lhs, rhs) => {
-        val lhs_result: Double = eval(runtime, env, lhs).unboxToDouble.get
-        val rhs_result: Double = eval(runtime, env, rhs).unboxToDouble.get
-
-        val result = lhs_result > rhs_result
-        getBool(result)
+      case BinaryOpNode(lhs: AST, operator: String, rhs: AST) => {
+        val receiver = eval(runtime, env, lhs)
+        val arg      = eval(runtime, env, rhs)
+        receiver.callMethod(
+          receiver.getAssociatedClass.getOrElse(
+            throw new MoeErrors.ClassNotFound(receiver.toString)
+          ).getMethod("infix:<" + operator + ">").getOrElse(
+            throw new MoeErrors.MethodNotFound("infix:<" + operator + ">")
+          ), 
+          List(arg)
+        )
       }
 
       // value lookup, assignment and declaration
@@ -504,7 +495,7 @@ class Interpreter {
       case UnlessElseNode(unless_condition, unless_body, else_body) => {
         eval(runtime, env,
           IfElseNode(
-            NotNode(unless_condition),
+            PrefixUnaryOpNode(unless_condition, "!"),
             unless_body,
             else_body
           )

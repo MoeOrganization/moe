@@ -21,8 +21,9 @@ class WhileNodeTestSuite extends FunSuite with InterpreterTestUtils {
           IntLiteralNode(0)
         ),
         WhileNode(
-          LessThanNode(
+          BinaryOpNode(
             VariableAccessNode("$foo"),
+            "<",
             IntLiteralNode(10)
           ),
           StatementsNode(

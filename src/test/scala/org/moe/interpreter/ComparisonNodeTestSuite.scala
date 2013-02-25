@@ -10,8 +10,9 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic test with <") {
     val ast = wrapSimpleAST(
       List(
-        LessThanNode(
+        BinaryOpNode(
           IntLiteralNode(4),
+          "<",
           IntLiteralNode(6)
         )
       )
@@ -23,8 +24,9 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic (false) test with <") {
     val ast = wrapSimpleAST(
       List(
-        LessThanNode(
+        BinaryOpNode(
           IntLiteralNode(6),
+          "<",
           IntLiteralNode(4)
         )
       )
@@ -36,8 +38,9 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic test with < between int and float") {
     val ast = wrapSimpleAST(
       List(
-        LessThanNode(
+        BinaryOpNode(
           IntLiteralNode(4),
+          "<",
           FloatLiteralNode(6.433)
         )
       )
@@ -49,8 +52,9 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic test with < of equal floats") {
     val ast = wrapSimpleAST(
       List(
-        LessThanNode(
+        BinaryOpNode(
           FloatLiteralNode(6.433),
+          "<",
           FloatLiteralNode(6.433)
         )
       )
@@ -62,8 +66,9 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic test with >") {
     val ast = wrapSimpleAST(
       List(
-        GreaterThanNode(
+        BinaryOpNode(
           IntLiteralNode(6),
+          ">",
           IntLiteralNode(4)
         )
       )
@@ -75,8 +80,9 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic (false) test with >") {
     val ast = wrapSimpleAST(
       List(
-        GreaterThanNode(
+        BinaryOpNode(
           IntLiteralNode(4),
+          ">",
           IntLiteralNode(6)
         )
       )
@@ -88,8 +94,9 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic test with > between int and float") {
     val ast = wrapSimpleAST(
       List(
-        GreaterThanNode(
+        BinaryOpNode(
           FloatLiteralNode(6.433),
+          ">",
           IntLiteralNode(4)
         )
       )
@@ -101,8 +108,9 @@ class ComparisonNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic test with > of equal floats") {
     val ast = wrapSimpleAST(
       List(
-        GreaterThanNode(
+        BinaryOpNode(
           FloatLiteralNode(6.433),
+          ">",
           FloatLiteralNode(6.433)
         )
       )

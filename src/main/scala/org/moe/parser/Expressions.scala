@@ -22,24 +22,24 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   // lazy val mulOp: PackratParser[AST] = mulOp ~ "[*/]".r ~ simpleExpression ^^ binOpResult | simpleExpression
 
   lazy val addOp: PackratParser[AST] = addOp ~ "[-+]".r ~ mulOp            ^^ {
-    case left ~ op ~ right => MethodCallNode(left, "infix:<" + op + ">", List(right))
+    case left ~ op ~ right => BinaryOpNode(left, op, right)
   }| mulOp
 
   lazy val mulOp: PackratParser[AST] = mulOp ~ "[*/%]".r ~ expOp ^^ {
-    case left ~ op ~ right => MethodCallNode(left, "infix:<" + op + ">", List(right))
+    case left ~ op ~ right => BinaryOpNode(left, op, right)
   } | expOp
 
   lazy val expOp: PackratParser[AST] = rep1sep(simpleExpression, "**") ^^ {
-    xs => xs.reduceRight((left, right) => MethodCallNode(left, "infix:<**>", List(right)))
+    xs => xs.reduceRight((left, right) => BinaryOpNode(left, "**", right))
   } | applyOp
+
+  lazy val relOp: PackratParser[AST] = simpleExpression ~ "[<>]=?|[!=]=".r ~ simpleExpression ^^ {
+    case left ~ op ~ right => BinaryOpNode(left, op, right)
+  }
 
   lazy val applyOp: PackratParser[AST] = (mulOp <~ "->") ~ identifier ^^ {
     case invocant ~ method => MethodCallNode(invocant, method, List())
   } | simpleExpression
-
-  lazy val relOp: PackratParser[AST] = simpleExpression ~ "[<>]=?|[!=]=".r ~ simpleExpression ^^ {
-    case left ~ op ~ right => MethodCallNode(left, "infix:<" + op + ">", List(right))
-  }
 
   lazy val simpleExpression: PackratParser[AST] = (
       arrayIndex

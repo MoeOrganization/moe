@@ -58,8 +58,9 @@ class ForNodeTestSuite extends FunSuite with InterpreterTestUtils {
             "$foo",
             IntLiteralNode(0)
           ),
-          LessThanNode(
+          BinaryOpNode(
             VariableAccessNode("$foo"),
+            "<",
             IntLiteralNode(10)
           ),
           IncrementNode(VariableAccessNode("$foo")),

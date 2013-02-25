@@ -70,11 +70,11 @@ object HashClass {
       )
     )
 
-    hashClass.addMethod(new MoeMethod("clear",  new MoeSignature(List()), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].clear(r)))
-    hashClass.addMethod(new MoeMethod("keys",   new MoeSignature(List()), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].keys(r)))
-    hashClass.addMethod(new MoeMethod("values", new MoeSignature(List()), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].values(r)))
-    hashClass.addMethod(new MoeMethod("kv",     new MoeSignature(List()), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].kv(r)))
-    hashClass.addMethod(new MoeMethod("pairs",  new MoeSignature(List()), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].pairs(r)))
+    hashClass.addMethod(new MoeMethod("clear",  new MoeSignature(), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].clear(r)))
+    hashClass.addMethod(new MoeMethod("keys",   new MoeSignature(), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].keys(r)))
+    hashClass.addMethod(new MoeMethod("values", new MoeSignature(), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].values(r)))
+    hashClass.addMethod(new MoeMethod("kv",     new MoeSignature(), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].kv(r)))
+    hashClass.addMethod(new MoeMethod("pairs",  new MoeSignature(), env, (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].pairs(r)))
 
     /**
      * List of Methods to support:

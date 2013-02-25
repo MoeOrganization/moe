@@ -19,7 +19,7 @@ object ClassClass {
     classClass.addMethod(
       new MoeMethod(
         "new",
-        new MoeSignature(List()),
+        new MoeSignature(),
         env,
         { (e) => e.getCurrentInvocant.get.asInstanceOf[MoeClass].newInstance }
       )

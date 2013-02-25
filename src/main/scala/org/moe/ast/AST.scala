@@ -38,49 +38,42 @@ case class RangeLiteralNode(start: AST, end: AST) extends AST
 
 // unary operators
 
+// NOTE: there are mutators so they have
+// to stay here for now, but ideally we 
+// should be able to handle this better.
 case class IncrementNode(receiver: AST, is_prefix: Boolean = false) extends AST
 case class DecrementNode(receiver: AST, is_prefix: Boolean = false) extends AST
 
-case class NotNode(receiver: AST) extends AST
+case class PrefixUnaryOpNode(lhs: AST, operator: String)  extends AST
+case class PostfixUnaryOpNode(rhs: AST, operator: String) extends AST
 
 // binary operators
 
-case class AndNode(lhs: AST, rhs: AST) extends AST
-case class OrNode(lhs: AST, rhs: AST) extends AST
-
-case class EqualToNode(lhs: AST, rhs: AST) extends AST
-case class NotEqualToNode(lhs: AST, rhs: AST) extends AST
-
-case class LessThanNode(lhs: AST, rhs: AST) extends AST
-case class LessThanOrEqualToNode(lhs: AST, rhs: AST) extends AST
-case class GreaterThanNode(lhs: AST, rhs: AST) extends AST
-case class GreaterThanOrEqualToNode(lhs: AST, rhs: AST) extends AST
+case class BinaryOpNode(lhs: AST, operator: String, rhs: AST) extends AST
 
 // value lookup, assignment and declaration
-
-case class ClassAccessNode(name: String) extends AST
-case class ClassDeclarationNode(name: String, superclass: Option[String], body: StatementsNode) extends AST
-case class PackageDeclarationNode(name: String, body: StatementsNode) extends AST
 
 case class ParameterNode(name: String) extends AST
 case class SignatureNode(params: List[ParameterNode]) extends AST
 
+case class ClassDeclarationNode(name: String, superclass: Option[String], body: StatementsNode) extends AST
+case class PackageDeclarationNode(name: String, body: StatementsNode) extends AST
 case class ConstructorDeclarationNode(signature: SignatureNode, body: StatementsNode) extends AST
 case class DestructorDeclarationNode(signature: SignatureNode, body: StatementsNode) extends AST
-
 case class MethodDeclarationNode(name: String, signature: SignatureNode, body: StatementsNode) extends AST
 case class SubroutineDeclarationNode(name: String, signature: SignatureNode, body: StatementsNode) extends AST
-
-case class AttributeAccessNode(name: String) extends AST
-case class AttributeAssignmentNode(name: String, expression: AST) extends AST
 case class AttributeDeclarationNode(name: String, expression: AST) extends AST
-
-case class VariableAccessNode(name: String) extends AST
-case class VariableAssignmentNode(name: String, expression: AST) extends AST
 case class VariableDeclarationNode(name: String, expression: AST) extends AST
 
+case class ClassAccessNode(name: String) extends AST
+case class AttributeAccessNode(name: String) extends AST
+case class VariableAccessNode(name: String) extends AST
 case class HashElementAccessNode(hashName: String, key: AST) extends AST
 case class ArrayElementAccessNode(arrayName: String, index: AST) extends AST
+
+// TODO - these should get converted to binary ops
+case class AttributeAssignmentNode(name: String, expression: AST) extends AST
+case class VariableAssignmentNode(name: String, expression: AST) extends AST
 
 // operations
 

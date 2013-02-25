@@ -27,21 +27,11 @@ object InterpreterUtils {
 
       case IncrementNode(receiver, _)     => walkAST(receiver, callback)
       case DecrementNode(receiver, _)     => walkAST(receiver, callback)
-      case NotNode(receiver)           => walkAST(receiver, callback)
 
-      case AndNode(lhs, rhs) => {
-        walkAST(lhs, callback)
-        walkAST(rhs, callback)
-      }
-      case OrNode(lhs, rhs) => {
-        walkAST(lhs, callback)
-        walkAST(rhs, callback)
-      }
-      case LessThanNode(lhs, rhs) => {
-        walkAST(lhs, callback)
-        walkAST(rhs, callback)
-      }
-      case GreaterThanNode(lhs, rhs) => {
+      case PrefixUnaryOpNode(receiver, _)     => walkAST(receiver, callback)
+      case PostfixUnaryOpNode(receiver, _)    => walkAST(receiver, callback)
+
+      case BinaryOpNode(lhs, _, rhs) => {
         walkAST(lhs, callback)
         walkAST(rhs, callback)
       }

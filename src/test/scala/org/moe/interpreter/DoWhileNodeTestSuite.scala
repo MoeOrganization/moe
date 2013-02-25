@@ -21,8 +21,9 @@ class DoWhileNodeTestSuite extends FunSuite with InterpreterTestUtils {
           IntLiteralNode(0)
         ),
         DoWhileNode(
-          LessThanNode(
+          BinaryOpNode(
             VariableAccessNode("$foo"),
+            "<",
             IntLiteralNode(10)
           ),
           StatementsNode(

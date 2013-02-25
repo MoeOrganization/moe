@@ -41,48 +41,38 @@ object Serializer {
       )
     )
 
-    // TODO we should probably be storing the "is_prefix" in the serialized JSON (not sure how to do that)
     case IncrementNode(receiver, is_prefix) => JSONObject(Map("IncrementNode" -> toJSON(receiver)))
     case DecrementNode(receiver, is_prefix) => JSONObject(Map("DecrementNode" -> toJSON(receiver)))
-    case NotNode(receiver)                  => JSONObject(Map("NotNode" -> toJSON(receiver)))
 
-    case AndNode(lhs, rhs) => JSONObject(
+    case PrefixUnaryOpNode(lhs, operator) => JSONObject(
       Map(
-        "AndNode" -> JSONObject(
+        "PrefixUnaryOpNode" -> JSONObject(
           Map(
-            "lhs" -> toJSON(lhs),
-            "rhs" -> toJSON(rhs)
+            "lhs"      -> toJSON(lhs),
+            "operator" -> operator
           )
         )
       )
-    )
-    case OrNode(lhs, rhs) => JSONObject(
-      Map(
-        "OrNode" -> JSONObject(
-          Map(
-            "lhs" -> toJSON(lhs),
-            "rhs" -> toJSON(rhs)
-          )
-        )
-      )
-    )
+    )  
 
-    case LessThanNode(lhs, rhs) => JSONObject(
+    case PostfixUnaryOpNode(lhs, operator) => JSONObject(
       Map(
-        "LessThanNode" -> JSONObject(
+        "PostfixUnaryOpNode" -> JSONObject(
           Map(
-            "lhs" -> toJSON(lhs),
-            "rhs" -> toJSON(rhs)
+            "lhs"      -> toJSON(lhs),
+            "operator" -> operator
           )
         )
       )
-    )
-    case GreaterThanNode(lhs, rhs) => JSONObject(
+    )  
+
+    case BinaryOpNode(lhs, operator, rhs) => JSONObject(
       Map(
-        "GreaterThanNode" -> JSONObject(
+        "BinaryOpNode" -> JSONObject(
           Map(
-            "lhs" -> toJSON(lhs),
-            "rhs" -> toJSON(rhs)
+            "lhs"      -> toJSON(lhs),
+            "operator" -> operator,
+            "rhs"      -> toJSON(rhs)
           )
         )
       )
