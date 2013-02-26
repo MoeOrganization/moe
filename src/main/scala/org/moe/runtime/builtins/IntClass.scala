@@ -19,6 +19,62 @@ object IntClass {
 
     import r.NativeObjects._
 
+    // increment/decrement
+
+    intClass.addMethod(
+      new MoeMethod(
+        "prefix:<++>",
+        new MoeSignature(), 
+        env, 
+        { (e) => 
+            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeIntObject]
+            inv.increment(r)
+            inv
+        }
+      )
+    )
+
+    intClass.addMethod(
+      new MoeMethod(
+        "postfix:<++>",
+        new MoeSignature(), 
+        env, 
+        { (e) => 
+            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeIntObject]
+            val old = getInt(inv.getNativeValue)
+            inv.increment(r)
+            old
+        }
+      )
+    )
+
+    intClass.addMethod(
+      new MoeMethod(
+        "prefix:<-->",
+        new MoeSignature(), 
+        env, 
+        { (e) => 
+            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeIntObject]
+            inv.decrement(r)
+            inv
+        }
+      )
+    )
+
+    intClass.addMethod(
+      new MoeMethod(
+        "postfix:<-->",
+        new MoeSignature(), 
+        env, 
+        { (e) => 
+            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeIntObject]
+            val old = getInt(inv.getNativeValue)
+            inv.decrement(r)
+            old
+        }
+      )
+    )
+
     // arithmetic
     
     intClass.addMethod(

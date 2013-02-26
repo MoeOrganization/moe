@@ -1,6 +1,7 @@
 package org.moe.runtime.builtins
 
 import org.moe.runtime._
+import org.moe.runtime.nativeobjects._
 import org.moe.interpreter.InterpreterUtils._
 
 /**
@@ -17,6 +18,64 @@ object NumClass {
     // MRO: Num, Scalar, Any, Object
 
     import r.NativeObjects._
+
+    // increment/decrement
+
+    numClass.addMethod(
+      new MoeMethod(
+        "prefix:<++>",
+        new MoeSignature(), 
+        env, 
+        { (e) => 
+            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeNumObject]
+            inv.increment(r)
+            inv
+        }
+      )
+    )
+
+    numClass.addMethod(
+      new MoeMethod(
+        "postfix:<++>",
+        new MoeSignature(), 
+        env, 
+        { (e) => 
+            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeNumObject]
+            val old = getNum(inv.getNativeValue)
+            inv.increment(r)
+            old
+        }
+      )
+    )
+
+    numClass.addMethod(
+      new MoeMethod(
+        "prefix:<-->",
+        new MoeSignature(), 
+        env, 
+        { (e) => 
+            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeNumObject]
+            inv.decrement(r)
+            inv
+        }
+      )
+    )
+
+    numClass.addMethod(
+      new MoeMethod(
+        "postfix:<-->",
+        new MoeSignature(), 
+        env, 
+        { (e) => 
+            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeNumObject]
+            val old = getNum(inv.getNativeValue)
+            inv.decrement(r)
+            old
+        }
+      )
+    )
+
+    // arithemtic
 
     numClass.addMethod(
       new MoeMethod(

@@ -1,6 +1,7 @@
 package org.moe.runtime.builtins
 
 import org.moe.runtime._
+import org.moe.runtime.nativeobjects._
 
 /**
   * setup class Str
@@ -14,6 +15,37 @@ object StrClass {
     )
 
     // MRO: Str, Scalar, Any, Object
+
+    import r.NativeObjects._
+
+    // increment/decrement
+
+    strClass.addMethod(
+      new MoeMethod(
+        "prefix:<++>",
+        new MoeSignature(), 
+        env, 
+        { (e) => 
+            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeStrObject]
+            inv.increment(r)
+            inv
+        }
+      )
+    )
+
+    strClass.addMethod(
+      new MoeMethod(
+        "postfix:<++>",
+        new MoeSignature(), 
+        env, 
+        { (e) => 
+            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeStrObject]
+            val old = getStr(inv.getNativeValue)
+            inv.increment(r)
+            old
+        }
+      )
+    )
 
     /**
      * List of Operators to support:
