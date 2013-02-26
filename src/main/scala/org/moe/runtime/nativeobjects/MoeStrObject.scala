@@ -8,6 +8,10 @@ class MoeStrObject(
     v: String, klass : Option[MoeClass] = None
   ) extends MoeNativeObject[String](v, klass) {
 
+  // runtime methods
+
+  def increment (r: MoeRuntime): Unit = setNativeValue(MoeUtil.magicalStringIncrement(getNativeValue))
+
   // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue match {
@@ -21,4 +25,5 @@ class MoeStrObject(
   override def unboxToString: Try[String] = Success(getNativeValue)
   override def unboxToInt: Try[Int] = Try(getNativeValue.toInt)
   override def unboxToDouble: Try[Double] = Try(getNativeValue.toDouble)
+
 }
