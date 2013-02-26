@@ -200,7 +200,7 @@ class ClassNodeTestSuite
                 SignatureNode(List()), // FIXME test with params when we have more operators :P
                 StatementsNode(
                   List(
-                    IncrementNode(AttributeAccessNode("n"))
+                    PostfixUnaryOpNode(AttributeAccessNode("n"), "++")
                   )
                 )
               )

@@ -134,7 +134,7 @@ class Interpreter {
               var str = range_start
               while (str <= range_end || str.length < range_end.length) {
                 elems = elems :+ str
-                str = magicalStringIncrement(str)
+                str = MoeUtil.magicalStringIncrement(str)
               }
               getArray(elems.map(getStr(_)))
             }
@@ -144,47 +144,6 @@ class Interpreter {
       }
 
       // unary operators
-
-      // TODO - these three should be converted to methods of Int,Float and String
-
-      case IncrementNode(receiver: AST, is_prefix) => receiver match {
-        case VariableAccessNode(varName) => env.get(varName).getOrElse(
-          throw new MoeErrors.VariableNotFound(varName)
-        ) match {
-          case i: MoeIntObject => {
-            val new_i = getInt(i.unboxToInt.get + 1)
-            env.set(varName, new_i)
-            if (is_prefix) new_i else i
-          }
-          case n: MoeNumObject => {
-            val new_n = getNum(n.unboxToDouble.get + 1.0)
-            env.set(varName, new_n)
-            if (is_prefix) new_n else n
-          }
-          case s: MoeStrObject => {
-            val new_s = getStr(magicalStringIncrement(s.unboxToString.get))
-            env.set(varName, new_s)
-            if (is_prefix) new_s else s
-          }
-        }
-      }
-      
-      case DecrementNode(receiver: AST, is_prefix) => receiver match {
-        case VariableAccessNode(varName) => env.get(varName).getOrElse(
-          throw new MoeErrors.VariableNotFound(varName)
-        ) match {
-          case i: MoeIntObject => {
-            val new_i = getInt(i.unboxToInt.get - 1)
-            env.set(varName, new_i)
-            if (is_prefix) new_i else i
-          }
-          case n: MoeNumObject => {
-            val new_n = getNum(n.unboxToDouble.get - 1.0)
-            env.set(varName, new_n)
-            if (is_prefix) new_n else n
-          }
-        }
-      }
 
       case PrefixUnaryOpNode(lhs: AST, operator: String) => {
         val receiver = eval(runtime, env, lhs)

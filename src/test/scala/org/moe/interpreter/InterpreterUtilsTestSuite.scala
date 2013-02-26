@@ -25,7 +25,7 @@ class InterpreterUtilsTestSuite extends FunSuite with ShouldMatchers {
             BooleanLiteralNode(true),
             StatementsNode(
               List(
-                IncrementNode(VariableAccessNode("$n"))
+                PostfixUnaryOpNode(VariableAccessNode("$n"), "++")
               )
             )
           )
@@ -43,7 +43,7 @@ class InterpreterUtilsTestSuite extends FunSuite with ShouldMatchers {
         "WhileNode",
         "BooleanLiteralNode",
         "StatementsNode",
-        "IncrementNode",
+        "PostfixUnaryOpNode",
         "VariableAccessNode"
       )
     )

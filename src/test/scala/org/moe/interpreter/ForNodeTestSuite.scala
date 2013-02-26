@@ -34,7 +34,7 @@ class ForNodeTestSuite extends FunSuite with InterpreterTestUtils {
               // topic assignment somehow - maybe
               // when we have more features, like
               // pushing to a result array
-              IncrementNode(VariableAccessNode("$bar"))
+              PostfixUnaryOpNode(VariableAccessNode("$bar"), "++")
             )
           )
         ),
@@ -63,10 +63,10 @@ class ForNodeTestSuite extends FunSuite with InterpreterTestUtils {
             "<",
             IntLiteralNode(10)
           ),
-          IncrementNode(VariableAccessNode("$foo")),
+          PostfixUnaryOpNode(VariableAccessNode("$foo"), "++"),
           StatementsNode(
             List(
-              DecrementNode(VariableAccessNode("$bar"))
+              PostfixUnaryOpNode(VariableAccessNode("$bar"), "--")
             )
           )
         ),

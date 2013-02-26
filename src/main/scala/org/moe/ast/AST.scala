@@ -38,12 +38,6 @@ case class RangeLiteralNode(start: AST, end: AST) extends AST
 
 // unary operators
 
-// NOTE: there are mutators so they have
-// to stay here for now, but ideally we 
-// should be able to handle this better.
-case class IncrementNode(receiver: AST, is_prefix: Boolean = false) extends AST
-case class DecrementNode(receiver: AST, is_prefix: Boolean = false) extends AST
-
 case class PrefixUnaryOpNode(lhs: AST, operator: String)  extends AST
 case class PostfixUnaryOpNode(rhs: AST, operator: String) extends AST
 

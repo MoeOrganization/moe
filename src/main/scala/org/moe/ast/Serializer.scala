@@ -41,9 +41,6 @@ object Serializer {
       )
     )
 
-    case IncrementNode(receiver, is_prefix) => JSONObject(Map("IncrementNode" -> toJSON(receiver)))
-    case DecrementNode(receiver, is_prefix) => JSONObject(Map("DecrementNode" -> toJSON(receiver)))
-
     case PrefixUnaryOpNode(lhs, operator) => JSONObject(
       Map(
         "PrefixUnaryOpNode" -> JSONObject(

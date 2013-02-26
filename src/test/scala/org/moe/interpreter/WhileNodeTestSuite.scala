@@ -28,8 +28,8 @@ class WhileNodeTestSuite extends FunSuite with InterpreterTestUtils {
           ),
           StatementsNode(
             List(
-              IncrementNode(VariableAccessNode("$foo")),
-              DecrementNode(VariableAccessNode("$bar"))
+              PostfixUnaryOpNode(VariableAccessNode("$foo"), "++"),
+              PostfixUnaryOpNode(VariableAccessNode("$bar"), "--")
             )
           )
         ),

@@ -15,7 +15,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           IntLiteralNode(42)
         ),
-        IncrementNode(VariableAccessNode("$foo")),
+        PostfixUnaryOpNode(VariableAccessNode("$foo"), "++"),
         VariableAccessNode("$foo")
       )
     )
@@ -30,7 +30,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           IntLiteralNode(42)
         ),
-        IncrementNode(VariableAccessNode("$foo"))
+        PostfixUnaryOpNode(VariableAccessNode("$foo"), "++")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -45,7 +45,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           IntLiteralNode(42)
         ),
-        IncrementNode(VariableAccessNode("$foo"), is_prefix = true),
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "++"),
         VariableAccessNode("$foo")
       )
     )
@@ -60,7 +60,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           IntLiteralNode(42)
         ),
-        IncrementNode(VariableAccessNode("$foo"), is_prefix = true)
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "++")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -75,7 +75,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           FloatLiteralNode(98.6)
         ),
-        IncrementNode(VariableAccessNode("$foo")),
+        PostfixUnaryOpNode(VariableAccessNode("$foo"), "++"),
         VariableAccessNode("$foo")
       )
     )
@@ -90,7 +90,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           FloatLiteralNode(98.6)
         ),
-        IncrementNode(VariableAccessNode("$foo"))
+        PostfixUnaryOpNode(VariableAccessNode("$foo"), "++")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -105,7 +105,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           FloatLiteralNode(98.6)
         ),
-        IncrementNode(VariableAccessNode("$foo"), is_prefix = true),
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "++"),
         VariableAccessNode("$foo")
       )
     )
@@ -120,7 +120,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           FloatLiteralNode(98.6)
         ),
-        IncrementNode(VariableAccessNode("$foo"), is_prefix = true)
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "++")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -135,7 +135,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           IntLiteralNode(42)
         ),
-        DecrementNode(VariableAccessNode("$foo")),
+        PostfixUnaryOpNode(VariableAccessNode("$foo"), "--"),
         VariableAccessNode("$foo")
       )
     )
@@ -150,7 +150,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           IntLiteralNode(42)
         ),
-        DecrementNode(VariableAccessNode("$foo"))
+        PostfixUnaryOpNode(VariableAccessNode("$foo"), "--")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -165,7 +165,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           IntLiteralNode(42)
         ),
-        DecrementNode(VariableAccessNode("$foo"), is_prefix = true),
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "--"),
         VariableAccessNode("$foo")
       )
     )
@@ -180,7 +180,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           IntLiteralNode(42)
         ),
-        DecrementNode(VariableAccessNode("$foo"), is_prefix = true)
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "--")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -195,7 +195,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           FloatLiteralNode(98.6)
         ),
-        DecrementNode(VariableAccessNode("$foo")),
+        PostfixUnaryOpNode(VariableAccessNode("$foo"), "--"),
         VariableAccessNode("$foo")
       )
     )
@@ -210,7 +210,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           FloatLiteralNode(98.6)
         ),
-        DecrementNode(VariableAccessNode("$foo"))
+        PostfixUnaryOpNode(VariableAccessNode("$foo"), "--")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -225,7 +225,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           FloatLiteralNode(98.6)
         ),
-        DecrementNode(VariableAccessNode("$foo"), is_prefix = true),
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "--"),
         VariableAccessNode("$foo")
       )
     )
@@ -240,7 +240,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           FloatLiteralNode(98.6)
         ),
-        DecrementNode(VariableAccessNode("$foo"), is_prefix = true)
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "--")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -254,7 +254,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           StringLiteralNode("123")
         ),
-        IncrementNode(VariableAccessNode("$foo"), is_prefix = true)
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "++")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -268,7 +268,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           StringLiteralNode("99")
         ),
-        IncrementNode(VariableAccessNode("$foo"), is_prefix = true)
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "++")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -282,7 +282,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           StringLiteralNode("99")
         ),
-        IncrementNode(VariableAccessNode("$foo"), is_prefix = true)
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "++")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -296,7 +296,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           StringLiteralNode("a0")
         ),
-        IncrementNode(VariableAccessNode("$foo"), is_prefix = true)
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "++")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -310,7 +310,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           StringLiteralNode("Az")
         ),
-        IncrementNode(VariableAccessNode("$foo"), is_prefix = true)
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "++")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -324,7 +324,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           StringLiteralNode("zz")
         ),
-        IncrementNode(VariableAccessNode("$foo"), is_prefix = true)
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "++")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -338,7 +338,7 @@ class IncrementDecrementNodeTestSuite extends FunSuite with InterpreterTestUtils
           "$foo",
           StringLiteralNode("01")
         ),
-        IncrementNode(VariableAccessNode("$foo"), is_prefix = true)
+        PrefixUnaryOpNode(VariableAccessNode("$foo"), "++")
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)

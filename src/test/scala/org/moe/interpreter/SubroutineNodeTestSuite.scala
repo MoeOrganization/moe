@@ -55,7 +55,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
           SignatureNode(List()),
           StatementsNode(
             List(
-              IncrementNode(VariableAccessNode("$foo"))
+              PostfixUnaryOpNode(VariableAccessNode("$foo"), "++")
             )
           )
         ),
@@ -79,7 +79,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
           SignatureNode(List()),
           StatementsNode(
             List(
-              IncrementNode(VariableAccessNode("$foo"))
+              PostfixUnaryOpNode(VariableAccessNode("$foo"), "++")
             )
           )
         ),
@@ -113,7 +113,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
                 SignatureNode(List()),
                 StatementsNode(
                   List(
-                    IncrementNode(VariableAccessNode("$n"), true)
+                    PrefixUnaryOpNode(VariableAccessNode("$n"), "++")
                   )
                 )
               )
@@ -152,7 +152,7 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
                 SignatureNode(List()),
                 StatementsNode(
                   List(
-                    IncrementNode(VariableAccessNode("$n"))
+                    PostfixUnaryOpNode(VariableAccessNode("$n"), "++")
                   )
                 )
               )
@@ -194,11 +194,11 @@ class SubroutineNodeTestSuite extends FunSuite with InterpreterTestUtils {
                 SignatureNode(List(ParameterNode("$a"))),
                 StatementsNode(
                   List(
-                    IncrementNode(VariableAccessNode("$a"), true)
+                    PrefixUnaryOpNode(VariableAccessNode("$a"), "++")
                   )
                 )
               ),
-              IncrementNode(VariableAccessNode("$a"), true)
+              PrefixUnaryOpNode(VariableAccessNode("$a"), "++")
             )
           )
         ),
