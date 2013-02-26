@@ -147,13 +147,5 @@ object InterpreterUtils {
       )
   }
 
-  // perl modulo operator
-  def perlModuloOp(a: Int, b: Int): Int = {
-    val res = a % b
-    if (a < 0)
-      if (b > 0 && res < 0) res + b else res
-    else
-      if (b < 0) res + b else res
-  }
 }
 

@@ -4,6 +4,15 @@ import scala.util.matching.Regex
 
 object MoeUtil {
 
+  // perlish modulo
+  def perlModuloOp(a: Int, b: Int): Int = {
+    val res = a % b
+    if (a < 0)
+      if (b > 0 && res < 0) res + b else res
+    else
+      if (b < 0) res + b else res
+  }
+
   // strings matching the alphanumeric pattern 
   // /^[a-zA-Z]*[0-9]*\z/ are incrementable
 
