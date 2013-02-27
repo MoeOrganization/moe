@@ -11,6 +11,14 @@ case class ScopeNode(body: StatementsNode) extends AST
 
 case class StatementsNode(nodes: List[AST]) extends AST
 
+case class IfStruct (
+  var condition: AST,
+  var body: AST, 
+  var else_node: IfStruct = null
+) extends AST
+
+case class IfNode(if_node: IfStruct) extends AST 
+
 // literals
 
 /**
@@ -80,26 +88,8 @@ case class SubroutineCallNode(function_name: String, args: List[AST]) extends AS
 
 // statements
 
-case class IfNode(if_condition: AST, if_body: AST) extends AST
-case class IfElseNode(if_condition: AST, if_body: AST, else_body: AST) extends AST
-case class IfElsifNode(
-  if_condition: AST,
-  if_body: AST,
-  elsif_condition: AST,
-  elsif_body: AST)
-  extends AST
-case class IfElsifElseNode(
-  if_condition: AST,
-  if_body: AST,
-  elsif_condition: AST,
-  elsif_body: AST,
-  else_body: AST)
-  extends AST
-
 case class UnlessNode(unless_condition: AST, unless_body: AST) extends AST
 case class UnlessElseNode(unless_condition: AST, unless_body: AST, else_body: AST) extends AST
-// TODO: UnlessElsif and UnlessElsifElse to match If above?
-// Or should the normalization be handled by the parser instead? -TRS
 
 case class TryNode(
   body: AST,

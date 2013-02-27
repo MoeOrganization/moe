@@ -11,8 +11,10 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
     val ast = wrapSimpleAST(
       List(
         IfNode(
-          BooleanLiteralNode(true),
-          IntLiteralNode(1)
+          new IfStruct(
+            BooleanLiteralNode(true),
+            IntLiteralNode(1)
+          )
         )
       )
     )
@@ -24,8 +26,10 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
     val ast = wrapSimpleAST(
       List(
         IfNode(
-          BooleanLiteralNode(false),
-          IntLiteralNode(1)
+          new IfStruct(
+            BooleanLiteralNode(false),
+            IntLiteralNode(1)
+          )
         )
       )
     )
@@ -33,13 +37,15 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
     assert(result === runtime.NativeObjects.getUndef)
   }
 
-  test("... basic test with IfElse") {
+  test("... basic test with If () Else") {
     val ast = wrapSimpleAST(
       List(
-        IfElseNode(
-          BooleanLiteralNode(true),
-          IntLiteralNode(2),
-          IntLiteralNode(3)
+        IfNode(
+          new IfStruct(
+            BooleanLiteralNode(true),
+            IntLiteralNode(2), 
+            new IfStruct(BooleanLiteralNode(true), IntLiteralNode(3))
+          )
         )
       )
     )
@@ -47,13 +53,15 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
     assert(result.unboxToInt.get === 2)
   }
 
-  test("... basic (false) test with IfElse") {
+  test("... basic (false) test with If () Else") {
     val ast = wrapSimpleAST(
       List(
-        IfElseNode(
-          BooleanLiteralNode(false),
-          IntLiteralNode(2),
-          IntLiteralNode(3)
+        IfNode(
+          new IfStruct(
+            BooleanLiteralNode(false),
+            IntLiteralNode(2), 
+            new IfStruct(BooleanLiteralNode(true), IntLiteralNode(3))
+          )
         )
       )
     )
@@ -64,11 +72,12 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic (true/true) test with IfElsif (true/true)") {
     val ast = wrapSimpleAST(
       List(
-        IfElsifNode(
-          BooleanLiteralNode(true),
-          IntLiteralNode(5),
-          BooleanLiteralNode(true),
-          IntLiteralNode(8)
+        IfNode(
+          new IfStruct(
+            BooleanLiteralNode(true),
+            IntLiteralNode(5), 
+            new IfStruct(BooleanLiteralNode(true), IntLiteralNode(8))
+          )
         )
       )
     )
@@ -79,11 +88,12 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic (false/true) test with IfElsif") {
     val ast = wrapSimpleAST(
       List(
-        IfElsifNode(
-          BooleanLiteralNode(false),
-          IntLiteralNode(5),
-          BooleanLiteralNode(true),
-          IntLiteralNode(8)
+        IfNode(
+          new IfStruct(
+            BooleanLiteralNode(false),
+            IntLiteralNode(5), 
+            new IfStruct(BooleanLiteralNode(true), IntLiteralNode(8))
+          )
         )
       )
     )
@@ -94,11 +104,12 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic (false/false) test with IfElseIf") {
     val ast = wrapSimpleAST(
       List(
-        IfElsifNode(
-          BooleanLiteralNode(false),
-          IntLiteralNode(13),
-          BooleanLiteralNode(false),
-          IntLiteralNode(21)
+        IfNode(
+          new IfStruct(
+            BooleanLiteralNode(false),
+            IntLiteralNode(5), 
+            new IfStruct(BooleanLiteralNode(false), IntLiteralNode(8))
+          )
         )
       )
     )
@@ -109,12 +120,14 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic (true/true) test with IfElsifElse") {
     val ast = wrapSimpleAST(
       List(
-        IfElsifElseNode(
-          BooleanLiteralNode(true),
-          IntLiteralNode(34),
-          BooleanLiteralNode(true),
-          IntLiteralNode(55),
-          IntLiteralNode(89)
+        IfNode(
+          new IfStruct(
+            BooleanLiteralNode(true),
+            IntLiteralNode(34), 
+            new IfStruct(BooleanLiteralNode(true), IntLiteralNode(55),
+              new IfStruct(BooleanLiteralNode(true), IntLiteralNode(89))
+            )
+          )
         )
       )
     )
@@ -125,12 +138,14 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic (false/true) test with IfElsifElse") {
     val ast = wrapSimpleAST(
       List(
-        IfElsifElseNode(
-          BooleanLiteralNode(false),
-          IntLiteralNode(34),
-          BooleanLiteralNode(true),
-          IntLiteralNode(55),
-          IntLiteralNode(89)
+        IfNode(
+          new IfStruct(
+            BooleanLiteralNode(false),
+            IntLiteralNode(34), 
+            new IfStruct(BooleanLiteralNode(true), IntLiteralNode(55),
+              new IfStruct(BooleanLiteralNode(true), IntLiteralNode(89))
+            )
+          )
         )
       )
     )
@@ -141,12 +156,14 @@ class IfNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic (false/false) test with IfElsifElse") {
     val ast = wrapSimpleAST(
       List(
-        IfElsifElseNode(
-          BooleanLiteralNode(false),
-          IntLiteralNode(34),
-          BooleanLiteralNode(false),
-          IntLiteralNode(55),
-          IntLiteralNode(89)
+        IfNode(
+          new IfStruct(
+            BooleanLiteralNode(false),
+            IntLiteralNode(34), 
+            new IfStruct(BooleanLiteralNode(false), IntLiteralNode(55),
+              new IfStruct(BooleanLiteralNode(true), IntLiteralNode(89))
+            )
+          )
         )
       )
     )

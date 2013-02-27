@@ -244,48 +244,11 @@ object Serializer {
       )
     )
 
-    case IfNode(if_condition, if_body) => JSONObject(
+    case IfNode(if_node) => JSONObject(
       Map(
         "IfNode" -> JSONObject(
           Map(
-            "if_condition" -> toJSON(if_condition),
-            "if_body"      -> toJSON(if_body)
-          )
-        )
-      )
-    )
-    case IfElseNode(if_condition, if_body, else_body) => JSONObject(
-      Map(
-        "IfElseNode" -> JSONObject(
-          Map(
-            "if_condition" -> toJSON(if_condition),
-            "if_body"      -> toJSON(if_body),
-            "else_body"    -> toJSON(else_body)
-          )
-        )
-      )
-    )
-    case IfElsifNode(if_condition, if_body, elsif_condition, elsif_body) => JSONObject(
-      Map(
-        "IfElsifNode" -> JSONObject(
-          Map(
-            "if_condition"    -> toJSON(if_condition),
-            "if_body"         -> toJSON(if_body),
-            "elsif_condition" -> toJSON(elsif_condition),
-            "elsif_body"      -> toJSON(elsif_body)
-          )
-        )
-      )
-    )
-    case IfElsifElseNode(if_condition, if_body, elsif_condition, elsif_body, else_body) => JSONObject(
-      Map(
-        "IfElsifElseNode" -> JSONObject(
-          Map(
-            "if_condition"    -> toJSON(if_condition),
-            "if_body"         -> toJSON(if_body),
-            "elsif_condition" -> toJSON(elsif_condition),
-            "elsif_body"      -> toJSON(elsif_body),
-            "else_body"       -> toJSON(else_body)
+            "if_node" -> toJSON(if_node)
           )
         )
       )
