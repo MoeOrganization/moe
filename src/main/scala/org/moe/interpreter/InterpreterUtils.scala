@@ -59,27 +59,8 @@ object InterpreterUtils {
         args.foreach(walkAST(_, callback))
       }
 
-      case IfNode(if_condition, if_body) => {
-        walkAST(if_condition, callback)
-        walkAST(if_body, callback)
-      }
-      case IfElseNode(if_condition, if_body, else_body) => {
-        walkAST(if_condition, callback)
-        walkAST(if_body, callback)
-        walkAST(else_body, callback)
-      }
-      case IfElsifNode(if_condition, if_body, elsif_condition, elsif_body) => {
-        walkAST(if_condition, callback)
-        walkAST(if_body, callback)
-        walkAST(elsif_condition, callback)
-        walkAST(elsif_body, callback)
-      }
-      case IfElsifElseNode(if_condition, if_body, elsif_condition, elsif_body, else_body) => {
-        walkAST(if_condition, callback)
-        walkAST(if_body, callback)
-        walkAST(elsif_condition, callback)
-        walkAST(elsif_body, callback)
-        walkAST(else_body, callback)
+      case IfNode(if_node) => {
+        walkAST(if_node, callback)
       }
 
       case UnlessNode(unless_condition, unless_body) => {
