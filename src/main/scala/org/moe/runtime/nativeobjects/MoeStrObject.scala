@@ -18,7 +18,7 @@ class MoeStrObject(
   def repeat (r: MoeRuntime, other: MoeObject): MoeObject = {
     val str = getNativeValue
     val n   = other.unboxToInt.get
-    r.NativeObjects.getStr(List.fill(n)(str).reduce((x, y) => x + y))
+    r.NativeObjects.getStr(List.fill(n)(str).mkString)
   }
 
   // MoeObject overrides
