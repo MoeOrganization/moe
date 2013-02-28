@@ -58,6 +58,17 @@ object StrClass {
       )
     )
 
+    // repetition
+
+    strClass.addMethod(
+      new MoeMethod(
+        "infix:<x>",
+        new MoeSignature(List(new MoeParameter("$other"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].repeat(r, e.get("$other").get)
+      )
+    )
+
     /**
      * List of Operators to support:
      * - infix:<.>

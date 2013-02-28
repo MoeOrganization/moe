@@ -15,6 +15,12 @@ class MoeStrObject(
   def concat (r: MoeRuntime, other: MoeObject): MoeObject =
     r.NativeObjects.getStr(getNativeValue + other.unboxToString.get)
 
+  def repeat (r: MoeRuntime, other: MoeObject): MoeObject = {
+    val str = getNativeValue
+    val n   = other.unboxToInt.get
+    r.NativeObjects.getStr(List.fill(n)(str).reduce((x, y) => x + y))
+  }
+
   // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue match {
