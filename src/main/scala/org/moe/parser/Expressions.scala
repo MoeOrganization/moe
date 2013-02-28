@@ -13,7 +13,7 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   private lazy val hash_index_rule = "%" ~
                                      (namespacedIdentifier <~ "{") ~
                                      (expression <~ "}")
-  
+
   lazy val expression: PackratParser[AST] = relOp | addOp
 
   // This is what I want
@@ -21,7 +21,7 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   // lazy val addOp: PackratParser[AST] = addOp ~ "[-+]".r ~ mulOp            ^^ binOpResult | mulOp
   // lazy val mulOp: PackratParser[AST] = mulOp ~ "[*/]".r ~ simpleExpression ^^ binOpResult | simpleExpression
 
-  lazy val addOp: PackratParser[AST] = addOp ~ "[-+]".r ~ mulOp            ^^ {
+  lazy val addOp: PackratParser[AST] = addOp ~ "[-+.]".r ~ mulOp            ^^ {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
   }| mulOp
 

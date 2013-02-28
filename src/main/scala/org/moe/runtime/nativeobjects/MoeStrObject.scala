@@ -12,6 +12,9 @@ class MoeStrObject(
 
   def increment (r: MoeRuntime): Unit = setNativeValue(MoeUtil.magicalStringIncrement(getNativeValue))
 
+  def concat (r: MoeRuntime, other: MoeObject): MoeObject =
+    r.NativeObjects.getStr(getNativeValue + other.unboxToString.get)
+
   // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue match {
@@ -19,9 +22,9 @@ class MoeStrObject(
     case _        => false
   }
   override def toString = "\"" + getNativeValue + "\""
-  
+
   // unboxing
-  
+
   override def unboxToString: Try[String] = Success(getNativeValue)
   override def unboxToInt: Try[Int] = Try(getNativeValue.toInt)
   override def unboxToDouble: Try[Double] = Try(getNativeValue.toDouble)

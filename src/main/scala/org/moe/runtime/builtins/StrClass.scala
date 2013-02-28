@@ -23,9 +23,9 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "prefix:<++>",
-        new MoeSignature(), 
-        env, 
-        { (e) => 
+        new MoeSignature(),
+        env,
+        { (e) =>
             val inv = e.getCurrentInvocant.get.asInstanceOf[MoeStrObject]
             inv.increment(r)
             inv
@@ -36,9 +36,9 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "postfix:<++>",
-        new MoeSignature(), 
-        env, 
-        { (e) => 
+        new MoeSignature(),
+        env,
+        { (e) =>
             val inv = e.getCurrentInvocant.get.asInstanceOf[MoeStrObject]
             val old = getStr(inv.getNativeValue)
             inv.increment(r)
@@ -47,9 +47,21 @@ object StrClass {
       )
     )
 
+    // concatenation
+
+    strClass.addMethod(
+      new MoeMethod(
+        "infix:<.>",
+        new MoeSignature(List(new MoeParameter("$other"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].concat(r, e.get("$other").get)
+      )
+    )
+
     /**
      * List of Operators to support:
-     * - infix:<.> 
+     * - infix:<.>
+     * - infix:<x>
      *
      * List of Methods to support:
      * - chomp
