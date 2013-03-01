@@ -40,12 +40,16 @@ object StrClass {
         env, 
         { (e) => 
             val inv = e.getCurrentInvocant.get.asInstanceOf[MoeStrObject]
-            val old = getStr(inv.getNativeValue)
+            val old = getStr(inv.unboxToString.get)
             inv.increment(r)
             old
         }
       )
     )
+
+    // operators
+
+    // methods
 
     /**
      * List of Operators to support:

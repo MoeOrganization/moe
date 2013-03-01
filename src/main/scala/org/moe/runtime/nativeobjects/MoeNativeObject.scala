@@ -8,6 +8,6 @@ abstract class MoeNativeObject[A] (
   ) extends MoeObject(associatedClass) {
 
   def getNativeValue: A = value
-  def setNativeValue(v: A) = value = v
+  protected def setNativeValue(v: A) = value = v
 }
 
