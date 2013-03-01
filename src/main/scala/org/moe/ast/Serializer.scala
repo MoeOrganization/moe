@@ -376,5 +376,28 @@ object Serializer {
 
     case _ => "stub"
   }
+
+  // thanks to https://gist.github.com/umitanuki/944839
+  def pprint(j: Option[Any], l: Int = 0):String = {
+    val indent = (for(i <- List.range(0, l)) yield "  ").mkString
+    j match{
+      case Some(o: JSONObject) => {
+	List("{",
+	     o.obj.keys.map(key => indent + "  " + "\"" + key + "\" : " + pprint(o.obj.get(key), l + 1)).mkString(",\n"),
+	     indent + "}").mkString("\n")
+      }
+      case Some(a: JSONArray) => {
+	List("[",
+	     a.list.map(v => indent + "  " + pprint(Some(v), l + 1)).mkString(",\n"),
+	     indent + "]").mkString("\n")
+      }
+      case Some(s: String) => "\"" + s + "\""
+      case Some(n: Number) => n.toString
+      case None => "null"
+      case _ => "undefined"
+    }
+  }
+
+  def toJSONPretty(ast: AST): String = pprint(Some(toJSON(ast)))
 }
 
