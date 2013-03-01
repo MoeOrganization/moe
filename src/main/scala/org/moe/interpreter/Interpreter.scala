@@ -417,11 +417,17 @@ class Interpreter {
         )
       }
       case UnlessElseNode(unless_condition, unless_body, else_body) => {
-        var if_node = new IfStruct (NotNode(unless_condition), unless_body, Some(new IfStruct(BooleanLiteralNode(true), else_body)))
-        
-        eval(runtime, env,
-          IfNode(if_node)
+        var if_node = new IfStruct(
+          PrefixUnaryOpNode(unless_condition, "!"), 
+          unless_body, 
+          Some(
+            new IfStruct(
+              BooleanLiteralNode(true), 
+              else_body
+            )
+          )
         )
+        eval(runtime, env, IfNode(if_node))
       }
 
       case TryNode(body, catch_nodes, finally_nodes) => stub
@@ -461,7 +467,7 @@ class Interpreter {
             }
 
             scoped { newEnv =>
-              for (o <- objects.getNativeValue)
+              for (o <- objects.getNativeValue) // XXX - fix this usage of getNativeValue
                 topic match {
                   // XXX ran into issues trying to eval(runtime, env, ScopeNode(...))
                   // since o is already evaluated at this point
