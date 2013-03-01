@@ -36,7 +36,7 @@ trait Statements extends Expressions {
   def loop: Parser[AST] = ifLoop // | forLoop | foreachLoop | whileLoop
 
   def ifLoop: Parser[AST] =
-    (("if" ~ "(") ~> expression) ~ (")" ~> block) ^^ { case a ~ b => IfNode(a,b) }
+    (("if" ~ "(") ~> expression) ~ (")" ~> block) ^^ { case a ~ b => IfNode(new IfStruct(a,b)) }
 
   // def forLoop = "for" ~ "(" ~> expression <~ ";" ~> expression <~ ";" ~> expression <~ ")" ~ block
   // def whileLoop = "if" ~ "(" ~> expression <~ ")" ~ block

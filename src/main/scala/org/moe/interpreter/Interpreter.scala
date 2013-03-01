@@ -397,51 +397,16 @@ class Interpreter {
 
       // statements
 
-      case IfNode(if_condition, if_body) => {
-        eval(runtime, env,
-          IfElseNode(
-            if_condition,
-            if_body,
-            UndefLiteralNode()
-          )
-        )
-      }
-
-      case IfElseNode(if_condition, if_body, else_body) => {
-        if (eval(runtime, env, if_condition).isTrue) {
-          eval(runtime, env, if_body)
+      case IfNode(if_node) => {
+        if (eval(runtime, env, if_node.condition).isTrue) {
+          eval(runtime, env, if_node.body)
+        } else if (if_node.else_node.isDefined) {
+          eval(runtime, env, IfNode(if_node.else_node.get))
         } else {
-          eval(runtime, env, else_body)
+          getUndef
         }
       }
-
-      case IfElsifNode(if_condition, if_body, elsif_condition, elsif_body) => {
-        eval(runtime, env,
-          IfElseNode(
-            if_condition,
-            if_body,
-            IfNode(
-              elsif_condition,
-              elsif_body
-            )
-          )
-        )
-      }
-
-      case IfElsifElseNode(if_condition, if_body, elsif_condition, elsif_body, else_body) => {
-        eval(runtime, env,
-          IfElseNode(
-            if_condition,
-            if_body,
-            IfElseNode(
-              elsif_condition,
-              elsif_body,
-              else_body
-            )
-          )
-        )
-      }
-
+          
       case UnlessNode(unless_condition, unless_body) => {
         eval(runtime, env,
           UnlessElseNode(
@@ -452,12 +417,10 @@ class Interpreter {
         )
       }
       case UnlessElseNode(unless_condition, unless_body, else_body) => {
+        var if_node = new IfStruct (NotNode(unless_condition), unless_body, Some(new IfStruct(BooleanLiteralNode(true), else_body)))
+        
         eval(runtime, env,
-          IfElseNode(
-            PrefixUnaryOpNode(unless_condition, "!"),
-            unless_body,
-            else_body
-          )
+          IfNode(if_node)
         )
       }
 
