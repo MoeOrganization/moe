@@ -44,6 +44,15 @@ object ArrayClass {
       )
     )
 
+    arrayClass.addMethod(
+      new MoeMethod(
+        "shift",
+        new MoeSignature(),
+        env,
+        (e) => e.getCurrentInvocant.get.unboxToList.get(0)
+      )
+    )
+
     /**
      * List of Methods to support:
      * - values 
@@ -56,7 +65,6 @@ object ArrayClass {
      * - delete ($index | @indicies) 
      * - push ($item | @items)
      * - pop
-     * - shift
      * - unshift ($item | @items)
      * - sort ($sorter)
      * - grep ($filter)
