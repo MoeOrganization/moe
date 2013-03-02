@@ -77,7 +77,7 @@ object Moe {
 
     if (cmd.hasOption("e")) {
       val code: String = cmd.getOptionValue("e")
-      REPL.evalLine(interpreter, runtime, code, dumpAST)
+      REPL.evalLine(interpreter, runtime, code, Map("dumpAST" -> dumpAST))
       return
     }
     else {
@@ -90,9 +90,8 @@ object Moe {
         val path = rest(0)
 
         val source = Source.fromFile(path).mkString
-        val printOutput = false
 
-        REPL.evalLine(interpreter, runtime, source, dumpAST, printOutput)
+        REPL.evalLine(interpreter, runtime, source, Map("printOutput" -> false, "dumpAST" -> dumpAST))
       }
     }
   }
@@ -126,10 +125,18 @@ object Moe {
       val cReader: ConsoleReader = new ConsoleReader
       val prompt = "moe> "
 
+      var replOptions = Map(
+        "printOutput"    -> true,
+        "dumpAST"        -> dumpAST,
+        "prettyPrintAST" -> false
+      )
       while (true) {
         val line = cReader readLine prompt
         if (line != null && line.length > 0 && line != "exit") {
-          evalLine(interpreter, runtime, line, dumpAST)
+          if (line(0) == ':')
+            replOptions = processReplCommand(line, replOptions)
+          else
+            evalLine(interpreter, runtime, line, replOptions)
         }
         else {
           if (line != "exit") println()
@@ -138,22 +145,40 @@ object Moe {
       }
     }
 
-    def evalLine(interpreter: Interpreter, runtime: MoeRuntime, line: String, dumpAST: Boolean = false, printOutput: Boolean = true) = {
+    def evalLine(interpreter: Interpreter, runtime: MoeRuntime, line: String, options: Map[String, Boolean]) = {
       try {
         val nodes = MoeParsers.parseFromEntry(line)
         val ast = CompilationUnitNode(
           ScopeNode(nodes)
         )
-        if (dumpAST) {
-          println(Serializer.toJSON(ast))
+        if (options("dumpAST")) {
+          if (options("prettyPrintAST"))
+            println(Serializer.toJSONPretty(ast))
+          else
+            println(Serializer.toJSON(ast))
         }
         val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-        if( printOutput ) {
+        if( options("printOutput") ) {
           println(result.toString)
         }
       }
       catch {
         case e: Exception => System.err.println(e)
+      }
+    }
+
+    import scala.util.matching.Regex
+
+    def processReplCommand(command: String, options: Map[String, Boolean]): Map[String, Boolean] = {
+      def toBoolean(v: String): Boolean = v == "on" || v == "yes" || v == "1"
+      val pattern = new Regex(""":set\s+(\w+)\s+(\w+)""", "option", "value")
+
+      pattern findFirstIn command match {
+        case Some(pattern(option, value)) => options updated (option, toBoolean(value))
+        case None                         => {
+          println("Unrecognized command: " + command)
+          options
+        }
       }
     }
   }
