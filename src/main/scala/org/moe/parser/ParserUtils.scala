@@ -9,4 +9,17 @@ object ParserUtils {
   def formatHex   (s: String): Int    = Integer.parseInt( normPerlInt(s).substring(2).toUpperCase, 16 )
   def formatBin   (s: String): Int    = Integer.parseInt( normPerlInt(s).substring(2).toUpperCase, 2  )
 
+  // handle escaped characters in double-quoted strings
+  def formatStr   (s: String): String = {
+    val escaped = Map(
+      "\\b" -> "\b",
+      "\\f" -> "\f",
+      "\\n" -> "\n",
+      "\\r" -> "\r",
+      "\\t" -> "\t"
+    )
+    val escapes = """\\([bfnrt'"])""".r
+    escapes.replaceAllIn(s, m => escaped.getOrElse(m.group(0), m.group(0).tail))
+  }
+
 }
