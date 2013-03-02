@@ -19,12 +19,12 @@ class StringLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTes
 
   test("... basic test with a double-quoted string with control characters") {
     val result = interpretCode(""" "foo\tbar\n" """)
-    assert(result.unboxToString.get === "foo\\tbar\\n")
+    assert(result.unboxToString.get === "foo\tbar\n")
   }
 
   test("... basic test with a double-quoted string with escaped quotes") {
     val result = interpretCode(""" "foo\"bar\"" """)
-    assert(result.unboxToString.get === "foo\\\"bar\\\"")
+    assert(result.unboxToString.get === "foo\"bar\"")
   }
 
   //
