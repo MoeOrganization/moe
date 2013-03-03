@@ -17,13 +17,13 @@ class MoeHashObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple Hash object") {
-    val o = new MoeHashObject(
+    val o = r.NativeObjects.getHash(
       HashMap(
-        "foo" -> new MoeUndefObject(),
-        "bar" -> new MoeIntObject(10)
+        "foo" -> r.NativeObjects.getUndef,
+        "bar" -> r.NativeObjects.getInt(10)
       )
     )
-    val hash = o.getNativeValue
+    val hash = o.unboxToMap.get
     assert(hash("foo").isUndef)
     assert(hash("bar").unboxToInt.get === 10)
     assert(o.isTrue)
@@ -32,31 +32,30 @@ class MoeHashObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple Hash object with class") {
-    val c = new MoeClass("Hash")
-    val o = new MoeHashObject(HashMap(), Some(c))
-    assert(o.getAssociatedClass.get === c)
+    val o = r.NativeObjects.getHash(HashMap())
+    assert(o.getAssociatedClass.get === r.getCoreClassFor("Hash").get)
   }
 
   test("... false Hash object") {
-    val o = new MoeHashObject(HashMap())
+    val o = r.NativeObjects.getHash(HashMap())
     assert(!o.isTrue)
     assert(o.isFalse)
     assert(!o.isUndef)
   }
 
   test("... complex Hash object") {
-    val o = new MoeHashObject(
+    val o = r.NativeObjects.getHash(
       HashMap(
-        "foo" -> new MoeArrayObject(
+        "foo" -> r.NativeObjects.getArray(
           List(
-            new MoeUndefObject(),
-            new MoeIntObject(10)
+            r.NativeObjects.getUndef,
+            r.NativeObjects.getInt(10)
           )
         ),
-        "bar" -> new MoeIntObject(10)
+        "bar" -> r.NativeObjects.getInt(10)
         )
     )
-    val hash = o.getNativeValue
+    val hash = o.unboxToMap.get
     assert(hash("bar").unboxToInt.get === 10)
     val nested = hash("foo").unboxToList.get
     assert(nested(0).isUndef)
@@ -105,29 +104,29 @@ class MoeHashObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
   
   test("... keys") {
-    val o = new MoeHashObject(
+    val o = r.NativeObjects.getHash(
       HashMap(
-        "foo" -> new MoeIntObject(20),
-        "bar" -> new MoeIntObject(10)
+        "foo" -> r.NativeObjects.getInt(20),
+        "bar" -> r.NativeObjects.getInt(10)
         )
     )
     val x = o.keys(r)
     assert(x.isInstanceOf("Array"))
-    assert(x.at_pos(r, new MoeIntObject(0)).unboxToString.get === "foo")
-    assert(x.at_pos(r, new MoeIntObject(1)).unboxToString.get === "bar")
+    assert(x.at_pos(r, r.NativeObjects.getInt(0)).unboxToString.get === "foo")
+    assert(x.at_pos(r, r.NativeObjects.getInt(1)).unboxToString.get === "bar")
   }
 
   test("... values") {
-    val o = new MoeHashObject(
+    val o = r.NativeObjects.getHash(
       HashMap(
-        "foo" -> new MoeIntObject(20),
-        "bar" -> new MoeIntObject(10)
+        "foo" -> r.NativeObjects.getInt(20),
+        "bar" -> r.NativeObjects.getInt(10)
         )
     )
     val x = o.values(r)
     assert(x.isInstanceOf("Array"))
-    assert(x.at_pos(r, new MoeIntObject(0)).unboxToInt.get === 20)
-    assert(x.at_pos(r, new MoeIntObject(1)).unboxToInt.get === 10)
+    assert(x.at_pos(r, r.NativeObjects.getInt(0)).unboxToInt.get === 20)
+    assert(x.at_pos(r, r.NativeObjects.getInt(1)).unboxToInt.get === 10)
   }
 
 }

@@ -16,7 +16,7 @@ class MoeBoolObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple Boolean object") {
-    val o = new MoeBoolObject(true)
+    val o = r.NativeObjects.getTrue
     assert(o.getNativeValue === true)
     assert(o.isTrue)
     assert(!o.isFalse)
@@ -24,7 +24,7 @@ class MoeBoolObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... false Boolean object") {
-    val o = new MoeBoolObject(false)
+    val o = r.NativeObjects.getFalse
     assert(o.getNativeValue === false)
     assert(!o.isTrue)
     assert(o.isFalse)
@@ -32,9 +32,8 @@ class MoeBoolObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple Boolean object with class") {
-    val c = new MoeClass("Boolean")
-    val o = new MoeBoolObject(false, Some(c))
-    assert(o.getAssociatedClass.get === c)
+    val o = r.NativeObjects.getTrue
+    assert(o.getAssociatedClass.get === r.getCoreClassFor("Bool").get)
   }
 
 }

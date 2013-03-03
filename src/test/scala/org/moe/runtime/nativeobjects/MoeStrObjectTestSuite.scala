@@ -16,7 +16,7 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple String object") {
-    val o = new MoeStrObject("Hello World")
+    val o = r.NativeObjects.getStr("Hello World")
     assert(o.getNativeValue === "Hello World")
     assert(o.isTrue)
     assert(!o.isFalse)
@@ -24,13 +24,12 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple String object with class") {
-    val c = new MoeClass("String")
-    val o = new MoeStrObject("Hello World", Some(c))
-    assert(o.getAssociatedClass.get === c)
+    val o = r.NativeObjects.getStr("Hello World")
+    assert(o.getAssociatedClass.get === r.getCoreClassFor("Str").get)
   }
 
   test("... false String object - empty string") {
-    val o = new MoeStrObject("")
+    val o = r.NativeObjects.getStr("")
     assert(o.getNativeValue === "")
     assert(!o.isTrue)
     assert(o.isFalse)
@@ -38,7 +37,7 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... false String object - zero") {
-    val o = new MoeStrObject("0")
+    val o = r.NativeObjects.getStr("0")
     assert(o.getNativeValue === "0")
     assert(!o.isTrue)
     assert(o.isFalse)
@@ -46,7 +45,7 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... false String object - zerozero") {
-    val o = new MoeStrObject("00")
+    val o = r.NativeObjects.getStr("00")
     assert(o.getNativeValue === "00")
     assert(o.isTrue)
     assert(!o.isFalse)
@@ -54,7 +53,7 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... chomp method w/ true return") {
-    val o = new MoeStrObject("foo\n")
+    val o = r.NativeObjects.getStr("foo\n")
     val x = o.chomp(r)
     assert(x.isInstanceOf("Bool"))
     assert(x.isTrue)
@@ -62,7 +61,7 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... chomp method w/ false return") {
-    val o = new MoeStrObject("foo")
+    val o = r.NativeObjects.getStr("foo")
     val x = o.chomp(r)
     assert(x.isInstanceOf("Bool"))
     assert(x.isFalse)
@@ -70,7 +69,7 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... chop method") {
-    val o = new MoeStrObject("foo")
+    val o = r.NativeObjects.getStr("foo")
     val x = o.chop(r)
     assert(x.isInstanceOf("Str"))
     assert(x.unboxToString.get === "o")
@@ -78,7 +77,7 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... uc method") {
-    val o = new MoeStrObject("foo")
+    val o = r.NativeObjects.getStr("foo")
     val x = o.uc(r)
     assert(x.isInstanceOf("Str"))
     assert(x.unboxToString.get === "FOO")
@@ -86,7 +85,7 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... lc method") {
-    val o = new MoeStrObject("FOO")
+    val o = r.NativeObjects.getStr("FOO")
     val x = o.lc(r)
     assert(x.isInstanceOf("Str"))
     assert(x.unboxToString.get === "foo")
@@ -94,7 +93,7 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... ucfirst method") {
-    val o = new MoeStrObject("foo")
+    val o = r.NativeObjects.getStr("foo")
     val x = o.ucfirst(r)
     assert(x.isInstanceOf("Str"))
     assert(x.unboxToString.get === "Foo")
@@ -102,7 +101,7 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... lcfirst method") {
-    val o = new MoeStrObject("Foo")
+    val o = r.NativeObjects.getStr("Foo")
     val x = o.lcfirst(r)
     assert(x.isInstanceOf("Str"))
     assert(x.unboxToString.get === "foo")
@@ -110,7 +109,7 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... length method") {
-    val o = new MoeStrObject("Foo")
+    val o = r.NativeObjects.getStr("Foo")
     val x = o.length(r)
     assert(x.isInstanceOf("Int"))
     assert(x.unboxToInt.get === 3)
@@ -118,7 +117,7 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... reverse method") {
-    val o = new MoeStrObject("Foo")
+    val o = r.NativeObjects.getStr("Foo")
     val x = o.reverse(r)
     assert(x.isInstanceOf("Str"))
     assert(x.unboxToString.get === "ooF")
@@ -126,19 +125,19 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... concat method w/ single arg") {
-    val o = new MoeStrObject("Foo")
-    val x = o.concat(r, new MoeStrObject("Bar"))
+    val o = r.NativeObjects.getStr("Foo")
+    val x = o.concat(r, r.NativeObjects.getStr("Bar"))
     assert(x.isInstanceOf("Str"))
     assert(x.unboxToString.get === "FooBar")
     assert(o.unboxToString.get === "Foo")
   }
 
   test("... concat method w/ multiple arg") {
-    val o = new MoeStrObject("Foo")
+    val o = r.NativeObjects.getStr("Foo")
     val x = o.concat(r, 
       new MoeArrayObject(List(
-        new MoeStrObject("Bar"), 
-        new MoeStrObject("Baz")
+        r.NativeObjects.getStr("Bar"), 
+        r.NativeObjects.getStr("Baz")
       ))
     )
     assert(x.isInstanceOf("Str"))
@@ -147,8 +146,8 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... split method") {
-    val o = new MoeStrObject("foo,bar,baz")
-    val x = o.split(r, new MoeStrObject(","))
+    val o = r.NativeObjects.getStr("foo,bar,baz")
+    val x = o.split(r, r.NativeObjects.getStr(","))
 
     assert(x.isInstanceOf("Array"))
 

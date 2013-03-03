@@ -16,8 +16,8 @@ class MoePairObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple Pair object") {
-    val o = new MoePairObject("foo" -> new MoeIntObject(10))
-    val pair = o.getNativeValue
+    val o = r.NativeObjects.getPair("foo" -> r.NativeObjects.getInt(10))
+    val pair = o.unboxToTuple.get
     assert(pair._1 === "foo")
     assert(pair._2.unboxToInt.get === 10)
     assert(o.isTrue)

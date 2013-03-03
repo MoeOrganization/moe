@@ -16,7 +16,7 @@ class MoeUndefObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple Undef object") {
-    val o = new MoeUndefObject()
+    val o = r.NativeObjects.getUndef
     assert(o.getNativeValue == null)
     assert(!o.isTrue)
     assert(o.isFalse)
@@ -25,9 +25,8 @@ class MoeUndefObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple Undef object with class") {
-    val c = new MoeClass("Undef")
-    val o = new MoeUndefObject(Some(c))
-    assert(o.getAssociatedClass.get === c)
+    val o = r.NativeObjects.getUndef
+    assert(o.getAssociatedClass.get === r.getCoreClassFor("Undef").get)
   }
 
 }
