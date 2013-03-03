@@ -17,6 +17,12 @@ class MoeArrayObject(
     klass : Option[MoeClass] = None
   ) extends MoeNativeObject[List[MoeObject]](v, klass) {
 
+  private def array = getNativeValue
+
+  // Runtime methods
+  
+  def at_pos (r: MoeRuntime, i: MoeIntObject): MoeObject = array(i.unboxToInt.get)
+	
   // MoeObject overrides
   
   override def isFalse: Boolean = getNativeValue.size == 0
