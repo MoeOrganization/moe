@@ -2,6 +2,7 @@ package org.moe.runtime.nativeobjects
 
 import scala.collection.mutable.HashMap
 import org.moe.runtime._
+import org.moe.runtime.nativeobjects._
 
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
@@ -63,6 +64,32 @@ class MoeHashObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(o.isTrue)
     assert(!o.isFalse)
     assert(!o.isUndef)
+  }
+  
+  test("... keys") {
+    val o = new MoeHashObject(
+      HashMap(
+        "foo" -> new MoeIntObject(20),
+        "bar" -> new MoeIntObject(10)
+        )
+    )
+    val x = o.keys(r)
+    assert(x.isInstanceOf("Array"))
+    assert(x.at_pos(r, new MoeIntObject(0)).unboxToString.get === "foo")
+    assert(x.at_pos(r, new MoeIntObject(1)).unboxToString.get === "bar")
+  }
+
+  test("... values") {
+    val o = new MoeHashObject(
+      HashMap(
+        "foo" -> new MoeIntObject(20),
+        "bar" -> new MoeIntObject(10)
+        )
+    )
+    val x = o.values(r)
+    assert(x.isInstanceOf("Array"))
+    assert(x.at_pos(r, new MoeIntObject(0)).unboxToInt.get === 20)
+    assert(x.at_pos(r, new MoeIntObject(1)).unboxToInt.get === 10)
   }
 
 }
