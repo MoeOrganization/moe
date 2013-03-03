@@ -54,108 +54,111 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... chomp method w/ true return") {
-    val r = new MoeRuntime()
     val o = new MoeStrObject("foo\n")
-    val result = o.chomp(r)
-    assert(result.isTrue)
+    val x = o.chomp(r)
+    assert(x.isInstanceOf("Bool"))
+    assert(x.isTrue)
     assert(o.unboxToString.get === "foo")
   }
 
   test("... chomp method w/ false return") {
-    val r = new MoeRuntime()
     val o = new MoeStrObject("foo")
-    val result = o.chomp(r)
-    assert(result.isFalse)
+    val x = o.chomp(r)
+    assert(x.isInstanceOf("Bool"))
+    assert(x.isFalse)
     assert(o.unboxToString.get === "foo")
   }
 
   test("... chop method") {
-    val r = new MoeRuntime()
     val o = new MoeStrObject("foo")
-    val result = o.chop(r)
-    assert(result.unboxToString.get === "o")
+    val x = o.chop(r)
+    assert(x.isInstanceOf("Str"))
+    assert(x.unboxToString.get === "o")
     assert(o.unboxToString.get === "fo")
   }
 
   test("... uc method") {
-    val r = new MoeRuntime()
     val o = new MoeStrObject("foo")
-    val result = o.uc(r)
-    assert(result.unboxToString.get === "FOO")
+    val x = o.uc(r)
+    assert(x.isInstanceOf("Str"))
+    assert(x.unboxToString.get === "FOO")
     assert(o.unboxToString.get === "foo")
   }
 
   test("... lc method") {
-    val r = new MoeRuntime()
     val o = new MoeStrObject("FOO")
-    val result = o.lc(r)
-    assert(result.unboxToString.get === "foo")
+    val x = o.lc(r)
+    assert(x.isInstanceOf("Str"))
+    assert(x.unboxToString.get === "foo")
     assert(o.unboxToString.get === "FOO")
   }
 
   test("... ucfirst method") {
-    val r = new MoeRuntime()
     val o = new MoeStrObject("foo")
-    val result = o.ucfirst(r)
-    assert(result.unboxToString.get === "Foo")
+    val x = o.ucfirst(r)
+    assert(x.isInstanceOf("Str"))
+    assert(x.unboxToString.get === "Foo")
     assert(o.unboxToString.get === "foo")
   }
 
   test("... lcfirst method") {
-    val r = new MoeRuntime()
     val o = new MoeStrObject("Foo")
-    val result = o.lcfirst(r)
-    assert(result.unboxToString.get === "foo")
+    val x = o.lcfirst(r)
+    assert(x.isInstanceOf("Str"))
+    assert(x.unboxToString.get === "foo")
     assert(o.unboxToString.get === "Foo")
   }
 
   test("... length method") {
-    val r = new MoeRuntime()
     val o = new MoeStrObject("Foo")
-    val result = o.length(r)
-    assert(result.unboxToInt.get === 3)
+    val x = o.length(r)
+    assert(x.isInstanceOf("Int"))
+    assert(x.unboxToInt.get === 3)
     assert(o.unboxToString.get === "Foo")
   }
 
   test("... reverse method") {
-    val r = new MoeRuntime()
     val o = new MoeStrObject("Foo")
-    val result = o.reverse(r)
-    assert(result.unboxToString.get === "ooF")
+    val x = o.reverse(r)
+    assert(x.isInstanceOf("Str"))
+    assert(x.unboxToString.get === "ooF")
     assert(o.unboxToString.get === "Foo")
   }
 
   test("... concat method w/ single arg") {
-    val r = new MoeRuntime()
     val o = new MoeStrObject("Foo")
-    val result = o.concat(r, new MoeStrObject("Bar"))
-    assert(result.unboxToString.get === "FooBar")
+    val x = o.concat(r, new MoeStrObject("Bar"))
+    assert(x.isInstanceOf("Str"))
+    assert(x.unboxToString.get === "FooBar")
     assert(o.unboxToString.get === "Foo")
   }
 
   test("... concat method w/ multiple arg") {
-    val r = new MoeRuntime()
     val o = new MoeStrObject("Foo")
-    val result = o.concat(r, 
+    val x = o.concat(r, 
       new MoeArrayObject(List(
         new MoeStrObject("Bar"), 
         new MoeStrObject("Baz")
       ))
     )
-    assert(result.unboxToString.get === "FooBarBaz")
+    assert(x.isInstanceOf("Str"))
+    assert(x.unboxToString.get === "FooBarBaz")
     assert(o.unboxToString.get === "Foo")
   }
 
   test("... split method") {
-    val r = new MoeRuntime()
     val o = new MoeStrObject("foo,bar,baz")
-    val result = o.split(r, new MoeStrObject(","))
+    val x = o.split(r, new MoeStrObject(","))
 
-    val results = result.unboxToList.get
+    assert(x.isInstanceOf("Array"))
 
-    assert(results(0).unboxToString.get === "foo")
-    assert(results(1).unboxToString.get === "bar")
-    assert(results(2).unboxToString.get === "baz")
+    val xs = x.unboxToList.get
+    assert(xs(0).unboxToString.get === "foo")
+    assert(xs(0).isInstanceOf("Str"))
+    assert(xs(1).unboxToString.get === "bar")
+    assert(xs(1).isInstanceOf("Str"))
+    assert(xs(2).unboxToString.get === "baz")
+    assert(xs(2).isInstanceOf("Str"))
     assert(o.unboxToString.get === "foo,bar,baz")
   }
 
