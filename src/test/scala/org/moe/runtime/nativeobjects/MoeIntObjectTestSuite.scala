@@ -8,6 +8,13 @@ import org.scalatest.BeforeAndAfter
 
 class MoeIntObjectTestSuite extends FunSuite with BeforeAndAfter {
 
+  var r : MoeRuntime = _
+
+  before {
+    r = new MoeRuntime()
+    r.bootstrap()
+  }
+
   test("... simple Int object") {
     val o = new MoeIntObject(10)
     assert(o.getNativeValue === 10)

@@ -8,6 +8,13 @@ import org.scalatest.BeforeAndAfter
 
 class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
 
+  var r : MoeRuntime = _
+
+  before {
+    r = new MoeRuntime()
+    r.bootstrap()
+  }
+
   test("... simple String object") {
     val o = new MoeStrObject("Hello World")
     assert(o.getNativeValue === "Hello World")

@@ -8,6 +8,13 @@ import org.scalatest.BeforeAndAfter
 
 class MoeHashObjectTestSuite extends FunSuite with BeforeAndAfter {
 
+  var r : MoeRuntime = _
+
+  before {
+    r = new MoeRuntime()
+    r.bootstrap()
+  }
+
   test("... simple Hash object") {
     val o = new MoeHashObject(
       HashMap(

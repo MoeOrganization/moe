@@ -8,6 +8,13 @@ import org.scalatest.BeforeAndAfter
 
 class MoeUndefObjectTestSuite extends FunSuite with BeforeAndAfter {
 
+  var r : MoeRuntime = _
+
+  before {
+    r = new MoeRuntime()
+    r.bootstrap()
+  }
+
   test("... simple Undef object") {
     val o = new MoeUndefObject()
     assert(o.getNativeValue == null)

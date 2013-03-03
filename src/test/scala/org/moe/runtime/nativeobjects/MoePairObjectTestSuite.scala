@@ -8,6 +8,13 @@ import org.scalatest.BeforeAndAfter
 
 class MoePairObjectTestSuite extends FunSuite with BeforeAndAfter {
 
+  var r : MoeRuntime = _
+
+  before {
+    r = new MoeRuntime()
+    r.bootstrap()
+  }
+
   test("... simple Pair object") {
     val o = new MoePairObject("foo" -> new MoeIntObject(10))
     val pair = o.getNativeValue

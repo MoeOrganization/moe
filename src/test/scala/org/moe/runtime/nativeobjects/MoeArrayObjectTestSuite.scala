@@ -8,6 +8,13 @@ import org.scalatest.BeforeAndAfter
 
 class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
 
+  var r : MoeRuntime = _
+
+  before {
+    r = new MoeRuntime()
+    r.bootstrap()
+  }
+
   test("... simple Array object") {
     val o = new MoeArrayObject(
       List(

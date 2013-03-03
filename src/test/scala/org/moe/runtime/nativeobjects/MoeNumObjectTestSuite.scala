@@ -8,6 +8,13 @@ import org.scalatest.BeforeAndAfter
 
 class MoeNumObjectTestSuite extends FunSuite with BeforeAndAfter {
 
+  var r : MoeRuntime = _
+
+  before {
+    r = new MoeRuntime()
+    r.bootstrap()
+  }
+
   test("... simple Float object") {
     val o = new MoeNumObject(10.5)
     assert(o.getNativeValue === 10.5)

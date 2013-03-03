@@ -8,6 +8,13 @@ import org.scalatest.BeforeAndAfter
 
 class MoeBoolObjectTestSuite extends FunSuite with BeforeAndAfter {
 
+  var r : MoeRuntime = _
+
+  before {
+    r = new MoeRuntime()
+    r.bootstrap()
+  }
+
   test("... simple Boolean object") {
     val o = new MoeBoolObject(true)
     assert(o.getNativeValue === true)
