@@ -24,7 +24,10 @@ class MoeArrayObject(
 
   // Runtime methods
   
-  def at_pos (r: MoeRuntime, i: MoeIntObject): MoeObject = array(i.unboxToInt.get)
+  def at_pos (r: MoeRuntime, i: MoeIntObject): MoeObject = {
+    if(i.unboxToInt.get >= array.length) r.NativeObjects.getUndef
+    else array(i.unboxToInt.get)
+  }
   def length (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(array.length)
   def clear (r: MoeRuntime) = array.clear
   def shift (r: MoeRuntime): MoeObject =
