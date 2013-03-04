@@ -49,6 +49,7 @@ class MoeArrayObject(
         ArrayBuffer(indicies.map(i => at_pos(r, i)) : _*)
       )
   }
+  def reverse(r: MoeRuntime): MoeArrayObject = r.NativeObjects.getArray(array.reverse)
 
   // MoeObject overrides
   

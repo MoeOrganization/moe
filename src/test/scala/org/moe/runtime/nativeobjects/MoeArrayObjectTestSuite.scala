@@ -177,4 +177,18 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(3 == slice.at_pos(r,r.NativeObjects.getInt(1)).unboxToInt.get)
     assert(slice.at_pos(r,r.NativeObjects.getInt(2)).isUndef, "non-existent item in slice is undef")
   }
+
+  test("... Array object reverse") {
+    val o = r.NativeObjects.getArray(
+      ArrayBuffer(
+        r.NativeObjects.getInt(1),
+        r.NativeObjects.getInt(2),
+        r.NativeObjects.getInt(3)
+      )
+    )
+    val array = o.reverse(r).getNativeValue
+    assert(array(0).unboxToInt.get === 3)
+    assert(array(1).unboxToInt.get === 2)
+    assert(array(2).unboxToInt.get === 1)
+  }
 }
