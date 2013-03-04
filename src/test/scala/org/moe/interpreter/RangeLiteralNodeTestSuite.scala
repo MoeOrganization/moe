@@ -3,6 +3,7 @@ package org.moe.interpreter
 import org.moe.runtime._
 import org.moe.ast._
 
+import scala.collection.mutable.ArrayBuffer
 import org.scalatest.FunSuite
 
 class RangeLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
@@ -18,7 +19,7 @@ class RangeLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    val array: List[MoeObject] = result.unboxToList.get
+    val array: ArrayBuffer[MoeObject] = result.unboxToList.get
 
     assert(array.size === 3)
     assert(array(0).unboxToInt.get === 1)
@@ -37,7 +38,7 @@ class RangeLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    val array: List[MoeObject] = result.unboxToList.get
+    val array: ArrayBuffer[MoeObject] = result.unboxToList.get
 
     assert(array.size === 3)
     assert(array(0).unboxToString.get === "a")
