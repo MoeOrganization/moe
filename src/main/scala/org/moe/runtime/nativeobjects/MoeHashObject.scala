@@ -4,6 +4,7 @@ import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 
 import scala.collection.mutable.HashMap
+import scala.collection.mutable.ArrayBuffer
 import scala.util.{Try, Success, Failure}
 
 class MoeHashObject(
@@ -38,21 +39,23 @@ class MoeHashObject(
   }
 
   def keys(r: MoeRuntime) = r.NativeObjects.getArray(
-    hash.keys.map(s => r.NativeObjects.getStr(s)).toList
+    ArrayBuffer(hash.keys.map(s => r.NativeObjects.getStr(s)).toArray : _*)
   )
 
-  def values(r: MoeRuntime) = r.NativeObjects.getArray(hash.values.map(x => x).toList)
+  def values(r: MoeRuntime) = r.NativeObjects.getArray(
+    ArrayBuffer(hash.values.map(x => x).toArray : _*)
+  )
 
   def pairs(r: MoeRuntime) = r.NativeObjects.getArray(
-    hash.toList.map(p => r.NativeObjects.getPair(p))
+    ArrayBuffer(hash.toList.map(p => r.NativeObjects.getPair(p)).toArray : _* )
   )
 
   def kv(r: MoeRuntime) = r.NativeObjects.getArray(
-    hash.toList.map(
+    ArrayBuffer(hash.toList.map(
       p => r.NativeObjects.getArray(
-        List(r.NativeObjects.getStr(p._1), p._2)
+        ArrayBuffer(r.NativeObjects.getStr(p._1), p._2)
       )
-    )
+    ).toArray : _* )
   )
 
   // MoeObject overrides 

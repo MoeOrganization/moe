@@ -1,6 +1,7 @@
 package org.moe.runtime.nativeobjects
 
 import scala.collection.mutable.HashMap
+import scala.collection.mutable.ArrayBuffer
 import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 
@@ -47,7 +48,7 @@ class MoeHashObjectTestSuite extends FunSuite with BeforeAndAfter {
     val o = r.NativeObjects.getHash(
       HashMap(
         "foo" -> r.NativeObjects.getArray(
-          List(
+          ArrayBuffer(
             r.NativeObjects.getUndef,
             r.NativeObjects.getInt(10)
           )

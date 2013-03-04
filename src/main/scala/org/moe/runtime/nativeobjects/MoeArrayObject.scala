@@ -2,6 +2,7 @@ package org.moe.runtime.nativeobjects
 
 import org.moe.runtime._
 
+import scala.collection.mutable.ArrayBuffer
 import scala.util.{Try, Success, Failure}
 
 // NOTE:
@@ -13,9 +14,11 @@ import scala.util.{Try, Success, Failure}
 // - SL
 
 class MoeArrayObject(
-    v: List[MoeObject],
+    v: ArrayBuffer[MoeObject],
     klass : Option[MoeClass] = None
-  ) extends MoeNativeObject[List[MoeObject]](v, klass) {
+  ) extends MoeNativeObject[ArrayBuffer[MoeObject]](v, klass) {
+
+  def this(list:List[MoeObject]) = this(ArrayBuffer(list : _*));
 
   private def array = getNativeValue
 
@@ -31,5 +34,5 @@ class MoeArrayObject(
   
   // unboxing
   
-  override def unboxToList: Try[List[MoeObject]] = Success(getNativeValue)
+  override def unboxToList: Try[ArrayBuffer[MoeObject]] = Success(getNativeValue)
 }

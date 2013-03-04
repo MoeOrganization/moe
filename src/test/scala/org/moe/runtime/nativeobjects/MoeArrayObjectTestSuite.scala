@@ -1,6 +1,7 @@
 package org.moe.runtime.nativeobjects
 
 import scala.collection.mutable.HashMap
+import scala.collection.mutable.ArrayBuffer
 import org.moe.runtime._
 
 import org.scalatest.FunSuite
@@ -17,7 +18,7 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... simple Array object") {
     val o = r.NativeObjects.getArray(
-      List(
+      ArrayBuffer(
         r.NativeObjects.getUndef,
         r.NativeObjects.getInt(10)
       )
@@ -31,12 +32,12 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple Array object with class") {
-    val o = r.NativeObjects.getArray(List())
+    val o = r.NativeObjects.getArray(ArrayBuffer())
     assert(o.getAssociatedClass.get === r.getCoreClassFor("Array").get)
   }
 
   test("... false Array object") {
-    val o = r.NativeObjects.getArray(List())
+    val o = r.NativeObjects.getArray(ArrayBuffer())
     assert(!o.isTrue)
     assert(o.isFalse)
     assert(!o.isUndef)
@@ -44,10 +45,10 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... complex Array object") {
     val o = r.NativeObjects.getArray(
-      List(
+      ArrayBuffer(
         r.NativeObjects.getInt(10),
         r.NativeObjects.getArray(
-          List(
+          ArrayBuffer(
             r.NativeObjects.getInt(42)
           )
         )

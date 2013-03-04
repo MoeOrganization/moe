@@ -1,6 +1,7 @@
 package org.moe.runtime
 
 import scala.collection.mutable.HashMap
+import scala.collection.mutable.ArrayBuffer
 
 class MoeRuntime (
     private val system: MoeSystem = new MoeSystem(),
@@ -163,8 +164,8 @@ class MoeRuntime (
 
     def getHash  (value: HashMap[String, MoeObject]) = new MoeHashObject(value, getCoreClassFor("Hash"))
     def getHash  ()                                  = new MoeHashObject(HashMap(), getCoreClassFor("Hash"))
-    def getArray (value: List[MoeObject])            = new MoeArrayObject(value, getCoreClassFor("Array"))
-    def getArray ()                                  = new MoeArrayObject(List(), getCoreClassFor("Array"))
+    def getArray (value: ArrayBuffer[MoeObject])     = new MoeArrayObject(value, getCoreClassFor("Array"))
+    def getArray ()                                  = new MoeArrayObject(ArrayBuffer(), getCoreClassFor("Array"))
     def getPair  (value: (String, MoeObject))        = new MoePairObject((value._1, value._2), getCoreClassFor("Pair"))
 
   }
