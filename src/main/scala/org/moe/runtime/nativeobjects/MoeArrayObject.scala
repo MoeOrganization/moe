@@ -30,6 +30,9 @@ class MoeArrayObject(
   def shift (r: MoeRuntime): MoeObject =
     if(array.length == 0) r.NativeObjects.getUndef
     else array.remove(0)
+  def pop (r: MoeRuntime): MoeObject =
+    if(array.length == 0) r.NativeObjects.getUndef
+    else array.remove(array.length - 1)
 	
   // MoeObject overrides
   

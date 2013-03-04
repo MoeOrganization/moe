@@ -103,8 +103,23 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(1 == o.shift(r).unboxToInt.get, "shift first item")
     assert(2 == o.shift(r).unboxToInt.get, "shift second item")
     assert(3 == o.shift(r).unboxToInt.get, "shift third item")
-    assert(0 == o.length(r).unboxToInt.get, "Array is not empty (" + o.length(r) + ")")
+    assert(0 == o.length(r).unboxToInt.get, "Array is empty (" + o.length(r) + ")")
     assert(r.NativeObjects.getUndef == o.shift(r), "shift on empty array")
+  }
+
+  test("... Array object pop") {
+    val o = r.NativeObjects.getArray(
+      ArrayBuffer(
+        r.NativeObjects.getInt(1),
+        r.NativeObjects.getInt(2),
+        r.NativeObjects.getInt(3)
+      )
+     )
+    assert(3 == o.pop(r).unboxToInt.get, "pop third item")
+    assert(2 == o.pop(r).unboxToInt.get, "pop second item")
+    assert(1 == o.pop(r).unboxToInt.get, "pop first item")
+    assert(0 == o.length(r).unboxToInt.get, "Array is empty (" + o.length(r) + ")")
+    assert(r.NativeObjects.getUndef == o.pop(r), "pop on empty array")
   }
 
 }
