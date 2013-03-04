@@ -104,7 +104,7 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(2 == o.shift(r).unboxToInt.get, "shift second item")
     assert(3 == o.shift(r).unboxToInt.get, "shift third item")
     assert(0 == o.length(r).unboxToInt.get, "Array is empty (" + o.length(r) + ")")
-    assert(r.NativeObjects.getUndef == o.shift(r), "shift on empty array")
+    assert(o.shift(r).isUndef, "shift on empty array")
   }
 
   test("... Array object pop") {
@@ -119,7 +119,24 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(2 == o.pop(r).unboxToInt.get, "pop second item")
     assert(1 == o.pop(r).unboxToInt.get, "pop first item")
     assert(0 == o.length(r).unboxToInt.get, "Array is empty (" + o.length(r) + ")")
-    assert(r.NativeObjects.getUndef == o.pop(r), "pop on empty array")
+    assert(o.pop(r).isUndef, "pop on empty array")
+  }
+
+  test("... Array object unshift") {
+    val o = r.NativeObjects.getArray( ArrayBuffer())
+    assert(0 == o.unshift(r).unboxToInt.get, "unshift no items onto empty array")
+    assert(0 == o.length(r).unboxToInt.get, "Array is empty (" + o.length(r) + ")")
+
+    assert(1 == o.unshift(r, r.NativeObjects.getInt(2)).unboxToInt.get, "unshift single item onto empty array")
+
+    val array = o.getNativeValue
+    assert(array(0).unboxToInt.get === 2)
+
+    assert(2 == o.unshift(r, r.NativeObjects.getInt(4)).unboxToInt.get, "unshift single item onto single-item array")
+
+    assert(4 == o.unshift(r, r.NativeObjects.getInt(6), r.NativeObjects.getInt(8)).unboxToInt.get, "unshift two items onto array")
+    assert(array(0).unboxToInt.get === 6)
+    assert(array(array.length - 1).unboxToInt.get === 2)
   }
 
 }

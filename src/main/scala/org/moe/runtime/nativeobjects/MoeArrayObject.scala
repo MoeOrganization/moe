@@ -33,7 +33,11 @@ class MoeArrayObject(
   def pop (r: MoeRuntime): MoeObject =
     if(array.length == 0) r.NativeObjects.getUndef
     else array.remove(array.length - 1)
-	
+  def unshift (r: MoeRuntime, values: MoeObject*): MoeIntObject = {
+    array.insertAll(0, values)
+    r.NativeObjects.getInt(array.length)
+  }
+
   // MoeObject overrides
   
   override def isFalse: Boolean = getNativeValue.size == 0
