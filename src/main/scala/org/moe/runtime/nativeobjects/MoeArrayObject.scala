@@ -44,6 +44,11 @@ class MoeArrayObject(
     array ++= values
     r.NativeObjects.getInt(array.length)
   }
+  def slice(r: MoeRuntime, indicies: MoeIntObject*): MoeArrayObject = {
+      r.NativeObjects.getArray(
+        ArrayBuffer(indicies.map(i => at_pos(r, i)) : _*)
+      )
+  }
 
   // MoeObject overrides
   

@@ -155,4 +155,26 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(array(array.length - 1).unboxToInt.get === 2)
   }
 
+  test("... Array object slice") {
+    val o = r.NativeObjects.getArray(
+      ArrayBuffer(
+        r.NativeObjects.getInt(1),
+        r.NativeObjects.getInt(2),
+        r.NativeObjects.getInt(3)
+      )
+     )
+    var slice = o.slice(r, r.NativeObjects.getInt(1))
+    assert(1 == slice.getNativeValue.length, "single item slice length")
+    assert(2 == slice.at_pos(r,r.NativeObjects.getInt(0)).unboxToInt.get, "result of single item slice")
+
+    slice = o.slice(r, r.NativeObjects.getInt(1), r.NativeObjects.getInt(0))
+    assert(2 == slice.getNativeValue.length, "two-item slice length")
+    assert(1 == slice.at_pos(r,r.NativeObjects.getInt(1)).unboxToInt.get, "second item of two-item slice")
+
+    slice = o.slice(r, r.NativeObjects.getInt(3), r.NativeObjects.getInt(2), r.NativeObjects.getInt(4))
+    assert(3 == slice.getNativeValue.length, "non-existent item slice length")
+    assert(slice.at_pos(r,r.NativeObjects.getInt(0)).isUndef, "non-existent item in slice is undef")
+    assert(3 == slice.at_pos(r,r.NativeObjects.getInt(1)).unboxToInt.get)
+    assert(slice.at_pos(r,r.NativeObjects.getInt(2)).isUndef, "non-existent item in slice is undef")
+  }
 }
