@@ -191,4 +191,16 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(array(1).unboxToInt.get === 2)
     assert(array(2).unboxToInt.get === 1)
   }
+
+  test("... Array object join") {
+    val o = r.NativeObjects.getArray(
+      ArrayBuffer(
+        r.NativeObjects.getInt(1),
+        r.NativeObjects.getInt(2),
+        r.NativeObjects.getInt(3)
+      )
+    )
+    assert(o.join(r, "|") == "1|2|3");
+    assert(o.join(r, "") == "123");
+  }
 }

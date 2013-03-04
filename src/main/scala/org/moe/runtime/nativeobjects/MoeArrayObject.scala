@@ -50,6 +50,7 @@ class MoeArrayObject(
       )
   }
   def reverse(r: MoeRuntime): MoeArrayObject = r.NativeObjects.getArray(array.reverse)
+  def join(r: MoeRuntime, sep: String): String = array.map(_.toString).mkString(sep)
 
   // MoeObject overrides
   
