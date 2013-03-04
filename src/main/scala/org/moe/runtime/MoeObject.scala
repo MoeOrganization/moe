@@ -1,6 +1,7 @@
 package org.moe.runtime
 
 import scala.collection.mutable.HashMap
+import scala.collection.mutable.ArrayBuffer
 import scala.util.{Try, Success, Failure}
 
 trait UnboxMoeToNative {
@@ -24,8 +25,8 @@ trait UnboxMoeToNative {
     new MoeErrors.IncompatibleType("Cannot convert to Null")
   )
 
-  def unboxToList: Try[List[MoeObject]] = Failure(
-    new MoeErrors.IncompatibleType("Cannot convert to List[MoeObject]")
+  def unboxToList: Try[ArrayBuffer[MoeObject]] = Failure(
+    new MoeErrors.IncompatibleType("Cannot convert to ArrayBuffer[MoeObject]")
   )
 
   def unboxToMap: Try[HashMap[String, MoeObject]] = Failure(

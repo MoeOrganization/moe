@@ -1,7 +1,7 @@
 package org.moe.runtime.nativeobjects
 
 import org.moe.runtime._
-
+import scala.collection.mutable.ArrayBuffer
 import scala.util.{Try, Success, Failure}
 
 class MoeStrObject(
@@ -43,7 +43,7 @@ class MoeStrObject(
   def reverse (r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(getNativeValue.reverse)
 
   def split (r: MoeRuntime, s: MoeStrObject): MoeArrayObject = r.NativeObjects.getArray(
-    getNativeValue.split(s.unboxToString.get).map(r.NativeObjects.getStr(_)).toList
+    ArrayBuffer(getNativeValue.split(s.unboxToString.get).map(r.NativeObjects.getStr(_)).toArray : _* )
   ) 
 
   def concat (r: MoeRuntime, x: MoeObject): MoeStrObject = x match {

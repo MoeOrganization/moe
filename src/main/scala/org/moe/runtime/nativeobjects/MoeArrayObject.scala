@@ -2,6 +2,7 @@ package org.moe.runtime.nativeobjects
 
 import org.moe.runtime._
 
+import scala.collection.mutable.ArrayBuffer
 import scala.util.{Try, Success, Failure}
 
 // NOTE:
@@ -13,16 +14,44 @@ import scala.util.{Try, Success, Failure}
 // - SL
 
 class MoeArrayObject(
-    v: List[MoeObject],
+    v: ArrayBuffer[MoeObject],
     klass : Option[MoeClass] = None
-  ) extends MoeNativeObject[List[MoeObject]](v, klass) {
+  ) extends MoeNativeObject[ArrayBuffer[MoeObject]](v, klass) {
+
+  def this(list:List[MoeObject]) = this(ArrayBuffer(list : _*));
 
   private def array = getNativeValue
 
   // Runtime methods
   
-  def at_pos (r: MoeRuntime, i: MoeIntObject): MoeObject = array(i.unboxToInt.get)
-	
+  def at_pos (r: MoeRuntime, i: MoeIntObject): MoeObject = {
+    if(i.unboxToInt.get >= array.length) r.NativeObjects.getUndef
+    else array(i.unboxToInt.get)
+  }
+  def length (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(array.length)
+  def clear (r: MoeRuntime) = array.clear
+  def shift (r: MoeRuntime): MoeObject =
+    if(array.length == 0) r.NativeObjects.getUndef
+    else array.remove(0)
+  def pop (r: MoeRuntime): MoeObject =
+    if(array.length == 0) r.NativeObjects.getUndef
+    else array.remove(array.length - 1)
+  def unshift (r: MoeRuntime, values: MoeObject*): MoeIntObject = {
+    array.insertAll(0, values)
+    r.NativeObjects.getInt(array.length)
+  }
+  def push (r: MoeRuntime, values: MoeObject*): MoeIntObject = {
+    array ++= values
+    r.NativeObjects.getInt(array.length)
+  }
+  def slice(r: MoeRuntime, indicies: MoeIntObject*): MoeArrayObject = {
+      r.NativeObjects.getArray(
+        ArrayBuffer(indicies.map(i => at_pos(r, i)) : _*)
+      )
+  }
+  def reverse(r: MoeRuntime): MoeArrayObject = r.NativeObjects.getArray(array.reverse)
+  def join(r: MoeRuntime, sep: String): String = array.map(_.toString).mkString(sep)
+
   // MoeObject overrides
   
   override def isFalse: Boolean = getNativeValue.size == 0
@@ -31,5 +60,5 @@ class MoeArrayObject(
   
   // unboxing
   
-  override def unboxToList: Try[List[MoeObject]] = Success(getNativeValue)
+  override def unboxToList: Try[ArrayBuffer[MoeObject]] = Success(getNativeValue)
 }

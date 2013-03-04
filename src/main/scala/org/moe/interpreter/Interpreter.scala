@@ -5,6 +5,7 @@ import org.moe.runtime.nativeobjects._
 import org.moe.ast._
 
 import scala.collection.mutable.HashMap
+import scala.collection.mutable.ArrayBuffer
 
 class Interpreter {
 
@@ -64,7 +65,7 @@ class Interpreter {
       }
 
       case ArrayLiteralNode(values) => {
-        val array: List[MoeObject] = values.map(eval(runtime, env, _))
+        val array: ArrayBuffer[MoeObject] = ArrayBuffer(values.map(eval(runtime, env, _)) : _*)
         getArray(array)
       }
 
@@ -120,7 +121,7 @@ class Interpreter {
             val range_start  = s.unboxToInt.get
             val range_end    = e.unboxToInt.get
             val range: Range = new Range(range_start, range_end + 1, 1)
-            val array: List[MoeObject] = range.toList.map(getInt(_))
+            val array: ArrayBuffer[MoeObject] = ArrayBuffer(range.toList.map(getInt(_)) : _*)
             getArray(array)
           }
           case (s: MoeStrObject, e: MoeStrObject) => {
@@ -136,7 +137,7 @@ class Interpreter {
                 elems = elems :+ str
                 str = MoeUtil.magicalStringIncrement(str)
               }
-              getArray(elems.map(getStr(_)))
+              getArray(ArrayBuffer(elems.map(getStr(_)) : _*))
             }
           }
           case _ => throw new MoeErrors.UnexpectedType("Pair of MoeIntObject or MoeStrObject expected")

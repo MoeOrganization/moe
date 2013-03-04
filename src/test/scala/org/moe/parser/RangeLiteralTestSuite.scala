@@ -8,12 +8,14 @@ import org.moe.interpreter._
 import org.moe.ast._
 import org.moe.parser._
 
+import scala.collection.mutable.ArrayBuffer
+
 class RangeLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils {
 
   test("... basic test with a simple integer range") {
     val result = interpretCode("1 .. 3")
 
-    val array: List[MoeObject] = result.unboxToList.get
+    val array: ArrayBuffer[MoeObject] = result.unboxToList.get
 
     assert(array.size === 3)
     assert(array(0).unboxToInt.get === 1)
@@ -24,7 +26,7 @@ class RangeLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
   test("... basic test with a simple string range #1") {
     val result = interpretCode(""" "1" .. "3" """)
 
-    val array: List[MoeObject] = result.unboxToList.get
+    val array: ArrayBuffer[MoeObject] = result.unboxToList.get
 
     assert(array.size === 3)
     assert(array(0).unboxToString.get === "1")
@@ -35,7 +37,7 @@ class RangeLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
   test("... basic test with a simple string range #2") {
     val result = interpretCode(""" "01" .. "03" """)
 
-    val array: List[MoeObject] = result.unboxToList.get
+    val array: ArrayBuffer[MoeObject] = result.unboxToList.get
 
     assert(array.size === 3)
     assert(array(0).unboxToString.get === "01")
@@ -46,7 +48,7 @@ class RangeLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
   test("... basic test with a simple string range #3") {
     val result = interpretCode(""" "1" .. "3" """)
 
-    val array: List[MoeObject] = result.unboxToList.get
+    val array: ArrayBuffer[MoeObject] = result.unboxToList.get
 
     assert(array.size === 3)
     assert(array(0).unboxToString.get === "1")
@@ -57,7 +59,7 @@ class RangeLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
   test("... basic test with a simple string range #4") {
     val result = interpretCode(""" "a" .. "c" """)
 
-    val array: List[MoeObject] = result.unboxToList.get
+    val array: ArrayBuffer[MoeObject] = result.unboxToList.get
 
     assert(array.size === 3)
     assert(array(0).unboxToString.get === "a")
@@ -68,7 +70,7 @@ class RangeLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
   test("... basic test with a simple string range #5") {
     val result = interpretCode(""" "z" .. "ab" """)
 
-    val array: List[MoeObject] = result.unboxToList.get
+    val array: ArrayBuffer[MoeObject] = result.unboxToList.get
 
     assert(array.size === 3)
     assert(array(0).unboxToString.get === "z")
@@ -79,7 +81,7 @@ class RangeLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
   test("... basic test with a simple string range #6") {
     val result = interpretCode(""" "ab" .. "z" """)
 
-    val array: List[MoeObject] = result.unboxToList.get
+    val array: ArrayBuffer[MoeObject] = result.unboxToList.get
 
     assert(array.size === 0)
   }
@@ -87,7 +89,7 @@ class RangeLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
   test("... basic test with a simple string range #7") {
     val result = interpretCode(""" "zz" .. "a" """)
 
-    val array: List[MoeObject] = result.unboxToList.get
+    val array: ArrayBuffer[MoeObject] = result.unboxToList.get
 
     assert(array.size === 0)
   }
