@@ -25,6 +25,7 @@ class MoeArrayObject(
   // Runtime methods
   
   def at_pos (r: MoeRuntime, i: MoeIntObject): MoeObject = array(i.unboxToInt.get)
+  def length (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(array.length)
 	
   // MoeObject overrides
   

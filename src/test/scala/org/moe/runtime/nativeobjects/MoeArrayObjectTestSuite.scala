@@ -63,4 +63,21 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(!o.isUndef)
   }
 
+  test("... Array object length (empty)") {
+    val o = r.NativeObjects.getArray( ArrayBuffer())
+    assert(0 == o.length(r).unboxToInt.get, "empty array length == 0")
+  }
+
+  test("... Array object length") {
+    val o = r.NativeObjects.getArray(
+      ArrayBuffer(
+        r.NativeObjects.getInt(1),
+        r.NativeObjects.getInt(2),
+        r.NativeObjects.getInt(3)
+      )
+     )
+    val array = o.getNativeValue
+    assert(array.length == o.length(r).unboxToInt.get, "Expected " + o.length(r) + " to equal " + array.length)
+  }
+
 }
