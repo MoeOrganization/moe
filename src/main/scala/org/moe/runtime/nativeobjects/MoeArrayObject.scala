@@ -37,6 +37,10 @@ class MoeArrayObject(
     array.insertAll(0, values)
     r.NativeObjects.getInt(array.length)
   }
+  def push (r: MoeRuntime, values: MoeObject*): MoeIntObject = {
+    array ++= values
+    r.NativeObjects.getInt(array.length)
+  }
 
   // MoeObject overrides
   
