@@ -27,6 +27,9 @@ class MoeArrayObject(
   def at_pos (r: MoeRuntime, i: MoeIntObject): MoeObject = array(i.unboxToInt.get)
   def length (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(array.length)
   def clear (r: MoeRuntime) = array.clear
+  def shift (r: MoeRuntime): MoeObject =
+    if(array.length == 0) r.NativeObjects.getUndef
+    else array.remove(0)
 	
   // MoeObject overrides
   
