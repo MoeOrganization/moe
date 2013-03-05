@@ -64,10 +64,7 @@ class Interpreter {
         )
       }
 
-      case ArrayLiteralNode(values) => {
-        val array: ArrayBuffer[MoeObject] = ArrayBuffer(values.map(eval(runtime, env, _)) : _*)
-        getArray(array)
-      }
+      case ArrayLiteralNode(values) => getArray(values.map(eval(runtime, env, _)):_*)
 
       case ArrayElementAccessNode(arrayName: String, index: AST) => {
         val index_result = eval(runtime, env, index)
@@ -90,11 +87,7 @@ class Interpreter {
         eval(runtime, env, key).unboxToString.get -> eval(runtime, env, value)
       )
 
-      case HashLiteralNode(map) => {
-        val hash = new HashMap[String,MoeObject]()
-        map.foreach(pair => hash += eval(runtime, env, pair).unboxToTuple.get)
-        getHash(hash)
-      }
+      case HashLiteralNode(values) => getHash(values.map(eval(runtime, env, _).unboxToTuple.get):_*)
 
       case HashElementAccessNode(hashName: String, key: AST) => {
         val key_result = eval(runtime, env, key)
@@ -121,8 +114,7 @@ class Interpreter {
             val range_start  = s.unboxToInt.get
             val range_end    = e.unboxToInt.get
             val range: Range = new Range(range_start, range_end + 1, 1)
-            val array: ArrayBuffer[MoeObject] = ArrayBuffer(range.toList.map(getInt(_)) : _*)
-            getArray(array)
+            getArray(range.toList.map(getInt(_)):_*)
           }
           case (s: MoeStrObject, e: MoeStrObject) => {
             val range_start = s.unboxToString.get
@@ -137,7 +129,7 @@ class Interpreter {
                 elems = elems :+ str
                 str = MoeUtil.magicalStringIncrement(str)
               }
-              getArray(ArrayBuffer(elems.map(getStr(_)) : _*))
+              getArray(elems.map(getStr(_)):_*)
             }
           }
           case _ => throw new MoeErrors.UnexpectedType("Pair of MoeIntObject or MoeStrObject expected")

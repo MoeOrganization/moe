@@ -18,10 +18,8 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... simple Array object") {
     val o = r.NativeObjects.getArray(
-      ArrayBuffer(
-        r.NativeObjects.getUndef,
-        r.NativeObjects.getInt(10)
-      )
+      r.NativeObjects.getUndef,
+      r.NativeObjects.getInt(10)
     )
     val array = o.getNativeValue
     assert(array(0).isUndef)
@@ -32,12 +30,12 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... simple Array object with class") {
-    val o = r.NativeObjects.getArray(ArrayBuffer())
+    val o = r.NativeObjects.getArray()
     assert(o.getAssociatedClass.get === r.getCoreClassFor("Array").get)
   }
 
   test("... false Array object") {
-    val o = r.NativeObjects.getArray(ArrayBuffer())
+    val o = r.NativeObjects.getArray()
     assert(!o.isTrue)
     assert(o.isFalse)
     assert(!o.isUndef)
@@ -45,15 +43,11 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... complex Array object") {
     val o = r.NativeObjects.getArray(
-      ArrayBuffer(
-        r.NativeObjects.getInt(10),
-        r.NativeObjects.getArray(
-          ArrayBuffer(
-            r.NativeObjects.getInt(42)
-          )
-        )
+      r.NativeObjects.getInt(10),
+      r.NativeObjects.getArray(
+        r.NativeObjects.getInt(42)
       )
-     )
+    )
     val array = o.getNativeValue
     assert(array(0).unboxToInt.get === 10)
     val nested = array(1).unboxToList.get
@@ -64,42 +58,36 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... Array object length (empty)") {
-    val o = r.NativeObjects.getArray( ArrayBuffer())
+    val o = r.NativeObjects.getArray()
     assert(0 == o.length(r).unboxToInt.get, "empty array length == 0")
   }
 
   test("... Array object length") {
     val o = r.NativeObjects.getArray(
-      ArrayBuffer(
-        r.NativeObjects.getInt(1),
-        r.NativeObjects.getInt(2),
-        r.NativeObjects.getInt(3)
-      )
-     )
+      r.NativeObjects.getInt(1),
+      r.NativeObjects.getInt(2),
+      r.NativeObjects.getInt(3)
+    )
     val array = o.getNativeValue
     assert(array.length == o.length(r).unboxToInt.get, "Expected " + o.length(r) + " to equal " + array.length)
   }
 
   test("... Array object clear") {
     val o = r.NativeObjects.getArray(
-      ArrayBuffer(
-        r.NativeObjects.getInt(1),
-        r.NativeObjects.getInt(2),
-        r.NativeObjects.getInt(3)
-      )
-     )
+      r.NativeObjects.getInt(1),
+      r.NativeObjects.getInt(2),
+      r.NativeObjects.getInt(3)
+    )
     o.clear(r)
     assert(0 == o.length(r).unboxToInt.get)
   }
 
   test("... Array object shift") {
     val o = r.NativeObjects.getArray(
-      ArrayBuffer(
-        r.NativeObjects.getInt(1),
-        r.NativeObjects.getInt(2),
-        r.NativeObjects.getInt(3)
-      )
-     )
+      r.NativeObjects.getInt(1),
+      r.NativeObjects.getInt(2),
+      r.NativeObjects.getInt(3)
+    )
     assert(1 == o.shift(r).unboxToInt.get, "shift first item")
     assert(2 == o.shift(r).unboxToInt.get, "shift second item")
     assert(3 == o.shift(r).unboxToInt.get, "shift third item")
@@ -109,12 +97,10 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... Array object pop") {
     val o = r.NativeObjects.getArray(
-      ArrayBuffer(
-        r.NativeObjects.getInt(1),
-        r.NativeObjects.getInt(2),
-        r.NativeObjects.getInt(3)
-      )
-     )
+      r.NativeObjects.getInt(1),
+      r.NativeObjects.getInt(2),
+      r.NativeObjects.getInt(3)
+    )
     assert(3 == o.pop(r).unboxToInt.get, "pop third item")
     assert(2 == o.pop(r).unboxToInt.get, "pop second item")
     assert(1 == o.pop(r).unboxToInt.get, "pop first item")
@@ -123,7 +109,7 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... Array object push") {
-    val o = r.NativeObjects.getArray( ArrayBuffer())
+    val o = r.NativeObjects.getArray()
     assert(0 == o.push(r).unboxToInt.get, "push no items onto empty array")
     assert(0 == o.length(r).unboxToInt.get, "Array is empty (" + o.length(r) + ")")
 
@@ -139,7 +125,7 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... Array object unshift") {
-    val o = r.NativeObjects.getArray( ArrayBuffer())
+    val o = r.NativeObjects.getArray()
     assert(0 == o.unshift(r).unboxToInt.get, "unshift no items onto empty array")
     assert(0 == o.length(r).unboxToInt.get, "Array is empty (" + o.length(r) + ")")
 
@@ -157,12 +143,10 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... Array object slice") {
     val o = r.NativeObjects.getArray(
-      ArrayBuffer(
-        r.NativeObjects.getInt(1),
-        r.NativeObjects.getInt(2),
-        r.NativeObjects.getInt(3)
-      )
-     )
+      r.NativeObjects.getInt(1),
+      r.NativeObjects.getInt(2),
+      r.NativeObjects.getInt(3)
+    )
     var slice = o.slice(r, r.NativeObjects.getInt(1))
     assert(1 == slice.getNativeValue.length, "single item slice length")
     assert(2 == slice.at_pos(r,r.NativeObjects.getInt(0)).unboxToInt.get, "result of single item slice")
@@ -180,11 +164,9 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... Array object reverse") {
     val o = r.NativeObjects.getArray(
-      ArrayBuffer(
-        r.NativeObjects.getInt(1),
-        r.NativeObjects.getInt(2),
-        r.NativeObjects.getInt(3)
-      )
+      r.NativeObjects.getInt(1),
+      r.NativeObjects.getInt(2),
+      r.NativeObjects.getInt(3)
     )
     val array = o.reverse(r).getNativeValue
     assert(array(0).unboxToInt.get === 3)
@@ -194,11 +176,9 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... Array object join") {
     val o = r.NativeObjects.getArray(
-      ArrayBuffer(
-        r.NativeObjects.getInt(1),
-        r.NativeObjects.getInt(2),
-        r.NativeObjects.getInt(3)
-      )
+      r.NativeObjects.getInt(1),
+      r.NativeObjects.getInt(2),
+      r.NativeObjects.getInt(3)
     )
     assert(o.join(r, "|") == "1|2|3");
     assert(o.join(r, "") == "123");

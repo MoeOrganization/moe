@@ -28,28 +28,35 @@ class MoeArrayObject(
     if(i.unboxToInt.get >= array.length) r.NativeObjects.getUndef
     else array(i.unboxToInt.get)
   }
+
   def length (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(array.length)
+
   def clear (r: MoeRuntime) = array.clear
+
   def shift (r: MoeRuntime): MoeObject =
     if(array.length == 0) r.NativeObjects.getUndef
     else array.remove(0)
+
   def pop (r: MoeRuntime): MoeObject =
     if(array.length == 0) r.NativeObjects.getUndef
     else array.remove(array.length - 1)
+
   def unshift (r: MoeRuntime, values: MoeObject*): MoeIntObject = {
     array.insertAll(0, values)
     r.NativeObjects.getInt(array.length)
   }
+
   def push (r: MoeRuntime, values: MoeObject*): MoeIntObject = {
     array ++= values
     r.NativeObjects.getInt(array.length)
   }
-  def slice(r: MoeRuntime, indicies: MoeIntObject*): MoeArrayObject = {
-      r.NativeObjects.getArray(
-        ArrayBuffer(indicies.map(i => at_pos(r, i)) : _*)
-      )
-  }
-  def reverse(r: MoeRuntime): MoeArrayObject = r.NativeObjects.getArray(array.reverse)
+
+  def slice(r: MoeRuntime, indicies: MoeIntObject*): MoeArrayObject = r.NativeObjects.getArray(
+    indicies.map(i => at_pos(r, i)) : _*
+  )
+
+  def reverse(r: MoeRuntime): MoeArrayObject = r.NativeObjects.getArray(array.reverse:_*)
+
   def join(r: MoeRuntime, sep: String): String = array.map(_.toString).mkString(sep)
 
   // MoeObject overrides

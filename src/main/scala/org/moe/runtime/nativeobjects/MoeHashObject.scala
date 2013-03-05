@@ -30,7 +30,7 @@ class MoeHashObject(
   }
 
   def slice(r: MoeRuntime, keys: MoeArrayObject) = r.NativeObjects.getArray(
-    keys.unboxToList.get.map(k => at_key(r, k.asInstanceOf[MoeStrObject]))
+    keys.unboxToList.get.map(k => at_key(r, k.asInstanceOf[MoeStrObject])):_*
   )
 
   def clear(r: MoeRuntime) = { 
@@ -39,23 +39,21 @@ class MoeHashObject(
   }
 
   def keys(r: MoeRuntime) = r.NativeObjects.getArray(
-    ArrayBuffer(hash.keys.map(s => r.NativeObjects.getStr(s)).toArray : _*)
+    hash.keys.map(s => r.NativeObjects.getStr(s)).toArray:_*
   )
 
   def values(r: MoeRuntime) = r.NativeObjects.getArray(
-    ArrayBuffer(hash.values.map(x => x).toArray : _*)
+    hash.values.map(x => x).toArray:_*
   )
 
   def pairs(r: MoeRuntime) = r.NativeObjects.getArray(
-    ArrayBuffer(hash.toList.map(p => r.NativeObjects.getPair(p)).toArray : _* )
+    hash.toList.map(p => r.NativeObjects.getPair(p)).toArray:_*
   )
 
   def kv(r: MoeRuntime) = r.NativeObjects.getArray(
-    ArrayBuffer(hash.toList.map(
-      p => r.NativeObjects.getArray(
-        ArrayBuffer(r.NativeObjects.getStr(p._1), p._2)
-      )
-    ).toArray : _* )
+    hash.toList.map(
+      p => r.NativeObjects.getArray(r.NativeObjects.getStr(p._1), p._2)
+    ).toArray:_*
   )
 
   // MoeObject overrides 

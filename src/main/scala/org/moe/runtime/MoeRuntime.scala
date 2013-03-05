@@ -162,11 +162,9 @@ class MoeRuntime (
     def getStr  (value: String)  = new MoeStrObject(value, getCoreClassFor("Str"))
     def getBool (value: Boolean) = if (value) { True } else { False }
 
-    def getHash  (value: HashMap[String, MoeObject]) = new MoeHashObject(value, getCoreClassFor("Hash"))
-    def getHash  ()                                  = new MoeHashObject(HashMap(), getCoreClassFor("Hash"))
-    def getArray (value: ArrayBuffer[MoeObject])     = new MoeArrayObject(value, getCoreClassFor("Array"))
-    def getArray ()                                  = new MoeArrayObject(ArrayBuffer(), getCoreClassFor("Array"))
-    def getPair  (value: (String, MoeObject))        = new MoePairObject((value._1, value._2), getCoreClassFor("Pair"))
+    def getHash  (value: (String, MoeObject)*) = new MoeHashObject(HashMap(value:_*), getCoreClassFor("Hash"))
+    def getArray (value: MoeObject*)           = new MoeArrayObject(ArrayBuffer(value:_*), getCoreClassFor("Array"))
+    def getPair  (value: (String, MoeObject))  = new MoePairObject((value._1, value._2), getCoreClassFor("Pair"))
 
   }
 
