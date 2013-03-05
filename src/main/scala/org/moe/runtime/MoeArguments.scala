@@ -1,7 +1,5 @@
 package org.moe.runtime
 
-import scala.collection.mutable.HashMap
-
 class MoeArguments(
     private val args: List[MoeObject],
     private val invocant: Option[MoeObject] = None

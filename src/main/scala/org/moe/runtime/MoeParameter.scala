@@ -1,7 +1,5 @@
 package org.moe.runtime
 
-import scala.collection.mutable.HashMap
-
 class MoeParameter(
     private val name: String
     //private val optional: Boolean = false,

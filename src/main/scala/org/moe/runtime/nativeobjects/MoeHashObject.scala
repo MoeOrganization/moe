@@ -4,7 +4,6 @@ import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 
 import scala.collection.mutable.HashMap
-import scala.collection.mutable.ArrayBuffer
 import scala.util.{Try, Success, Failure}
 
 class MoeHashObject(
@@ -30,7 +29,7 @@ class MoeHashObject(
   }
 
   def slice(r: MoeRuntime, keys: MoeArrayObject) = r.NativeObjects.getArray(
-    keys.unboxToList.get.map(k => at_key(r, k.asInstanceOf[MoeStrObject])):_*
+    keys.unboxToArrayBuffer.get.map(k => at_key(r, k.asInstanceOf[MoeStrObject])):_*
   )
 
   def clear(r: MoeRuntime) = { 

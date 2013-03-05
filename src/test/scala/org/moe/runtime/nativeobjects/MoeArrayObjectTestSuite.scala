@@ -1,7 +1,5 @@
 package org.moe.runtime.nativeobjects
 
-import scala.collection.mutable.HashMap
-import scala.collection.mutable.ArrayBuffer
 import org.moe.runtime._
 
 import org.scalatest.FunSuite
@@ -50,7 +48,7 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
     )
     val array = o.getNativeValue
     assert(array(0).unboxToInt.get === 10)
-    val nested = array(1).unboxToList.get
+    val nested = array(1).unboxToArrayBuffer.get
     assert(nested(0).unboxToInt.get === 42)
     assert(o.isTrue)
     assert(!o.isFalse)

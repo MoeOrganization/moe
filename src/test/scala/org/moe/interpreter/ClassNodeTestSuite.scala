@@ -176,7 +176,7 @@ class ClassNodeTestSuite
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-    val coords = result.unboxToList.get
+    val coords = result.unboxToArrayBuffer.get
 
     coords(0).unboxToInt.get should equal (150)
     coords(1).unboxToInt.get should equal (250)

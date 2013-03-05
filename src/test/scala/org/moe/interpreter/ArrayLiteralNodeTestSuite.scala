@@ -4,7 +4,6 @@ import org.moe.runtime._
 import org.moe.ast._
 
 import org.scalatest.FunSuite
-import scala.collection.mutable.ArrayBuffer
 
 class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
 
@@ -21,7 +20,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    val array: ArrayBuffer[MoeObject] = result.unboxToList.get
+    val array = result.unboxToArrayBuffer.get
 
     assert(array.size === 2)
     assert(array(0).unboxToInt.get === 10)
@@ -45,12 +44,12 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
 
-    val array: ArrayBuffer[ MoeObject ] = result.unboxToList.get
+    val array = result.unboxToArrayBuffer.get
 
     assert(array.size === 2)
     assert(array(0).unboxToInt.get === 10)
 
-    val nested = array(1).unboxToList.get
+    val nested = array(1).unboxToArrayBuffer.get
 
     assert(nested.size === 1)
     assert(nested(0).unboxToInt.get === 20)

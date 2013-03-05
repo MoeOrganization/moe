@@ -1,6 +1,5 @@
 package org.moe.runtime.nativeobjects
 
-import scala.collection.mutable.HashMap
 import org.moe.runtime._
 
 import org.scalatest.FunSuite

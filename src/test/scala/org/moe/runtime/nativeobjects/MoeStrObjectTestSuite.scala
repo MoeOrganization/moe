@@ -1,6 +1,5 @@
 package org.moe.runtime.nativeobjects
 
-import scala.collection.mutable.HashMap
 import org.moe.runtime._
 
 import org.scalatest.FunSuite
@@ -151,7 +150,7 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
 
     assert(x.isInstanceOf("Array"))
 
-    val xs = x.unboxToList.get
+    val xs = x.unboxToArrayBuffer.get
     assert(xs(0).unboxToString.get === "foo")
     assert(xs(0).isInstanceOf("Str"))
     assert(xs(1).unboxToString.get === "bar")

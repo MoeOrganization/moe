@@ -25,7 +25,7 @@ trait UnboxMoeToNative {
     new MoeErrors.IncompatibleType("Cannot convert to Null")
   )
 
-  def unboxToList: Try[ArrayBuffer[MoeObject]] = Failure(
+  def unboxToArrayBuffer: Try[ArrayBuffer[MoeObject]] = Failure(
     new MoeErrors.IncompatibleType("Cannot convert to ArrayBuffer[MoeObject]")
   )
 

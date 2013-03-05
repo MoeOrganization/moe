@@ -1,7 +1,6 @@
 package org.moe.runtime.nativeobjects
 
 import org.moe.runtime._
-import scala.collection.mutable.ArrayBuffer
 import scala.util.{Try, Success, Failure}
 
 class MoeStrObject(
@@ -49,7 +48,7 @@ class MoeStrObject(
   def concat (r: MoeRuntime, x: MoeObject): MoeStrObject = x match {
     case s: MoeStrObject   => r.NativeObjects.getStr( getNativeValue + s.unboxToString.get )
     case a: MoeArrayObject => r.NativeObjects.getStr( 
-      getNativeValue + a.unboxToList.get.map(_.unboxToString.get).mkString
+      getNativeValue + a.unboxToArrayBuffer.get.map(_.unboxToString.get).mkString
     )
   }
 

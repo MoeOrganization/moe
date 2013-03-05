@@ -32,7 +32,7 @@ object ArrayClass {
         env,
         { (e) => 
             var index = e.get("$i").get.unboxToInt.get
-            val array = e.getCurrentInvocant.get.unboxToList.get
+            val array = e.getCurrentInvocant.get.unboxToArrayBuffer.get
 
             while (index < 0) index += array.size
             try {
@@ -49,7 +49,7 @@ object ArrayClass {
         "shift",
         new MoeSignature(),
         env,
-        (e) => e.getCurrentInvocant.get.unboxToList.get(0)
+        (e) => e.getCurrentInvocant.get.unboxToArrayBuffer.get(0)
       )
     )
 

@@ -4,9 +4,6 @@ import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 import org.moe.ast._
 
-import scala.collection.mutable.HashMap
-import scala.collection.mutable.ArrayBuffer
-
 class Interpreter {
 
   import InterpreterUtils._
