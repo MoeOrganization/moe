@@ -88,13 +88,30 @@ class MoeIntObject(
     case _               => throw new MoeErrors.UnexpectedType(other.toString)
   }
 
+  // methods
+
+  def abs (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(Math.abs(getNativeValue))
+
+  def sin (r: MoeRuntime): MoeNumObject = r.NativeObjects.getNum(Math.sin(unboxToDouble.get))
+  def cos (r: MoeRuntime): MoeNumObject = r.NativeObjects.getNum(Math.cos(unboxToDouble.get))
+  def tan (r: MoeRuntime): MoeNumObject = r.NativeObjects.getNum(Math.tan(unboxToDouble.get))
+  def asin(r: MoeRuntime): MoeNumObject = r.NativeObjects.getNum(Math.asin(unboxToDouble.get))
+  def acos(r: MoeRuntime): MoeNumObject = r.NativeObjects.getNum(Math.acos(unboxToDouble.get))
+  def atan(r: MoeRuntime): MoeNumObject = r.NativeObjects.getNum(Math.atan(unboxToDouble.get))
+  def atan2(r: MoeRuntime, other: MoeObject): MoeNumObject =
+    r.NativeObjects.getNum(Math.atan2(unboxToDouble.get, other.unboxToDouble.get))
+
+  def exp (r: MoeRuntime): MoeNumObject = r.NativeObjects.getNum(Math.exp(unboxToDouble.get))
+  def log (r: MoeRuntime): MoeNumObject = r.NativeObjects.getNum(Math.log(unboxToDouble.get))
+  def sqrt(r: MoeRuntime): MoeNumObject = r.NativeObjects.getNum(Math.sqrt(unboxToDouble.get))
+
   // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue == 0
   override def toString = getNativeValue.toString
 
   // unboxing
-  
+
   override def unboxToInt: Try[Int] = Success(getNativeValue)
   override def unboxToDouble: Try[Double] = Success(getNativeValue.toDouble)
 
