@@ -19,6 +19,17 @@ object IntClass {
 
     import r.NativeObjects._
 
+    // Unary -
+
+    intClass.addMethod(
+      new MoeMethod(
+        "prefix:<->",
+        new MoeSignature(),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].negate(r)
+      )
+    )
+
     // increment/decrement
 
     intClass.addMethod(

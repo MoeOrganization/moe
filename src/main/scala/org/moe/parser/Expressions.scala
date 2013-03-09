@@ -52,9 +52,14 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
     | declaration
     | variable
     | expressionParens
+    | signedExpressionParens
   )
 
   def expressionParens: Parser[AST] = "(" ~> expression <~ ")"
+  def signedExpressionParens: PackratParser[AST] = "[-+]".r ~ expressionParens ^^ {
+    case "+" ~ expr => expr
+    case "-" ~ expr => PrefixUnaryOpNode(expr, "-")
+  }
 
   // List stuff
   def list: Parser[List[AST]] = (literal(",").? ~> repsep(expression, ",") <~ literal(",").?)

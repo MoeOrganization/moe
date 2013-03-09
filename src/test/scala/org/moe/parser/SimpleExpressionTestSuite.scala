@@ -226,6 +226,11 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
     result.unboxToInt.get should equal (10)
   }
 
+  test("... unary negative") {
+    val result = interpretCode("-(2*3+4)")
+    result.unboxToInt.get should equal (-10)
+  }
+
   // modulo (% operator)
 
   test("... literal int modulo operation #1 ... [13 % 4]") {

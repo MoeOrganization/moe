@@ -141,8 +141,8 @@ class Interpreter {
           receiver.getAssociatedClass.getOrElse(
             throw new MoeErrors.ClassNotFound(receiver.toString)
           ).getMethod("prefix:<" + operator + ">").getOrElse(
-            throw new MoeErrors.MethodNotFound("prefix:<" + operator + ">")
-          ), 
+            throw new MoeErrors.MethodNotFound("method prefix:<" + operator + "> missing in class " + receiver.getClassName)
+          ),
           List()
         )
       }
