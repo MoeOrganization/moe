@@ -46,10 +46,10 @@ class MoeStrObject(
   ) 
 
   def concat (r: MoeRuntime, x: MoeObject): MoeStrObject = x match {
-    case s: MoeStrObject   => r.NativeObjects.getStr( getNativeValue + s.unboxToString.get )
     case a: MoeArrayObject => r.NativeObjects.getStr( 
       getNativeValue + a.unboxToArrayBuffer.get.map(_.unboxToString.get).mkString
     )
+    case s: MoeObject   => r.NativeObjects.getStr( getNativeValue + s.unboxToString.get )
   }
 
   def index (r: MoeRuntime): Unit = {}  //(r: MoeRuntime): Unit = {} // ($substring, ?$position)
@@ -58,6 +58,12 @@ class MoeStrObject(
   def substr (r: MoeRuntime): Unit = {} // ($offset, ?$length)
   def quotemeta (r: MoeRuntime): Unit = {} 
 
+  def repeat (r: MoeRuntime, other: MoeObject): MoeStrObject = {
+    val str = getNativeValue
+    val n   = other.unboxToInt.get
+    r.NativeObjects.getStr(List.fill(n)(str).mkString)
+  }
+
   // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue match {
@@ -65,9 +71,9 @@ class MoeStrObject(
     case _        => false
   }
   override def toString = "\"" + getNativeValue + "\""
-  
+
   // unboxing
-  
+
   override def unboxToString: Try[String] = Success(getNativeValue)
   override def unboxToInt: Try[Int] = Try(getNativeValue.toInt)
   override def unboxToDouble: Try[Double] = Try(getNativeValue.toDouble)
