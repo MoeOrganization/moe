@@ -25,11 +25,11 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
   } | addOp
 
-  lazy val addOp: PackratParser[AST] = addOp ~ "[-+]".r ~ mulOp            ^^ {
+  lazy val addOp: PackratParser[AST] = addOp ~ "[-+.]".r ~ mulOp            ^^ {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
   } | mulOp
 
-  lazy val mulOp: PackratParser[AST] = mulOp ~ "[*/%]".r ~ expOp ^^ {
+  lazy val mulOp: PackratParser[AST] = mulOp ~ "[*/%x]".r ~ expOp ^^ {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
   } | expOp
 
