@@ -90,6 +90,19 @@ class MoeIntObject(
     case _               => throw new MoeErrors.UnexpectedType(other.toString)
   }
 
+  // bitwise operators
+  def bit_and (r: MoeRuntime, other: MoeObject): MoeIntObject = r.NativeObjects.getInt(
+    getNativeValue & other.unboxToInt.get
+  )
+
+  def bit_or (r: MoeRuntime, other: MoeObject): MoeIntObject = r.NativeObjects.getInt(
+    getNativeValue | other.unboxToInt.get
+  )
+
+  def bit_xor (r: MoeRuntime, other: MoeObject): MoeIntObject = r.NativeObjects.getInt(
+    getNativeValue ^ other.unboxToInt.get
+  )
+
   // methods
 
   def abs (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(Math.abs(getNativeValue))

@@ -367,6 +367,33 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
     result.unboxToBoolean.get should equal (true)
   }
 
+  // bitwise operators
+
+  test("... literal int bitwise and ... [0xdead & 0xbeef]") {
+    val result = interpretCode("0xdead & 0xbeef")
+    result.unboxToInt.get should equal (0x9ead)
+  }
+
+  test("... literal int bitwise or ... [0xdead | 0xbeef]") {
+    val result = interpretCode("0xdead | 0xbeef")
+    result.unboxToInt.get should equal (0xfeef)
+  }
+
+  test("... literal int bitwise xor ... [0xdead ^ 0xbeef]") {
+    val result = interpretCode("0xdead ^ 0xbeef")
+    result.unboxToInt.get should equal (0x6042)
+  }
+
+  test("... literal int bitwise ops -- order of operations ... [0xdead & 0xbeef | 0xabcd]") {
+    val result = interpretCode("0xdead & 0xbeef | 0xabcd")
+    result.unboxToInt.get should equal (0xbfed)
+  }
+
+  test("... literal int bitwise ops -- order of operations ... [0xabcd | 0xdead & 0xbeef]") {
+    val result = interpretCode("0xabcd | 0xdead & 0xbeef")
+    result.unboxToInt.get should equal (0xbfed)
+  }
+
   // methods
 
   test("... literal int abs method ... [2->abs]") {

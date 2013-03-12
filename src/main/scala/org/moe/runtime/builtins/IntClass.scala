@@ -198,6 +198,35 @@ object IntClass {
       )
     )
 
+    // bitwise operators
+
+    intClass.addMethod(
+      new MoeMethod(
+        "infix:<&>",
+        new MoeSignature(List(new MoeParameter("$other"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].bit_and(r, e.get("$other").get)
+      )
+    )
+
+    intClass.addMethod(
+      new MoeMethod(
+        "infix:<|>",
+        new MoeSignature(List(new MoeParameter("$other"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].bit_or(r, e.get("$other").get)
+      )
+    )
+
+    intClass.addMethod(
+      new MoeMethod(
+        "infix:<^>",
+        new MoeSignature(List(new MoeParameter("$other"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].bit_xor(r, e.get("$other").get)
+      )
+    )
+
     // methods
 
     intClass.addMethod(
