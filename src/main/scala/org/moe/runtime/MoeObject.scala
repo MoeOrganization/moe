@@ -76,6 +76,14 @@ class MoeObject(
   def isInstanceOf(klass:   MoeClass): Boolean = associatedClass.exists(_.isClassOf(klass))
 
   /**
+   * Return the name of the class this object is an instance of
+   */
+  def getClassName: String = associatedClass match {
+    case Some(klass) => klass.getName
+    case _ => ""
+  }
+
+  /**
    * Invoke the named method.
    *
    * @param name The name of the method

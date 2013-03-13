@@ -14,12 +14,20 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
                                      (namespacedIdentifier <~ "{") ~
                                      (expression <~ "}")
   
-  lazy val expression: PackratParser[AST] = relOp
+  lazy val expression: PackratParser[AST] = bitOrOp
 
   // This is what I want
   // def binOpResult = { case left ~ op ~ right => MethodCallNode(left, op, List(right)) }
   // lazy val addOp: PackratParser[AST] = addOp ~ "[-+]".r ~ mulOp            ^^ binOpResult | mulOp
   // lazy val mulOp: PackratParser[AST] = mulOp ~ "[*/]".r ~ simpleExpression ^^ binOpResult | simpleExpression
+
+  lazy val bitOrOp: PackratParser[AST] = bitOrOp ~ "[|^]".r ~ bitAndOp ^^ {
+    case left ~ op ~ right => BinaryOpNode(left, op, right)
+  } | bitAndOp
+
+  lazy val bitAndOp: PackratParser[AST] = bitAndOp ~ "&" ~ relOp ^^ {
+    case left ~ op ~ right => BinaryOpNode(left, op, right)
+  } | relOp
 
   lazy val relOp: PackratParser[AST] = relOp ~ "[<>]=?|[!=]=".r ~ addOp ^^ {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
@@ -52,9 +60,14 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
     | declaration
     | variable
     | expressionParens
+    | signedExpressionParens
   )
 
   def expressionParens: Parser[AST] = "(" ~> expression <~ ")"
+  def signedExpressionParens: PackratParser[AST] = "[-+]".r ~ expressionParens ^^ {
+    case "+" ~ expr => expr
+    case "-" ~ expr => PrefixUnaryOpNode(expr, "-")
+  }
 
   // List stuff
   def list: Parser[List[AST]] = (literal(",").? ~> repsep(expression, ",") <~ literal(",").?)
