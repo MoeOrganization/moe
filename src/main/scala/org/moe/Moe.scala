@@ -118,24 +118,28 @@ object Moe {
 
   object REPL {
     def enter (interpreter: Interpreter, runtime: MoeRuntime, dumpAST: Boolean = false): Unit = {
+      import jline.{ConsoleReader, History}
+
       def isReplCommand(input: String) = input(0) == ':'
-
-      import jline.ConsoleReader
-
-      val cReader: ConsoleReader = new ConsoleReader
-      val prompt = "moe> "
-      val continuationPrompt = "  |> "
 
       var replOptions = Map(
         "printOutput"    -> true,
         "dumpAST"        -> dumpAST,
         "prettyPrintAST" -> true
       )
+
+      val historyFile = new File(System.getProperty("user.home") + File.separator + ".moereplhist")
+      val cReader: ConsoleReader = new ConsoleReader
+      cReader.setHistory(new History(historyFile))
+
+      val prompt = "moe> "
+      val continuationPrompt = "...| "
+
       var partialInput: String = ""
       while (true) {
         val line = cReader readLine (if (partialInput == "") prompt else continuationPrompt)
         line match {
-          case null   => println(); return
+          case null   => { println(); return }
           case "exit" => return
           case ""     => ""
           case _      => if (isReplCommand(line))
