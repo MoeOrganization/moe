@@ -11,6 +11,8 @@ import org.moe.parser._
 
 class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils with ShouldMatchers {
 
+  val delta = 1e-10
+
   test("... literal int addition #1 ... [2+2]") {
     val result = interpretCode("2+2")
     result.unboxToInt.get should equal (4)
@@ -63,12 +65,12 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
 
   test("... literal int addition #11 ... [2+2.3]") {
     val result = interpretCode("2+2.3")
-    result.unboxToDouble.get should be (4.3 plusOrMinus 1e-10)
+    result.unboxToDouble.get should be (4.3 plusOrMinus delta)
   }
 
   test("... literal int addition #12 ... [4+-2.3]") {
     val result = interpretCode("4+-2.3")
-    result.unboxToDouble.get should be (1.7 plusOrMinus 1e-10)
+    result.unboxToDouble.get should be (1.7 plusOrMinus delta)
   }
 
   // subtraction
@@ -130,12 +132,12 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
 
   test("... literal int subtraction #12 ... [2-5.4]") {
     val result = interpretCode("2-5.4")
-    result.unboxToDouble.get should be (-3.4 plusOrMinus 1e-8)
+    result.unboxToDouble.get should be (-3.4 plusOrMinus delta)
   }
 
   test("... literal int subtraction #2 ... [3 - -1.7]") {
     val result = interpretCode("3 - -1.7")
-    result.unboxToDouble.get should be (4.7 plusOrMinus 1e-8)
+    result.unboxToDouble.get should be (4.7 plusOrMinus delta)
   }
 
   // multiplication
@@ -167,12 +169,12 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
 
   test("... literal int multiplication #6 ... [3*3.2]") {
     val result = interpretCode("3*3.2")
-    result.unboxToDouble.get should be (9.6 plusOrMinus 1e-8)
+    result.unboxToDouble.get should be (9.6 plusOrMinus delta)
   }
 
   test("... literal int multiplication #7 ... [1 * 3.7]") {
     val result = interpretCode("1 * 3.7")
-    result.unboxToDouble.get should be (3.7 plusOrMinus 1e-8)
+    result.unboxToDouble.get should be (3.7 plusOrMinus delta)
   }
 
   // division
@@ -209,7 +211,7 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
 
   test("... literal int division #7 ... [1/3.0]") {
     val result = interpretCode("1/3.0")
-    result.unboxToDouble.get should be (0.3333333333333333 plusOrMinus 1e-8)
+    result.unboxToDouble.get should be (0.3333333333333333 plusOrMinus delta)
   }
 
   // order of operations
@@ -222,6 +224,11 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
   test("... order of operations, multiplication first") {
     val result = interpretCode("2*3+4")
     result.unboxToInt.get should equal (10)
+  }
+
+  test("... unary negative") {
+    val result = interpretCode("-(2*3+4)")
+    result.unboxToInt.get should equal (-10)
   }
 
   // modulo (% operator)
@@ -255,7 +262,7 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
 
   test("... literal int exponentiation operation #2 ... [2**2.2]") {
     val result = interpretCode("2**2.2")
-    result.unboxToDouble.get should be (4.59479341 plusOrMinus 0.00000001)
+    result.unboxToDouble.get should be (4.59479341998814 plusOrMinus delta)
   }
 
   test("... literal int exponentiation operation #3 ... [1**0]") {
@@ -358,5 +365,197 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
   test("... literal int relational operation #16 ... [2 <= 2]") {
     val result = interpretCode("2 <= 2")
     result.unboxToBoolean.get should equal (true)
+  }
+
+  // bitwise operators
+
+  test("... literal int bitwise and ... [0xdead & 0xbeef]") {
+    val result = interpretCode("0xdead & 0xbeef")
+    result.unboxToInt.get should equal (0x9ead)
+  }
+
+  test("... literal int bitwise or ... [0xdead | 0xbeef]") {
+    val result = interpretCode("0xdead | 0xbeef")
+    result.unboxToInt.get should equal (0xfeef)
+  }
+
+  test("... literal int bitwise xor ... [0xdead ^ 0xbeef]") {
+    val result = interpretCode("0xdead ^ 0xbeef")
+    result.unboxToInt.get should equal (0x6042)
+  }
+
+  test("... literal int bitwise ops -- order of operations ... [0xdead & 0xbeef | 0xabcd]") {
+    val result = interpretCode("0xdead & 0xbeef | 0xabcd")
+    result.unboxToInt.get should equal (0xbfed)
+  }
+
+  test("... literal int bitwise ops -- order of operations ... [0xabcd | 0xdead & 0xbeef]") {
+    val result = interpretCode("0xabcd | 0xdead & 0xbeef")
+    result.unboxToInt.get should equal (0xbfed)
+  }
+
+  // methods
+
+  test("... literal int abs method ... [2->abs]") {
+    val result = interpretCode("2->abs")
+    result.unboxToInt.get should equal (2)
+  }
+
+  test("... literal int abs method ... [(-2)->abs]") {
+    val result = interpretCode("(-2)->abs")
+    result.unboxToInt.get should equal (2)
+  }
+
+  // trigonometric methods
+
+  val sines = Map(
+    -5 -> 0.958924274663138,
+    -4 -> 0.756802495307928,
+    -3 -> -0.141120008059867,
+    -2 -> -0.909297426825682,
+    -1 -> -0.841470984807897,
+     0 -> 0,
+     1 -> 0.841470984807897,
+     2 -> 0.909297426825682,
+     3 -> 0.141120008059867,
+     4 -> -0.756802495307928,
+     5 -> -0.958924274663138
+  )
+
+  for ((x: Int, y: Double) <- sines) {
+    test("... literal int -- sin method ... [" + x + "->sin]") {
+      val result = interpretCode(x + "->sin")
+      result.unboxToDouble.get should be (y plusOrMinus delta)
+    }
+  }
+
+  val cosines = Map(
+    -5 -> 0.283662185463226,
+    -4 -> -0.653643620863612,
+    -3 -> -0.989992496600445,
+    -2 -> -0.416146836547142,
+    -1 -> 0.54030230586814,
+     0 -> 1,
+     1 -> 0.54030230586814,
+     2 -> -0.416146836547142,
+     3 -> -0.989992496600445,
+     4 -> -0.653643620863612,
+     5 -> 0.283662185463226
+  )
+
+  for ((x: Int, y: Double) <- cosines) {
+    test("... literal int -- cos method ... [" + x + "->cos]") {
+      val result = interpretCode(x + "->cos")
+      result.unboxToDouble.get should be (y plusOrMinus delta)
+    }
+  }
+
+  val tangents = Map(
+    -5 -> 3.38051500624659,
+    -4 -> -1.15782128234958,
+    -3 -> 0.142546543074278,
+    -2 -> 2.18503986326152,
+    -1 -> -1.5574077246549,
+     0 -> 0,
+     1 -> 1.5574077246549,
+     2 -> -2.18503986326152,
+     3 -> -0.142546543074278,
+     4 -> 1.15782128234958,
+     5 -> -3.38051500624659
+  )
+
+  for ((x: Int, y: Double) <- tangents) {
+    test("... literal int -- tan method ... [" + x + "->tan]") {
+      val result = interpretCode(x + "->tan")
+      result.unboxToDouble.get should be (y plusOrMinus delta)
+    }
+  }
+
+  val arcSines = Map(
+    -1 -> -1.5707963267949,
+     0 -> 0,
+     1 -> 1.5707963267949
+  )
+
+  for ((x: Int, y: Double) <- arcSines) {
+    test("... literal int -- asin method ... [" + x + "->asin]") {
+      val result = interpretCode(x + "->asin")
+      result.unboxToDouble.get should be (y plusOrMinus delta)
+    }
+  }
+
+  val arcCosines = Map(
+    -1 -> 3.14159265358979,
+     0 -> 1.5707963267949,
+     1 -> 0
+  )
+
+  for ((x: Int, y: Double) <- arcCosines) {
+    test("... literal int -- cos method ... [" + x + "->acos]") {
+      val result = interpretCode(x + "->acos")
+      result.unboxToDouble.get should be (y plusOrMinus delta)
+    }
+  }
+
+  val arcTangents = Map(
+    -1 -> -0.785398163397448,
+     0 -> 0,
+     1 -> 0.785398163397448
+  )
+
+  for ((x: Int, y: Double) <- arcTangents) {
+    test("... literal int -- atan method ... [" + x + "->atan]") {
+      val result = interpretCode(x + "->atan")
+      result.unboxToDouble.get should be (y plusOrMinus delta)
+    }
+  }
+
+  val expValues = Map(
+    -2 -> 0.135335283236613,
+    -1 -> 0.367879441171442,
+     0 -> 1,
+     1 -> 2.71828182845905,
+     2 -> 7.38905609893065
+  )
+
+  for ((x: Int, y: Double) <- expValues) {
+    test("... literal int -- exp method ... [" + x + "->exp]") {
+      val result = interpretCode(x + "->exp")
+      result.unboxToDouble.get should be (y plusOrMinus delta)
+    }
+  }
+
+  val logValues = Map(
+    1 -> 0,
+    2 -> 0.693147180559945,
+    3 -> 1.09861228866811,
+    4 -> 1.38629436111989,
+    5 -> 1.6094379124341,
+    10 -> 2.30258509299405,
+    100 -> 4.60517018598809
+  )
+
+  for ((x: Int, y: Double) <- logValues) {
+    test("... literal int -- log method ... [" + x + "->log]") {
+      val result = interpretCode(x + "->log")
+      result.unboxToDouble.get should be (y plusOrMinus delta)
+    }
+  }
+
+  val sqrtValues = Map(
+    1 -> 1,
+    2 -> 1.4142135623731,
+    3 -> 1.73205080756888,
+    4 -> 2,
+    5 -> 2.23606797749979,
+    10 -> 3.16227766016838,
+    100 -> 10
+  )
+
+  for ((x: Int, y: Double) <- sqrtValues) {
+    test("... literal int -- sqrt method ... [" + x + "->sqrt]") {
+      val result = interpretCode(x + "->sqrt")
+      result.unboxToDouble.get should be (y plusOrMinus delta)
+    }
   }
 }

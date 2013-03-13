@@ -141,8 +141,8 @@ class Interpreter {
           receiver.getAssociatedClass.getOrElse(
             throw new MoeErrors.ClassNotFound(receiver.toString)
           ).getMethod("prefix:<" + operator + ">").getOrElse(
-            throw new MoeErrors.MethodNotFound("prefix:<" + operator + ">")
-          ), 
+            throw new MoeErrors.MethodNotFound("method prefix:<" + operator + "> missing in class " + receiver.getClassName)
+          ),
           List()
         )
       }
@@ -153,7 +153,7 @@ class Interpreter {
           receiver.getAssociatedClass.getOrElse(
             throw new MoeErrors.ClassNotFound(receiver.toString)
           ).getMethod("postfix:<" + operator + ">").getOrElse(
-            throw new MoeErrors.MethodNotFound("postfix:<" + operator + ">")
+            throw new MoeErrors.MethodNotFound("method postfix:<" + operator + "> missing in class " + receiver.getClassName)
           ), 
           List()
         )
@@ -168,7 +168,7 @@ class Interpreter {
           receiver.getAssociatedClass.getOrElse(
             throw new MoeErrors.ClassNotFound(receiver.toString)
           ).getMethod("infix:<" + operator + ">").getOrElse(
-            throw new MoeErrors.MethodNotFound("infix:<" + operator + ">")
+            throw new MoeErrors.MethodNotFound("method infix:<" + operator + "> missing in class " + receiver.getClassName)
           ), 
           List(arg)
         )
