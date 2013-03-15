@@ -45,4 +45,8 @@ object MoeErrors {
   class TypeError             (msg: String) extends MoeProblems(msg)
   class UnexpectedType        (msg: String) extends TypeError(msg)
   class IncompatibleType      (msg: String) extends TypeError(msg)
+
+  // Parser errors
+  class ParserInputIncomplete (msg: String) extends MoeException(msg)
+  class ParserInputError      (msg: String) extends MoeException(msg)
 }

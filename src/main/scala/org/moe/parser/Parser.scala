@@ -3,6 +3,7 @@ package org.moe.parser
 import scala.util.parsing.combinator._
 // import scala.util.matching.Regex
 import org.moe.ast._
+import org.moe.runtime._
 
 import ParserUtils._
 
@@ -13,7 +14,10 @@ object MoeParsers extends Statements {
   def parseFromEntry(input: String): StatementsNode =
     parseAll(getEntryPoint, input) match {
       case Success(result, _) => result.asInstanceOf[StatementsNode]
-      case failure : NoSuccess => scala.sys.error(failure.msg)
+      case failure : NoSuccess => if (failure.next.atEnd)
+                                    throw new MoeErrors.ParserInputIncomplete(failure.msg)
+                                  else
+                                    throw new MoeErrors.ParserInputError(failure.msg)
     }
 }
 
