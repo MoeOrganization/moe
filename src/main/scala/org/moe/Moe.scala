@@ -112,35 +112,43 @@ object Moe {
       "modify it under the terms specified in the LICENSE file.\n"
   )
 
-  /*
-   TODO:
-    - would be nice to have line editing capabilities
-    - this presents a problem under sbt since sbt wants
-      to own the line editing capabilities
-   */
+  object EvalResult extends Enumeration {
+    val Success, Partial, Failure = Value
+  }
+
   object REPL {
     def enter (interpreter: Interpreter, runtime: MoeRuntime, dumpAST: Boolean = false): Unit = {
-      import jline.ConsoleReader
+      import jline.{ConsoleReader, History}
 
-      val cReader: ConsoleReader = new ConsoleReader
-      val prompt = "moe> "
+      def isReplCommand(input: String) = input(0) == ':'
 
       var replOptions = Map(
         "printOutput"    -> true,
         "dumpAST"        -> dumpAST,
-        "prettyPrintAST" -> false
+        "prettyPrintAST" -> true
       )
+
+      val historyFile = new File(System.getProperty("user.home") + File.separator + ".moereplhist")
+      val cReader: ConsoleReader = new ConsoleReader
+      cReader.setHistory(new History(historyFile))
+
+      val prompt = "moe> "
+      val continuationPrompt = "...| "
+
+      var partialInput: String = ""
       while (true) {
-        val line = cReader readLine prompt
-        if (line != null && line.length > 0 && line != "exit") {
-          if (line(0) == ':')
-            replOptions = processReplCommand(line, replOptions)
-          else
-            evalLine(interpreter, runtime, line, replOptions)
-        }
-        else {
-          if (line != "exit") println()
-          return
+        val line = cReader readLine (if (partialInput == "") prompt else continuationPrompt)
+        line match {
+          case null   => { println(); return }
+          case "exit" => return
+          case ""     => ""
+          case _      => if (isReplCommand(line))
+                           replOptions = processReplCommand(line, replOptions)
+                         else
+                           evalLine(interpreter, runtime, partialInput + line, replOptions) match {
+                             case EvalResult.Partial => partialInput += line
+                             case _                  => partialInput = ""
+                           }
         }
       }
     }
@@ -161,9 +169,14 @@ object Moe {
         if( options("printOutput") ) {
           println(result.toString)
         }
+        EvalResult.Success
       }
       catch {
-        case e: Exception => System.err.println(e)
+        case i: MoeErrors.ParserInputIncomplete => EvalResult.Partial
+        case e: Exception => {
+          System.err.println(e)
+          EvalResult.Failure
+        }
       }
     }
 
