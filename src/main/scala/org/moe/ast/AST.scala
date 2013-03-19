@@ -52,6 +52,7 @@ case class PostfixUnaryOpNode(rhs: AST, operator: String) extends AST
 // binary operators
 
 case class BinaryOpNode(lhs: AST, operator: String, rhs: AST) extends AST
+case class ShortCircuitBinaryOpNode(lhs: AST, operator: String, rhs: AST) extends AST
 
 // value lookup, assignment and declaration
 
