@@ -75,6 +75,18 @@ object Serializer {
       )
     )
 
+    case ShortCircuitBinaryOpNode(lhs, operator, rhs) => JSONObject(
+      Map(
+        "ShortCircuitBinaryOpNode" -> JSONObject(
+          Map(
+            "lhs"      -> toJSON(lhs),
+            "operator" -> operator,
+            "rhs"      -> toJSON(rhs)
+          )
+        )
+      )
+    )
+
     case ClassAccessNode(name) => JSONObject(Map("ClassAccessNode" -> name))
 
     case ClassDeclarationNode(name, superclass, body) => JSONObject(

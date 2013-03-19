@@ -285,6 +285,33 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
     result.unboxToInt.get should not equal (4096)
   }
 
+  // equality operators
+
+  test("... literal int equality operation ... [2 == 2]") {
+    val result = interpretCode("2 == 2")
+    result.unboxToBoolean.get should equal (true)
+  }
+
+  test("... literal int equality operation ... [2 != 2]") {
+    val result = interpretCode("2 != 2")
+    result.unboxToBoolean.get should equal (false)
+  }
+
+  test("... literal int equality operation ... [2 <=> 3]") {
+    val result = interpretCode("2 <=> 3")
+    result.unboxToInt.get should equal (-1)
+  }
+
+  test("... literal int equality operation ... [2 <=> 2]") {
+    val result = interpretCode("2 <=> 2")
+    result.unboxToInt.get should equal (0)
+  }
+
+  test("... literal int equality operation ... [3 <=> 2]") {
+    val result = interpretCode("3 <=> 2")
+    result.unboxToInt.get should equal (1)
+  }
+
   // relational operators
 
   test("... literal int relational operation #1 ... [1 < 2]") {
@@ -344,16 +371,6 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
 
   test("... literal int relational operation #12 ... [1 >= 2.5]") {
     val result = interpretCode("1 >= 2.5")
-    result.unboxToBoolean.get should equal (false)
-  }
-
-  test("... literal int relational operation #13 ... [2 == 2]") {
-    val result = interpretCode("2 == 2")
-    result.unboxToBoolean.get should equal (true)
-  }
-
-  test("... literal int relational operation #14 ... [2 != 2]") {
-    val result = interpretCode("2 != 2")
     result.unboxToBoolean.get should equal (false)
   }
 

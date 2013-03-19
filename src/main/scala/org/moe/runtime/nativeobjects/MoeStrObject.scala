@@ -64,6 +64,36 @@ class MoeStrObject(
     r.NativeObjects.getStr(List.fill(n)(str).mkString)
   }
 
+  // equality
+
+  def equal_to (r: MoeRuntime, other: MoeObject): MoeBoolObject =
+    r.NativeObjects.getBool(getNativeValue == other.unboxToString.get)
+
+  def not_equal_to (r: MoeRuntime, other: MoeObject): MoeBoolObject =
+    r.NativeObjects.getBool(getNativeValue != other.unboxToString.get)
+
+  def compare_to (r: MoeRuntime, other: MoeObject): MoeIntObject =
+    r.NativeObjects.getInt(
+      getNativeValue compareTo other.unboxToString.get match {
+        case 0 => 0
+        case r => if (r < 0) -1 else 1
+      }
+    )
+
+  // comparison
+
+  def less_than (r: MoeRuntime, other: MoeObject): MoeBoolObject =
+    r.NativeObjects.getBool(getNativeValue < other.unboxToString.get)
+
+  def greater_than (r: MoeRuntime, other: MoeObject): MoeBoolObject =
+    r.NativeObjects.getBool(getNativeValue > other.unboxToString.get)
+
+  def less_than_or_equal_to (r: MoeRuntime, other: MoeObject): MoeBoolObject =
+    r.NativeObjects.getBool(getNativeValue <= other.unboxToString.get)
+
+  def greater_than_or_equal_to (r: MoeRuntime, other: MoeObject): MoeBoolObject =
+    r.NativeObjects.getBool(getNativeValue >= other.unboxToString.get)
+
   // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue match {
