@@ -64,6 +64,12 @@ class MoeIntObject(
     case _               => throw new MoeErrors.UnexpectedType(other.toString)
   }
 
+  def compare_to (r: MoeRuntime, other: MoeObject): MoeIntObject = other match {
+    case i: MoeIntObject => r.NativeObjects.getInt(getNativeValue    compareTo i.unboxToInt.get)
+    case f: MoeNumObject => r.NativeObjects.getInt(unboxToDouble.get compareTo f.unboxToDouble.get)
+    case _               => throw new MoeErrors.UnexpectedType(other.toString)
+  }
+
   // comparison
 
   def less_than (r: MoeRuntime, other: MoeObject): MoeBoolObject = other match {

@@ -30,7 +30,7 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   // TODO: right       ?:
 
 
-  // left        || //
+  // left        ||           TODO: //
   lazy val logicalOrOp: PackratParser[AST] = logicalOrOp ~ """\|\||//""".r ~ logicalAndOp ^^ {
     case left ~ op ~ right => ShortCircuitBinaryOpNode(left, op, right)
   } | logicalAndOp
@@ -46,13 +46,17 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   } | bitAndOp
 
   // left        &
-  lazy val bitAndOp: PackratParser[AST] = bitAndOp ~ "&" ~ relOp ^^ {
+  lazy val bitAndOp: PackratParser[AST] = bitAndOp ~ "&" ~ eqOp ^^ {
+    case left ~ op ~ right => BinaryOpNode(left, op, right)
+  } | eqOp
+
+  // nonassoc    == != eq ne cmp ~~
+  lazy val eqOp: PackratParser[AST] = eqOp ~ "[!=]=|<=>|eq|ne|cmp".r ~ relOp ^^ {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
   } | relOp
 
-  // nonassoc    == != <=> eq ne cmp ~~
   // nonassoc    < > <= >= lt gt le ge
-  lazy val relOp: PackratParser[AST] = relOp ~ "[<>]=?|[!=]=".r ~ addOp ^^ {
+  lazy val relOp: PackratParser[AST] = relOp ~ "[<>]=?|lt|gt|le|ge".r ~ addOp ^^ {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
   } | addOp
 
