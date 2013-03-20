@@ -180,6 +180,8 @@ object IntClass {
       )
     )
 
+    // equality operators
+
     intClass.addMethod(
       new MoeMethod(
         "infix:<==>",
@@ -195,6 +197,15 @@ object IntClass {
         new MoeSignature(List(new MoeParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].not_equal_to(r, e.get("$other").get)
+      )
+    )
+
+    intClass.addMethod(
+      new MoeMethod(
+        "infix:<<=>>",
+        new MoeSignature(List(new MoeParameter("$other"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].compare_to(r, e.get("$other").get)
       )
     )
 
