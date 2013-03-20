@@ -14,7 +14,7 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
                                      (namespacedIdentifier <~ "{") ~
                                      (expression <~ "}")
   
-  lazy val expression: PackratParser[AST] = logicalOrOp
+  lazy val expression: PackratParser[AST] = ternaryOp
 
   // This is what I want
   // def binOpResult = { case left ~ op ~ right => MethodCallNode(left, op, List(right)) }
@@ -27,8 +27,11 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   // TODO: nonassoc    list operators (rightward)
   // TODO: left        , =>
   // TODO: right       = += -= *= etc.
-  // TODO: right       ?:
 
+  // right       ?:
+  lazy val ternaryOp: PackratParser[AST] = logicalOrOp ~ "?" ~ ternaryOp ~ ":" ~ ternaryOp ^^ {
+    case cond ~ "?" ~ trueExpr ~ ":" ~ falseExpr => TernaryOpNode(cond, trueExpr, falseExpr)
+  } | logicalOrOp
 
   // left        ||           TODO: //
   lazy val logicalOrOp: PackratParser[AST] = logicalOrOp ~ """\|\||//""".r ~ logicalAndOp ^^ {

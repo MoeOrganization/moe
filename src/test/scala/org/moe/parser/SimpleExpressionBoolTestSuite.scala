@@ -109,4 +109,40 @@ class SimpleExpressionBoolTestSuite extends FunSuite with BeforeAndAfter with Pa
     result.unboxToInt.get should equal (0)
   }
 
+  // ternary operator
+
+  test("... ternary operator ... [1 == 1 ? 2 : 3]") {
+    val result = interpretCode("1 == 1 ? 2 : 3")
+    result.unboxToInt.get should equal (2)
+  }
+
+  test("... ternary operator ... [1 == 2 ? 2 : 3]") {
+    val result = interpretCode("1 == 2 ? 2 : 3")
+    result.unboxToInt.get should equal (3)
+  }
+
+  test("... ternary operator (right assoc) ... [1 == 1 ? 2 == 2 ? 3 : 4 : 5]") {
+    val result = interpretCode("1 == 1 ? 2 == 2 ? 3 : 4 : 5")
+    result.unboxToInt.get should equal (3)
+  }
+
+  test("... ternary operator (right assoc) ... [1 == 1 ? 2 != 2 ? 3 : 4 : 5]") {
+    val result = interpretCode("1 == 1 ? 2 != 2 ? 3 : 4 : 5")
+    result.unboxToInt.get should equal (4)
+  }
+
+  test("... ternary operator (right assoc) ... [1 != 1 ? 2 == 2 ? 3 : 4 : 5]") {
+    val result = interpretCode("1 != 1 ? 2 == 2 ? 3 : 4 : 5")
+    result.unboxToInt.get should equal (5)
+  }
+
+  test("... ternary operator (right assoc) ... [1 != 1 ? 2 : 3 == 3 ? 4 : 5]") {
+    val result = interpretCode("1 != 1 ? 2 : 3 == 3 ? 4 : 5")
+    result.unboxToInt.get should equal (4)
+  }
+
+  test("... ternary operator (right assoc) ... [1 != 1 ? 2 : 3 != 3 ? 4 : 5]") {
+    val result = interpretCode("1 != 1 ? 2 : 3 != 3 ? 4 : 5")
+    result.unboxToInt.get should equal (5)
+  }
 }

@@ -75,6 +75,18 @@ object Serializer {
       )
     )
 
+    case TernaryOpNode(condExpr, trueExpr, falseExpr) => JSONObject(
+      Map(
+        "BinaryOpNode" -> JSONObject(
+          Map(
+            "condition" -> toJSON(condExpr),
+            "trueExpr"  -> toJSON(trueExpr),
+            "falseExpr" -> toJSON(falseExpr)
+          )
+        )
+      )
+    )
+
     case ShortCircuitBinaryOpNode(lhs, operator, rhs) => JSONObject(
       Map(
         "ShortCircuitBinaryOpNode" -> JSONObject(
