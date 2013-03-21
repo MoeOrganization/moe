@@ -190,6 +190,22 @@ class Interpreter {
         )
       }
 
+      // ternary operator
+
+      case TernaryOpNode(cond: AST, trueExpr: AST, falseExpr: AST) => {
+        val receiver = eval(runtime, env, cond)
+        val argTrue  = new MoeLazyEval(this, runtime, env, trueExpr)
+        val argFalse = new MoeLazyEval(this, runtime, env, falseExpr)
+        receiver.callMethod(
+          receiver.getAssociatedClass.getOrElse(
+            throw new MoeErrors.ClassNotFound(receiver.toString)
+          ).getMethod("infix:<?:>").getOrElse(
+            throw new MoeErrors.MethodNotFound("method infix:<?:> missing in class " + receiver.getClassName)
+          ),
+          List(argTrue, argFalse)
+        )
+      }
+
       // value lookup, assignment and declaration
 
       case ClassAccessNode(name) => {

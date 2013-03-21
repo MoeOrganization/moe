@@ -109,6 +109,14 @@ class MoeIntObject(
     getNativeValue ^ other.unboxToInt.get
   )
 
+  def bit_shift_left (r: MoeRuntime, other: MoeObject): MoeIntObject = r.NativeObjects.getInt(
+    getNativeValue << other.unboxToInt.get
+  )
+
+  def bit_shift_right (r: MoeRuntime, other: MoeObject): MoeIntObject = r.NativeObjects.getInt(
+    getNativeValue >> other.unboxToInt.get
+  )
+
   // methods
 
   def abs (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(Math.abs(getNativeValue))

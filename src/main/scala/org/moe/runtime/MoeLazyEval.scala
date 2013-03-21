@@ -16,7 +16,7 @@ class MoeLazyEval (
   node: AST
 ) extends MoeObject {
   def eval = {
-    println("lazy eval - " + Serializer.toJSONPretty(node))
+    // println("lazy eval - " + Serializer.toJSONPretty(node))
     interpreter.eval(runtime, env, node)
   }
 }
