@@ -29,6 +29,29 @@ object BoolClass {
       )
     )
 
+    // ternary operator
+
+    boolClass.addMethod(
+      new MoeMethod(
+        "infix:<?:>",
+        new MoeSignature(List(new MoeParameter("$trueExpr"), new MoeParameter("$falseExpr"))),
+        env,
+        { (e) =>
+            val inv = self(e)
+            if (inv.isTrue)
+              e.get("$trueExpr").get match {
+                case deferredExpr: MoeLazyEval => deferredExpr.eval
+                case expr:         MoeObject   => expr
+              }
+            else
+              e.get("$falseExpr").get match {
+                case deferredExpr: MoeLazyEval => deferredExpr.eval
+                case expr:         MoeObject   => expr
+              }
+        }
+      )
+    )
+
     /**
      * List of Methods to support:
      * 

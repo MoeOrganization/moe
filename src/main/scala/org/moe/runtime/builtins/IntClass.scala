@@ -238,6 +238,24 @@ object IntClass {
       )
     )
 
+    intClass.addMethod(
+      new MoeMethod(
+        "infix:<<<>",
+        new MoeSignature(List(new MoeParameter("$other"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].bit_shift_left(r, e.get("$other").get)
+      )
+    )
+
+    intClass.addMethod(
+      new MoeMethod(
+        "infix:<>>>",
+        new MoeSignature(List(new MoeParameter("$other"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].bit_shift_right(r, e.get("$other").get)
+      )
+    )
+
     // methods
 
     intClass.addMethod(
