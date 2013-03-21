@@ -59,12 +59,16 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   } | relOp
 
   // nonassoc    < > <= >= lt gt le ge
-  lazy val relOp: PackratParser[AST] = relOp ~ "[<>]=?|lt|gt|le|ge".r ~ addOp ^^ {
+  lazy val relOp: PackratParser[AST] = relOp ~ "[<>]=?|lt|gt|le|ge".r ~ bitShiftOp ^^ {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
-  } | addOp
+  } | bitShiftOp
 
   // TODO: nonassoc    named unary operators
-  // TODO: left        << >>
+
+  // left        << >>
+  lazy val bitShiftOp: PackratParser[AST] = bitShiftOp ~ "<<|>>".r ~ addOp            ^^ {
+    case left ~ op ~ right => BinaryOpNode(left, op, right)
+  } | addOp
 
   // left        + - .
   lazy val addOp: PackratParser[AST] = addOp ~ "[-+.]".r ~ mulOp            ^^ {

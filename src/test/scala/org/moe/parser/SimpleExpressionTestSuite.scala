@@ -411,6 +411,31 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
     result.unboxToInt.get should equal (0xbfed)
   }
 
+  test("... literal int bitwise left shift ... [32 << 1]") {
+    val result = interpretCode("32 << 1")
+    result.unboxToInt.get should equal (64)
+  }
+
+  test("... literal int bitwise left shift ... [257 << 7]") {
+    val result = interpretCode("257 << 7")
+    result.unboxToInt.get should equal (32896)
+  }
+
+  test("... literal int bitwise left shift ... [20 << 20]") {
+    val result = interpretCode("20 << 20")
+    result.unboxToInt.get should equal (20971520)
+  }
+
+  test("... literal int bitwise right shift ... [32 >> 1]") {
+    val result = interpretCode("32 >> 1")
+    result.unboxToInt.get should equal (16)
+  }
+
+  test("... literal int bitwise right shift ... [33023 >> 7]") {
+    val result = interpretCode("33023 >> 7")
+    result.unboxToInt.get should equal (257)
+  }
+
   // methods
 
   test("... literal int abs method ... [2->abs]") {
