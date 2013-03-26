@@ -133,7 +133,7 @@ class MoeStrObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... concat method w/ multiple arg") {
     val o = r.NativeObjects.getStr("Foo")
-    val x = o.concat(r, 
+    val x = o.concatAll(r, 
       new MoeArrayObject(List(
         r.NativeObjects.getStr("Bar"), 
         r.NativeObjects.getStr("Baz")
