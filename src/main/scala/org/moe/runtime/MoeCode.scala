@@ -41,7 +41,6 @@ class MoeCode (
 
   protected def prepareExecutionEnvironment(args: MoeArguments): MoeEnvironment = {
     val env = new MoeEnvironment(Some(declaration_env))
-    signature.checkArguments(args)
     signature.bindArgsToEnv(args, env)
     env
   }
