@@ -1,7 +1,7 @@
 package org.moe.runtime
 
 class MoeArguments(
-    private val args: List[MoeObject],
+    private val args: List[MoeObject] = List(),
     private val invocant: Option[MoeObject] = None
   ) {
 
