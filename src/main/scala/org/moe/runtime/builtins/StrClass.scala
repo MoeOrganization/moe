@@ -141,9 +141,9 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "concat",
-        new MoeSignature(List(new MoeNamedParameter("$string"))), 
+        new MoeSignature(List(new MoeSlurpyParameter("@strings"))),
         env, 
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].concat(r, e.get("$string").get)
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].concatAll(r, e.get("@strings").get.asInstanceOf[MoeArrayObject])
       )
     )        
 
@@ -154,7 +154,7 @@ object StrClass {
         "infix:<.>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].concat(r, e.get("$other").get)
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].concat(r, e.get("$other").get.asInstanceOf[MoeStrObject])
       )
     )
 
@@ -179,7 +179,6 @@ object StrClass {
      * - rindex ($substring, ?$position)
      * - sprintf ($format, @items)
      * - substr ($offset, ?$length)
-     * - concat ($string | @strings)
      * - quotemeta
      *
      * See the following for details:

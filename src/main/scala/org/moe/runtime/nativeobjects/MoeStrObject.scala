@@ -45,12 +45,13 @@ class MoeStrObject(
     getNativeValue.split(s.unboxToString.get).map(r.NativeObjects.getStr(_)).toArray:_* 
   ) 
 
-  def concat (r: MoeRuntime, x: MoeObject): MoeStrObject = x match {
-    case a: MoeArrayObject => r.NativeObjects.getStr( 
-      getNativeValue + a.unboxToArrayBuffer.get.map(_.unboxToString.get).mkString
-    )
-    case s: MoeObject   => r.NativeObjects.getStr( getNativeValue + s.unboxToString.get )
-  }
+  def concat (r: MoeRuntime, x: MoeStrObject): MoeStrObject = r.NativeObjects.getStr(
+    getNativeValue + x.unboxToString.get
+  )
+
+  def concatAll (r: MoeRuntime, a: MoeArrayObject): MoeStrObject = r.NativeObjects.getStr(
+    getNativeValue + a.unboxToArrayBuffer.get.map(_.unboxToString.get).mkString
+  )
 
   def index (r: MoeRuntime): Unit = {}  //(r: MoeRuntime): Unit = {} // ($substring, ?$position)
   def rindex (r: MoeRuntime): Unit = {} // ($substring, ?$position)
