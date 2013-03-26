@@ -1,6 +1,7 @@
 package org.moe.runtime.builtins
 
 import org.moe.runtime._
+import org.moe.runtime.nativeobjects._
 
 /**
   * setup class Bool
@@ -13,7 +14,43 @@ object BoolClass {
       throw new MoeErrors.MoeStartupError("Could not find class Bool")
     )
 
+    def self(e: MoeEnvironment): MoeBoolObject = e.getCurrentInvocant.get.asInstanceOf[MoeBoolObject]
+
     // MRO: Bool, Scalar, Any, Object
+
+    import r.NativeObjects._
+
+    boolClass.addMethod(
+      new MoeMethod(
+        "prefix:<+>",
+        new MoeSignature(),
+        env,
+        (e) => getInt(self(e).unboxToInt.getOrElse(0))
+      )
+    )
+
+    // ternary operator
+
+    boolClass.addMethod(
+      new MoeMethod(
+        "infix:<?:>",
+        new MoeSignature(List(new MoeParameter("$trueExpr"), new MoeParameter("$falseExpr"))),
+        env,
+        { (e) =>
+            val inv = self(e)
+            if (inv.isTrue)
+              e.get("$trueExpr").get match {
+                case deferredExpr: MoeLazyEval => deferredExpr.eval
+                case expr:         MoeObject   => expr
+              }
+            else
+              e.get("$falseExpr").get match {
+                case deferredExpr: MoeLazyEval => deferredExpr.eval
+                case expr:         MoeObject   => expr
+              }
+        }
+      )
+    )
 
     /**
      * List of Methods to support:

@@ -33,7 +33,13 @@ object AnyClass {
         env, 
         { (e) =>
             val inv = e.getCurrentInvocant.get
-            if (inv.isTrue) e.get("$other").get else inv
+            if (inv.isFalse)
+              inv
+            else
+              e.get("$other").get match {
+                case deferred: MoeLazyEval => deferred.eval
+                case other:    MoeObject   => other
+              }
         }
       )
     )
@@ -45,7 +51,13 @@ object AnyClass {
         env, 
         { (e) =>
             val inv = e.getCurrentInvocant.get
-            if (inv.isTrue) inv else e.get("$other").get
+            if (inv.isTrue)
+              inv
+            else
+              e.get("$other").get match {
+                case deferred: MoeLazyEval => deferred.eval
+                case other:    MoeObject   => other
+              }
         }
       )
     )

@@ -174,6 +174,38 @@ class Interpreter {
         )
       }
 
+      // short circuit binary operators
+      // rhs is not evaluated, unless it is necessary
+
+      case ShortCircuitBinaryOpNode(lhs: AST, operator: String, rhs: AST) => {
+        val receiver = eval(runtime, env, lhs)
+        val arg      = new MoeLazyEval(this, runtime, env, rhs)
+        receiver.callMethod(
+          receiver.getAssociatedClass.getOrElse(
+            throw new MoeErrors.ClassNotFound(receiver.toString)
+          ).getMethod("infix:<" + operator + ">").getOrElse(
+            throw new MoeErrors.MethodNotFound("method infix:<" + operator + "> missing in class " + receiver.getClassName)
+          ), 
+          List(arg)
+        )
+      }
+
+      // ternary operator
+
+      case TernaryOpNode(cond: AST, trueExpr: AST, falseExpr: AST) => {
+        val receiver = eval(runtime, env, cond)
+        val argTrue  = new MoeLazyEval(this, runtime, env, trueExpr)
+        val argFalse = new MoeLazyEval(this, runtime, env, falseExpr)
+        receiver.callMethod(
+          receiver.getAssociatedClass.getOrElse(
+            throw new MoeErrors.ClassNotFound(receiver.toString)
+          ).getMethod("infix:<?:>").getOrElse(
+            throw new MoeErrors.MethodNotFound("method infix:<?:> missing in class " + receiver.getClassName)
+          ),
+          List(argTrue, argFalse)
+        )
+      }
+
       // value lookup, assignment and declaration
 
       case ClassAccessNode(name) => {

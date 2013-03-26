@@ -285,6 +285,33 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
     result.unboxToInt.get should not equal (4096)
   }
 
+  // equality operators
+
+  test("... literal int equality operation ... [2 == 2]") {
+    val result = interpretCode("2 == 2")
+    result.unboxToBoolean.get should equal (true)
+  }
+
+  test("... literal int equality operation ... [2 != 2]") {
+    val result = interpretCode("2 != 2")
+    result.unboxToBoolean.get should equal (false)
+  }
+
+  test("... literal int equality operation ... [2 <=> 3]") {
+    val result = interpretCode("2 <=> 3")
+    result.unboxToInt.get should equal (-1)
+  }
+
+  test("... literal int equality operation ... [2 <=> 2]") {
+    val result = interpretCode("2 <=> 2")
+    result.unboxToInt.get should equal (0)
+  }
+
+  test("... literal int equality operation ... [3 <=> 2]") {
+    val result = interpretCode("3 <=> 2")
+    result.unboxToInt.get should equal (1)
+  }
+
   // relational operators
 
   test("... literal int relational operation #1 ... [1 < 2]") {
@@ -347,16 +374,6 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
     result.unboxToBoolean.get should equal (false)
   }
 
-  test("... literal int relational operation #13 ... [2 == 2]") {
-    val result = interpretCode("2 == 2")
-    result.unboxToBoolean.get should equal (true)
-  }
-
-  test("... literal int relational operation #14 ... [2 != 2]") {
-    val result = interpretCode("2 != 2")
-    result.unboxToBoolean.get should equal (false)
-  }
-
   test("... literal int relational operation #15 ... [2 >= 2]") {
     val result = interpretCode("2 >= 2")
     result.unboxToBoolean.get should equal (true)
@@ -392,6 +409,31 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
   test("... literal int bitwise ops -- order of operations ... [0xabcd | 0xdead & 0xbeef]") {
     val result = interpretCode("0xabcd | 0xdead & 0xbeef")
     result.unboxToInt.get should equal (0xbfed)
+  }
+
+  test("... literal int bitwise left shift ... [32 << 1]") {
+    val result = interpretCode("32 << 1")
+    result.unboxToInt.get should equal (64)
+  }
+
+  test("... literal int bitwise left shift ... [257 << 7]") {
+    val result = interpretCode("257 << 7")
+    result.unboxToInt.get should equal (32896)
+  }
+
+  test("... literal int bitwise left shift ... [20 << 20]") {
+    val result = interpretCode("20 << 20")
+    result.unboxToInt.get should equal (20971520)
+  }
+
+  test("... literal int bitwise right shift ... [32 >> 1]") {
+    val result = interpretCode("32 >> 1")
+    result.unboxToInt.get should equal (16)
+  }
+
+  test("... literal int bitwise right shift ... [33023 >> 7]") {
+    val result = interpretCode("33023 >> 7")
+    result.unboxToInt.get should equal (257)
   }
 
   // methods

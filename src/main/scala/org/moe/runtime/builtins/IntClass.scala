@@ -180,6 +180,8 @@ object IntClass {
       )
     )
 
+    // equality operators
+
     intClass.addMethod(
       new MoeMethod(
         "infix:<==>",
@@ -195,6 +197,15 @@ object IntClass {
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].not_equal_to(r, e.get("$other").get)
+      )
+    )
+
+    intClass.addMethod(
+      new MoeMethod(
+        "infix:<<=>>",
+        new MoeSignature(List(new MoeParameter("$other"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].compare_to(r, e.get("$other").get)
       )
     )
 
@@ -224,6 +235,24 @@ object IntClass {
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].bit_xor(r, e.get("$other").get)
+      )
+    )
+
+    intClass.addMethod(
+      new MoeMethod(
+        "infix:<<<>",
+        new MoeSignature(List(new MoeParameter("$other"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].bit_shift_left(r, e.get("$other").get)
+      )
+    )
+
+    intClass.addMethod(
+      new MoeMethod(
+        "infix:<>>>",
+        new MoeSignature(List(new MoeParameter("$other"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].bit_shift_right(r, e.get("$other").get)
       )
     )
 

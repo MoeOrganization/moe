@@ -75,6 +75,30 @@ object Serializer {
       )
     )
 
+    case TernaryOpNode(condExpr, trueExpr, falseExpr) => JSONObject(
+      Map(
+        "BinaryOpNode" -> JSONObject(
+          Map(
+            "condition" -> toJSON(condExpr),
+            "trueExpr"  -> toJSON(trueExpr),
+            "falseExpr" -> toJSON(falseExpr)
+          )
+        )
+      )
+    )
+
+    case ShortCircuitBinaryOpNode(lhs, operator, rhs) => JSONObject(
+      Map(
+        "ShortCircuitBinaryOpNode" -> JSONObject(
+          Map(
+            "lhs"      -> toJSON(lhs),
+            "operator" -> operator,
+            "rhs"      -> toJSON(rhs)
+          )
+        )
+      )
+    )
+
     case ClassAccessNode(name) => JSONObject(Map("ClassAccessNode" -> name))
 
     case ClassDeclarationNode(name, superclass, body) => JSONObject(
@@ -341,13 +365,37 @@ object Serializer {
   }
 
   // thanks to https://gist.github.com/umitanuki/944839
+  // modified to make the output a bit more compact where appropriate
   def pprint(j: Option[Any], l: Int = 0):String = {
+
+    def is_simple_object(x: Option[Any]): Boolean = {
+      x match {
+        case Some(o: JSONObject) => if (o.obj.keys.size > 1)
+                                      false
+                                    else
+                                      o.obj.head match {
+                                        case (_, v: JSONObject) => false
+                                        case (_, v: JSONArray)  => false
+                                        case _                  => true
+                                      }
+        case Some(a: JSONArray)  => if (a.list.size > 1) false else is_simple_object(Some(a.list.head))
+        case _                   => true
+      }
+    }
+
     val indent = (for(i <- List.range(0, l)) yield "  ").mkString
     j match{
       case Some(o: JSONObject) => {
-        List("{",
-             o.obj.keys.map(key => indent + "  " + "\"" + key + "\" : " + pprint(o.obj.get(key), l + 1)).mkString(",\n"),
-             indent + "}").mkString("\n")
+        val max_key_len = o.obj.keys.map(key => key.length).max
+        def padded(key: String) =
+          "\"" + key + "\"" + (if (key.length < max_key_len) " ".padTo(max_key_len - key.length, ' ') else "")
+
+        if (is_simple_object(Some(o)))
+          "{ " + o.obj.keys.map(key => padded(key) + " : " + pprint(o.obj.get(key), l + 1)).mkString(",\n") +  " }"
+        else
+          List("{",
+               o.obj.keys.map(key => indent + "  " + padded(key) + " : " + pprint(o.obj.get(key), l + 1)).mkString(",\n"),
+               indent + "}").mkString("\n")
       }
       case Some(a: JSONArray) => {
         List("[",
