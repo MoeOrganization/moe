@@ -52,7 +52,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<lt>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].less_than(r, e.get("$other").get)
       )
@@ -61,7 +61,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<gt>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].greater_than(r, e.get("$other").get)
       )
@@ -70,7 +70,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<le>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].less_than_or_equal_to(r, e.get("$other").get)
       )
@@ -79,7 +79,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<ge>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].greater_than_or_equal_to(r, e.get("$other").get)
       )
@@ -90,7 +90,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<eq>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].equal_to(r, e.get("$other").get)
       )
@@ -99,7 +99,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<ne>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].not_equal_to(r, e.get("$other").get)
       )
@@ -108,7 +108,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<cmp>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].compare_to(r, e.get("$other").get)
       )
