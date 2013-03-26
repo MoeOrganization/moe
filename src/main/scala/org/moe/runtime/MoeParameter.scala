@@ -1,12 +1,11 @@
 package org.moe.runtime
 
-class MoeParameter(
-    private val name: String,
-    private val optional: Boolean = false,
-    private val slurpy: Boolean = false
-  ) extends MoeObject {
-
-  def getName    = name
-  def isOptional = optional
-  def isSlurpy   = slurpy
+sealed abstract class MoeParameter(private val name: String) extends MoeObject {
+  def getName = name
 }
+
+case class MoeNamedParameter(val n: String) extends MoeParameter(n)
+
+case class MoeOptionalParameter(val n: String) extends MoeParameter(n)
+
+case class MoeSlurpyParameter(val n: String) extends MoeParameter(n)
