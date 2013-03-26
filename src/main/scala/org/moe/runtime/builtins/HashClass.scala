@@ -64,7 +64,7 @@ object HashClass {
     hashClass.addMethod(
       new MoeMethod(
         "slice",
-        new MoeSignature(List(new MoeNamedParameter("@keys"))),
+        new MoeSignature(List(new MoeSlurpyParameter("@keys"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].slice(r, e.get("@keys").get.asInstanceOf[MoeArrayObject])
       )
