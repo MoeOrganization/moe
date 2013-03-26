@@ -27,9 +27,8 @@ class MoeSignatureTestSuite extends FunSuite with BeforeAndAfter with ShouldMatc
     val arg  = r.NativeObjects.getInt(5)
     val args = new MoeArguments(List(arg))
 
-    val env = new MoeEnvironment()
+    val env = r.getRootEnv
 
-    sig.checkArguments(args)
     sig.bindArgsToEnv(args, env)
 
     assert(env.has("$x") === true)
@@ -46,9 +45,8 @@ class MoeSignatureTestSuite extends FunSuite with BeforeAndAfter with ShouldMatc
     val arg2 = r.NativeObjects.getInt(10)
     val args = new MoeArguments(List(arg1, arg2))
 
-    val env = new MoeEnvironment()
+    val env = r.getRootEnv
 
-    sig.checkArguments(args)
     sig.bindArgsToEnv(args, env)
 
     assert(env.has("$x") === true)
@@ -58,13 +56,94 @@ class MoeSignatureTestSuite extends FunSuite with BeforeAndAfter with ShouldMatc
     env.get("$y") should be (Some(arg2))    
   }
 
-  test("... basic signature checking fail") {
-    val sig  = new MoeSignature(List(new MoeNamedParameter("$x")))
-    val args = new MoeArguments()
+  test("... signature binding with optional") {
+    val sig = new MoeSignature(List(
+        new MoeNamedParameter("$x"),
+        new MoeOptionalParameter("$y")
+    ))
 
-    intercept[MoeErrors.MoeProblems] {
-        sig.checkArguments(args)
-    }
-  }  
+    val arg1 = r.NativeObjects.getInt(5)
+    val args = new MoeArguments(List(arg1))
+
+    val env = r.getRootEnv
+
+    sig.bindArgsToEnv(args, env)
+
+    assert(env.has("$x") === true)
+    env.get("$x") should be (Some(arg1))
+
+    assert(env.has("$y") === false)
+  }
+
+  test("... signature binding with optional satisfied") {
+    val sig = new MoeSignature(List(
+        new MoeNamedParameter("$x"),
+        new MoeOptionalParameter("$y")
+    ))
+
+    val arg1 = r.NativeObjects.getInt(5)
+    val arg2 = r.NativeObjects.getInt(10)
+    val args = new MoeArguments(List(arg1, arg2))
+
+    val env = r.getRootEnv
+
+    sig.bindArgsToEnv(args, env)
+
+    assert(env.has("$x") === true)
+    env.get("$x") should be (Some(arg1))
+
+    assert(env.has("$y") === true)
+    env.get("$y") should be (Some(arg2))    
+  }
+
+  test("... signature binding with slurpy") {
+    val sig = new MoeSignature(List(
+        new MoeNamedParameter("$h"),
+        new MoeSlurpyParameter("@t")
+    ))
+
+    val arg1 = r.NativeObjects.getInt(5)
+    val arg2 = r.NativeObjects.getInt(10)
+    val arg3 = r.NativeObjects.getInt(15)
+    val arg4 = r.NativeObjects.getInt(20)
+    val args = new MoeArguments(List(arg1, arg2, arg3, arg4))
+
+    val env = r.getRootEnv
+
+    sig.bindArgsToEnv(args, env)
+
+    assert(env.has("$h") === true)
+    env.get("$h") should be (Some(arg1))
+
+    assert(env.has("@t") === true)
+
+    val a = env.get("@t").get.unboxToArrayBuffer.get
+    assert(a.length === 3)
+    assert(a(0) === arg2)
+    assert(a(1) === arg3)
+    assert(a(2) === arg4)
+  }
+
+  test("... signature binding with empty slurpy") {
+    val sig = new MoeSignature(List(
+        new MoeNamedParameter("$h"),
+        new MoeSlurpyParameter("@t")
+    ))
+
+    val arg1 = r.NativeObjects.getInt(5)
+    val args = new MoeArguments(List(arg1))
+
+    val env = r.getRootEnv
+
+    sig.bindArgsToEnv(args, env)
+
+    assert(env.has("$h") === true)
+    env.get("$h") should be (Some(arg1))
+
+    assert(env.has("@t") === true)
+
+    val a = env.get("@t").get.unboxToArrayBuffer.get
+    assert(a.length === 0)
+  }
 
 }

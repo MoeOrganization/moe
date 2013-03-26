@@ -8,7 +8,9 @@ class MoeArguments(
   def getInvocant: Option[MoeObject] = invocant
   def hasInvocant: Boolean = invocant.isDefined
 
-  def getArgs: List[MoeObject] = args
-  def getArgAt(i: Int): MoeObject = args(i)
   def getArgCount: Int = args.length
+
+  def getArgAt(i: Int): Option[MoeObject] = if (i < args.length) Some(args(i)) else None
+  
+  def slurpArgsAt(i: Int): List[MoeObject] = args.drop(i)
 }
