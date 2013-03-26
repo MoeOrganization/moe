@@ -59,7 +59,7 @@ class MoeStrObject(
   def substr (r: MoeRuntime): Unit = {} // ($offset, ?$length)
   def quotemeta (r: MoeRuntime): Unit = {} 
 
-  def repeat (r: MoeRuntime, other: MoeObject): MoeStrObject = {
+  def repeat (r: MoeRuntime, other: MoeIntObject): MoeStrObject = {
     val str = getNativeValue
     val n   = other.unboxToInt.get
     r.NativeObjects.getStr(List.fill(n)(str).mkString)

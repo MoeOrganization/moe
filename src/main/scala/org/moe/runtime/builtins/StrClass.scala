@@ -165,7 +165,7 @@ object StrClass {
         "infix:<x>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].repeat(r, e.get("$other").get)
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].repeat(r, e.get("$other").get.asInstanceOf[MoeIntObject])
       )
     )
 
