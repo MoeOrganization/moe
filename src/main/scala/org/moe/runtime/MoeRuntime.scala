@@ -6,7 +6,7 @@ import scala.collection.mutable.ArrayBuffer
 class MoeRuntime (
     private val system: MoeSystem = new MoeSystem(),
     private val warnings: Boolean = true
-  ) {
+  ) extends MoeObject {
 
   private val VERSION         = "0.0.0"
   private val AUTHORITY       = "cpan:STEVAN"
@@ -103,6 +103,8 @@ class MoeRuntime (
       */
 
       is_bootstrapped = true
+
+      rootEnv.setCurrentRuntime(this)
     }
   }
 
