@@ -28,7 +28,7 @@ object ArrayClass {
     arrayClass.addMethod(
       new MoeMethod(
         "postcircumfix:<[]>",
-        new MoeSignature(List(new MoeParameter("$i"))),
+        new MoeSignature(List(new MoeNamedParameter("$i"))),
         env,
         { (e) => 
             var index = e.get("$i").get.unboxToInt.get

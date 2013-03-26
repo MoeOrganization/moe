@@ -221,7 +221,13 @@ class Interpreter {
         }
       }
 
-      case ParameterNode(name)   => new MoeParameter(name)
+      case ParameterNode(name, optional, slurpy) => (optional, slurpy) match {
+        case (false, false) => new MoeNamedParameter(name)
+        case (true,  false) => new MoeOptionalParameter(name)
+        case (false, true)  => new MoeSlurpyParameter(name)
+        case (true,  true)  => throw new MoeErrors.InvalidParameter("parameter cannot be slurpy and optional")
+      }
+
       case SignatureNode(params) => new MoeSignature(
         params.map(eval(runtime, env, _).asInstanceOf[MoeParameter])
       )

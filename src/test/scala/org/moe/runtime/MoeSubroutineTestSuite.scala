@@ -10,7 +10,7 @@ class MoeSubroutineTestSuite extends FunSuite with BeforeAndAfter {
     val value  = new MoeObject()
     val sub    = new MoeSubroutine(
       name            = "ident", 
-      signature       = new MoeSignature(List(new MoeParameter(name = "$x"))),
+      signature       = new MoeSignature(List(new MoeNamedParameter("$x"))),
       declaration_env = env,
       body            = (e) => e.get("$x").get
     )
@@ -26,8 +26,8 @@ class MoeSubroutineTestSuite extends FunSuite with BeforeAndAfter {
       name            = "adder", 
       declaration_env = r.getRootEnv,
       signature       = new MoeSignature(List(
-        new MoeParameter(name = "$x"),
-        new MoeParameter(name = "$y")
+        new MoeNamedParameter("$x"),
+        new MoeNamedParameter("$y")
       )),
       body = { e => 
         r.NativeObjects.getInt(

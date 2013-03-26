@@ -126,7 +126,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "split",
-        new MoeSignature(List(new MoeParameter("$string"))), 
+        new MoeSignature(List(new MoeNamedParameter("$string"))), 
         env, 
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].split(
             r, 
@@ -141,7 +141,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "concat",
-        new MoeSignature(List(new MoeParameter("$string"))), 
+        new MoeSignature(List(new MoeNamedParameter("$string"))), 
         env, 
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].concat(r, e.get("$string").get)
       )
@@ -152,7 +152,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<.>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].concat(r, e.get("$other").get)
       )
@@ -163,7 +163,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<x>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].repeat(r, e.get("$other").get)
       )

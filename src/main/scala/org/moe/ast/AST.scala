@@ -55,7 +55,8 @@ case class BinaryOpNode(lhs: AST, operator: String, rhs: AST) extends AST
 
 // value lookup, assignment and declaration
 
-case class ParameterNode(name: String) extends AST
+case class ParameterNode(name: String, optional: Boolean = false, slurpy: Boolean = false) extends AST
+
 case class SignatureNode(params: List[ParameterNode]) extends AST
 
 case class ClassDeclarationNode(name: String, superclass: Option[String], body: StatementsNode) extends AST

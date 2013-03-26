@@ -8,7 +8,4 @@ class MoeSignature(
 
   def getArity = params.length
 
-
-
-
 }

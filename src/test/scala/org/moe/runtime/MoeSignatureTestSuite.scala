@@ -7,7 +7,7 @@ import org.scalatest.matchers.ShouldMatchers
 class MoeSignatureTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers {
 
   test("... basic signature") {
-    val param = new MoeParameter(name = "$x")
+    val param = new MoeNamedParameter("$x")
     val sig = new MoeSignature(List(param))
 
     val params = sig.getParams

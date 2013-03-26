@@ -80,7 +80,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<+>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].add(r, e.get("$other").get)
       )
@@ -89,7 +89,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<->",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].subtract(r, e.get("$other").get)
       )
@@ -98,7 +98,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<*>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].multiply(r, e.get("$other").get)
       )
@@ -107,7 +107,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:</>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].divide(r, e.get("$other").get)
       )
@@ -116,7 +116,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<%>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].modulo(r, e.get("$other").get)
       )
@@ -125,7 +125,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<**>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].pow(r, e.get("$other").get)
       )
@@ -136,7 +136,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<<>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].less_than(r, e.get("$other").get)
       )
@@ -145,7 +145,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<>>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].greater_than(r, e.get("$other").get)
       )
@@ -154,7 +154,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<<=>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].less_than_or_equal_to(r, e.get("$other").get)
       )
@@ -163,7 +163,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<>=>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].greater_than_or_equal_to(r, e.get("$other").get)
       )
@@ -172,7 +172,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<==>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].equal_to(r, e.get("$other").get)
       )
@@ -181,7 +181,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<!=>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].not_equal_to(r, e.get("$other").get)
       )

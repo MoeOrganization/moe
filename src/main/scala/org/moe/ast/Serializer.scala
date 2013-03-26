@@ -100,7 +100,7 @@ object Serializer {
       )
     )
 
-    case ParameterNode(name) => name
+    case ParameterNode(name, optional, slurpy) => JSONObject(Map("name" -> name, "optional" -> optional, "slurpy" -> slurpy))
     case SignatureNode(params) => JSONArray(params)
 
     case ConstructorDeclarationNode(signature, body) => JSONObject(

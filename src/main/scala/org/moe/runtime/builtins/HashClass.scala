@@ -25,7 +25,7 @@ object HashClass {
     hashClass.addMethod(
       new MoeMethod(
         "postcircumfix:<{}>",
-        new MoeSignature(List(new MoeParameter("$key"))),
+        new MoeSignature(List(new MoeNamedParameter("$key"))),
         env,
         { (e) => 
           val hash = e.getCurrentInvocant.get.asInstanceOf[MoeHashObject]
@@ -37,7 +37,7 @@ object HashClass {
     hashClass.addMethod(
       new MoeMethod(
         "at_key", 
-        new MoeSignature(List(new MoeParameter("$key"))),
+        new MoeSignature(List(new MoeNamedParameter("$key"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].at_key(r, e.get("$key").get.asInstanceOf[MoeStrObject])
       )
@@ -46,7 +46,7 @@ object HashClass {
     hashClass.addMethod(
       new MoeMethod(
         "bind_key", 
-        new MoeSignature(List(new MoeParameter("$key"), new MoeParameter("$value"))),
+        new MoeSignature(List(new MoeNamedParameter("$key"), new MoeNamedParameter("$value"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].bind_key(r, e.get("$key").get.asInstanceOf[MoeStrObject], e.get("$value").get)
       )
@@ -55,7 +55,7 @@ object HashClass {
     hashClass.addMethod(
       new MoeMethod(
         "exists",
-        new MoeSignature(List(new MoeParameter("$key"))),
+        new MoeSignature(List(new MoeNamedParameter("$key"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].exists(r, e.get("$key").get.asInstanceOf[MoeStrObject])
       )
@@ -64,7 +64,7 @@ object HashClass {
     hashClass.addMethod(
       new MoeMethod(
         "slice",
-        new MoeSignature(List(new MoeParameter("@keys"))),
+        new MoeSignature(List(new MoeNamedParameter("@keys"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeHashObject].slice(r, e.get("@keys").get.asInstanceOf[MoeArrayObject])
       )

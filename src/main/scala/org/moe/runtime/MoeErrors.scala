@@ -42,6 +42,9 @@ object MoeErrors {
   class MissingClass          (msg: String) extends MissingValue(msg)
   class MissingParameter      (msg: String) extends MissingValue(msg)
 
+  class InvalidValue          (msg: String) extends MoeProblems(msg)
+  class InvalidParameter      (msg: String) extends InvalidValue(msg)  
+
   class TypeError             (msg: String) extends MoeProblems(msg)
   class UnexpectedType        (msg: String) extends TypeError(msg)
   class IncompatibleType      (msg: String) extends TypeError(msg)

@@ -22,7 +22,7 @@ class MoePackageTestSuite extends FunSuite with BeforeAndAfter {
       new MoeSubroutine(
         name            = "ident", 
         declaration_env = new MoeEnvironment(),
-        signature       = new MoeSignature(List(new MoeParameter(name = "$x"))),
+        signature       = new MoeSignature(List(new MoeNamedParameter("$x"))),
         body            = (e) => e.get("$x").get
       )
     )

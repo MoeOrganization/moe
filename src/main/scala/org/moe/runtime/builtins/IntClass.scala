@@ -91,7 +91,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<+>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].add(r, e.get("$other").get)
       )
@@ -100,7 +100,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<->",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].subtract(r, e.get("$other").get)
       )
@@ -109,7 +109,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<*>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].multiply(r, e.get("$other").get)
       )
@@ -118,7 +118,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:</>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].divide(r, e.get("$other").get)
       )
@@ -127,7 +127,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<%>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].modulo(r, e.get("$other").get)
       )
@@ -136,7 +136,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<**>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].pow(r, e.get("$other").get)
       )
@@ -147,7 +147,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<<>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].less_than(r, e.get("$other").get)
       )
@@ -156,7 +156,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<>>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].greater_than(r, e.get("$other").get)
       )
@@ -165,7 +165,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<<=>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].less_than_or_equal_to(r, e.get("$other").get)
       )
@@ -174,7 +174,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<>=>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].greater_than_or_equal_to(r, e.get("$other").get)
       )
@@ -183,7 +183,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<==>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].equal_to(r, e.get("$other").get)
       )
@@ -192,7 +192,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<!=>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].not_equal_to(r, e.get("$other").get)
       )
@@ -203,7 +203,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<&>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].bit_and(r, e.get("$other").get)
       )
@@ -212,7 +212,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<|>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].bit_or(r, e.get("$other").get)
       )
@@ -221,7 +221,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<^>",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].bit_xor(r, e.get("$other").get)
       )
@@ -295,7 +295,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "atan2",
-        new MoeSignature(List(new MoeParameter("$other"))),
+        new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
         (e) => e.getCurrentInvocant.get.asInstanceOf[MoeIntObject].atan2(r, e.get("$other").get)
       )

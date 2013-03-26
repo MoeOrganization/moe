@@ -29,7 +29,7 @@ object AnyClass {
     anyClass.addMethod(
       new MoeMethod(
         "infix:<&&>",
-        new MoeSignature(List(new MoeParameter("$other"))), 
+        new MoeSignature(List(new MoeNamedParameter("$other"))), 
         env, 
         { (e) =>
             val inv = e.getCurrentInvocant.get
@@ -41,7 +41,7 @@ object AnyClass {
     anyClass.addMethod(
       new MoeMethod(
         "infix:<||>",
-        new MoeSignature(List(new MoeParameter("$other"))), 
+        new MoeSignature(List(new MoeNamedParameter("$other"))), 
         env, 
         { (e) =>
             val inv = e.getCurrentInvocant.get
