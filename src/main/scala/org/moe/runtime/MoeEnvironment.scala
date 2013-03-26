@@ -15,19 +15,22 @@ class MoeEnvironment(
   ) {
 
   object Markers {
-    val Package  = "__PACKAGE__"
-    val Class    = "__CLASS__"
-    val Invocant = "__SELF__"
+    val Runtime  = "$?RUNTIME"
+    val Package  = "$?PACKAGE"
+    val Class    = "$?CLASS"
+    val Invocant = "$?SELF"
     val Topic    = "$_"
   }
 
   private val pad: Map[String, MoeObject] = new HashMap[String, MoeObject]()
 
+  def getCurrentRuntime  : Option[MoeRuntime] = get(Markers.Runtime).asInstanceOf[Option[MoeRuntime]]
   def getCurrentPackage  : Option[MoePackage] = get(Markers.Package).asInstanceOf[Option[MoePackage]]
   def getCurrentClass    : Option[MoeClass]   = get(Markers.Class).asInstanceOf[Option[MoeClass]]
   def getCurrentInvocant : Option[MoeObject]  = get(Markers.Invocant)
   def getCurrentTopic    : Option[MoeObject]  = get(Markers.Topic)
 
+  def setCurrentRuntime  (p: MoeRuntime): Unit = setLocal(Markers.Runtime,  p.asInstanceOf[MoeObject])
   def setCurrentPackage  (p: MoePackage): Unit = setLocal(Markers.Package,  p.asInstanceOf[MoeObject])
   def setCurrentClass    (c: MoeClass  ): Unit = setLocal(Markers.Class,    c.asInstanceOf[MoeObject])
   def setCurrentInvocant (i: MoeObject ): Unit = setLocal(Markers.Invocant, i)
