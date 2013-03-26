@@ -4,7 +4,7 @@ package org.moe.runtime
  * MoeMethod
  *
  * @param name method name
- * @param signature subroutine signature (MoeSignature)
+ * @param subroutine signature (MoeSignature)
  * @param declaration_env the captured creation environment (MoeEnvironment)
  * @param body executable body of method 
  */
@@ -23,17 +23,11 @@ class MoeMethod (
    */
   def getName: String = _name
 
-  /**
-   * Executes the body of this method passing in a list of arguments
-   */
-  override def checkParams(args: MoeArguments) = {
+  override def prepareExecutionEnvironment(args: MoeArguments): MoeEnvironment = {
     if (!args.hasInvocant)
       throw new MoeErrors.MoeProblems("no invocant set")
-    super.checkParams(args)
-  } 
-
-  override def prepareEnvironment(e: MoeEnvironment, args: MoeArguments) = {
-    e.setCurrentInvocant(args.getInvocant.get)    
-    super.prepareEnvironment(e, args)
+    val env = super.prepareExecutionEnvironment(args)
+    env.setCurrentInvocant(args.getInvocant.get)  
+    env
   }
 }

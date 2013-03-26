@@ -9,7 +9,7 @@ package org.moe.runtime
  */
 
 class MoeCode (
-    private val signature: MoeSignature, // = new MoeSignature(List(new MoeParameter("@_"))),
+    private val signature: MoeSignature,
     private val declaration_env: MoeEnvironment,
     private val body: (MoeEnvironment) => MoeObject
   ) extends MoeObject {
@@ -37,23 +37,12 @@ class MoeCode (
   /**
    * Executes the body of this code
    */
-  def execute (args : MoeArguments): MoeObject = {
-    val exec_env = new MoeEnvironment(Some(declaration_env))
-    checkParams(args)
-    prepareEnvironment(exec_env, args)
-    executeBody(exec_env)
-  }
+  def execute (args : MoeArguments): MoeObject = executeBody(prepareExecutionEnvironment(args))
 
-  protected def checkParams(args: MoeArguments) = {
-    if (signature.getArity != args.getArgCount) 
-      throw new MoeErrors.MoeProblems("not enought arguments")
-  } 
-
-  protected def prepareEnvironment(e: MoeEnvironment, args: MoeArguments) = {
-    val params = signature.getParams
-
-    for (i <- 0.until(signature.getArity)) {
-      e.create(params(i).getName, args.getArgAt(i))
-    }
+  protected def prepareExecutionEnvironment(args: MoeArguments): MoeEnvironment = {
+    val env = new MoeEnvironment(Some(declaration_env))
+    signature.checkArguments(args)
+    signature.bindArgsToEnv(args, env)
+    env
   }
 }
