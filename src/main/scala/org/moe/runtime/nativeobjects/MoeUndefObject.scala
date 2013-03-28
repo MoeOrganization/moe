@@ -26,5 +26,5 @@ class MoeUndefObject(
   
   // unboxing 
   
-  override def unboxToString: Try[String] = Success(null)
+  override def unboxToString: Try[String] = Success("undef")
 }
