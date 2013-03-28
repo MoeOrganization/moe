@@ -61,7 +61,7 @@ class MoeArrayObject(
 
   def join(r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(array.map(_.toString).mkString(""))
   def join(r: MoeRuntime, sep: MoeStrObject): MoeStrObject = r.NativeObjects.getStr(
-    array.map(_.toString).mkString(sep.unboxToString.get)
+    array.map(_.unboxToString.get).mkString(sep.unboxToString.get)
   )
 
   // MoeObject overrides
