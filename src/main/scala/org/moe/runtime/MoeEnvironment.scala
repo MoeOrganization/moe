@@ -24,9 +24,9 @@ class MoeEnvironment(
 
   private val pad: Map[String, MoeObject] = new HashMap[String, MoeObject]()
 
-  def getCurrentRuntime  : Option[MoeRuntime] = get(Markers.Runtime).asInstanceOf[Option[MoeRuntime]]
-  def getCurrentPackage  : Option[MoePackage] = get(Markers.Package).asInstanceOf[Option[MoePackage]]
-  def getCurrentClass    : Option[MoeClass]   = get(Markers.Class).asInstanceOf[Option[MoeClass]]
+  def getCurrentRuntime  : Option[MoeRuntime] = getAs[MoeRuntime](Markers.Runtime)
+  def getCurrentPackage  : Option[MoePackage] = getAs[MoePackage](Markers.Package)
+  def getCurrentClass    : Option[MoeClass]   = getAs[MoeClass](Markers.Class)
   def getCurrentInvocant : Option[MoeObject]  = get(Markers.Invocant)
   def getCurrentTopic    : Option[MoeObject]  = get(Markers.Topic)
 
@@ -59,6 +59,18 @@ class MoeEnvironment(
       parent.flatMap( _.set(name, value) )
     }
   }
+
+  // *As[T] versions
+
+  def getAs[T](name: String): Option[T] = {
+    if (hasLocal(name)) return getLocal(name).map(x => x.asInstanceOf[T])
+    parent.flatMap( _.getAs[T](name) )
+  }
+
+  def getCurrentInvocantAs [T]: Option[T] = getAs[T](Markers.Invocant)
+  def getCurrentTopicAs    [T]: Option[T] = getAs[T](Markers.Topic)
+
+  // private ...
 
   private def getLocal(name: String): Option[MoeObject] = pad.get(name)
   private def hasLocal(name: String): Boolean           = pad.contains(name)
