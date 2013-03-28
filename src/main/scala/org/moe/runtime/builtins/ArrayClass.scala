@@ -1,6 +1,7 @@
 package org.moe.runtime.builtins
 
 import org.moe.runtime._
+import org.moe.runtime.nativeobjects._
 
 /**
   * setup class Array
@@ -46,36 +47,122 @@ object ArrayClass {
 
     arrayClass.addMethod(
       new MoeMethod(
+        "at_pos",
+        new MoeSignature(List(new MoeNamedParameter("$i"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].at_pos(r, e.get("$i").get.asInstanceOf[MoeIntObject])
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "bind_pos",
+        new MoeSignature(List(new MoeNamedParameter("$i"), new MoeNamedParameter("$v"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].bind_pos(
+            r, 
+            e.get("$i").get.asInstanceOf[MoeIntObject], 
+            e.get("$v").get
+        )
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "length",
+        new MoeSignature(),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].length(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "clear",
+        new MoeSignature(),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].clear(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
         "shift",
         new MoeSignature(),
         env,
-        (e) => e.getCurrentInvocant.get.unboxToArrayBuffer.get(0)
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].shift(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "pop",
+        new MoeSignature(),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].pop(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "unshift",
+        new MoeSignature(List(new MoeSlurpyParameter("@items"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].unshift(r, e.get("@items").get.asInstanceOf[MoeArrayObject])
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "push",
+        new MoeSignature(List(new MoeSlurpyParameter("@items"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].push(r, e.get("@items").get.asInstanceOf[MoeArrayObject])
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "slice",
+        new MoeSignature(List(new MoeSlurpyParameter("@items"))),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].slice(r, e.get("@items").get.asInstanceOf[MoeArrayObject])
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "reverse",
+        new MoeSignature(),
+        env,
+        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].reverse(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "join",
+        new MoeSignature(List(new MoeOptionalParameter("$sep"))),
+        env,
+        (e) => e.get("$sep") match {
+            case Some(sep) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].join(r, sep.asInstanceOf[MoeStrObject])
+            case None      => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].join(r)
+        }
       )
     )
 
     /**
      * List of Methods to support:
-     * - values 
-     * - reverse
-     * - at_pos ($index)
-     * - bind_pos ($index, $value)
-     * - slice (@indicies)
-     * - clear
      * - exists ($value)
      * - delete ($index | @indicies) 
-     * - push ($item | @items)
-     * - pop
-     * - unshift ($item | @items)
      * - sort ($sorter)
      * - grep ($filter)
      * - map ($callback)  << returns values
      * - each ($callback) << doesn't return values
      * - first ($predicate)
-     * - join (?$seperator)
      * - min ($comparator)
      * - max ($comparator)
      * - sum
-     * - length
      *
      * See the following for details:
      * - https://metacpan.org/release/autobox-Core

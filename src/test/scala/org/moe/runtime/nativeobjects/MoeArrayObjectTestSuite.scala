@@ -108,33 +108,31 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... Array object push") {
     val o = r.NativeObjects.getArray()
-    assert(0 == o.push(r).unboxToInt.get, "push no items onto empty array")
     assert(0 == o.length(r).unboxToInt.get, "Array is empty (" + o.length(r) + ")")
 
-    assert(1 == o.push(r, r.NativeObjects.getInt(2)).unboxToInt.get, "push single item onto empty array")
+    assert(1 == o.push(r, r.NativeObjects.getArray(r.NativeObjects.getInt(2))).unboxToInt.get, "push single item onto empty array")
 
     val array = o.getNativeValue
     assert(array(0).unboxToInt.get === 2)
 
-    assert(2 == o.push(r, r.NativeObjects.getInt(4)).unboxToInt.get, "push single item onto single-item array")
+    assert(2 == o.push(r, r.NativeObjects.getArray(r.NativeObjects.getInt(4))).unboxToInt.get, "push single item onto single-item array")
 
-    assert(4 == o.push(r, r.NativeObjects.getInt(6), r.NativeObjects.getInt(8)).unboxToInt.get, "push two items onto array")
+    assert(4 == o.push(r, r.NativeObjects.getArray(r.NativeObjects.getInt(6), r.NativeObjects.getInt(8))).unboxToInt.get, "push two items onto array")
     assert(array(array.length - 1).unboxToInt.get === 8)
   }
 
   test("... Array object unshift") {
     val o = r.NativeObjects.getArray()
-    assert(0 == o.unshift(r).unboxToInt.get, "unshift no items onto empty array")
     assert(0 == o.length(r).unboxToInt.get, "Array is empty (" + o.length(r) + ")")
 
-    assert(1 == o.unshift(r, r.NativeObjects.getInt(2)).unboxToInt.get, "unshift single item onto empty array")
+    assert(1 == o.unshift(r, r.NativeObjects.getArray(r.NativeObjects.getInt(2))).unboxToInt.get, "unshift single item onto empty array")
 
     val array = o.getNativeValue
     assert(array(0).unboxToInt.get === 2)
 
-    assert(2 == o.unshift(r, r.NativeObjects.getInt(4)).unboxToInt.get, "unshift single item onto single-item array")
+    assert(2 == o.unshift(r, r.NativeObjects.getArray(r.NativeObjects.getInt(4))).unboxToInt.get, "unshift single item onto single-item array")
 
-    assert(4 == o.unshift(r, r.NativeObjects.getInt(6), r.NativeObjects.getInt(8)).unboxToInt.get, "unshift two items onto array")
+    assert(4 == o.unshift(r, r.NativeObjects.getArray(r.NativeObjects.getInt(6), r.NativeObjects.getInt(8))).unboxToInt.get, "unshift two items onto array")
     assert(array(0).unboxToInt.get === 6)
     assert(array(array.length - 1).unboxToInt.get === 2)
   }
@@ -145,15 +143,15 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
       r.NativeObjects.getInt(2),
       r.NativeObjects.getInt(3)
     )
-    var slice = o.slice(r, r.NativeObjects.getInt(1))
+    var slice = o.slice(r, r.NativeObjects.getArray(r.NativeObjects.getInt(1)))
     assert(1 == slice.getNativeValue.length, "single item slice length")
     assert(2 == slice.at_pos(r,r.NativeObjects.getInt(0)).unboxToInt.get, "result of single item slice")
 
-    slice = o.slice(r, r.NativeObjects.getInt(1), r.NativeObjects.getInt(0))
+    slice = o.slice(r, r.NativeObjects.getArray(r.NativeObjects.getInt(1), r.NativeObjects.getInt(0)))
     assert(2 == slice.getNativeValue.length, "two-item slice length")
     assert(1 == slice.at_pos(r,r.NativeObjects.getInt(1)).unboxToInt.get, "second item of two-item slice")
 
-    slice = o.slice(r, r.NativeObjects.getInt(3), r.NativeObjects.getInt(2), r.NativeObjects.getInt(4))
+    slice = o.slice(r, r.NativeObjects.getArray(r.NativeObjects.getInt(3), r.NativeObjects.getInt(2), r.NativeObjects.getInt(4)))
     assert(3 == slice.getNativeValue.length, "non-existent item slice length")
     assert(slice.at_pos(r,r.NativeObjects.getInt(0)).isUndef, "non-existent item in slice is undef")
     assert(3 == slice.at_pos(r,r.NativeObjects.getInt(1)).unboxToInt.get)
@@ -178,7 +176,7 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
       r.NativeObjects.getInt(2),
       r.NativeObjects.getInt(3)
     )
-    assert(o.join(r, "|") == "1|2|3");
-    assert(o.join(r, "") == "123");
+    assert(o.join(r, r.NativeObjects.getStr("|")).unboxToString.get == "1|2|3");
+    assert(o.join(r).unboxToString.get == "123");
   }
 }

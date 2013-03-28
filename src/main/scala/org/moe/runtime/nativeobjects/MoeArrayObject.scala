@@ -29,9 +29,19 @@ class MoeArrayObject(
     else array(i.unboxToInt.get)
   }
 
+  def bind_pos (r: MoeRuntime, i: MoeIntObject, v: MoeObject): MoeObject = {
+    val idx = i.unboxToInt.get
+    if (idx >= array.length) setNativeValue(array.padTo(idx, r.NativeObjects.getUndef))
+    array.insert(idx, v)
+    v
+  }
+
   def length (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(array.length)
 
-  def clear (r: MoeRuntime) = array.clear
+  def clear (r: MoeRuntime): MoeObject = {
+    array.clear()
+    r.NativeObjects.getUndef
+  }
 
   def shift (r: MoeRuntime): MoeObject =
     if(array.length == 0) r.NativeObjects.getUndef
@@ -41,23 +51,26 @@ class MoeArrayObject(
     if(array.length == 0) r.NativeObjects.getUndef
     else array.remove(array.length - 1)
 
-  def unshift (r: MoeRuntime, values: MoeObject*): MoeIntObject = {
-    array.insertAll(0, values)
+  def unshift (r: MoeRuntime, values: MoeArrayObject): MoeIntObject = {
+    array.insertAll(0, values.unboxToArrayBuffer.get)
     r.NativeObjects.getInt(array.length)
   }
 
-  def push (r: MoeRuntime, values: MoeObject*): MoeIntObject = {
-    array ++= values
+  def push (r: MoeRuntime, values: MoeArrayObject): MoeIntObject = {
+    array ++= values.unboxToArrayBuffer.get
     r.NativeObjects.getInt(array.length)
   }
 
-  def slice(r: MoeRuntime, indicies: MoeIntObject*): MoeArrayObject = r.NativeObjects.getArray(
-    indicies.map(i => at_pos(r, i)) : _*
+  def slice(r: MoeRuntime, indicies: MoeArrayObject): MoeArrayObject = r.NativeObjects.getArray(
+    indicies.unboxToArrayBuffer.get.map(i => at_pos(r, i.asInstanceOf[MoeIntObject])) : _*
   )
 
   def reverse(r: MoeRuntime): MoeArrayObject = r.NativeObjects.getArray(array.reverse:_*)
 
-  def join(r: MoeRuntime, sep: String): String = array.map(_.toString).mkString(sep)
+  def join(r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(array.map(_.toString).mkString(""))
+  def join(r: MoeRuntime, sep: MoeStrObject): MoeStrObject = r.NativeObjects.getStr(
+    array.map(_.toString).mkString(sep.unboxToString.get)
+  )
 
   // MoeObject overrides
   
