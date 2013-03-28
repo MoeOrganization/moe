@@ -76,8 +76,6 @@ class MoeRuntimeTestSuite extends FunSuite with BeforeAndAfter with ShouldMatche
 
   test("... runtime warn") {
     val outStream = new java.io.ByteArrayOutputStream()
-    val msg       = "HELLO WARN WORLD";
-    val msgs      = Array("HELLO", "WARN", "WORLD")
 
     val runtime = new MoeRuntime(
       system = new MoeSystem(
@@ -88,19 +86,20 @@ class MoeRuntimeTestSuite extends FunSuite with BeforeAndAfter with ShouldMatche
     assert(runtime.isBootstrapped)
     assert(runtime.areWarningsEnabled)
 
-    var out = msg + "\n"
+    val msg  = runtime.NativeObjects.getStr("HELLO PRINT WORLD");
+    val msgs = List("HELLO", "PRINT", "WORLD").map(runtime.NativeObjects.getStr(_))
+
+    var out = msg.unboxToString.get + "\n"
     runtime.warn(msg)
     assert(outStream.toString() === out)
 
-    out += msgs.mkString + "\n"
-    runtime.warn(msgs)
+    out += msgs.map(_.unboxToString.get).mkString + "\n"
+    runtime.warn(msgs:_*)
     assert(outStream.toString() === out)
   }
 
   test("... runtime print") {
     val outStream = new java.io.ByteArrayOutputStream()
-    val msg       = "HELLO PRINT WORLD";
-    val msgs      = Array("HELLO", "PRINT", "WORLD")
 
     val runtime = new MoeRuntime(
       system = new MoeSystem(
@@ -111,19 +110,20 @@ class MoeRuntimeTestSuite extends FunSuite with BeforeAndAfter with ShouldMatche
     assert(runtime.isBootstrapped)
     assert(runtime.areWarningsEnabled)
 
-    var out = msg
+    val msg  = runtime.NativeObjects.getStr("HELLO PRINT WORLD");
+    val msgs = List("HELLO", "PRINT", "WORLD").map(runtime.NativeObjects.getStr(_))
+
+    var out = msg.unboxToString.get
     runtime.print(msg)
     assert(outStream.toString() === out)
 
-    out += msgs.mkString
-    runtime.print(msgs)
+    out += msgs.map(_.unboxToString.get).mkString
+    runtime.print(msgs:_*)
     assert(outStream.toString() === out)
   }
 
   test("... runtime say") {
     val outStream = new java.io.ByteArrayOutputStream()
-    val msg       = "HELLO PRINT WORLD";
-    val msgs      = Array("HELLO", "PRINT", "WORLD")
 
     val runtime = new MoeRuntime(
       system = new MoeSystem(
@@ -134,12 +134,15 @@ class MoeRuntimeTestSuite extends FunSuite with BeforeAndAfter with ShouldMatche
     assert(runtime.isBootstrapped)
     assert(runtime.areWarningsEnabled)
 
-    var out = msg + "\n"
+    val msg  = runtime.NativeObjects.getStr("HELLO PRINT WORLD");
+    val msgs = List("HELLO", "PRINT", "WORLD").map(runtime.NativeObjects.getStr(_))
+
+    var out = msg.unboxToString.get + "\n"
     runtime.say(msg)
     assert(outStream.toString() === out)
 
-    out += msgs.mkString + "\n"
-    runtime.say(msgs)
+    out += msgs.map(_.unboxToString.get).mkString + "\n"
+    runtime.say(msgs:_*)
     assert(outStream.toString() === out)
   }
 

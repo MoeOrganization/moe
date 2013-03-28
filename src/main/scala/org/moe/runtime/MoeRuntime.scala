@@ -110,22 +110,14 @@ class MoeRuntime (
 
   def getCoreClassFor (name: String): Option[MoeClass] = corePackage.getClass(name)
 
-  def warn(msg: String): Unit = warn(Array(msg))
-  def warn(msg: Array[String]): Unit = {
-    val out = msg.mkString
-    // TODO: 
-    // add line numbers and such 
-    // to the message, when we have
-    // actual line numbers that is
-    // - SL
-    system.getSTDERR.println(out)
-  }
-
-  def print(msg: String): Unit = print(Array(msg))
-  def print(msg: Array[String]): Unit = system.getSTDOUT.print(msg.mkString)
-
-  def say(msg: String): Unit = say(Array(msg))
-  def say(msg: Array[String]): Unit = system.getSTDOUT.println(msg.mkString)
+  // TODO: 
+  // add line numbers and such 
+  // to the message, when we have
+  // actual line numbers that is
+  // - SL
+  def warn  (msg: MoeObject*): Unit = system.getSTDERR.println(msg.map(_.unboxToString.get).mkString)
+  def print (msg: MoeObject*): Unit = system.getSTDOUT.print(msg.map(_.unboxToString.get).mkString)
+  def say   (msg: MoeObject*): Unit = system.getSTDOUT.println(msg.map(_.unboxToString.get).mkString)
 
   private def setupBuiltins = {
     import org.moe.runtime.builtins._
