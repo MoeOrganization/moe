@@ -17,5 +17,6 @@ class MoePairObject(
 
   // unboxing
 
+  override def unboxToString: Try[String] = Success(toString)
   override def unboxToTuple: Try[(String, MoeObject)] = Success(getNativeValue)
 }

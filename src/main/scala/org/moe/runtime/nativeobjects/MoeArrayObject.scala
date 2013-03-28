@@ -72,5 +72,6 @@ class MoeArrayObject(
   
   // unboxing
   
+  override def unboxToString: Try[String] = Success(toString)
   override def unboxToArrayBuffer: Try[ArrayBuffer[MoeObject]] = Success(getNativeValue)
 }
