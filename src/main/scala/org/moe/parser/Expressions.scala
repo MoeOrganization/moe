@@ -92,8 +92,9 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   // TODO: nonassoc    ++ --
 
   // left        ->
-  lazy val applyOp: PackratParser[AST] = (applyOp <~ "->") ~ namespacedIdentifier ^^ {
-    case invocant ~ method => MethodCallNode(invocant, method, List())
+  lazy val applyOp: PackratParser[AST] = (applyOp <~ "->") ~ namespacedIdentifier ~ ("(" ~> list <~ ")").? ^^ {
+    case invocant ~ method ~ Some(args) => MethodCallNode(invocant, method, args)
+    case invocant ~ method ~ None       => MethodCallNode(invocant, method, List())
   } | simpleExpression
 
   // TODO: left        terms and list operators (leftward)
