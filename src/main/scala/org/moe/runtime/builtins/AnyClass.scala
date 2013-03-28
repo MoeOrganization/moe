@@ -1,6 +1,7 @@
 package org.moe.runtime.builtins
 
 import org.moe.runtime._
+import org.moe.runtime.nativeobjects._
 
 /**
   * setup class Any
@@ -17,6 +18,44 @@ object AnyClass {
 
     def self(e: MoeEnvironment): MoeObject = e.getCurrentInvocant.getOrElse(
       throw new MoeErrors.InvocantNotFound("Could not find invocant")
+    )
+
+    // output methods
+
+    anyClass.addMethod(
+      new MoeMethod(
+        "say",
+        new MoeSignature(), 
+        env, 
+        { (e) => 
+            r.say(self(e))
+            getUndef
+        }
+      )
+    )
+
+    anyClass.addMethod(
+      new MoeMethod(
+        "print",
+        new MoeSignature(), 
+        env, 
+        { (e) => 
+            r.print(self(e))
+            getUndef
+        }
+      )
+    )
+
+    anyClass.addMethod(
+      new MoeMethod(
+        "warn",
+        new MoeSignature(), 
+        env, 
+        { (e) => 
+            r.warn(self(e))
+            getUndef
+        }
+      )
     )
 
     // logical ops
@@ -71,10 +110,6 @@ object AnyClass {
     /**
      * List of Methods to support:
      * - defined
-     # NOTE: these next 3 cause stringification
-     * - say
-     * - print
-     * - warn
      *
      * See the following for details:
      * - https://metacpan.org/release/autobox-Core
