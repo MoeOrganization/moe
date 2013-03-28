@@ -14,6 +14,12 @@ object ArrayClass {
       throw new MoeErrors.MoeStartupError("Could not find class Array")
     )
 
+    import r.NativeObjects._
+
+    def self(e: MoeEnvironment): MoeArrayObject = e.getCurrentInvocantAs[MoeArrayObject].getOrElse(
+      throw new MoeErrors.InvocantNotFound("Could not find invocant")
+    )
+
     // MRO: Array, Any, Object
 
     /**
@@ -33,13 +39,13 @@ object ArrayClass {
         env,
         { (e) => 
             var index = e.get("$i").get.unboxToInt.get
-            val array = e.getCurrentInvocant.get.unboxToArrayBuffer.get
+            val array = self(e).unboxToArrayBuffer.get
 
             while (index < 0) index += array.size
             try {
               array(index)
             } catch {
-              case _: java.lang.IndexOutOfBoundsException => r.NativeObjects.getUndef // TODO: warn
+              case _: java.lang.IndexOutOfBoundsException => getUndef // TODO: warn
             }
         }
       )
@@ -50,7 +56,7 @@ object ArrayClass {
         "at_pos",
         new MoeSignature(List(new MoeNamedParameter("$i"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].at_pos(r, e.get("$i").get.asInstanceOf[MoeIntObject])
+        (e) => self(e).at_pos(r, e.getAs[MoeIntObject]("$i").get)
       )
     )
 
@@ -59,9 +65,9 @@ object ArrayClass {
         "bind_pos",
         new MoeSignature(List(new MoeNamedParameter("$i"), new MoeNamedParameter("$v"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].bind_pos(
+        (e) => self(e).bind_pos(
             r, 
-            e.get("$i").get.asInstanceOf[MoeIntObject], 
+            e.getAs[MoeIntObject]("$i").get, 
             e.get("$v").get
         )
       )
@@ -72,7 +78,7 @@ object ArrayClass {
         "length",
         new MoeSignature(),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].length(r)
+        (e) => self(e).length(r)
       )
     )
 
@@ -81,7 +87,7 @@ object ArrayClass {
         "clear",
         new MoeSignature(),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].clear(r)
+        (e) => self(e).clear(r)
       )
     )
 
@@ -90,7 +96,7 @@ object ArrayClass {
         "shift",
         new MoeSignature(),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].shift(r)
+        (e) => self(e).shift(r)
       )
     )
 
@@ -99,7 +105,7 @@ object ArrayClass {
         "pop",
         new MoeSignature(),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].pop(r)
+        (e) => self(e).pop(r)
       )
     )
 
@@ -108,7 +114,7 @@ object ArrayClass {
         "unshift",
         new MoeSignature(List(new MoeSlurpyParameter("@items"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].unshift(r, e.get("@items").get.asInstanceOf[MoeArrayObject])
+        (e) => self(e).unshift(r, e.getAs[MoeArrayObject]("@items").get)
       )
     )
 
@@ -117,7 +123,7 @@ object ArrayClass {
         "push",
         new MoeSignature(List(new MoeSlurpyParameter("@items"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].push(r, e.get("@items").get.asInstanceOf[MoeArrayObject])
+        (e) => self(e).push(r, e.getAs[MoeArrayObject]("@items").get)
       )
     )
 
@@ -126,7 +132,7 @@ object ArrayClass {
         "slice",
         new MoeSignature(List(new MoeSlurpyParameter("@items"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].slice(r, e.get("@items").get.asInstanceOf[MoeArrayObject])
+        (e) => self(e).slice(r, e.getAs[MoeArrayObject]("@items").get)
       )
     )
 
@@ -135,7 +141,7 @@ object ArrayClass {
         "reverse",
         new MoeSignature(),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].reverse(r)
+        (e) => self(e).reverse(r)
       )
     )
 
@@ -144,9 +150,9 @@ object ArrayClass {
         "join",
         new MoeSignature(List(new MoeOptionalParameter("$sep"))),
         env,
-        (e) => e.get("$sep") match {
-            case Some(sep) => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].join(r, sep.asInstanceOf[MoeStrObject])
-            case None      => e.getCurrentInvocant.get.asInstanceOf[MoeArrayObject].join(r)
+        (e) => e.getAs[MoeStrObject]("$sep") match {
+            case Some(sep) => self(e).join(r, sep)
+            case None      => self(e).join(r)
         }
       )
     )

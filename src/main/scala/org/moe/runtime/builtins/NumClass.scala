@@ -15,9 +15,13 @@ object NumClass {
       throw new MoeErrors.MoeStartupError("Could not find class Num")
     )
 
-    // MRO: Num, Scalar, Any, Object
-
     import r.NativeObjects._
+
+    def self(e: MoeEnvironment): MoeNumObject = e.getCurrentInvocantAs[MoeNumObject].getOrElse(
+      throw new MoeErrors.InvocantNotFound("Could not find invocant")
+    )
+
+    // MRO: Num, Scalar, Any, Object
 
     // increment/decrement
 
@@ -27,7 +31,7 @@ object NumClass {
         new MoeSignature(), 
         env, 
         { (e) => 
-            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeNumObject]
+            val inv = self(e)
             inv.increment(r)
             inv
         }
@@ -40,7 +44,7 @@ object NumClass {
         new MoeSignature(), 
         env, 
         { (e) => 
-            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeNumObject]
+            val inv = self(e)
             val old = getNum(inv.getNativeValue)
             inv.increment(r)
             old
@@ -54,7 +58,7 @@ object NumClass {
         new MoeSignature(), 
         env, 
         { (e) => 
-            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeNumObject]
+            val inv = self(e)
             inv.decrement(r)
             inv
         }
@@ -67,7 +71,7 @@ object NumClass {
         new MoeSignature(), 
         env, 
         { (e) => 
-            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeNumObject]
+            val inv = self(e)
             val old = getNum(inv.getNativeValue)
             inv.decrement(r)
             old
@@ -82,7 +86,7 @@ object NumClass {
         "infix:<+>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].add(r, e.get("$other").get)
+        (e) => self(e).add(r, e.get("$other").get)
       )
     )
 
@@ -91,7 +95,7 @@ object NumClass {
         "infix:<->",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].subtract(r, e.get("$other").get)
+        (e) => self(e).subtract(r, e.get("$other").get)
       )
     )
 
@@ -100,7 +104,7 @@ object NumClass {
         "infix:<*>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].multiply(r, e.get("$other").get)
+        (e) => self(e).multiply(r, e.get("$other").get)
       )
     )
 
@@ -109,7 +113,7 @@ object NumClass {
         "infix:</>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].divide(r, e.get("$other").get)
+        (e) => self(e).divide(r, e.get("$other").get)
       )
     )
 
@@ -118,7 +122,7 @@ object NumClass {
         "infix:<%>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].modulo(r, e.get("$other").get)
+        (e) => self(e).modulo(r, e.get("$other").get)
       )
     )
 
@@ -127,7 +131,7 @@ object NumClass {
         "infix:<**>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].pow(r, e.get("$other").get)
+        (e) => self(e).pow(r, e.get("$other").get)
       )
     )
 
@@ -138,7 +142,7 @@ object NumClass {
         "infix:<<>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].less_than(r, e.get("$other").get)
+        (e) => self(e).less_than(r, e.get("$other").get)
       )
     )
 
@@ -147,7 +151,7 @@ object NumClass {
         "infix:<>>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].greater_than(r, e.get("$other").get)
+        (e) => self(e).greater_than(r, e.get("$other").get)
       )
     )
 
@@ -156,7 +160,7 @@ object NumClass {
         "infix:<<=>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].less_than_or_equal_to(r, e.get("$other").get)
+        (e) => self(e).less_than_or_equal_to(r, e.get("$other").get)
       )
     )
 
@@ -165,7 +169,7 @@ object NumClass {
         "infix:<>=>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].greater_than_or_equal_to(r, e.get("$other").get)
+        (e) => self(e).greater_than_or_equal_to(r, e.get("$other").get)
       )
     )
 
@@ -174,7 +178,7 @@ object NumClass {
         "infix:<==>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].equal_to(r, e.get("$other").get)
+        (e) => self(e).equal_to(r, e.get("$other").get)
       )
     )
 
@@ -183,7 +187,7 @@ object NumClass {
         "infix:<!=>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeNumObject].not_equal_to(r, e.get("$other").get)
+        (e) => self(e).not_equal_to(r, e.get("$other").get)
       )
     )
 

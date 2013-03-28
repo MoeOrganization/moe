@@ -15,6 +15,10 @@ object AnyClass {
 
     import r.NativeObjects._
 
+    def self(e: MoeEnvironment): MoeObject = e.getCurrentInvocant.getOrElse(
+      throw new MoeErrors.InvocantNotFound("Could not find invocant")
+    )
+
     // logical ops
 
     anyClass.addMethod(
@@ -22,7 +26,7 @@ object AnyClass {
         "prefix:<!>",
         new MoeSignature(), 
         env, 
-        (e) => if (e.getCurrentInvocant.get.isTrue) getFalse else getTrue
+        (e) => if (self(e).isTrue) getFalse else getTrue
       )
     )
 
@@ -32,7 +36,7 @@ object AnyClass {
         new MoeSignature(List(new MoeNamedParameter("$other"))), 
         env, 
         { (e) =>
-            val inv = e.getCurrentInvocant.get
+            val inv = self(e)
             if (inv.isFalse)
               inv
             else
@@ -50,7 +54,7 @@ object AnyClass {
         new MoeSignature(List(new MoeNamedParameter("$other"))), 
         env, 
         { (e) =>
-            val inv = e.getCurrentInvocant.get
+            val inv = self(e)
             if (inv.isTrue)
               inv
             else

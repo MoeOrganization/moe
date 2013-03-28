@@ -14,9 +14,13 @@ object StrClass {
       throw new MoeErrors.MoeStartupError("Could not find class Str")
     )
 
-    // MRO: Str, Scalar, Any, Object
-
     import r.NativeObjects._
+
+    def self(e: MoeEnvironment): MoeStrObject = e.getCurrentInvocantAs[MoeStrObject].getOrElse(
+      throw new MoeErrors.InvocantNotFound("Could not find invocant")
+    )
+
+    // MRO: Str, Scalar, Any, Object
 
     // increment/decrement
 
@@ -26,7 +30,7 @@ object StrClass {
         new MoeSignature(),
         env,
         { (e) =>
-            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeStrObject]
+            val inv = self(e)
             inv.increment(r)
             inv
         }
@@ -39,7 +43,7 @@ object StrClass {
         new MoeSignature(),
         env,
         { (e) =>
-            val inv = e.getCurrentInvocant.get.asInstanceOf[MoeStrObject]
+            val inv = self(e)
             val old = getStr(inv.unboxToString.get)
             inv.increment(r)
             old
@@ -54,7 +58,7 @@ object StrClass {
         "infix:<lt>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].less_than(r, e.get("$other").get)
+        (e) => self(e).less_than(r, e.get("$other").get)
       )
     )
 
@@ -63,7 +67,7 @@ object StrClass {
         "infix:<gt>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].greater_than(r, e.get("$other").get)
+        (e) => self(e).greater_than(r, e.get("$other").get)
       )
     )
 
@@ -72,7 +76,7 @@ object StrClass {
         "infix:<le>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].less_than_or_equal_to(r, e.get("$other").get)
+        (e) => self(e).less_than_or_equal_to(r, e.get("$other").get)
       )
     )
 
@@ -81,7 +85,7 @@ object StrClass {
         "infix:<ge>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].greater_than_or_equal_to(r, e.get("$other").get)
+        (e) => self(e).greater_than_or_equal_to(r, e.get("$other").get)
       )
     )
 
@@ -92,7 +96,7 @@ object StrClass {
         "infix:<eq>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].equal_to(r, e.get("$other").get)
+        (e) => self(e).equal_to(r, e.get("$other").get)
       )
     )
 
@@ -101,7 +105,7 @@ object StrClass {
         "infix:<ne>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].not_equal_to(r, e.get("$other").get)
+        (e) => self(e).not_equal_to(r, e.get("$other").get)
       )
     )
 
@@ -110,7 +114,7 @@ object StrClass {
         "infix:<cmp>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].compare_to(r, e.get("$other").get)
+        (e) => self(e).compare_to(r, e.get("$other").get)
       )
     )
 
@@ -121,7 +125,7 @@ object StrClass {
         "chomp",
         new MoeSignature(), 
         env, 
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].chomp(r)
+        (e) => self(e).chomp(r)
       )
     )
 
@@ -130,7 +134,7 @@ object StrClass {
         "chop",
         new MoeSignature(), 
         env, 
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].chop(r)
+        (e) => self(e).chop(r)
       )
     )
 
@@ -139,7 +143,7 @@ object StrClass {
         "uc",
         new MoeSignature(), 
         env, 
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].uc(r)
+        (e) => self(e).uc(r)
       )
     )
 
@@ -148,7 +152,7 @@ object StrClass {
         "lc",
         new MoeSignature(), 
         env, 
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].lc(r)
+        (e) => self(e).lc(r)
       )
     )
 
@@ -157,7 +161,7 @@ object StrClass {
         "ucfirst",
         new MoeSignature(), 
         env, 
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].ucfirst(r)
+        (e) => self(e).ucfirst(r)
       )
     )
 
@@ -166,7 +170,7 @@ object StrClass {
         "lcfirst",
         new MoeSignature(), 
         env, 
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].lcfirst(r)
+        (e) => self(e).lcfirst(r)
       )
     )
 
@@ -175,7 +179,7 @@ object StrClass {
         "length",
         new MoeSignature(), 
         env, 
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].length(r)
+        (e) => self(e).length(r)
       )
     )
 
@@ -184,7 +188,7 @@ object StrClass {
         "reverse",
         new MoeSignature(), 
         env, 
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].reverse(r)
+        (e) => self(e).reverse(r)
       )
     )
 
@@ -193,9 +197,9 @@ object StrClass {
         "split",
         new MoeSignature(List(new MoeNamedParameter("$string"))), 
         env, 
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].split(
+        (e) => self(e).split(
             r, 
-            e.get("$string").get.asInstanceOf[MoeStrObject]
+            e.getAs[MoeStrObject]("$string").get
         )
       )
     )
@@ -208,7 +212,7 @@ object StrClass {
         "concat",
         new MoeSignature(List(new MoeSlurpyParameter("@strings"))),
         env, 
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].concatAll(r, e.get("@strings").get.asInstanceOf[MoeArrayObject])
+        (e) => self(e).concatAll(r, e.getAs[MoeArrayObject]("@strings").get)
       )
     )        
 
@@ -219,7 +223,7 @@ object StrClass {
         "infix:<.>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].concat(r, e.get("$other").get.asInstanceOf[MoeStrObject])
+        (e) => self(e).concat(r, e.getAs[MoeStrObject]("$other").get)
       )
     )
 
@@ -230,7 +234,7 @@ object StrClass {
         "infix:<x>",
         new MoeSignature(List(new MoeNamedParameter("$other"))),
         env,
-        (e) => e.getCurrentInvocant.get.asInstanceOf[MoeStrObject].repeat(r, e.get("$other").get.asInstanceOf[MoeIntObject])
+        (e) => self(e).repeat(r, e.getAs[MoeIntObject]("$other").get)
       )
     )
 

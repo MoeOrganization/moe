@@ -13,6 +13,12 @@ object ClassClass {
       throw new MoeErrors.MoeStartupError("Could not find class Class")
     )
 
+    import r.NativeObjects._
+
+    def self(e: MoeEnvironment): MoeClass = e.getCurrentInvocantAs[MoeClass].getOrElse(
+      throw new MoeErrors.InvocantNotFound("Could not find invocant")
+    )
+
     // MRO: Class, Object
 
     // constructor
@@ -21,7 +27,7 @@ object ClassClass {
         "new",
         new MoeSignature(),
         env,
-        { (e) => e.getCurrentInvocant.get.asInstanceOf[MoeClass].newInstance }
+        (e) => self(e).newInstance
       )
     )  
 

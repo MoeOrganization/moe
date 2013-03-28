@@ -14,7 +14,11 @@ object BoolClass {
       throw new MoeErrors.MoeStartupError("Could not find class Bool")
     )
 
-    def self(e: MoeEnvironment): MoeBoolObject = e.getCurrentInvocant.get.asInstanceOf[MoeBoolObject]
+    import r.NativeObjects._
+
+    def self(e: MoeEnvironment): MoeBoolObject = e.getCurrentInvocantAs[MoeBoolObject].getOrElse(
+      throw new MoeErrors.InvocantNotFound("Could not find invocant")
+    )
 
     // MRO: Bool, Scalar, Any, Object
 
