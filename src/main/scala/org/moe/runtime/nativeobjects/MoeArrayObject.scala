@@ -5,14 +5,6 @@ import org.moe.runtime._
 import scala.collection.mutable.ArrayBuffer
 import scala.util.{Try, Success, Failure}
 
-// NOTE:
-// List[A] is a poor internal representation
-// for a MoeArray, this will need to be thought
-// through much more. It looks like ListBuffer
-// could be suitable, but we might need to just
-// write our own in the long run.
-// - SL
-
 class MoeArrayObject(
     v: ArrayBuffer[MoeObject],
     klass : Option[MoeClass] = None
