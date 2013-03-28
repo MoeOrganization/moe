@@ -52,6 +52,7 @@ object IOClass {
      * See the following for details:
      * - https://metacpan.org/module/IO::Handle << with a grain of salt
      * - https://github.com/rakudo/rakudo/blob/nom/src/core/IO.pm
+     * - http://docs.oracle.com/javase/6/docs/api/java/io/File.html
      */
   }
 }
