@@ -67,7 +67,7 @@ class MoeClass(
   // Constructor
 
   def getConstructor: Option[MoeMethod] = constructor
-
+  def hasConstructor: Boolean = constructor.isDefined
   def setConstructor(c: Option[MoeMethod]) = constructor = c
 
   /**
@@ -78,7 +78,7 @@ class MoeClass(
   // Destructor
 
   def getDestructor: Option[MoeMethod] = destructor
-
+  def hasDestructor: Boolean = destructor.isDefined
   def setDestructor(d: Option[MoeMethod]) = destructor = d
 
   /**
@@ -150,7 +150,7 @@ class MoeClass(
    * @param name The name of the method to return
    */
   def getMethod(name: String): Option[MoeMethod] = methods.get(name).orElse(
-      superclass.flatMap({ sc => sc.getMethod(name) })
+    superclass.flatMap({ sc => sc.getMethod(name) })
   )
 
   /**
