@@ -252,7 +252,9 @@ class Interpreter {
           val pkg    = new MoePackage(name, newEnv)
           parent.addSubPackage(pkg)
           newEnv.setCurrentPackage(pkg)
-          eval(runtime, newEnv, body)
+          val result = eval(runtime, newEnv, body)
+          newEnv.setCurrentPackage(parent)
+          result
         }
       }
 
