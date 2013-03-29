@@ -77,7 +77,7 @@ object Serializer {
 
     case TernaryOpNode(condExpr, trueExpr, falseExpr) => JSONObject(
       Map(
-        "BinaryOpNode" -> JSONObject(
+        "TernaryOpNode" -> JSONObject(
           Map(
             "condition" -> toJSON(condExpr),
             "trueExpr"  -> toJSON(trueExpr),
