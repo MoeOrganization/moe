@@ -27,7 +27,13 @@ object ClassClass {
         "new",
         new MoeSignature(),
         env,
-        (e) => self(e).newInstance
+        {
+          (e) => 
+            val c = self(e)
+            val i = c.newInstance.asInstanceOf[MoeOpaque]
+            c.collectAllAttributes.foreach(a => a._2.getDefault.map(i.setValue(a._1, _)))
+            i
+        }
       )
     )  
 

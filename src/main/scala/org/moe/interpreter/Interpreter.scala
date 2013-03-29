@@ -289,7 +289,13 @@ class Interpreter {
           body            = {
             (env) => 
               val c = env.getCurrentInvocant.get.asInstanceOf[MoeClass]
-              val i = c.newInstance
+              val i = c.newInstance.asInstanceOf[MoeOpaque]
+              c.collectAllAttributes.foreach({
+                a =>
+                  println(a._1)
+                  a._2.getDefault.map(i.setValue(a._1, _))
+
+              })
               val e = new MoeEnvironment(Some(env))
               e.setCurrentInvocant(i)
               c.getConstructor.map(_.executeBody(e))
