@@ -7,7 +7,7 @@ class MoeAttributeTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... basic attribute") {
     val default = new MoeObject()
-    val attr    = new MoeAttribute("Foo", Some(default))
+    val attr    = new MoeAttribute("Foo", Some(() => default))
 
     assert(attr.getName == "Foo")
     assert(attr.getDefault === Some(default))

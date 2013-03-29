@@ -152,7 +152,7 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
     )
 
     val default = new MoeObject()
-    val attr = new MoeAttribute("name", Some(default))
+    val attr = new MoeAttribute("name", Some(() => default))
     parent.addAttribute(attr)
 
     assert(parent.hasAttribute("name"))

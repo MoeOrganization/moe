@@ -8,7 +8,7 @@ package org.moe.runtime
  */
 class MoeAttribute(
     private val name: String,
-    private val default: Option[MoeObject] = None
+    private val default: Option[() => MoeObject] = None
   ) extends MoeObject {
 
   /**
@@ -24,7 +24,7 @@ class MoeAttribute(
   /**
    * Return default value of this attribute.
    */
-  def getDefault: Option[MoeObject] = default
+  def getDefault: Option[MoeObject] = default.map(x => x())
 }
 
 /*

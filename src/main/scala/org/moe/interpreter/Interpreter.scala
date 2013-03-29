@@ -382,7 +382,7 @@ class Interpreter {
         val klass = env.getCurrentClass.getOrElse(
           throw new MoeErrors.ClassNotFound("__CLASS__")
         )
-        val attr_default = eval(runtime, env, expression)
+        val attr_default = () => eval(runtime, env, expression)
         val attr = new MoeAttribute(name, Some(attr_default))
         klass.addAttribute(attr)
         attr
