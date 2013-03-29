@@ -72,7 +72,8 @@ class MoeSignatureTestSuite extends FunSuite with BeforeAndAfter with ShouldMatc
     assert(env.has("$x") === true)
     env.get("$x") should be (Some(arg1))
 
-    assert(env.has("$y") === false)
+    assert(env.has("$y") === true)
+    env.get("$y") should be (Some(r.NativeObjects.getUndef))
   }
 
   test("... signature binding with optional satisfied") {
