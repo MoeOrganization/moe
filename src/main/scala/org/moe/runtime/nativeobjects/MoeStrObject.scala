@@ -105,8 +105,8 @@ class MoeStrObject(
 
   // unboxing
 
-  override def unboxToString: Try[String] = Success(getNativeValue)
-  override def unboxToInt: Try[Int] = Try(getNativeValue.toInt)
-  override def unboxToDouble: Try[Double] = Try(getNativeValue.toDouble)
+  override def unboxToString : Try[String] = Try(getNativeValue)
+  override def unboxToInt    : Try[Int]    = Try(getNativeValue.toInt)
+  override def unboxToDouble : Try[Double] = Try(getNativeValue.toDouble)
 
 }

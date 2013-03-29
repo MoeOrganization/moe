@@ -141,7 +141,6 @@ class MoeIntObject(
 
   // unboxing
 
-  override def unboxToString: Try[String] = Success(toString)
   override def unboxToInt: Try[Int] = Success(getNativeValue)
   override def unboxToDouble: Try[Double] = Success(getNativeValue.toDouble)
 

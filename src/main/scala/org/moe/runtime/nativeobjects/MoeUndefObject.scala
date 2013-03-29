@@ -23,8 +23,4 @@ class MoeUndefObject(
   override def isFalse: Boolean = true
   override def isUndef: Boolean = true
   override def toString: String = "undef"
-  
-  // unboxing 
-  
-  override def unboxToString: Try[String] = Success("undef")
 }

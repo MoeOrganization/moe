@@ -18,6 +18,6 @@ class MoeBoolObject(
 
   // unboxing
 
-  override def unboxToString: Try[String] = Success(toString)
-  override def unboxToInt: Try[Int] = Try(toInt)
+  override def unboxToInt    : Try[Int]    = Try(toInt)
+  override def unboxToDouble : Try[Double] = Try(toInt.toDouble)
 }

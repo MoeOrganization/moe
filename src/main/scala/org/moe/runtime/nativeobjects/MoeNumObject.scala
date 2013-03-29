@@ -74,7 +74,6 @@ class MoeNumObject(
 
   // unboxing
 
-  override def unboxToString: Try[String] = Success(toString)
   override def unboxToInt: Try[Int] = Success(getNativeValue.toInt)
   override def unboxToDouble: Try[Double] = Success(getNativeValue)
 }
