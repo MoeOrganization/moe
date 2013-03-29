@@ -27,7 +27,18 @@ trait Statements extends Expressions {
   def doBlock: Parser[StatementsNode] = "do".r ~> block
   def scopeBlock: Parser[ScopeNode] = block ^^ { ScopeNode(_) }
 
-  def packageBlock = ("package" ~> namespacedIdentifier) ~ block ^^ {
+  def parameter = "*".? ~ sigil ~ namespacedIdentifier ~ "?".? ^^ { 
+    case None    ~ a ~ b ~ None    => ParameterNode(a + b)
+    case Some(_) ~ a ~ b ~ None    => ParameterNode(a + b, slurpy = true)
+    case None    ~ a ~ b ~ Some(_) => ParameterNode(a + b, optional = true)
+  }
+
+  def subroutineDecl: Parser[SubroutineDeclarationNode] = ("sub" ~> namespacedIdentifier ~ ("(" ~> repsep(parameter, ",") <~ ")").?) ~ block ^^ { 
+    case n ~ Some(p) ~ b => SubroutineDeclarationNode(n, SignatureNode(p), b) 
+    case n ~ None    ~ b => SubroutineDeclarationNode(n, SignatureNode(List()), b) 
+  }
+
+  def packageDecl = ("package" ~> namespacedIdentifier) ~ block ^^ {
     case p ~ b => PackageDeclarationNode(p, b)
   }
   // def classBlock = "class" ~> className ~ block
@@ -62,6 +73,7 @@ trait Statements extends Expressions {
     | doBlock
     | scopeBlock
     | tryBlock
-    | packageBlock
+    | packageDecl
+    | subroutineDecl
   )
 }
