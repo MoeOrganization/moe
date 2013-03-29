@@ -41,7 +41,42 @@ trait Statements extends Expressions {
   def packageDecl = ("package" ~> namespacedIdentifier) ~ block ^^ {
     case p ~ b => PackageDeclarationNode(p, b)
   }
-  // def classBlock = "class" ~> className ~ block
+
+  // class stuff
+
+  def attributeDecl = "has" ~> attributeName ~ ("=" ~> expression).? ^^ {
+    case v ~ expr => AttributeDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
+  }
+
+  def methodDecl: Parser[MethodDeclarationNode] = ("method" ~> namespacedIdentifier ~ ("(" ~> repsep(parameter, ",") <~ ")").?) ~ block ^^ { 
+    case n ~ Some(p) ~ b => MethodDeclarationNode(n, SignatureNode(p), b) 
+    case n ~ None    ~ b => MethodDeclarationNode(n, SignatureNode(List()), b) 
+  }
+
+  def constructorDecl: Parser[ConstructorDeclarationNode] = ("BUILD" ~> ("(" ~> repsep(parameter, ",") <~ ")").?) ~ block ^^ { 
+    case Some(p) ~ b => ConstructorDeclarationNode(SignatureNode(p), b) 
+    case None    ~ b => ConstructorDeclarationNode(SignatureNode(List()), b) 
+  }
+
+  def destructorDecl: Parser[DestructorDeclarationNode] = ("DEMOLISH" ~> ("(" ~> repsep(parameter, ",") <~ ")").?) ~ block ^^ { 
+    case Some(p) ~ b => DestructorDeclarationNode(SignatureNode(p), b) 
+    case None    ~ b => DestructorDeclarationNode(SignatureNode(List()), b) 
+  }
+
+  def classBodyParts: Parser[AST] = (
+      methodDecl
+    | constructorDecl
+    | destructorDecl
+    | attributeDecl
+  )
+
+  def classBodyStatements : Parser[StatementsNode] = repsep(classBodyParts, statementDelim) ^^ StatementsNode
+  def classBodyContent    : Parser[StatementsNode] = classBodyStatements <~ statementDelim.?
+  def classBody           : Parser[StatementsNode] = "{" ~> classBodyContent <~ "}"
+
+  def classDecl = ("class" ~> namespacedIdentifier) ~ ("extends" ~> namespacedIdentifier).? ~ classBody ^^ {
+    case c ~ s ~ b => ClassDeclarationNode(c, s, b) 
+  }
 
   // awwaiid's experimental structures
   def loop: Parser[AST] = ifLoop // | forLoop | foreachLoop | whileLoop
@@ -75,5 +110,6 @@ trait Statements extends Expressions {
     | tryBlock
     | packageDecl
     | subroutineDecl
+    | classDecl
   )
 }

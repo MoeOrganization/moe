@@ -107,7 +107,10 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
     | literalValue
     | declaration
     | assignment
+    | attributeAssignment
+    | classLiteral
     | variable
+    | attribute
     | expressionParens
     | signedExpressionParens
   )
@@ -149,6 +152,11 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   def varname = sigil ~ namespacedIdentifier ^^ { case a ~ b => a + b }
   def variable = varname ^^ VariableAccessNode
 
+  def classLiteral = "^" ~> namespacedIdentifier ^^ ClassAccessNode
+
+  def attributeName = sigil ~ "." ~ identifier ^^ { case a ~ b ~ c => a + b + c }
+  def attribute = attributeName ^^ AttributeAccessNode
+
   def simpleScalar = "$" ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("$" + i) }
   def simpleArray  = "@" ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("@" + i) }
   def simpleHash   = "%" ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("%" + i) }
@@ -160,6 +168,11 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   def assignment = varname ~ "=" ~ expression ^^ {
     case v ~ _ ~ expr => VariableAssignmentNode(v, expr)
   }
+
+  def attributeAssignment = attributeName ~ "=" ~ expression ^^ {
+    case v ~ _ ~ expr => AttributeAssignmentNode(v, expr)
+  }
+
   def arrayIndex = array_index_rule ^^ {
     case "@" ~ i ~ expr => ArrayElementAccessNode("@" + i, expr)
   }
@@ -169,7 +182,5 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   }
 
   def scalar: Parser[AST] = simpleScalar | arrayIndex | hashIndex | literalValue
-
-
 
 }
