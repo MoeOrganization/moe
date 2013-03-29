@@ -124,14 +124,20 @@ object Serializer {
       )
     )
 
-    case ParameterNode(name, optional, slurpy) => JSONObject(Map("name" -> name, "optional" -> optional, "slurpy" -> slurpy))
-    case SignatureNode(params) => JSONArray(params)
+    case ParameterNode(name, optional, slurpy) => JSONObject(
+      Map(
+        "name"     -> name, 
+        "optional" -> optional.toString, 
+        "slurpy"   -> slurpy.toString
+      )
+    )
+    case SignatureNode(params) => JSONArray(params.map(toJSON(_)))
 
     case ConstructorDeclarationNode(signature, body) => JSONObject(
       Map(
         "ConstructorDeclarationNode" -> JSONObject(
           Map(
-            "signature" -> signature,
+            "signature" -> toJSON(signature),
             "body"      -> toJSON(body)
           )
         )
@@ -142,7 +148,7 @@ object Serializer {
       Map(
         "DestructorDeclarationNode" -> JSONObject(
           Map(
-            "signature" -> signature,
+            "signature" -> toJSON(signature),
             "body"      -> toJSON(body)
           )
         )
@@ -154,7 +160,7 @@ object Serializer {
         "MethodDeclarationNode" -> JSONObject(
           Map(
             "name"      -> name,
-            "signature" -> signature,
+            "signature" -> toJSON(signature),
             "body"      -> toJSON(body)
           )
         )
@@ -166,7 +172,7 @@ object Serializer {
         "SubroutineDeclarationNode" -> JSONObject(
           Map(
             "name"      -> name,
-            "signature" -> signature,
+            "signature" -> toJSON(signature),
             "body"      -> toJSON(body)
           )
         )
@@ -255,6 +261,18 @@ object Serializer {
           Map(
             "function_name" -> function_name,
             "args"          -> JSONArray(args.map(toJSON(_)))
+          )
+        )
+      )
+    )
+
+    case IfStruct (condition, body, else_node: Option[IfStruct])  => JSONObject(
+      Map(
+        "IfStruct" -> JSONObject(
+          Map(
+            "condition" -> toJSON(condition),
+            "body"      -> toJSON(body)
+            //"else_node" -> toJSON(else_node.get)
           )
         )
       )
