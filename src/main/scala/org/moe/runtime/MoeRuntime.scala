@@ -150,6 +150,8 @@ class MoeRuntime (
     IntClass(this)
     NumClass(this)
     ExceptionClass(this)
+
+    CorePackage(this)
   }
 
   object NativeObjects {
