@@ -211,20 +211,22 @@ class Interpreter {
 
       // value lookup, assignment and declaration
 
-      case ClassAccessNode(name) => {
+      case ClassAccessNode(name) => runtime.lookupClass(
+        name, 
         env.getCurrentPackage.getOrElse(
           throw new MoeErrors.PackageNotFound("__PACKAGE__")
-        ).getClass(name).getOrElse(
-          throw new MoeErrors.ClassNotFound(name)
         )
-      }
+      ).getOrElse( 
+        throw new MoeErrors.ClassNotFound(name) 
+      )
+
       case ClassDeclarationNode(name, superclass, body) => {
         val pkg = env.getCurrentPackage.getOrElse(
           throw new MoeErrors.PackageNotFound("__PACKAGE__")
         )
 
         val superclass_class: Option[MoeClass] = superclass.map(
-          pkg.getClass(_).getOrElse(
+          runtime.lookupClass(_, pkg).getOrElse(
             throw new MoeErrors.ClassNotFound(superclass.getOrElse(""))
           )
         )
@@ -428,11 +430,15 @@ class Interpreter {
       }
 
       case SubroutineCallNode(function_name, args) => {
-        val sub = env.getCurrentPackage.getOrElse(
+        val sub = runtime.lookupSubroutine(
+          function_name, 
+          env.getCurrentPackage.getOrElse(
             throw new MoeErrors.PackageNotFound("__PACKAGE__")
-          ).getSubroutine(function_name).getOrElse(
-            throw new MoeErrors.SubroutineNotFound(function_name)
+          )
+        ).getOrElse( 
+          throw new MoeErrors.SubroutineNotFound(function_name)
         )
+
         sub.execute(new MoeArguments(args.map(eval(runtime, env, _))))
       }
 

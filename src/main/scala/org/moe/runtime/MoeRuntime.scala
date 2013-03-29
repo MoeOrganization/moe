@@ -110,6 +110,18 @@ class MoeRuntime (
 
   def getCoreClassFor (name: String): Option[MoeClass] = corePackage.getClass(name)
 
+  def lookupSubroutine (name: String, pkg: MoePackage): Option[MoeSubroutine] = {
+    pkg.getSubroutine(name).orElse( corePackage.getSubroutine(name).orElse( None ) )
+  }
+
+  def lookupClass (name: String, pkg: MoePackage): Option[MoeClass] = {
+    pkg.getClass(name).orElse( corePackage.getClass(name).orElse( None ) )
+  }
+
+  def lookupPackage (name: String, pkg: MoePackage): Option[MoePackage] = {
+    pkg.getSubPackage(name).orElse( corePackage.getSubPackage(name).orElse( None ) )
+  }
+
   // TODO: 
   // add line numbers and such 
   // to the message, when we have
