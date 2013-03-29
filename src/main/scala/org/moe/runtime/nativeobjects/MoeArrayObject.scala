@@ -35,6 +35,9 @@ class MoeArrayObject(
     r.NativeObjects.getUndef
   }
 
+  def head (r: MoeRuntime): MoeObject = array.head
+  def tail (r: MoeRuntime): MoeObject = r.NativeObjects.getArray( array.tail: _* )
+
   def shift (r: MoeRuntime): MoeObject =
     if(array.length == 0) r.NativeObjects.getUndef
     else array.remove(0)
