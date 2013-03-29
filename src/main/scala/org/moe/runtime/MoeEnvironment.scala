@@ -36,6 +36,12 @@ class MoeEnvironment(
   def setCurrentInvocant (i: MoeObject ): Unit = setLocal(Markers.Invocant, i)
   def setCurrentTopic    (t: MoeObject ): Unit = setLocal(Markers.Topic,    t)
 
+  def clearCurrentRuntime  : Unit = clearLocal(Markers.Runtime)
+  def clearCurrentPackage  : Unit = clearLocal(Markers.Package)
+  def clearCurrentClass    : Unit = clearLocal(Markers.Class)
+  def clearCurrentInvocant : Unit = clearLocal(Markers.Invocant)
+  def clearCurrentTopic    : Unit = clearLocal(Markers.Topic)
+
   def getParent = parent
   def isRoot    = !parent.isDefined
 
@@ -74,6 +80,7 @@ class MoeEnvironment(
 
   private def getLocal(name: String): Option[MoeObject] = pad.get(name)
   private def hasLocal(name: String): Boolean           = pad.contains(name)
+  private def clearLocal(name: String): Unit            = pad.remove(name)
   private def setLocal(name: String, value: MoeObject): Option[MoeObject] = {
     pad += (name -> value)
     Some(value)
