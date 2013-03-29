@@ -75,6 +75,24 @@ object ArrayClass {
 
     arrayClass.addMethod(
       new MoeMethod(
+        "head",
+        new MoeSignature(),
+        env,
+        (e) => self(e).head(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "tail",
+        new MoeSignature(),
+        env,
+        (e) => self(e).tail(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
         "length",
         new MoeSignature(),
         env,
