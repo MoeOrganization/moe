@@ -106,6 +106,7 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
     | range
     | literalValue
     | declaration
+    | assignment
     | variable
     | expressionParens
     | signedExpressionParens
@@ -156,6 +157,9 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
     case v ~ expr => VariableDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
   }
 
+  def assignment = varname ~ "=" ~ expression ^^ {
+    case v ~ _ ~ expr => VariableAssignmentNode(v, expr)
+  }
   def arrayIndex = array_index_rule ^^ {
     case "@" ~ i ~ expr => ArrayElementAccessNode("@" + i, expr)
   }
