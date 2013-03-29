@@ -363,8 +363,9 @@ class Interpreter {
         )
         val invocant = env.getCurrentInvocant
         invocant match {
-          case Some(invocant: MoeOpaque) =>
-            invocant.getValue(name).getOrElse(attr.getDefault.getOrElse(getUndef))
+          case Some(invocant: MoeOpaque) => invocant.getValue(name).getOrElse(
+            throw new MoeErrors.InstanceValueNotFound(name)
+          )
           case _ => throw new MoeErrors.UnexpectedType(invocant.getOrElse("(undef)").toString)
         }
       }
