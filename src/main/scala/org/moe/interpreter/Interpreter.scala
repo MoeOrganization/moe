@@ -106,31 +106,34 @@ class Interpreter {
       case RangeLiteralNode(start, end) => {
         val s = eval(runtime, env, start)
         val e = eval(runtime, env, end)
+
+        var result: List[MoeObject] = List();
+
         (s, e) match {
           case (s: MoeIntObject, e: MoeIntObject) => {
             val range_start  = s.unboxToInt.get
             val range_end    = e.unboxToInt.get
             val range: Range = new Range(range_start, range_end + 1, 1)
-            getArray(range.toList.map(getInt(_)):_*)
+            result = range.toList.map(getInt(_))
           }
           case (s: MoeStrObject, e: MoeStrObject) => {
             val range_start = s.unboxToString.get
             val range_end   = e.unboxToString.get
 
-            if (range_start.length > range_end.length)
-              getArray()
-            else {
+            if (range_start.length <= range_end.length) {
               var elems: List[String] = List()
               var str = range_start
               while (str <= range_end || str.length < range_end.length) {
                 elems = elems :+ str
                 str = MoeUtil.magicalStringIncrement(str)
               }
-              getArray(elems.map(getStr(_)):_*)
+              result = elems.map(getStr(_))
             }
           }
           case _ => throw new MoeErrors.UnexpectedType("Pair of MoeIntObject or MoeStrObject expected")
         }
+
+        getArray(result:_*)
       }
 
       // unary operators
