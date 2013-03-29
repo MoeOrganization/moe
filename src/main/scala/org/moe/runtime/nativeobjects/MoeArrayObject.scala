@@ -10,7 +10,7 @@ class MoeArrayObject(
     klass : Option[MoeClass] = None
   ) extends MoeNativeObject[ArrayBuffer[MoeObject]](v, klass) {
 
-  def this(list: List[MoeObject]) = this(ArrayBuffer(list : _*));
+  def this(list: List[MoeObject]) = this(ArrayBuffer(list : _*))
 
   private def array = getNativeValue
 
