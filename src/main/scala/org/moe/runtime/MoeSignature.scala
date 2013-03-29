@@ -11,7 +11,10 @@ class MoeSignature(
     for (i <- 0.until(getArity)) {
       params(i) match {
         case MoeNamedParameter(name)    => env.create(name, args.getArgAt(i).get)
-        case MoeOptionalParameter(name) => args.getArgAt(i).flatMap(a => env.create(name, a))
+        case MoeOptionalParameter(name) => args.getArgAt(i) match {
+          case Some(a) => env.create(name, a)
+          case None    => env.create(name, env.getCurrentRuntime.get.NativeObjects.getUndef)
+        }
         case MoeSlurpyParameter(name)   => env.create(
           name, 
           env.getCurrentRuntime.get.NativeObjects.getArray(args.slurpArgsAt(i):_*)
