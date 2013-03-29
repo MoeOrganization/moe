@@ -31,6 +31,21 @@ class SubroutineTestSuite extends FunSuite with BeforeAndAfter with ParserTestUt
     result.unboxToInt.get should equal (5)
   }
 
+  test("... a basic subroutine w/ optional params (take 2)") {
+    val result = interpretCode("sub foo ($x?, $y?) { ($x || 0) + ($y || 0) }; foo(5)")
+    result.unboxToInt.get should equal (5)
+  }
+
+  test("... a basic subroutine w/ optional params (take 3)") {
+    val result = interpretCode("sub foo ($x?, $y?) { ($x || 0) + ($y || 0) }; foo(5, 5)")
+    result.unboxToInt.get should equal (10)
+  }
+
+  test("... a basic subroutine w/ optional params (take 4)") {
+    val result = interpretCode("sub foo ($x?, $y?) { ($x || 0) + ($y || 0) }; foo()")
+    result.unboxToInt.get should equal (0)
+  }
+
   test("... a basic subroutine w/ optional params (satisified)") {
     val result = interpretCode("sub foo ($x, $y?) { $x + ($y || 0) }; foo(5, 5)")
     result.unboxToInt.get should equal (10)
