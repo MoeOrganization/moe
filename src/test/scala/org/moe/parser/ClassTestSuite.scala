@@ -97,4 +97,28 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
     result.unboxToInt.get should be (10)
   }
 
+    private val pointClass_v2 = """
+      class Point {
+        has $.x = 0;
+        has $.y = 0;
+        BUILD ($x, $y) {
+          $.x = $x;
+          $.y = $y
+        };
+        method x ($x?) { 
+          if ($x) { $.x = $x };
+          $.x
+        };
+        method y ($y?) { 
+          if ($y) { $.y = $y };
+          $.y
+        };
+      }
+    """
+
+    test("... a complex class v2 (take 1)") {
+      val result = interpretCode(pointClass_v2 + "; my $p = ^Point->new(10, 20); $p->x")
+      result.unboxToInt.get should be (10)
+    }
+
 }

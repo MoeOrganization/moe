@@ -294,15 +294,13 @@ class Interpreter {
             (env) => 
               val c = env.getCurrentInvocant.get.asInstanceOf[MoeClass]
               val i = c.newInstance.asInstanceOf[MoeOpaque]
-              c.collectAllAttributes.foreach({
-                a =>
-                  println(a._1)
-                  a._2.getDefault.map(i.setValue(a._1, _))
+              c.collectAllAttributes.foreach(a => a._2.getDefault.map(i.setValue(a._1, _)))
 
-              })
+              // call BUILD (this really should be a BUILDALL method)
               val e = new MoeEnvironment(Some(env))
               e.setCurrentInvocant(i)
               c.getConstructor.map(_.executeBody(e))
+
               i
           }
         )
