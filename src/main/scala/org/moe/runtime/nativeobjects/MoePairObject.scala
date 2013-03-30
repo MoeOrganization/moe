@@ -9,6 +9,9 @@ class MoePairObject(
     klass : Option[MoeClass] = None
   ) extends MoeNativeObject[(String, MoeObject)](v, klass) {
 
+  def key   (r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(getNativeValue._1)
+  def value (r: MoeRuntime): MoeObject    = getNativeValue._2
+
   // MoeObject overrides
 
   override def toString: String = getNativeValue match {

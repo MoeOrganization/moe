@@ -103,6 +103,7 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
     | hashIndex
     | hash
     | array
+    | pair
     | range
     | literalValue
     | declaration
