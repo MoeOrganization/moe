@@ -240,7 +240,6 @@ class Interpreter {
         scoped { klass_env =>
           klass_env.setCurrentClass(klass)
           eval(runtime, klass_env, body)
-          klass_env.clearCurrentClass
           klass
         }
 
