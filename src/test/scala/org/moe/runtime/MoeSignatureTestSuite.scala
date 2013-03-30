@@ -14,7 +14,7 @@ class MoeSignatureTestSuite extends FunSuite with BeforeAndAfter with ShouldMatc
   }
 
   test("... basic signature") {
-    val param = new MoeNamedParameter("$x")
+    val param = new MoePositionalParameter("$x")
     val sig = new MoeSignature(List(param))
 
     val params = sig.getParams
@@ -22,7 +22,7 @@ class MoeSignatureTestSuite extends FunSuite with BeforeAndAfter with ShouldMatc
   }
 
   test("... basic signature binding") {
-    val sig = new MoeSignature(List(new MoeNamedParameter("$x")))
+    val sig = new MoeSignature(List(new MoePositionalParameter("$x")))
 
     val arg  = r.NativeObjects.getInt(5)
     val args = new MoeArguments(List(arg))
@@ -37,8 +37,8 @@ class MoeSignatureTestSuite extends FunSuite with BeforeAndAfter with ShouldMatc
 
   test("... more signature binding") {
     val sig = new MoeSignature(List(
-        new MoeNamedParameter("$x"),
-        new MoeNamedParameter("$y")
+        new MoePositionalParameter("$x"),
+        new MoePositionalParameter("$y")
     ))
 
     val arg1 = r.NativeObjects.getInt(5)
@@ -58,7 +58,7 @@ class MoeSignatureTestSuite extends FunSuite with BeforeAndAfter with ShouldMatc
 
   test("... signature binding with optional") {
     val sig = new MoeSignature(List(
-        new MoeNamedParameter("$x"),
+        new MoePositionalParameter("$x"),
         new MoeOptionalParameter("$y")
     ))
 
@@ -78,7 +78,7 @@ class MoeSignatureTestSuite extends FunSuite with BeforeAndAfter with ShouldMatc
 
   test("... signature binding with optional satisfied") {
     val sig = new MoeSignature(List(
-        new MoeNamedParameter("$x"),
+        new MoePositionalParameter("$x"),
         new MoeOptionalParameter("$y")
     ))
 
@@ -99,7 +99,7 @@ class MoeSignatureTestSuite extends FunSuite with BeforeAndAfter with ShouldMatc
 
   test("... signature binding with slurpy") {
     val sig = new MoeSignature(List(
-        new MoeNamedParameter("$h"),
+        new MoePositionalParameter("$h"),
         new MoeSlurpyParameter("@t")
     ))
 
@@ -127,7 +127,7 @@ class MoeSignatureTestSuite extends FunSuite with BeforeAndAfter with ShouldMatc
 
   test("... signature binding with empty slurpy") {
     val sig = new MoeSignature(List(
-        new MoeNamedParameter("$h"),
+        new MoePositionalParameter("$h"),
         new MoeSlurpyParameter("@t")
     ))
 

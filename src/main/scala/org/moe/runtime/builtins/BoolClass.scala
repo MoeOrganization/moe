@@ -38,7 +38,7 @@ object BoolClass {
     boolClass.addMethod(
       new MoeMethod(
         "infix:<?:>",
-        new MoeSignature(List(new MoeNamedParameter("$trueExpr"), new MoeNamedParameter("$falseExpr"))),
+        new MoeSignature(List(new MoePositionalParameter("$trueExpr"), new MoePositionalParameter("$falseExpr"))),
         env,
         { (e) =>
             val inv = self(e)

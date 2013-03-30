@@ -95,7 +95,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<+>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).add(r, e.get("$other").get)
       )
@@ -104,7 +104,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<->",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).subtract(r, e.get("$other").get)
       )
@@ -113,7 +113,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<*>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).multiply(r, e.get("$other").get)
       )
@@ -122,7 +122,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:</>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).divide(r, e.get("$other").get)
       )
@@ -131,7 +131,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<%>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).modulo(r, e.get("$other").get)
       )
@@ -140,7 +140,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<**>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).pow(r, e.get("$other").get)
       )
@@ -151,7 +151,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<<>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).less_than(r, e.get("$other").get)
       )
@@ -160,7 +160,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<>>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).greater_than(r, e.get("$other").get)
       )
@@ -169,7 +169,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<<=>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).less_than_or_equal_to(r, e.get("$other").get)
       )
@@ -178,7 +178,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<>=>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).greater_than_or_equal_to(r, e.get("$other").get)
       )
@@ -189,7 +189,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<==>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).equal_to(r, e.get("$other").get)
       )
@@ -198,7 +198,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<!=>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).not_equal_to(r, e.get("$other").get)
       )
@@ -207,7 +207,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<<=>>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).compare_to(r, e.get("$other").get)
       )
@@ -218,7 +218,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<&>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).bit_and(r, e.get("$other").get)
       )
@@ -227,7 +227,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<|>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).bit_or(r, e.get("$other").get)
       )
@@ -236,7 +236,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<^>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).bit_xor(r, e.get("$other").get)
       )
@@ -245,7 +245,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<<<>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).bit_shift_left(r, e.get("$other").get)
       )
@@ -254,7 +254,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "infix:<>>>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).bit_shift_right(r, e.get("$other").get)
       )
@@ -328,7 +328,7 @@ object IntClass {
     intClass.addMethod(
       new MoeMethod(
         "atan2",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).atan2(r, e.get("$other").get)
       )

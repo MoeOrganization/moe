@@ -72,7 +72,7 @@ object AnyClass {
     anyClass.addMethod(
       new MoeMethod(
         "infix:<&&>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))), 
+        new MoeSignature(List(new MoePositionalParameter("$other"))), 
         env, 
         { (e) =>
             val inv = self(e)
@@ -90,7 +90,7 @@ object AnyClass {
     anyClass.addMethod(
       new MoeMethod(
         "infix:<||>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))), 
+        new MoeSignature(List(new MoePositionalParameter("$other"))), 
         env, 
         { (e) =>
             val inv = self(e)

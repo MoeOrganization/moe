@@ -6,6 +6,13 @@ import org.scalatest.matchers.ShouldMatchers
 
 class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers {
 
+  var r : MoeRuntime = _
+
+  before {
+    r = new MoeRuntime()
+    r.bootstrap()
+  }
+
   test("... test MRO") {
     val Foo = new MoeClass("Foo")
     val Bar = new MoeClass(name = "Bar", superclass = Some(Foo))
@@ -57,7 +64,7 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
   }
 
   test("... test the whole thing together") {
-    val env   = new MoeEnvironment()
+    val env   = r.getRootEnv
     val klass = new MoeClass(
       name      = "TestClass",
       version   = Some("0.01"),
@@ -72,7 +79,7 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
   }
 
   test("... test the whole thing together (newInstance version)") {
-    val env   = new MoeEnvironment()
+    val env   = r.getRootEnv
     val klass = new MoeClass(
       name      = "TestClass",
       version   = Some("0.01"),
@@ -87,7 +94,7 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
   }
 
   test("... test method resolution") {
-    val env    = new MoeEnvironment()
+    val env    = r.getRootEnv
     val parent = new MoeClass(
       name      = "ParentClass",
       version   = Some("0.01"),

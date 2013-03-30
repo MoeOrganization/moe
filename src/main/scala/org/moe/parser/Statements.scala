@@ -27,10 +27,11 @@ trait Statements extends Expressions {
   def doBlock: Parser[StatementsNode] = "do".r ~> block
   def scopeBlock: Parser[ScopeNode] = block ^^ { ScopeNode(_) }
 
-  def parameter = "*".? ~ sigil ~ namespacedIdentifier ~ "?".? ^^ { 
-    case None    ~ a ~ b ~ None    => ParameterNode(a + b)
-    case Some(_) ~ a ~ b ~ None    => ParameterNode(a + b, slurpy = true)
-    case None    ~ a ~ b ~ Some(_) => ParameterNode(a + b, optional = true)
+  def parameter = ("[*:]".r).? ~ sigil ~ namespacedIdentifier ~ "?".? ^^ { 
+    case None      ~ a ~ b ~ None    => ParameterNode(a + b)
+    case Some("*") ~ a ~ b ~ None    => ParameterNode(a + b, slurpy = true)
+    case None      ~ a ~ b ~ Some(_) => ParameterNode(a + b, optional = true)
+    case Some(":") ~ a ~ b ~ None    => ParameterNode(a + b, named = true)
   }
 
   def subroutineDecl: Parser[SubroutineDeclarationNode] = ("sub" ~> namespacedIdentifier ~ ("(" ~> repsep(parameter, ",") <~ ")").?) ~ block ^^ { 

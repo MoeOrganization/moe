@@ -31,7 +31,7 @@ object HashClass {
     hashClass.addMethod(
       new MoeMethod(
         "postcircumfix:<{}>",
-        new MoeSignature(List(new MoeNamedParameter("$key"))),
+        new MoeSignature(List(new MoePositionalParameter("$key"))),
         env,
         { (e) => 
           val hash = self(e)
@@ -43,7 +43,7 @@ object HashClass {
     hashClass.addMethod(
       new MoeMethod(
         "at_key", 
-        new MoeSignature(List(new MoeNamedParameter("$key"))),
+        new MoeSignature(List(new MoePositionalParameter("$key"))),
         env,
         (e) => self(e).at_key(r, e.getAs[MoeStrObject]("$key").get)
       )
@@ -52,7 +52,7 @@ object HashClass {
     hashClass.addMethod(
       new MoeMethod(
         "bind_key", 
-        new MoeSignature(List(new MoeNamedParameter("$key"), new MoeNamedParameter("$value"))),
+        new MoeSignature(List(new MoePositionalParameter("$key"), new MoePositionalParameter("$value"))),
         env,
         (e) => self(e).bind_key(r, e.getAs[MoeStrObject]("$key").get, e.get("$value").get)
       )
@@ -61,7 +61,7 @@ object HashClass {
     hashClass.addMethod(
       new MoeMethod(
         "exists",
-        new MoeSignature(List(new MoeNamedParameter("$key"))),
+        new MoeSignature(List(new MoePositionalParameter("$key"))),
         env,
         (e) => self(e).exists(r, e.getAs[MoeStrObject]("$key").get)
       )

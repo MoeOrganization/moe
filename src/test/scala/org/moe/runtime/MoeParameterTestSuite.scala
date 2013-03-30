@@ -7,7 +7,7 @@ import org.scalatest.matchers.ShouldMatchers
 class MoeParameterTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers {
 
   test("... basic parameter") {
-    val param = new MoeNamedParameter("$x")
+    val param = new MoePositionalParameter("$x")
     assert(param.getName === "$x")
   }
 

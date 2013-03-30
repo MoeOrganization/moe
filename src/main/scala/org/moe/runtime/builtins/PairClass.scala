@@ -40,6 +40,15 @@ object PairClass {
       )
     )
 
+    pairClass.addMethod(
+      new MoeMethod(
+        "kv",
+        new MoeSignature(),
+        env,
+        (e) => self(e).kv(r)
+      )
+    )
+
     /**
      * List of Methods to support:
      * 

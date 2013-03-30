@@ -5,12 +5,19 @@ import org.scalatest.BeforeAndAfter
 
 class MoeSubroutineTestSuite extends FunSuite with BeforeAndAfter {
 
+  var r : MoeRuntime = _
+
+  before {
+    r = new MoeRuntime()
+    r.bootstrap()
+  }
+
   test("... basic sub") {
-    val env    = new MoeEnvironment()
+    val env    = r.getRootEnv
     val value  = new MoeObject()
     val sub    = new MoeSubroutine(
       name            = "ident", 
-      signature       = new MoeSignature(List(new MoeNamedParameter("$x"))),
+      signature       = new MoeSignature(List(new MoePositionalParameter("$x"))),
       declaration_env = env,
       body            = (e) => e.get("$x").get
     )
@@ -19,15 +26,13 @@ class MoeSubroutineTestSuite extends FunSuite with BeforeAndAfter {
   }
 
   test("... not so basic sub") {
-    val r = new MoeRuntime()
-    r.bootstrap()
 
     val sub = new MoeSubroutine(
       name            = "adder", 
       declaration_env = r.getRootEnv,
       signature       = new MoeSignature(List(
-        new MoeNamedParameter("$x"),
-        new MoeNamedParameter("$y")
+        new MoePositionalParameter("$x"),
+        new MoePositionalParameter("$y")
       )),
       body = { e => 
         r.NativeObjects.getInt(

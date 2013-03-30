@@ -61,6 +61,26 @@ class SubroutineTestSuite extends FunSuite with BeforeAndAfter with ParserTestUt
     result.unboxToInt.get should equal (3)
   }
 
+  test("... a basic subroutine w/ named params") {
+    val result = interpretCode("sub foo (:$x, :$y) { [ $x, $y ] }; foo( x => 10, y => 20 )")
+    result.toString should equal ("[10, 20]")
+  }
+
+  test("... a basic subroutine w/ named params (out of order)") {
+    val result = interpretCode("sub foo (:$x, :$y) { [ $x, $y ] }; foo( y => 20, x => 10 )")
+    result.toString should equal ("[10, 20]")
+  }
+
+  test("... a basic subroutine w/ named params and positional") {
+    val result = interpretCode("sub foo ($a, :$x, :$y) { [ $a, $x, $y ] }; foo( 5, x => 10, y => 20 )")
+    result.toString should equal ("[5, 10, 20]")
+  }
+
+  test("... a basic subroutine w/ named params and positional (out of order)") {
+    val result = interpretCode("sub foo ($a, :$x, :$y) { [ $a, $x, $y ] }; foo( 5, y => 20, x => 10 )")
+    result.toString should equal ("[5, 10, 20]")
+  }
+
   private val sum = """
     sub sum (@x, $acc?) {  
       @x->length == 0 

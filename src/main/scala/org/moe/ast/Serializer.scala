@@ -124,11 +124,12 @@ object Serializer {
       )
     )
 
-    case ParameterNode(name, optional, slurpy) => JSONObject(
+    case ParameterNode(name, optional, slurpy, named) => JSONObject(
       Map(
         "name"     -> name, 
         "optional" -> optional.toString, 
-        "slurpy"   -> slurpy.toString
+        "slurpy"   -> slurpy.toString,
+        "named"    -> named.toString
       )
     )
     case SignatureNode(params) => JSONArray(params.map(toJSON(_)))

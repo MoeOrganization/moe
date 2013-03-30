@@ -35,7 +35,7 @@ object ArrayClass {
     arrayClass.addMethod(
       new MoeMethod(
         "postcircumfix:<[]>",
-        new MoeSignature(List(new MoeNamedParameter("$i"))),
+        new MoeSignature(List(new MoePositionalParameter("$i"))),
         env,
         { (e) => 
             var index = e.get("$i").get.unboxToInt.get
@@ -54,7 +54,7 @@ object ArrayClass {
     arrayClass.addMethod(
       new MoeMethod(
         "at_pos",
-        new MoeSignature(List(new MoeNamedParameter("$i"))),
+        new MoeSignature(List(new MoePositionalParameter("$i"))),
         env,
         (e) => self(e).at_pos(r, e.getAs[MoeIntObject]("$i").get)
       )
@@ -63,7 +63,7 @@ object ArrayClass {
     arrayClass.addMethod(
       new MoeMethod(
         "bind_pos",
-        new MoeSignature(List(new MoeNamedParameter("$i"), new MoeNamedParameter("$v"))),
+        new MoeSignature(List(new MoePositionalParameter("$i"), new MoePositionalParameter("$v"))),
         env,
         (e) => self(e).bind_pos(
             r, 

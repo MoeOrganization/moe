@@ -12,6 +12,10 @@ class MoePairObject(
   def key   (r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(getNativeValue._1)
   def value (r: MoeRuntime): MoeObject    = getNativeValue._2
 
+  def kv (r: MoeRuntime): MoeArrayObject = r.NativeObjects.getArray(
+    r.NativeObjects.getStr(getNativeValue._1), getNativeValue._2
+  )
+
   // MoeObject overrides
 
   override def toString: String = getNativeValue match {

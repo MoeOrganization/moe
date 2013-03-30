@@ -84,7 +84,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<+>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).add(r, e.get("$other").get)
       )
@@ -93,7 +93,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<->",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).subtract(r, e.get("$other").get)
       )
@@ -102,7 +102,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<*>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).multiply(r, e.get("$other").get)
       )
@@ -111,7 +111,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:</>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).divide(r, e.get("$other").get)
       )
@@ -120,7 +120,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<%>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).modulo(r, e.get("$other").get)
       )
@@ -129,7 +129,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<**>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).pow(r, e.get("$other").get)
       )
@@ -140,7 +140,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<<>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).less_than(r, e.get("$other").get)
       )
@@ -149,7 +149,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<>>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).greater_than(r, e.get("$other").get)
       )
@@ -158,7 +158,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<<=>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).less_than_or_equal_to(r, e.get("$other").get)
       )
@@ -167,7 +167,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<>=>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).greater_than_or_equal_to(r, e.get("$other").get)
       )
@@ -176,7 +176,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<==>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).equal_to(r, e.get("$other").get)
       )
@@ -185,7 +185,7 @@ object NumClass {
     numClass.addMethod(
       new MoeMethod(
         "infix:<!=>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).not_equal_to(r, e.get("$other").get)
       )

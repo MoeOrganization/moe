@@ -56,7 +56,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<lt>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).less_than(r, e.get("$other").get)
       )
@@ -65,7 +65,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<gt>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).greater_than(r, e.get("$other").get)
       )
@@ -74,7 +74,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<le>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).less_than_or_equal_to(r, e.get("$other").get)
       )
@@ -83,7 +83,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<ge>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).greater_than_or_equal_to(r, e.get("$other").get)
       )
@@ -94,7 +94,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<eq>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).equal_to(r, e.get("$other").get)
       )
@@ -103,7 +103,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<ne>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).not_equal_to(r, e.get("$other").get)
       )
@@ -112,7 +112,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<cmp>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).compare_to(r, e.get("$other").get)
       )
@@ -195,7 +195,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "split",
-        new MoeSignature(List(new MoeNamedParameter("$string"))), 
+        new MoeSignature(List(new MoePositionalParameter("$string"))), 
         env, 
         (e) => self(e).split(
             r, 
@@ -221,7 +221,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<.>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).concat(r, e.getAs[MoeStrObject]("$other").get)
       )
@@ -232,7 +232,7 @@ object StrClass {
     strClass.addMethod(
       new MoeMethod(
         "infix:<x>",
-        new MoeSignature(List(new MoeNamedParameter("$other"))),
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).repeat(r, e.getAs[MoeIntObject]("$other").get)
       )
