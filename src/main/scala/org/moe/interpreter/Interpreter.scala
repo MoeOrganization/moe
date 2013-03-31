@@ -265,6 +265,7 @@ class Interpreter {
         case (true,  false, false) => new MoeOptionalParameter(name)
         case (false, true,  false) => new MoeSlurpyParameter(name)
         case (false, false, true)  => new MoeNamedParameter(name)
+        case (false, true,  true)  => new MoeSlurpyNamedParameter(name)
         case _                     => throw new MoeErrors.InvalidParameter("parameter must be one of slurpy, optional or named")
       }
 

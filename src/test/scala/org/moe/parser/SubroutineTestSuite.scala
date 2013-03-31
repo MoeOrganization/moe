@@ -5,6 +5,7 @@ import org.scalatest.BeforeAndAfter
 import org.scalatest.matchers.ShouldMatchers
 
 import org.moe.runtime._
+import org.moe.runtime.nativeobjects._
 import org.moe.interpreter._
 import org.moe.ast._
 import org.moe.parser._
@@ -57,8 +58,19 @@ class SubroutineTestSuite extends FunSuite with BeforeAndAfter with ParserTestUt
   }
 
   test("... a basic subroutine w/ slurpy params (take 2)") {
-    val result = interpretCode("sub foo (*@_) { @_->length }; foo(1, 2, 3)")
-    result.unboxToInt.get should equal (3)
+    val result = interpretCode("sub foo (*@_) { @_[0] + @_[1] }; foo(5, 5)")
+    result.unboxToInt.get should equal (10)
+  }
+
+  test("... a basic subroutine w/ slurpy named params (take 2)") {
+    val result = interpretCode("sub foo (*%x) { %x }; foo( one => 1, two => 2, three => 3 )")
+    val hash = result.unboxToMap.get
+    assert(hash.contains("one") === true)
+    assert(hash("one").unboxToInt.get === 1)
+    assert(hash.contains("two") === true)
+    assert(hash("two").unboxToInt.get === 2)
+    assert(hash.contains("three") === true)
+    assert(hash("three").unboxToInt.get === 3)
   }
 
   test("... a basic subroutine w/ named params") {

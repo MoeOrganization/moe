@@ -37,6 +37,10 @@ class MoeSignature(
           name, 
           r.NativeObjects.getArray(args.slurpArgsAt(i):_*)
         )
+        case MoeSlurpyNamedParameter(name) => env.create(
+          name, 
+          r.NativeObjects.getHash(args.slurpArgsAt(i).map(_.unboxToTuple.get):_*)
+        )
         case _ => extra = args.getArgAt(i).get :: extra 
       }
     }
