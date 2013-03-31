@@ -152,6 +152,8 @@ class MoeRuntime (
     ExceptionClass(this)
 
     CorePackage(this)
+
+    RootEnvironment(this)
   }
 
   object NativeObjects {
