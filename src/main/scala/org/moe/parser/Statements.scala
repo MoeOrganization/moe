@@ -3,7 +3,9 @@ package org.moe.parser
 import ParserUtils._
 
 import scala.util.parsing.combinator._
+
 import org.moe.ast._
+import org.moe.runtime.MoeErrors
 
 trait Statements extends Expressions {
 
@@ -16,13 +18,12 @@ trait Statements extends Expressions {
 
   // FIXME I feel skipping over blank statements doesn't
   // portray the AST completely but I might just be splitting hairs
+
   def statementDelim: Parser[List[String]] = rep1(";")
-  def statements: Parser[StatementsNode] =
-    repsep(statement, statementDelim) ^^ StatementsNode
-  def blockContent: Parser[StatementsNode] =
-    statements <~ statementDelim.?
-  def block: Parser[StatementsNode] =
-    "{" ~> blockContent <~ "}"
+  def statements: Parser[StatementsNode] = repsep(statement, statementDelim) ^^ StatementsNode
+
+  def blockContent: Parser[StatementsNode] = statements <~ statementDelim.?
+  def block: Parser[StatementsNode] = "{" ~> blockContent <~ "}"
 
   def doBlock: Parser[StatementsNode] = "do".r ~> block
   def scopeBlock: Parser[ScopeNode] = block ^^ { ScopeNode(_) }

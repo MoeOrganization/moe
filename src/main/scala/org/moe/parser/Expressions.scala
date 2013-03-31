@@ -128,19 +128,26 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   def array: Parser[ArrayLiteralNode] = "[" ~> list <~ "]" ^^ ArrayLiteralNode
 
   // Hash stuff
-  def barehashKey: Parser[StringLiteralNode] =
-    """[0-9\w_]*""".r ^^ StringLiteralNode
+  
+  def barehashKey: Parser[StringLiteralNode] = """[0-9\w_]*""".r ^^ StringLiteralNode
   def hashKey: Parser[AST] = scalar | barehashKey
-  def pair: Parser[PairLiteralNode] =
-    (hashKey <~ "=>") ~ expression ^^ { case k ~ v => PairLiteralNode(k, v) }
-  def hashContent: Parser[List[PairLiteralNode]] =
-    repsep(pair, ",")
-  def hash: Parser[HashLiteralNode] =
-    "{" ~> hashContent <~ "}" ^^ HashLiteralNode
+  
+  def pair: Parser[PairLiteralNode] = (hashKey <~ "=>") ~ expression ^^ { 
+    case k ~ v => PairLiteralNode(k, v) 
+  }
+
+  def hashContent: Parser[List[PairLiteralNode]] = repsep(pair, ",")
+  def hash: Parser[HashLiteralNode] = "{" ~> hashContent <~ "}" ^^ HashLiteralNode
 
   // range stuff
   def rangeOperands: Parser[AST] = (
-      literalValue
+      floatNumber
+    | intNumber
+    | octIntNumber
+    | hexIntNumber
+    | binIntNumber
+    | zeroNumber
+    | string
     | variable
   )
 
@@ -157,10 +164,6 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
 
   def attributeName = sigil ~ "." ~ identifier ^^ { case a ~ b ~ c => a + b + c }
   def attribute = attributeName ^^ AttributeAccessNode
-
-  def simpleScalar = "$" ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("$" + i) }
-  def simpleArray  = "@" ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("@" + i) }
-  def simpleHash   = "%" ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("%" + i) }
 
   def declaration = "my" ~> varname ~ ("=" ~> expression).? ^^ {
     case v ~ expr => VariableDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
@@ -181,6 +184,12 @@ trait Expressions extends Literals with JavaTokenParsers with PackratParsers {
   def hashIndex = hash_index_rule ^^ {
     case "%" ~ i ~ expr => HashElementAccessNode("%" + i, expr)
   }
+
+  // these below are used in hashKey (see above)
+
+  def simpleScalar = "$" ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("$" + i) }
+  def simpleArray  = "@" ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("@" + i) }
+  def simpleHash   = "%" ~> namespacedIdentifier ^^ {i: String => VariableAccessNode("%" + i) }
 
   def scalar: Parser[AST] = simpleScalar | arrayIndex | hashIndex | literalValue
 
