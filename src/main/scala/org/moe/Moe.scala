@@ -81,18 +81,29 @@ object Moe {
       return
     }
     else {
-      val rest: Array[String] = cmd.getArgs()
-      if (rest.length == 0) {
-        REPL.enter(interpreter, runtime, dumpAST)
-      }
-      else {
-        // TODO: invocation arguments
-        val path = rest(0)
+      val rest: List[String] = cmd.getArgs().toList
 
-        val source = Source.fromFile(path).mkString
+      def evalProgram (path: String) = REPL.evalLine(
+        interpreter, 
+        runtime, 
+        Source.fromFile(path).mkString, 
+        Map("printOutput" -> false, "dumpAST" -> dumpAST)
+      )
 
-        REPL.evalLine(interpreter, runtime, source, Map("printOutput" -> false, "dumpAST" -> dumpAST))
+      rest match {
+        case List()            => REPL.enter(interpreter, runtime, dumpAST)
+        case program :: List() => evalProgram(program)
+        case program :: args   => {
+          runtime.getRootEnv.set(
+            "@ARGV", 
+            runtime.NativeObjects.getArray(
+              args.map(arg => runtime.NativeObjects.getStr(arg)):_*
+            )
+          )
+          evalProgram(program)
+        }
       }
+
     }
   }
 
