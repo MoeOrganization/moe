@@ -160,7 +160,7 @@ object Moe {
           ScopeNode(nodes)
         )
         if (options("dumpAST")) {
-          if (options("prettyPrintAST"))
+          if (options.contains("prettyPrintAST") && options("prettyPrintAST"))
             println(Serializer.toJSONPretty(ast))
           else
             println(Serializer.toJSON(ast))
