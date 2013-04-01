@@ -40,7 +40,7 @@ class SpecTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils {
             val ast_content = Source.fromFile(ast_path).mkString
 
             try { 
-              basicAST(Parser.parseStuff(moe_content)) match {
+              basicAST(MoeParser.parseStuff(moe_content)) match {
                 case CompilationUnitNode(scope) => scope match {
                   case ScopeNode(stmts) => {
                     assert(Serializer.toJSON(stmts).toString().trim === ast_content.trim)

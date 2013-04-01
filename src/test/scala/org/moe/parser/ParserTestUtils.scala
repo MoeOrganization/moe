@@ -23,7 +23,7 @@ trait ParserTestUtils extends FunSuite with BeforeAndAfter  {
     CompilationUnitNode(ScopeNode(nodes))
 
   def interpretCode(code: String): MoeObject = {
-    val ast = basicAST(Parser.parseStuff(code))
+    val ast = basicAST(MoeParser.parseStuff(code))
     interpreter.eval(runtime, runtime.getRootEnv, ast)
   }
 

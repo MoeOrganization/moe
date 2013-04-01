@@ -166,7 +166,7 @@ object Moe {
 
     def evalLine(interpreter: Interpreter, runtime: MoeRuntime, line: String, options: Map[String, Boolean]) = {
       try {
-        val nodes = MoeParsers.parseFromEntry(line)
+        val nodes = MoeParser.parseFromEntry(line)
         val ast = CompilationUnitNode(
           ScopeNode(nodes)
         )
