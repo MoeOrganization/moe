@@ -96,10 +96,10 @@ class Interpreter {
         )
         // FIXME:
         // This should probably be done
-        // through some kind of factory
+        // through some kind of factory 
         // constructor, and we also need
-        // to do it with the subs and
-        // methods eventually (once we
+        // to do it with the subs and 
+        // methods eventually (once we 
         // have a MOP to expose)
         // But for now this will do.
         // - SL
@@ -460,14 +460,6 @@ class Interpreter {
         )
 
         sub.execute(new MoeArguments(args.map(eval(runtime, env, _))))
-      }
-
-      case CodeCallNode(variable_name, args) => {
-        val code = env.get(variable_name).getOrElse(
-          throw new MoeErrors.VariableNotFound(variable_name)
-        ).asInstanceOf[MoeCode]
-
-        code.execute(new MoeArguments(args.map(eval(runtime, env, _))))
       }
 
       // statements

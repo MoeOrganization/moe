@@ -94,7 +94,6 @@ case class VariableAssignmentNode(name: String, expression: AST) extends AST
 
 case class MethodCallNode(invocant: AST, method_name: String, args: List[AST]) extends AST
 case class SubroutineCallNode(function_name: String, args: List[AST]) extends AST
-case class CodeCallNode(variable_name: String, args: List[AST]) extends AST
 
 // statements
 

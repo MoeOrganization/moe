@@ -102,8 +102,8 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case sub ~ args => SubroutineCallNode(sub, args)
   } | codeCall
 
-  lazy val codeCall: PackratParser[AST] = "&" ~ namespacedIdentifier ~ "->" ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
-    case _ ~ name ~ _ ~ args => CodeCallNode("&" + name, args)
+  lazy val codeCall: PackratParser[AST] = variable ~ "->" ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
+    case codeRef ~ _ ~ args => MethodCallNode(codeRef, "apply", args)
   } | simpleExpression
 
   // TODO: left        terms and list operators (leftward)

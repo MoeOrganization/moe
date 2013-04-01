@@ -277,16 +277,6 @@ object Serializer {
         )
       )
     )
-    case CodeCallNode(variable_name, args) => JSONObject(
-      Map(
-        "CodeCallNode" -> JSONObject(
-          Map(
-            "variable_name" -> variable_name,
-            "args"          -> JSONArray(args.map(toJSON(_)))
-          )
-        )
-      )
-    )
 
     case IfStruct (condition, body, else_node: Option[IfStruct])  => JSONObject(
       Map(
