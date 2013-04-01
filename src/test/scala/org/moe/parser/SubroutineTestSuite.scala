@@ -116,4 +116,14 @@ class SubroutineTestSuite extends FunSuite with BeforeAndAfter with ParserTestUt
     result.unboxToInt.get should equal (55)
   }
 
+  private val fib = """
+    sub fib ($n) { 
+      $n < 2 ? $n : fib($n - 1) + fib($n - 2) 
+    }
+  """
+
+  test("... gotta have the Fibonacci") {
+    val result = interpretCode(s"$fib; fib(10)")
+    result.unboxToInt.get should equal (55)
+  }
 }
