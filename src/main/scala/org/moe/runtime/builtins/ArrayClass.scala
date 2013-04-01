@@ -175,14 +175,38 @@ object ArrayClass {
       )
     )
 
+    arrayClass.addMethod(
+      new MoeMethod(
+        "map",
+        new MoeSignature(List(new MoePositionalParameter("$f"))),
+        env,
+        (e) => self(e).map(r, e.getAs[MoeCode]("$f").get)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "grep",
+        new MoeSignature(List(new MoePositionalParameter("$f"))),
+        env,
+        (e) => self(e).grep(r, e.getAs[MoeCode]("$f").get)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "each",
+        new MoeSignature(List(new MoePositionalParameter("$f"))),
+        env,
+        (e) => self(e).each(r, e.getAs[MoeCode]("$f").get)
+      )
+    )
+
     /**
      * List of Methods to support:
      * - exists ($value)
      * - delete ($index | @indicies) 
      * - sort ($sorter)
-     * - grep ($filter)
-     * - map ($callback)  << returns values
-     * - each ($callback) << doesn't return values
      * - first ($predicate)
      * - min ($comparator)
      * - max ($comparator)

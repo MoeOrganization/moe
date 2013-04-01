@@ -19,7 +19,7 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
       r.NativeObjects.getUndef,
       r.NativeObjects.getInt(10)
     )
-    val array = o.getNativeValue
+    val array = o.unboxToArrayBuffer.get
     assert(array(0).isUndef)
     assert(array(1).unboxToInt.get === 10)
     assert(o.isTrue)
@@ -46,7 +46,7 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
         r.NativeObjects.getInt(42)
       )
     )
-    val array = o.getNativeValue
+    val array = o.unboxToArrayBuffer.get
     assert(array(0).unboxToInt.get === 10)
     val nested = array(1).unboxToArrayBuffer.get
     assert(nested(0).unboxToInt.get === 42)
@@ -66,7 +66,7 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
       r.NativeObjects.getInt(2),
       r.NativeObjects.getInt(3)
     )
-    val array = o.getNativeValue
+    val array = o.unboxToArrayBuffer.get
     assert(array.length == o.length(r).unboxToInt.get, "Expected " + o.length(r) + " to equal " + array.length)
   }
 
@@ -112,7 +112,7 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
 
     assert(1 == o.push(r, r.NativeObjects.getArray(r.NativeObjects.getInt(2))).unboxToInt.get, "push single item onto empty array")
 
-    val array = o.getNativeValue
+    val array = o.unboxToArrayBuffer.get
     assert(array(0).unboxToInt.get === 2)
 
     assert(2 == o.push(r, r.NativeObjects.getArray(r.NativeObjects.getInt(4))).unboxToInt.get, "push single item onto single-item array")
@@ -127,7 +127,7 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
 
     assert(1 == o.unshift(r, r.NativeObjects.getArray(r.NativeObjects.getInt(2))).unboxToInt.get, "unshift single item onto empty array")
 
-    val array = o.getNativeValue
+    val array = o.unboxToArrayBuffer.get
     assert(array(0).unboxToInt.get === 2)
 
     assert(2 == o.unshift(r, r.NativeObjects.getArray(r.NativeObjects.getInt(4))).unboxToInt.get, "unshift single item onto single-item array")
@@ -144,15 +144,15 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
       r.NativeObjects.getInt(3)
     )
     var slice = o.slice(r, r.NativeObjects.getArray(r.NativeObjects.getInt(1)))
-    assert(1 == slice.getNativeValue.length, "single item slice length")
+    assert(1 == slice.unboxToArrayBuffer.get.length, "single item slice length")
     assert(2 == slice.at_pos(r,r.NativeObjects.getInt(0)).unboxToInt.get, "result of single item slice")
 
     slice = o.slice(r, r.NativeObjects.getArray(r.NativeObjects.getInt(1), r.NativeObjects.getInt(0)))
-    assert(2 == slice.getNativeValue.length, "two-item slice length")
+    assert(2 == slice.unboxToArrayBuffer.get.length, "two-item slice length")
     assert(1 == slice.at_pos(r,r.NativeObjects.getInt(1)).unboxToInt.get, "second item of two-item slice")
 
     slice = o.slice(r, r.NativeObjects.getArray(r.NativeObjects.getInt(3), r.NativeObjects.getInt(2), r.NativeObjects.getInt(4)))
-    assert(3 == slice.getNativeValue.length, "non-existent item slice length")
+    assert(3 == slice.unboxToArrayBuffer.get.length, "non-existent item slice length")
     assert(slice.at_pos(r,r.NativeObjects.getInt(0)).isUndef, "non-existent item in slice is undef")
     assert(3 == slice.at_pos(r,r.NativeObjects.getInt(1)).unboxToInt.get)
     assert(slice.at_pos(r,r.NativeObjects.getInt(2)).isUndef, "non-existent item in slice is undef")
@@ -164,7 +164,7 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
       r.NativeObjects.getInt(2),
       r.NativeObjects.getInt(3)
     )
-    val array = o.reverse(r).getNativeValue
+    val array = o.reverse(r).unboxToArrayBuffer.get
     assert(array(0).unboxToInt.get === 3)
     assert(array(1).unboxToInt.get === 2)
     assert(array(2).unboxToInt.get === 1)
@@ -179,4 +179,66 @@ class MoeArrayObjectTestSuite extends FunSuite with BeforeAndAfter {
     assert(o.join(r, r.NativeObjects.getStr("|")).unboxToString.get == "1|2|3");
     assert(o.join(r).unboxToString.get == "123");
   }
+
+  test("... Array object map") {
+    val o = r.NativeObjects.getArray(
+      r.NativeObjects.getInt(1),
+      r.NativeObjects.getInt(2),
+      r.NativeObjects.getInt(3)
+    )
+    
+    // @array->map(-> ($_) { $_ + 1 })
+    val array = o.map(r, new MoeCode(
+      new MoeSignature(List(new MoePositionalParameter("$_"))),
+      r.getRootEnv,
+      (e) => e.getAs[MoeIntObject]("$_").get.add(r, r.NativeObjects.getInt(1))
+    )).unboxToArrayBuffer.get
+
+    assert(array(0).unboxToInt.get === 2)
+    assert(array(1).unboxToInt.get === 3)
+    assert(array(2).unboxToInt.get === 4)
+  }
+
+  test("... Array object grep") {
+    val o = r.NativeObjects.getArray(
+      r.NativeObjects.getInt(1),
+      r.NativeObjects.getInt(2),
+      r.NativeObjects.getInt(3)
+    )
+    
+    // @array->grep(-> ($_) { $_ <= 2 })
+    val array = o.grep(r, new MoeCode(
+      new MoeSignature(List(new MoePositionalParameter("$_"))),
+      r.getRootEnv,
+      (e) => e.getAs[MoeIntObject]("$_").get.less_than_or_equal_to(r, r.NativeObjects.getInt(2))
+    )).unboxToArrayBuffer.get
+
+    assert(array.length === 2)
+    assert(array(0).unboxToInt.get === 1)
+    assert(array(1).unboxToInt.get === 2)
+  }
+
+  test("... Array object each") {
+    val o = r.NativeObjects.getArray(
+      r.NativeObjects.getInt(1),
+      r.NativeObjects.getInt(2),
+      r.NativeObjects.getInt(3)
+    )
+    
+    // @array->each(-> ($_) { $_++ })
+    o.each(r, new MoeCode(
+      new MoeSignature(List(new MoePositionalParameter("$_"))),
+      r.getRootEnv,
+      (e) => e.getAs[MoeIntObject]("$_").get.increment(r)
+    ))
+
+    val array = o.unboxToArrayBuffer.get
+    assert(array(0).unboxToInt.get === 2)
+    assert(array(1).unboxToInt.get === 3)
+    assert(array(2).unboxToInt.get === 4)
+  }
 }
+
+
+
+

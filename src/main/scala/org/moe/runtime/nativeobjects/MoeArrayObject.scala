@@ -67,6 +67,19 @@ class MoeArrayObject(
     array.map(_.unboxToString.get).mkString(sep.unboxToString.get)
   )
 
+  def map (r: MoeRuntime, f: MoeCode): MoeArrayObject = r.NativeObjects.getArray(
+    array.map(i => f.execute(new MoeArguments(List(i)))) : _*
+  )
+
+  def grep (r: MoeRuntime, f: MoeCode): MoeArrayObject = r.NativeObjects.getArray(
+    array.filter(i => f.execute(new MoeArguments(List(i))).isTrue) : _*
+  )
+
+  def each (r: MoeRuntime, f: MoeCode): MoeUndefObject = {
+    array.foreach({ i => f.execute(new MoeArguments(List(i))); ()})
+    r.NativeObjects.getUndef
+  }
+
   // MoeObject overrides
   
   override def isFalse: Boolean = getNativeValue.size == 0
