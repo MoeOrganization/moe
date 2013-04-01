@@ -65,7 +65,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   } | addOp
 
   // left        + - .
-  lazy val addOp: PackratParser[AST] = addOp ~ "[-+.]".r ~ mulOp            ^^ {
+  lazy val addOp: PackratParser[AST] = addOp ~ "[-+~]".r ~ mulOp            ^^ {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
   } | mulOp
 
@@ -93,7 +93,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    */
 
   // left        ->
-  lazy val applyOp: PackratParser[AST] = (applyOp <~ "->") ~ namespacedIdentifier ~ ("(" ~> repsep(expression, ",") <~ ")").? ^^ {
+  lazy val applyOp: PackratParser[AST] = (applyOp <~ ".") ~ namespacedIdentifier ~ ("(" ~> repsep(expression, ",") <~ ")").? ^^ {
     case invocant ~ method ~ Some(args) => MethodCallNode(invocant, method, args)
     case invocant ~ method ~ None       => MethodCallNode(invocant, method, List())
   } | subroutineCall
@@ -107,7 +107,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     | attribute
   )
 
-  lazy val anonCodeCall: PackratParser[AST] = anonCodeInvocant ~ "->" ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
+  lazy val anonCodeCall: PackratParser[AST] = anonCodeInvocant ~ "." ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
     case anonCode ~ _ ~ args => MethodCallNode(anonCode, "call", args)
   } | simpleExpression
 

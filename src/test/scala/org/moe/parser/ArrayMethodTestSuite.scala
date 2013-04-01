@@ -11,7 +11,7 @@ import org.moe.parser._
 class ArrayMethodsTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils {
 
   test("... basic test with array->map") {
-    val result = interpretCode("[1, 2, 3]->map(-> ($_) { $_ + 1 })")
+    val result = interpretCode("[1, 2, 3].map(-> ($_) { $_ + 1 })")
 
     val array = result.unboxToArrayBuffer.get
     assert(array.length === 3)
@@ -21,7 +21,7 @@ class ArrayMethodsTestSuite extends FunSuite with BeforeAndAfter with ParserTest
   }
 
   test("... basic test with array->grep") {
-    val result = interpretCode("[1, 2, 3]->grep(-> ($_) { $_ <= 2 })")
+    val result = interpretCode("[1, 2, 3].grep(-> ($_) { $_ <= 2 })")
 
     val array = result.unboxToArrayBuffer.get
     assert(array.length === 2)
@@ -30,7 +30,7 @@ class ArrayMethodsTestSuite extends FunSuite with BeforeAndAfter with ParserTest
   }
 
   test("... basic test with array->each") {
-    val result = interpretCode("my @x = ['foo', 'bar', 'baz']; @x->each(-> ($_) { $_->chop }); @x")
+    val result = interpretCode("my @x = ['foo', 'bar', 'baz']; @x.each(-> ($_) { $_.chop }); @x")
 
     val array = result.unboxToArrayBuffer.get
     assert(array.length === 3)

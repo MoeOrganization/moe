@@ -95,9 +95,9 @@ class SubroutineTestSuite extends FunSuite with BeforeAndAfter with ParserTestUt
 
   private val sum = """
     sub sum (@x, $acc?) {  
-      @x->length == 0 
+      @x.length == 0 
         ? ($acc || 0)
-        : sum( @x->tail, @x->head + ($acc || 0) ) 
+        : sum( @x.tail, @x.head + ($acc || 0) ) 
     }
   """
 

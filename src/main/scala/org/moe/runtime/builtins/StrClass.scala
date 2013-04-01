@@ -220,7 +220,7 @@ object StrClass {
 
     strClass.addMethod(
       new MoeMethod(
-        "infix:<.>",
+        "infix:<~>",
         new MoeSignature(List(new MoePositionalParameter("$other"))),
         env,
         (e) => self(e).concat(r, e.getAs[MoeStrObject]("$other").get)

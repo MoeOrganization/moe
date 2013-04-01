@@ -12,12 +12,12 @@ import org.moe.parser._
 class SimpleExpressionStrTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils with ShouldMatchers {
 
   test("... literal string concatenation ... [\"Hello \" . \"Moe\"]") {
-    val result = interpretCode("\"Hello \" . \"Moe\"")
+    val result = interpretCode("\"Hello \" ~ \"Moe\"")
     result.unboxToString.get should equal ("Hello Moe")
   }
 
   test("... literal string concatenation ... ['foo' . 'bar']") {
-    val result = interpretCode("'foo' . 'bar'")
+    val result = interpretCode("'foo' ~ 'bar'")
     result.unboxToString.get should equal ("foobar")
   }
 

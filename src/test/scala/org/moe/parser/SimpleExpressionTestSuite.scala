@@ -438,13 +438,13 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
 
   // methods
 
-  test("... literal int abs method ... [2->abs]") {
-    val result = interpretCode("2->abs")
+  test("... literal int abs method ... [2.abs]") {
+    val result = interpretCode("2.abs")
     result.unboxToInt.get should equal (2)
   }
 
-  test("... literal int abs method ... [(-2)->abs]") {
-    val result = interpretCode("(-2)->abs")
+  test("... literal int abs method ... [(-2).abs]") {
+    val result = interpretCode("(-2).abs")
     result.unboxToInt.get should equal (2)
   }
 
@@ -465,8 +465,8 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
   )
 
   for ((x: Int, y: Double) <- sines) {
-    test("... literal int -- sin method ... [" + x + "->sin]") {
-      val result = interpretCode(x + "->sin")
+    test("... literal int -- sin method ... [" + x + ".sin]") {
+      val result = interpretCode(x + ".sin")
       result.unboxToDouble.get should be (y plusOrMinus delta)
     }
   }
@@ -486,8 +486,8 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
   )
 
   for ((x: Int, y: Double) <- cosines) {
-    test("... literal int -- cos method ... [" + x + "->cos]") {
-      val result = interpretCode(x + "->cos")
+    test("... literal int -- cos method ... [" + x + ".cos]") {
+      val result = interpretCode(x + ".cos")
       result.unboxToDouble.get should be (y plusOrMinus delta)
     }
   }
@@ -507,8 +507,8 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
   )
 
   for ((x: Int, y: Double) <- tangents) {
-    test("... literal int -- tan method ... [" + x + "->tan]") {
-      val result = interpretCode(x + "->tan")
+    test("... literal int -- tan method ... [" + x + ".tan]") {
+      val result = interpretCode(x + ".tan")
       result.unboxToDouble.get should be (y plusOrMinus delta)
     }
   }
@@ -520,8 +520,8 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
   )
 
   for ((x: Int, y: Double) <- arcSines) {
-    test("... literal int -- asin method ... [" + x + "->asin]") {
-      val result = interpretCode(x + "->asin")
+    test("... literal int -- asin method ... [" + x + ".asin]") {
+      val result = interpretCode(x + ".asin")
       result.unboxToDouble.get should be (y plusOrMinus delta)
     }
   }
@@ -533,8 +533,8 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
   )
 
   for ((x: Int, y: Double) <- arcCosines) {
-    test("... literal int -- cos method ... [" + x + "->acos]") {
-      val result = interpretCode(x + "->acos")
+    test("... literal int -- cos method ... [" + x + ".acos]") {
+      val result = interpretCode(x + ".acos")
       result.unboxToDouble.get should be (y plusOrMinus delta)
     }
   }
@@ -546,8 +546,8 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
   )
 
   for ((x: Int, y: Double) <- arcTangents) {
-    test("... literal int -- atan method ... [" + x + "->atan]") {
-      val result = interpretCode(x + "->atan")
+    test("... literal int -- atan method ... [" + x + ".atan]") {
+      val result = interpretCode(x + ".atan")
       result.unboxToDouble.get should be (y plusOrMinus delta)
     }
   }
@@ -561,8 +561,8 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
   )
 
   for ((x: Int, y: Double) <- expValues) {
-    test("... literal int -- exp method ... [" + x + "->exp]") {
-      val result = interpretCode(x + "->exp")
+    test("... literal int -- exp method ... [" + x + ".exp]") {
+      val result = interpretCode(x + ".exp")
       result.unboxToDouble.get should be (y plusOrMinus delta)
     }
   }
@@ -578,8 +578,8 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
   )
 
   for ((x: Int, y: Double) <- logValues) {
-    test("... literal int -- log method ... [" + x + "->log]") {
-      val result = interpretCode(x + "->log")
+    test("... literal int -- log method ... [" + x + ".log]") {
+      val result = interpretCode(x + ".log")
       result.unboxToDouble.get should be (y plusOrMinus delta)
     }
   }
@@ -595,8 +595,8 @@ class SimpleExpressionTestSuite extends FunSuite with BeforeAndAfter with Parser
   )
 
   for ((x: Int, y: Double) <- sqrtValues) {
-    test("... literal int -- sqrt method ... [" + x + "->sqrt]") {
-      val result = interpretCode(x + "->sqrt")
+    test("... literal int -- sqrt method ... [" + x + ".sqrt]") {
+      val result = interpretCode(x + ".sqrt")
       result.unboxToDouble.get should be (y plusOrMinus delta)
     }
   }
