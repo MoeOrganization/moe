@@ -68,6 +68,7 @@ class MoeRuntime (
       val hashClass      = new MoeClass("Hash",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val pairClass      = new MoeClass("Pair",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val ioClass        = new MoeClass("IO",         Some(VERSION), Some(AUTHORITY), Some(anyClass))
+      val codeClass      = new MoeClass("Code",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
        
       val undefClass     = new MoeClass("Undef",      Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val boolClass      = new MoeClass("Bool",       Some(VERSION), Some(AUTHORITY), Some(scalarClass))
@@ -86,6 +87,7 @@ class MoeRuntime (
       corePackage.addClass(hashClass)
       corePackage.addClass(pairClass)
       corePackage.addClass(ioClass)
+      corePackage.addClass(codeClass)
 
       corePackage.addClass(undefClass)
       corePackage.addClass(boolClass)
@@ -143,6 +145,7 @@ class MoeRuntime (
     HashClass(this)
     PairClass(this)
     IOClass(this)
+    CodeClass(this)
 
     UndefClass(this)
     BoolClass(this)

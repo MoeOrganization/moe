@@ -89,11 +89,22 @@ class Interpreter {
       case CodeLiteralNode(signature, body) => {
         val sig = eval(runtime, env, signature).asInstanceOf[MoeSignature]
         throwForUndeclaredVars(env, sig, body)
-        new MoeCode(
+        val code = new MoeCode(
           signature       = sig,
           declaration_env = env,
           body            = (e) => eval(runtime, e, body)
         )
+        // FIXME:
+        // This should probably be done
+        // through some kind of factory
+        // constructor, and we also need
+        // to do it with the subs and
+        // methods eventually (once we
+        // have a MOP to expose)
+        // But for now this will do.
+        // - SL
+        code.setAssociatedClass(runtime.getCoreClassFor("Code"))
+        code
       }
 
       case HashElementAccessNode(hashName: String, key: AST) => {
