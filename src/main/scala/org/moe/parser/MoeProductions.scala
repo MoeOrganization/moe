@@ -252,7 +252,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    */
 
   def statementDelim: Parser[List[String]] = rep1(";")
-  def statements: Parser[StatementsNode] = repsep(statement, statementDelim) ^^ StatementsNode
+  def statements: Parser[StatementsNode] = repsep(statement, statementDelim) <~ statementDelim.? ^^ StatementsNode
 
   def blockContent: Parser[StatementsNode] = statements <~ statementDelim.?
   def block: Parser[StatementsNode] = "{" ~> blockContent <~ "}"
