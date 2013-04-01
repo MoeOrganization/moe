@@ -238,6 +238,71 @@ object StrClass {
       )
     )
 
+    // coercion
+
+    strClass.addMethod(
+      new MoeMethod(
+        "Str",
+        new MoeSignature(),
+        env,
+        (e) => self(e)
+      )
+    )
+
+    strClass.addMethod(
+      new MoeMethod(
+        "prefix:<.>",
+        new MoeSignature(),
+        env,
+        (e) => self(e)
+      )
+    )
+
+    strClass.addMethod(
+      new MoeMethod(
+        "Int",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeIntContext()))
+      )
+    )
+
+    strClass.addMethod(
+      new MoeMethod(
+        "Num",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeNumContext()))
+      )
+    )
+
+    strClass.addMethod(
+      new MoeMethod(
+        "prefix:<+>",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeNumContext()))
+      )
+    )
+
+    strClass.addMethod(
+      new MoeMethod(
+        "Bool",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeBoolContext()))
+      )
+    )
+
+    strClass.addMethod(
+      new MoeMethod(
+        "prefix:<?>",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeBoolContext()))
+      )
+    )
+
     /**
      * List of Operators to support:
      * - infix:<.>
