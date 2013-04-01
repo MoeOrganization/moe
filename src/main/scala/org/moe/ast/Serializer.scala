@@ -41,6 +41,17 @@ object Serializer {
       )
     )
 
+    case CodeLiteralNode(signature, body) => JSONObject(
+      Map(
+        "CodeLiteralNode" -> JSONObject(
+          Map(
+            "signature" -> toJSON(signature),
+            "body"      -> toJSON(body)
+          )
+        )
+      )
+    )
+
     case PrefixUnaryOpNode(lhs, operator) => JSONObject(
       Map(
         "PrefixUnaryOpNode" -> JSONObject(
@@ -261,6 +272,16 @@ object Serializer {
         "SubroutineCallNode" -> JSONObject(
           Map(
             "function_name" -> function_name,
+            "args"          -> JSONArray(args.map(toJSON(_)))
+          )
+        )
+      )
+    )
+    case CodeCallNode(variable_name, args) => JSONObject(
+      Map(
+        "CodeCallNode" -> JSONObject(
+          Map(
+            "variable_name" -> variable_name,
             "args"          -> JSONArray(args.map(toJSON(_)))
           )
         )

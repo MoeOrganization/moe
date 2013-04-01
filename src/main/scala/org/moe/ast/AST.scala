@@ -42,6 +42,8 @@ case class PairLiteralNode(key: AST, value: AST) extends AST
 case class ArrayLiteralNode(values: List[AST]) extends AST
 case class HashLiteralNode(map: List[AST]) extends AST
 
+case class CodeLiteralNode(signature: SignatureNode, body: StatementsNode) extends AST
+
 case class RangeLiteralNode(start: AST, end: AST) extends AST
 
 // unary operators
@@ -92,6 +94,7 @@ case class VariableAssignmentNode(name: String, expression: AST) extends AST
 
 case class MethodCallNode(invocant: AST, method_name: String, args: List[AST]) extends AST
 case class SubroutineCallNode(function_name: String, args: List[AST]) extends AST
+case class CodeCallNode(variable_name: String, args: List[AST]) extends AST
 
 // statements
 

@@ -86,6 +86,16 @@ class Interpreter {
 
       case HashLiteralNode(values) => getHash(values.map(eval(runtime, env, _).unboxToTuple.get):_*)
 
+      case CodeLiteralNode(signature, body) => {
+        val sig = eval(runtime, env, signature).asInstanceOf[MoeSignature]
+        throwForUndeclaredVars(env, sig, body)
+        new MoeCode(
+          signature       = sig,
+          declaration_env = env,
+          body            = (e) => eval(runtime, e, body)
+        )
+      }
+
       case HashElementAccessNode(hashName: String, key: AST) => {
         val key_result = eval(runtime, env, key)
         val hash_map = env.get(hashName) match {
@@ -439,6 +449,14 @@ class Interpreter {
         )
 
         sub.execute(new MoeArguments(args.map(eval(runtime, env, _))))
+      }
+
+      case CodeCallNode(variable_name, args) => {
+        val code = env.get(variable_name).getOrElse(
+          throw new MoeErrors.VariableNotFound(variable_name)
+        ).asInstanceOf[MoeCode]
+
+        code.execute(new MoeArguments(args.map(eval(runtime, env, _))))
       }
 
       // statements
