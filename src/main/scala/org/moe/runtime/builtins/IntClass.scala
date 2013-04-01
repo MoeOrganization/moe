@@ -41,11 +41,7 @@ object IntClass {
         "prefix:<++>",
         new MoeSignature(),
         env,
-        { (e) =>
-            val inv = self(e)
-            inv.increment(r)
-            inv
-        }
+        (e) => self(e).increment(r)
       )
     )
 
@@ -68,11 +64,7 @@ object IntClass {
         "prefix:<-->",
         new MoeSignature(),
         env,
-        { (e) =>
-            val inv = self(e)
-            inv.decrement(r)
-            inv
-        }
+        (e) => self(e).decrement(r)
       )
     )
 

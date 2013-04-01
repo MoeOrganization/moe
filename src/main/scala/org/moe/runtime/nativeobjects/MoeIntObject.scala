@@ -11,10 +11,10 @@ class MoeIntObject(
 
   // runtime methods
 
-  def negate (r: MoeRuntime): MoeObject = r.NativeObjects.getInt(getNativeValue * -1)
+  def negate (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(getNativeValue * -1)
 
-  def increment (r: MoeRuntime): Unit = setNativeValue(getNativeValue + 1)
-  def decrement (r: MoeRuntime): Unit = setNativeValue(getNativeValue - 1)
+  def increment (r: MoeRuntime): MoeIntObject = { setNativeValue(getNativeValue + 1); this }
+  def decrement (r: MoeRuntime): MoeIntObject = { setNativeValue(getNativeValue - 1); this }
 
   // math
 
