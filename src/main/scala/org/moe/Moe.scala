@@ -77,7 +77,12 @@ object Moe {
 
     if (cmd.hasOption("e")) {
       val code: String = cmd.getOptionValue("e")
-      REPL.evalLine(interpreter, runtime, code, Map("dumpAST" -> dumpAST))
+      REPL.evalLine(
+        interpreter,
+        runtime,
+        code,
+        Map("printOutput" -> false, "dumpAST" -> dumpAST, "printParserErrors" -> true)
+      )
       return
     }
     else {
@@ -87,7 +92,7 @@ object Moe {
         interpreter, 
         runtime, 
         Source.fromFile(path).mkString, 
-        Map("printOutput" -> false, "dumpAST" -> dumpAST)
+        Map("printOutput" -> false, "dumpAST" -> dumpAST, "printParserErrors" -> true)
       )
 
       rest match {
@@ -170,20 +175,24 @@ object Moe {
         val ast = CompilationUnitNode(
           ScopeNode(nodes)
         )
-        if (options("dumpAST")) {
-          if (options.contains("prettyPrintAST") && options("prettyPrintAST"))
+        if (options.getOrElse("dumpAST", false)) {
+          if (options.getOrElse("prettyPrintAST", false))
             println(Serializer.toJSONPretty(ast))
           else
             println(Serializer.toJSON(ast))
         }
         val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
-        if( options("printOutput") ) {
+        if( options.getOrElse("printOutput", false) ) {
           println(result.toString)
         }
         EvalResult.Success
       }
       catch {
-        case i: MoeErrors.ParserInputIncomplete => EvalResult.Partial
+        case i: MoeErrors.ParserInputIncomplete => {
+          if (options.getOrElse("printParserErrors", false))
+            System.err.println(i)
+          EvalResult.Partial
+        }
         case e: Exception => {
           System.err.println(e)
           EvalResult.Failure
