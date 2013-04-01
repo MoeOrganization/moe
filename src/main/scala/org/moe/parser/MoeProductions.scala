@@ -100,10 +100,15 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   lazy val subroutineCall: PackratParser[AST] = namespacedIdentifier ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
     case sub ~ args => SubroutineCallNode(sub, args)
-  } | codeCall
+  } | anonCodeCall
 
-  lazy val codeCall: PackratParser[AST] = variable ~ "->" ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
-    case codeRef ~ _ ~ args => MethodCallNode(codeRef, "apply", args)
+  def anonCodeInvocant: PackratParser[AST] = (
+      variable
+    | attribute
+  )
+
+  lazy val anonCodeCall: PackratParser[AST] = anonCodeInvocant ~ "->" ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
+    case anonCode ~ _ ~ args => MethodCallNode(anonCode, "call", args)
   } | simpleExpression
 
   // TODO: left        terms and list operators (leftward)
