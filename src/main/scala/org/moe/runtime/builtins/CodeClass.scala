@@ -24,6 +24,15 @@ object CodeClass {
     codeClass.addMethod(
       new MoeMethod(
         "apply",
+        new MoeSignature(List(new MoePositionalParameter("@_"))),
+        env,
+        (e) => self(e).execute( new MoeArguments( e.get("@_").get.unboxToArrayBuffer.get.toList ) )
+      )
+    )
+
+    codeClass.addMethod(
+      new MoeMethod(
+        "call",
         new MoeSignature(List(new MoeSlurpyParameter("@_"))),
         env,
         (e) => self(e).execute( new MoeArguments( e.get("@_").get.unboxToArrayBuffer.get.toList ) )
@@ -32,7 +41,8 @@ object CodeClass {
 
     /**
      * List of Methods to support:
-     * - apply(*@args)
+     * - apply(@args)
+     * - call(*@args)
      *
      * See the following for details:
      * - https://github.com/rakudo/rakudo/blob/nom/src/core/.pm
