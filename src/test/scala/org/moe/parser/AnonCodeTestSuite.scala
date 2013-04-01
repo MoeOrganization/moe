@@ -17,4 +17,9 @@ class AnonCodeTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtil
     result.unboxToInt.get should equal (10)
   }
 
+  test("... a basic anon-sub w/ apply") {
+    val result = interpretCode("my &id = -> ($x) { $x }; &id->apply(10)")
+    result.unboxToInt.get should equal (10)
+  }
+
 }
