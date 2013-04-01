@@ -5,7 +5,7 @@ import ParserUtils._
 import scala.util.parsing.combinator._
 import org.moe.ast._
 
-trait Literals extends Base {
+trait MoeLiterals extends JavaTokenParsers {
 
   // Numeric literals
   def zeroNumber: Parser[IntLiteralNode]   =
@@ -55,10 +55,6 @@ trait Literals extends Base {
   def singleQuoteString: Parser[StringLiteralNode] = "'" ~> singleQuoteStringContents <~ "'"
 
   def string: Parser[StringLiteralNode] = doubleQuoteString | singleQuoteString
-
-  // FIXME string is too generic but discussion is required
-  // to have a more specific AST node I think
-  def typeLiteral: Parser[String] = namespacedIdentifier
 
   def literalValue: Parser[AST] = (
       floatNumber
