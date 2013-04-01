@@ -32,4 +32,14 @@ class AnonCodeTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtil
     result.unboxToInt.get should equal (30)
   }
 
+  test("... a complex anon-sub w/out signature") {
+    val result = interpretCode("my &adder = -> { @_[0] + @_[1] }; &adder->(10, 20)")
+    result.unboxToInt.get should equal (30)
+  }
+
+  test("... a complex anon-sub w/out signature w/ apply") {
+    val result = interpretCode("my &adder = -> { @_[0] + @_[1] }; &adder->apply([10, 20])")
+    result.unboxToInt.get should equal (30)
+  }
+
 }

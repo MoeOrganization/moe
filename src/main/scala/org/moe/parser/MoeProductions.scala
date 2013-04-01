@@ -274,7 +274,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   def code: Parser[CodeLiteralNode] = ("->" ~> ("(" ~> repsep(parameter, ",") <~ ")").?) ~ block ^^ { 
     case Some(p) ~ b => CodeLiteralNode(SignatureNode(p), b) 
-    case None    ~ b => CodeLiteralNode(SignatureNode(List()), b) 
+    case None    ~ b => CodeLiteralNode(SignatureNode(List(ParameterNode("@_", slurpy = true))), b) 
   }  
 
   // Packages
