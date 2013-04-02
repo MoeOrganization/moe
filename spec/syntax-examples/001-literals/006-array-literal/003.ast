@@ -1,1 +1,1 @@
-{"StatementsNode" : [{"ArrayLiteralNode" : [{"IntLiteralNode" : 10}, {"StringLiteralNode" : "twenty"}, {"FloatLiteralNode" : 30.5}, {"BooleanLiteralNode" : false}]}]}
+{"StatementsNode" : [{"ArrayLiteralNode" : [{"IntLiteralNode" : 10}, {"StringLiteralNode" : "twenty"}, {"FloatLiteralNode" : 30.5}, {"BooleanLiteralNode" : "false"}]}]}
