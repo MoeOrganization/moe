@@ -56,6 +56,10 @@ trait MoeLiterals extends JavaTokenParsers {
 
   def string: Parser[StringLiteralNode] = doubleQuoteString | singleQuoteString
 
+  // Self Literal
+
+  def selfLiteral: Parser[SelfLiteralNode] = "self".r ^^^ SelfLiteralNode()
+
   def literalValue: Parser[AST] = (
       floatNumber
     | intNumber
@@ -67,5 +71,6 @@ trait MoeLiterals extends JavaTokenParsers {
     | constFalse
     | constUndef
     | string
+    | selfLiteral
   )
 }
