@@ -178,27 +178,27 @@ object ArrayClass {
     arrayClass.addMethod(
       new MoeMethod(
         "map",
-        new MoeSignature(List(new MoePositionalParameter("$f"))),
+        new MoeSignature(List(new MoePositionalParameter("&f"))),
         env,
-        (e) => self(e).map(r, e.getAs[MoeCode]("$f").get)
+        (e) => self(e).map(r, e.getAs[MoeCode]("&f").get)
       )
     )
 
     arrayClass.addMethod(
       new MoeMethod(
         "grep",
-        new MoeSignature(List(new MoePositionalParameter("$f"))),
+        new MoeSignature(List(new MoePositionalParameter("&f"))),
         env,
-        (e) => self(e).grep(r, e.getAs[MoeCode]("$f").get)
+        (e) => self(e).grep(r, e.getAs[MoeCode]("&f").get)
       )
     )
 
     arrayClass.addMethod(
       new MoeMethod(
         "each",
-        new MoeSignature(List(new MoePositionalParameter("$f"))),
+        new MoeSignature(List(new MoePositionalParameter("&f"))),
         env,
-        (e) => self(e).each(r, e.getAs[MoeCode]("$f").get)
+        (e) => self(e).each(r, e.getAs[MoeCode]("&f").get)
       )
     )
 
