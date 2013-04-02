@@ -14,7 +14,7 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
   test("... a basic class") {
     val result = interpretCode("class Foo {}")
     result.asInstanceOf[MoeClass].getName should be ("Foo")
-    result.asInstanceOf[MoeClass].getSuperclass should be (Some(runtime.getClassClass))
+    result.asInstanceOf[MoeClass].getSuperclass should be (runtime.getCoreClassFor("Any"))
     result.asInstanceOf[MoeClass].getConstructor should be (None)
     result.asInstanceOf[MoeClass].getDestructor should be (None)
   }
