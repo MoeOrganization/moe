@@ -250,10 +250,13 @@ class Interpreter {
           runtime.lookupClass(_, pkg).getOrElse(
             throw new MoeErrors.ClassNotFound(superclass.getOrElse(""))
           )
-        )
+        ).orElse(runtime.getCoreClassFor("Any"))
 
         val klass = new MoeClass(
-          name, None, None, Some(superclass_class.getOrElse(runtime.getClassClass))
+          name, 
+          None, 
+          None, 
+          superclass_class
         )
 
         pkg.addClass(klass)
