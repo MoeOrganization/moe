@@ -11,7 +11,7 @@ object Serializer {
     case IntLiteralNode(value)     => JSONObject(Map("IntLiteralNode" -> value))
     case FloatLiteralNode(value)   => JSONObject(Map("FloatLiteralNode" -> value))
     case StringLiteralNode(value)  => JSONObject(Map("StringLiteralNode" -> value))
-    case BooleanLiteralNode(value) => JSONObject(Map("BooleanLiteralNode" -> value))
+    case BooleanLiteralNode(value) => JSONObject(Map("BooleanLiteralNode" -> value.toString))
 
     case UndefLiteralNode() => "UndefLiteralNode"
     case SelfLiteralNode()  => "SelfLiteralNode"
