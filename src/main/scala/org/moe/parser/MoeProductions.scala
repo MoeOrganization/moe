@@ -334,8 +334,16 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   // awwaiid's experimental structures
   def loop: Parser[AST] = ifLoop // | forLoop | foreachLoop | whileLoop
 
-  def ifLoop: Parser[AST] =
-    (("if" ~ "(") ~> expression) ~ (")" ~> block) ^^ { case a ~ b => IfNode(new IfStruct(a,b)) }
+  def ifLoop: Parser[AST] = "if" ~> ("(" ~> expression <~ ")") ~ block ~ ("else" ~> block).? ^^ { 
+    case if_cond ~ if_body ~ None            => IfNode(new IfStruct(if_cond,if_body)) 
+    case if_cond ~ if_body ~ Some(else_body) => IfNode(
+      new IfStruct(
+        if_cond,
+        if_body,
+        Some(new IfStruct(BooleanLiteralNode(true), else_body))
+      )
+    ) 
+  }
 
   // def forLoop = "for" ~ "(" ~> expression <~ ";" ~> expression <~ ";" ~> expression <~ ")" ~ block
   // def whileLoop = "if" ~ "(" ~> expression <~ ")" ~ block
