@@ -279,13 +279,24 @@ object Serializer {
       )
     )
 
-    case IfStruct (condition, body, else_node: Option[IfStruct])  => JSONObject(
+    case IfStruct (condition, body, None)  => JSONObject(
       Map(
         "IfStruct" -> JSONObject(
           Map(
             "condition" -> toJSON(condition),
             "body"      -> toJSON(body)
-            //"else_node" -> toJSON(else_node.get)
+          )
+        )
+      )
+    )
+
+    case IfStruct (condition, body, Some(else_node))  => JSONObject(
+      Map(
+        "IfStruct" -> JSONObject(
+          Map(
+            "condition" -> toJSON(condition),
+            "body"      -> toJSON(body),
+            "else_node" -> toJSON(else_node)
           )
         )
       )
