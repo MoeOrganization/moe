@@ -19,23 +19,7 @@ object ClassClass {
       throw new MoeErrors.InvocantNotFound("Could not find invocant")
     )
 
-    // MRO: Class, Object
-
-    // constructor
-    classClass.addMethod(
-      new MoeMethod(
-        "new",
-        new MoeSignature(),
-        env,
-        {
-          (e) => 
-            val c = self(e)
-            val i = c.newInstance.asInstanceOf[MoeOpaque]
-            c.collectAllAttributes.foreach(a => a._2.getDefault.map(i.setValue(a._1, _)))
-            i
-        }
-      )
-    )  
+    // MRO: Class, Object  
 
     /**
      * List of Methods to support:
