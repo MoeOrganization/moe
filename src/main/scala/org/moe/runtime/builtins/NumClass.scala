@@ -191,6 +191,71 @@ object NumClass {
       )
     )
 
+    // coercion
+
+    numClass.addMethod(
+      new MoeMethod(
+        "Int",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeIntContext()))
+      )
+    )
+
+    numClass.addMethod(
+      new MoeMethod(
+        "Num",
+        new MoeSignature(),
+        env,
+        (e) => self(e)
+      )
+    )
+
+    numClass.addMethod(
+      new MoeMethod(
+        "prefix:<+>",
+        new MoeSignature(),
+        env,
+        (e) => self(e)
+      )
+    )
+
+    numClass.addMethod(
+      new MoeMethod(
+        "Bool",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeBoolContext()))
+      )
+    )
+
+    numClass.addMethod(
+      new MoeMethod(
+        "prefix:<?>",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeBoolContext()))
+      )
+    )
+
+    numClass.addMethod(
+      new MoeMethod(
+        "Str",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeStrContext()))
+      )
+    )
+
+    numClass.addMethod(
+      new MoeMethod(
+        "prefix:<.>",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeStrContext()))
+      )
+    )
+
     /**
      * List of Operators to support:
      * - prefix:<->

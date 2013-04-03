@@ -26,7 +26,7 @@ class FloatLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
   }
 
   test("... basic test with a float - 2") {
-    val result = interpretCode(".5678")
+    val result = interpretCode("0.5678")
     assert(result.unboxToDouble.get === .5678)
   }
 
@@ -36,7 +36,7 @@ class FloatLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
   }
 
   test("... basic test with a float - scientific notation") {
-    val result = interpretCode(".5678e18")
+    val result = interpretCode("0.5678e18")
     assert(result.unboxToDouble.get === 5.678e17)
   }
 

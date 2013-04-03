@@ -7,6 +7,9 @@ import org.moe.ast._
 
 trait MoeLiterals extends JavaTokenParsers {
 
+  // treat comments as whitespace
+  override val whiteSpace = """(#[^\n\r]*[\n\r]|\s)+""".r
+
   // Numeric literals
   def zeroNumber: Parser[IntLiteralNode]   =
     """[\-\+]?0""".r ^^ { n => IntLiteralNode(0) }
