@@ -24,12 +24,68 @@ object BoolClass {
 
     import r.NativeObjects._
 
+    // coercion
+
+    boolClass.addMethod(
+      new MoeMethod(
+        "Int",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeIntContext()))
+      )
+    )
+
     boolClass.addMethod(
       new MoeMethod(
         "prefix:<+>",
         new MoeSignature(),
         env,
-        (e) => getInt(self(e).unboxToInt.getOrElse(0))
+        (e) => self(e).coerce(r, Some(MoeIntContext()))
+      )
+    )
+
+    boolClass.addMethod(
+      new MoeMethod(
+        "Num",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeNumContext()))
+      )
+    )
+
+    boolClass.addMethod(
+      new MoeMethod(
+        "Bool",
+        new MoeSignature(),
+        env,
+        (e) => self(e)
+      )
+    )
+
+    boolClass.addMethod(
+      new MoeMethod(
+        "prefix:<?>",
+        new MoeSignature(),
+        env,
+        (e) => self(e)
+      )
+    )
+
+    boolClass.addMethod(
+      new MoeMethod(
+        "Str",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeStrContext()))
+      )
+    )
+
+    boolClass.addMethod(
+      new MoeMethod(
+        "prefix:<.>",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeStrContext()))
       )
     )
 

@@ -52,4 +52,7 @@ object MoeErrors {
   // Parser errors
   class ParserInputIncomplete (msg: String) extends MoeException(msg)
   class ParserInputError      (msg: String) extends MoeException(msg)
+
+  // Coerce errors
+  class CannotCoerceError     (msg: String) extends MoeException(msg)
 }

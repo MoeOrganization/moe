@@ -109,4 +109,47 @@ class MoeStrObject(
   override def unboxToInt    : Try[Int]    = Try(getNativeValue.toInt)
   override def unboxToDouble : Try[Double] = Try(getNativeValue.toDouble)
 
+  // coercing
+
+  def toInt(r: MoeRuntime): MoeIntObject =
+    r.NativeObjects.getInt(
+      unboxToInt match {
+        case Success(i) => i
+        case Failure(e) => 0
+      }
+    )
+
+  def toNum(r: MoeRuntime): MoeNumObject =
+    r.NativeObjects.getNum(
+      unboxToDouble match {
+        case Success(d) => d
+        case Failure(e) => 0.0
+      }
+    )
+
+  def toBool(r: MoeRuntime): MoeBoolObject =
+    r.NativeObjects.getBool(
+      getNativeValue match {
+        case ("")  => false
+        case ("0") => false
+        case _     => true
+      }
+    )
+
+  def coerce(r: MoeRuntime, ctx: Option[MoeContext]): MoeObject = {
+    ctx match {
+      case Some(MoeIntContext()) => toInt(r)
+      case Some(MoeNumContext()) => {
+        import scala.util.matching.Regex
+        val numPattern = new Regex("""[\-\+]?[0-9_]*\.[0-9_]+([eE][\-+]?[0-9_]+)?""")
+        getNativeValue match {
+          case numPattern(n) => toNum(r)
+          case _             => toInt(r)
+        }
+      }
+      case Some(MoeBoolContext()) => toBool(r)
+      case None                  => this
+      case _                     => throw new MoeErrors.CannotCoerceError(this.toString)
+    }
+  }
 }
