@@ -365,7 +365,6 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   }
 
   // def forLoop = "for" ~ "(" ~> expression <~ ";" ~> expression <~ ";" ~> expression <~ ")" ~ block
-  // def whileLoop = "if" ~ "(" ~> expression <~ ")" ~ block
   // def foreachLoop = "for(each)?".r ~ varDeclare ~ "(" ~> expression <~ ")" ~ block
 
   def tryBlock: Parser[TryNode] = ("try" ~> block) ~ rep(catchBlock) ~ rep(finallyBlock) ^^ {
