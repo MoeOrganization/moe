@@ -218,7 +218,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   def variableName = sigil ~ namespacedIdentifier ^^ { case a ~ b => a + b }
   def variable     = variableName ^^ VariableAccessNode
 
-  def attributeName = sigil ~ "." ~ identifier ^^ { case a ~ b ~ c => a + b + c }
+  def attributeName = sigil ~ "!" ~ identifier ^^ { case a ~ b ~ c => a + b + c }
   def attribute     = attributeName ^^ AttributeAccessNode
 
   def classAccess = "^" ~> namespacedIdentifier ^^ ClassAccessNode

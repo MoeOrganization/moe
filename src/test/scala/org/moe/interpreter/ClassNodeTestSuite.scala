@@ -89,7 +89,7 @@ class ClassNodeTestSuite
   }
 
   test("... basic test with class and attributes") {
-    // class Point { has $.x = 0; has $.y = 0 }
+    // class Point { has $!x = 0; has $!y = 0 }
     val ast = wrapSimpleAST(
       List(
         ClassDeclarationNode(
@@ -98,11 +98,11 @@ class ClassNodeTestSuite
           StatementsNode(
             List(
               AttributeDeclarationNode(
-                "x", //"$.x",
+                "$!x",
                 IntLiteralNode(0)
               ),
               AttributeDeclarationNode(
-                "y", //"$.y",
+                "$!y",
                 IntLiteralNode(0)
               )
             )
@@ -116,8 +116,8 @@ class ClassNodeTestSuite
       throw new Exception("Class expected") // This has been tested
     )
 
-    point_class should haveAttribute("x")
-    point_class.getAttribute("x") match {
+    point_class should haveAttribute("$!x")
+    point_class.getAttribute("$!x") match {
       case Some(attr) =>
         attr.getDefault match {
           case Some(attr) => attr.unboxToInt.get should equal (0)
@@ -136,14 +136,14 @@ class ClassNodeTestSuite
           None,
           StatementsNode(
             List(
-              AttributeDeclarationNode("x", IntLiteralNode(0)),
-              AttributeDeclarationNode("y", IntLiteralNode(0)),
+              AttributeDeclarationNode("$!x", IntLiteralNode(0)),
+              AttributeDeclarationNode("$!y", IntLiteralNode(0)),
               ConstructorDeclarationNode(
                 SignatureNode(List(ParameterNode("$x"), ParameterNode("$y"))),
                 StatementsNode(
                   List(
-                    AttributeAssignmentNode("x", VariableAccessNode("$x")),
-                    AttributeAssignmentNode("y", VariableAccessNode("$y"))
+                    AttributeAssignmentNode("$!x", VariableAccessNode("$x")),
+                    AttributeAssignmentNode("$!y", VariableAccessNode("$y"))
                   )
                 )
               ),
@@ -154,8 +154,8 @@ class ClassNodeTestSuite
                   List(
                     ArrayLiteralNode(
                       List(
-                        AttributeAccessNode("x"),
-                        AttributeAccessNode("y")
+                        AttributeAccessNode("$!x"),
+                        AttributeAccessNode("$!y")
                       )
                     )
                   )
@@ -183,7 +183,7 @@ class ClassNodeTestSuite
   }
 
   test("... basic test with class and methods") {
-    // class Counter { has $.n; method inc { ++$.n } }
+    // class Counter { has $!n; method inc { ++$!n } }
     val ast = wrapSimpleAST(
       List(
         ClassDeclarationNode(
@@ -192,7 +192,7 @@ class ClassNodeTestSuite
           StatementsNode(
             List(
               AttributeDeclarationNode(
-                "n", //"$.n",
+                "$!n", 
                 IntLiteralNode(0)
               ),
               MethodDeclarationNode(
@@ -200,7 +200,7 @@ class ClassNodeTestSuite
                 SignatureNode(List()), // FIXME test with params when we have more operators :P
                 StatementsNode(
                   List(
-                    PostfixUnaryOpNode(AttributeAccessNode("n"), "++")
+                    PostfixUnaryOpNode(AttributeAccessNode("$!n"), "++")
                   )
                 )
               )

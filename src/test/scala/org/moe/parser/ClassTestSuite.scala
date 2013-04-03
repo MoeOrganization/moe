@@ -26,9 +26,9 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
   }
 
   test("... a basic class w/ attribute") {
-    val result = interpretCode("class Foo { has $.bar; }")
+    val result = interpretCode("class Foo { has $!bar; }")
     result.asInstanceOf[MoeClass].getName should be ("Foo")
-    result.asInstanceOf[MoeClass].hasAttribute("$.bar") should be (true)
+    result.asInstanceOf[MoeClass].hasAttribute("$!bar") should be (true)
   }
 
   test("... a basic class w/ constructor") {
@@ -55,15 +55,15 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
   }
 
   test("... a basic class w/ instance creation and attribute init and access") {
-    val result = interpretCode("class Foo { has $.bar = 10; method bar { $.bar } } ^Foo.new.bar")
+    val result = interpretCode("class Foo { has $!bar = 10; method bar { $!bar } } ^Foo.new.bar")
     result.unboxToInt.get should be (10)
   }
 
   private val attrDefault = """
     class Foo { 
-      has $.bar = 0 .. 5; 
-      method bar { $.bar.pop }
-      method baz { $.bar } 
+      has @!bar = 0 .. 5; 
+      method bar { @!bar.pop }
+      method baz { @!bar } 
     }
   """
 
@@ -74,15 +74,15 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
 
   private val pointClass = """
     class Point {
-      has $.x = 0;
-      has $.y = 0;
+      has $!x = 0;
+      has $!y = 0;
       method x ($x?) { 
-        if ($x) { $.x = $x; }
-        $.x
+        if ($x) { $!x = $x; }
+        $!x
       }
       method y ($y?) { 
-        if ($y) { $.y = $y; }
-        $.y
+        if ($y) { $!y = $y; }
+        $!y
       }
     }
   """
@@ -99,19 +99,19 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
 
   private val pointClass_v2 = """
     class Point {
-      has $.x = 0;
-      has $.y = 0;
+      has $!x = 0;
+      has $!y = 0;
       BUILD ($x, $y) {
-        $.x = $x;
-        $.y = $y;
+        $!x = $x;
+        $!y = $y;
       }
       method x ($x?) { 
-        if ($x) { $.x = $x; }
-        $.x
+        if ($x) { $!x = $x; }
+        $!x
       }
       method y ($y?) { 
-        if ($y) { $.y = $y; }
-        $.y
+        if ($y) { $!y = $y; }
+        $!y
       }
     }
   """
@@ -123,10 +123,10 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
 
   private val greeterClass = """
     class Greater {
-        has $.message = "Hello ";
+        has $!message = "Hello ";
 
         method greet ($place) {
-            $.message ~ $place
+            $!message ~ $place
         }
     }
   """
