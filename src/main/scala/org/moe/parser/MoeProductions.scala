@@ -359,22 +359,16 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   // def forLoop = "for" ~ "(" ~> expression <~ ";" ~> expression <~ ";" ~> expression <~ ")" ~ block
   // def whileLoop = "if" ~ "(" ~> expression <~ ")" ~ block
   // def foreachLoop = "for(each)?".r ~ varDeclare ~ "(" ~> expression <~ ")" ~ block
-  // def packageName = bareName
-  // def className = bareName
 
-  lazy val tryBlockRule     = "try" ~> block
-  lazy val catchBlockRule   = ("catch" ~ "(") ~> namespacedIdentifier ~ variableName ~ (")" ~> block)
-  lazy val finallyBlockRule = "finally" ~> block
-
-  def tryBlock: Parser[TryNode] = tryBlockRule ~ rep(catchBlock) ~ rep(finallyBlock) ^^ {
+  def tryBlock: Parser[TryNode] = ("try" ~> block) ~ rep(catchBlock) ~ rep(finallyBlock) ^^ {
     case a ~ b ~ c => TryNode(a, b, c)
   }
 
-  def catchBlock: Parser[CatchNode] = catchBlockRule ^^ {
+  def catchBlock: Parser[CatchNode] = ("catch" ~ "(") ~> namespacedIdentifier ~ variableName ~ (")" ~> block) ^^ {
     case a ~ b ~ c => CatchNode(a, b, c)
   }
 
-  def finallyBlock: Parser[FinallyNode] = finallyBlockRule ^^ FinallyNode
+  def finallyBlock: Parser[FinallyNode] = "finally" ~> block ^^ FinallyNode
 
   /**
    *********************************************************************
