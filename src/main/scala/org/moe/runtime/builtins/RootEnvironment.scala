@@ -14,6 +14,8 @@ object RootEnvironment {
     import r.NativeObjects._
 
     env.create("@ARGV", getArray())
+
+    env.create("%ENV", getHash(r.getSystem.getEnv.map(p => p._1 -> getStr(p._2)).toSeq:_*))
     
   }
 }
