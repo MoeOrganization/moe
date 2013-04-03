@@ -50,5 +50,22 @@ object CorePackage {
       )
     )
 
+    pkg.addSubroutine(
+      new MoeSubroutine(
+        "exit",
+        new MoeSignature(List(new MoeOptionalParameter("$status"))),
+        env,
+        { (e) => 
+            val status = e.get("$status").get
+            if (status.isUndef) {
+              r.getSystem.exit()
+            } else {
+              r.getSystem.exit(status.unboxToInt.get)
+            }
+            getUndef
+        }
+      )
+    )
+
   }
 }
