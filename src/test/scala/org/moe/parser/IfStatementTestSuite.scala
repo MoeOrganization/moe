@@ -40,4 +40,39 @@ class IfStatementTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     assert(result.isUndef)
   }
 
+  test("... single else ") {
+    val result = interpretCode("if (false) { 10 } else { 20 }")
+    assert(result.unboxToInt.get === 20)
+  }
+
+  test("... nested single else ") {
+    val result = interpretCode("if (false) { 10 } else { if (false) { 10 } else { 20 } }")
+    assert(result.unboxToInt.get === 20)
+  }
+
+  test("... single elsif ") {
+    val result = interpretCode("if (false) { 10 } elsif (true) { 20 }")
+    assert(result.unboxToInt.get === 20)
+  }
+
+  test("... nested single elsif ") {
+    val result = interpretCode("if (false) { 10 } elsif (true) { if (false) { 10 } elsif (true) { 20 } }")
+    assert(result.unboxToInt.get === 20)
+  }
+
+  test("... double elsif ") {
+    val result = interpretCode("if (false) { 10 } elsif (false) { 20 } elsif (true) { 30 }")
+    assert(result.unboxToInt.get === 30)
+  }
+
+  test("... triple elsif ") {
+    val result = interpretCode("if (false) { 10 } elsif (false) { 20 } elsif (false) { 30 } elsif (true) { 40 }")
+    assert(result.unboxToInt.get === 40)
+  }
+
+  test("... double elsif with else") {
+    val result = interpretCode("if (false) { 10 } elsif (false) { 20 } elsif (false) { 30 } else { 40 }")
+    assert(result.unboxToInt.get === 40)
+  }
+
 }
