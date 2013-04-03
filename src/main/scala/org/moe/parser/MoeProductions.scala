@@ -142,9 +142,6 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     | range
     | code
     | literalValue
-    | variableDeclaration
-    | assignment
-    | attributeAssignment
     | classAccess
     | variable
     | attribute
@@ -228,10 +225,6 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   // declaration
 
-  def variableDeclaration = "my" ~> variableName ~ ("=" ~> expression).? ^^ {
-    case v ~ expr => VariableDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
-  }
-
   private lazy val array_index_rule = "@" ~ (namespacedIdentifier <~ "[") ~ (expression <~ "]")
   private lazy val hash_index_rule  = "%" ~ (namespacedIdentifier <~ "{") ~ (expression <~ "}")
 
@@ -245,11 +238,15 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   // assignment
 
-  def assignment = variableName ~ "=" ~ expression ^^ {
+  def variableDeclaration = "my" ~> variableName ~ ("=" ~> expression).? <~ statementDelim ^^ {
+    case v ~ expr => VariableDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
+  }  
+
+  def variableAssignment = variableName ~ "=" ~ expression <~ statementDelim ^^ {
     case v ~ _ ~ expr => VariableAssignmentNode(v, expr)
   }
 
-  def attributeAssignment = attributeName ~ "=" ~ expression ^^ {
+  def attributeAssignment = attributeName ~ "=" ~ expression <~ statementDelim ^^ {
     case v ~ _ ~ expr => AttributeAssignmentNode(v, expr)
   }
 
@@ -263,10 +260,14 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    */
 
   def statementDelim: Parser[List[String]] = rep1(";")
-  def statements: Parser[StatementsNode] = repsep(statement, statementDelim) <~ statementDelim.? ^^ StatementsNode
 
-  def blockContent: Parser[StatementsNode] = statements <~ statementDelim.?
-  def block: Parser[StatementsNode] = "{" ~> blockContent <~ "}"
+  def statements: Parser[StatementsNode] = repsep((
+      blockStatement
+    | declarationStatement
+    | statement
+  ), statementDelim.?) ^^ StatementsNode
+
+  def block: Parser[StatementsNode] = "{" ~> statements <~ "}"
 
   def doBlock: Parser[StatementsNode] = "do".r ~> block
   def scopeBlock: Parser[ScopeNode] = block ^^ { ScopeNode(_) }
@@ -341,7 +342,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    *********************************************************************
    */
 
-  def ifElseBlock: Parser[AST] = "if" ~> ("(" ~> expression <~ ")") ~ block ~ ("else" ~> block).? ^^ {
+  def ifElseBlock: Parser[AST] = "if" ~> ("(" ~> expression <~ ")") ~ block ~ ("else" ~> block).? ^^ { 
     case if_cond ~ if_body ~ None            => IfNode(new IfStruct(if_cond,if_body)) 
     case if_cond ~ if_body ~ Some(else_body) => IfNode(
       new IfStruct(
@@ -362,15 +363,13 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   lazy val catchBlockRule   = ("catch" ~ "(") ~> namespacedIdentifier ~ variableName ~ (")" ~> block)
   lazy val finallyBlockRule = "finally" ~> block
 
-  def tryBlock: Parser[TryNode] =
-    tryBlockRule ~ rep(catchBlock) ~ rep(finallyBlock) ^^ {
-      case a ~ b ~ c => TryNode(a, b, c)
-    }
+  def tryBlock: Parser[TryNode] = tryBlockRule ~ rep(catchBlock) ~ rep(finallyBlock) ^^ {
+    case a ~ b ~ c => TryNode(a, b, c)
+  }
 
-  def catchBlock: Parser[CatchNode] =
-    catchBlockRule ^^ {
-      case a ~ b ~ c => CatchNode(a, b, c)
-    }
+  def catchBlock: Parser[CatchNode] = catchBlockRule ^^ {
+    case a ~ b ~ c => CatchNode(a, b, c)
+  }
 
   def finallyBlock: Parser[FinallyNode] = finallyBlockRule ^^ FinallyNode
 
@@ -381,15 +380,24 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    *********************************************************************
    */  
 
-  lazy val statement: Parser[AST] = (
-      loop
-    | expression
+  lazy val blockStatement: Parser[AST] = (
+      ifElseBlock
     | doBlock
-    | scopeBlock
     | tryBlock
-    | packageDecl
+  )
+
+  lazy val declarationStatement: Parser[AST] = (
+      packageDecl
     | subroutineDecl
     | classDecl
+  )
+
+  lazy val statement: Parser[AST] = (
+      variableDeclaration
+    | variableAssignment
+    | attributeAssignment  
+    | expression <~ statementDelim.?
+    | scopeBlock  
   )
 
 }
