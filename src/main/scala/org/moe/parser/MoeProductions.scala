@@ -142,7 +142,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     | range
     | code
     | literalValue
-    | declaration
+    | variableDeclaration
     | assignment
     | attributeAssignment
     | classAccess
@@ -228,7 +228,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   // declaration
 
-  def declaration = "my" ~> variableName ~ ("=" ~> expression).? ^^ {
+  def variableDeclaration = "my" ~> variableName ~ ("=" ~> expression).? ^^ {
     case v ~ expr => VariableDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
   }
 
