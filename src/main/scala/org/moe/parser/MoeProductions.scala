@@ -301,7 +301,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   // Classes
 
-  def attributeDecl = "has" ~> attributeName ~ ("=" ~> expression).? ^^ {
+  def attributeDecl = "has" ~> attributeName ~ ("=" ~> expression).? <~ statementDelim ^^ {
     case v ~ expr => AttributeDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
   }
 
@@ -327,8 +327,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     | attributeDecl
   )
 
-  def classBodyStatements : Parser[StatementsNode] = repsep(classBodyParts, statementDelim) ^^ StatementsNode
-  def classBodyContent    : Parser[StatementsNode] = classBodyStatements <~ statementDelim.?
+  def classBodyContent    : Parser[StatementsNode] = rep(classBodyParts) ^^ StatementsNode
   def classBody           : Parser[StatementsNode] = "{" ~> classBodyContent <~ "}"
 
   def classDecl = ("class" ~> namespacedIdentifier) ~ ("extends" ~> namespacedIdentifier).? ~ classBody ^^ {
