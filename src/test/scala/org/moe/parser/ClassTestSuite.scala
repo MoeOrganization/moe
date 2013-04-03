@@ -26,7 +26,7 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
   }
 
   test("... a basic class w/ attribute") {
-    val result = interpretCode("class Foo { has $.bar }")
+    val result = interpretCode("class Foo { has $.bar; }")
     result.asInstanceOf[MoeClass].getName should be ("Foo")
     result.asInstanceOf[MoeClass].hasAttribute("$.bar") should be (true)
   }
@@ -44,31 +44,31 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
   }
 
   test("... a basic class w/ instance creation") {
-    val result = interpretCode("class Foo {}; ^Foo->new")
+    val result = interpretCode("class Foo {} ^Foo->new")
     result.asInstanceOf[MoeOpaque].isInstanceOf("Foo") should be (true)
     result.asInstanceOf[MoeOpaque].getAssociatedClass.get.getName should be ("Foo")
   }
 
   test("... a basic class w/ instance creation and method calling") {
-    val result = interpretCode("class Foo { method bar { 10 } }; ^Foo->new->bar")
+    val result = interpretCode("class Foo { method bar { 10 } } ^Foo->new->bar")
     result.unboxToInt.get should be (10)
   }
 
   test("... a basic class w/ instance creation and attribute init and access") {
-    val result = interpretCode("class Foo { has $.bar = 10; method bar { $.bar } }; ^Foo->new->bar")
+    val result = interpretCode("class Foo { has $.bar = 10; method bar { $.bar } } ^Foo->new->bar")
     result.unboxToInt.get should be (10)
   }
 
   private val attrDefault = """
     class Foo { 
       has $.bar = 0 .. 5; 
-      method bar { $.bar->pop }; 
+      method bar { $.bar->pop }
       method baz { $.bar } 
     }
   """
 
   test("... test that attribute defaults are cloned properly") {
-    val result = interpretCode(attrDefault + "; my $f1 = ^Foo->new; my $f2 = ^Foo->new; [ $f1->bar, $f1->baz, $f2->bar, $f2->baz ]")
+    val result = interpretCode(attrDefault + " my $f1 = ^Foo->new; my $f2 = ^Foo->new; [ $f1->bar, $f1->baz, $f2->bar, $f2->baz ]")
     result.toString should be ("[5, [0, 1, 2, 3, 4], 5, [0, 1, 2, 3, 4]]")
   }
 
@@ -77,23 +77,23 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
       has $.x = 0;
       has $.y = 0;
       method x ($x?) { 
-        if ($x) { $.x = $x };
+        if ($x) { $.x = $x; }
         $.x
-      };
+      }
       method y ($y?) { 
-        if ($y) { $.y = $y };
+        if ($y) { $.y = $y; }
         $.y
-      };
+      }
     }
   """
 
   test("... a complex class (take 1)") {
-    val result = interpretCode(pointClass + "; my $p = ^Point->new; $p->x")
+    val result = interpretCode(pointClass + " my $p = ^Point->new; $p->x")
     result.unboxToInt.get should be (0)
   }
 
   test("... a complex class (take 2)") {
-    val result = interpretCode(pointClass + "; my $p = ^Point->new; $p->x(10); $p->x")
+    val result = interpretCode(pointClass + " my $p = ^Point->new; $p->x(10); $p->x")
     result.unboxToInt.get should be (10)
   }
 
@@ -103,16 +103,16 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
       has $.y = 0;
       BUILD ($x, $y) {
         $.x = $x;
-        $.y = $y
-      };
+        $.y = $y;
+      }
       method x ($x?) { 
-        if ($x) { $.x = $x };
+        if ($x) { $.x = $x; }
         $.x
-      };
+      }
       method y ($y?) { 
-        if ($y) { $.y = $y };
+        if ($y) { $.y = $y; }
         $.y
-      };
+      }
     }
   """
 
