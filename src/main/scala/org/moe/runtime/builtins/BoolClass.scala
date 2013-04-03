@@ -24,17 +24,6 @@ object BoolClass {
 
     import r.NativeObjects._
 
-    // moved to coercion section
-
-    // boolClass.addMethod(
-    //   new MoeMethod(
-    //     "prefix:<+>",
-    //     new MoeSignature(),
-    //     env,
-    //     (e) => getInt(self(e).unboxToInt.getOrElse(0))
-    //   )
-    // )
-
     // coercion
 
     boolClass.addMethod(
