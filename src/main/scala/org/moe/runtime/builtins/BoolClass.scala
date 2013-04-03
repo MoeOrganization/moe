@@ -82,7 +82,7 @@ object BoolClass {
 
     boolClass.addMethod(
       new MoeMethod(
-        "prefix:<.>",
+        "prefix:<~>",
         new MoeSignature(),
         env,
         (e) => self(e).coerce(r, Some(MoeStrContext()))

@@ -251,7 +251,7 @@ object StrClass {
 
     strClass.addMethod(
       new MoeMethod(
-        "prefix:<.>",
+        "prefix:<~>",
         new MoeSignature(),
         env,
         (e) => self(e)

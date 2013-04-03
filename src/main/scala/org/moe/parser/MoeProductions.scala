@@ -83,14 +83,14 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case left ~ op ~ right => BinaryOpNode(left, op, right)
   } | coerceOp
 
-  // Symbolic unary -- left        + (num), ? (bool), . (str)
+  // Symbolic unary -- left        + (num), ? (bool), ~ (str)
   // used for explicit coercion
   // (see: http://perlcabal.org/syn/S03.html#Symbolic_unary_precedence)
 
   // Perl6 uses ~ for stringification (same as its concatentation op);
   // since our concat op is ".", we use it as the prefix op
 
-  lazy val coerceOp: PackratParser[AST] = "[+?.]".r ~ applyOp ^^ {
+  lazy val coerceOp: PackratParser[AST] = "[+?~]".r ~ applyOp ^^ {
     case op ~ expr => PrefixUnaryOpNode(expr, op)
   } | applyOp
 
