@@ -23,6 +23,18 @@ object NumClass {
 
     // MRO: Num, Scalar, Any, Object
 
+    numClass.addMethod(
+      new MoeMethod(
+        "new",
+        new MoeSignature(List(new MoeOptionalParameter("$num"))),
+        env,
+        (e) => e.get("$num") match {
+          case Some(n: MoeNumObject) => n.copy
+          case _                     => getNum(0.0)
+        }
+      )
+    )
+
     // increment/decrement
 
     numClass.addMethod(

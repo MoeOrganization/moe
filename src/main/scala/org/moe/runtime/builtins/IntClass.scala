@@ -23,6 +23,18 @@ object IntClass {
 
     // MRO: Int, Scalar, Any, Object
 
+    intClass.addMethod(
+      new MoeMethod(
+        "new",
+        new MoeSignature(List(new MoeOptionalParameter("$int"))),
+        env,
+        (e) => e.get("$int") match {
+          case Some(i: MoeIntObject) => i.copy
+          case _                     => getInt(0)
+        }
+      )
+    )
+
     // Unary -
 
     intClass.addMethod(

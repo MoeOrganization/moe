@@ -22,6 +22,18 @@ object StrClass {
 
     // MRO: Str, Scalar, Any, Object
 
+    strClass.addMethod(
+      new MoeMethod(
+        "new",
+        new MoeSignature(List(new MoeOptionalParameter("$string"))),
+        env,
+        (e) => e.get("$string") match {
+          case Some(s: MoeStrObject) => s.copy
+          case _                     => getStr("")
+        }
+      )
+    )
+
     // increment/decrement
 
     strClass.addMethod(

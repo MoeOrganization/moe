@@ -13,7 +13,18 @@ object UndefClass {
       throw new MoeErrors.MoeStartupError("Could not find class Undef")
     )
 
+    import r.NativeObjects._
+
     // MRO: Undef, Scalar, Any, Object
+
+    undefClass.addMethod(
+      new MoeMethod(
+        "new",
+        new MoeSignature(),
+        env,
+        (e) => getUndef
+      )
+    )
 
     /**
      * List of Methods to support:
