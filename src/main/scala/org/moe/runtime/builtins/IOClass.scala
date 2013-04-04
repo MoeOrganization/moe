@@ -162,15 +162,12 @@ object IOClass {
      * List of Methods to support:
      * - printf ($format, @strings)
      * - read ($length)
-     * - readline
      * - open ($mode)
      * - is_open
-     * - close
      * - eof
      * - getc
      * - putc ($c)
      * - seek ($whence, $offset)
-     * - slurp
      * - flush
      *
      * See the following for details:
