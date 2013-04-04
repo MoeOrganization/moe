@@ -92,9 +92,13 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   lazy val coerceOp: PackratParser[AST] = "[+?~]".r ~ applyOp ^^ {
     case op ~ expr => PrefixUnaryOpNode(expr, op)
-  } | applyOp
+  } | fileTestOps
 
   // TODO: nonassoc    ++ --
+
+  lazy val fileTestOps: PackratParser[AST] = "-[erwx]".r ~ applyOp ^^ {
+    case op ~ expr => PrefixUnaryOpNode(expr, op)
+  } | applyOp
 
   /**
    *********************************************************************
