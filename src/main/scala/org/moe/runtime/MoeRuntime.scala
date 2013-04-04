@@ -3,9 +3,14 @@ package org.moe.runtime
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.ArrayBuffer
 
+import org.moe.interpreter._
+import org.moe.ast._
+import org.moe.parser._
+
 class MoeRuntime (
     private val system: MoeSystem = new MoeSystem(),
-    private val warnings: Boolean = true
+    private val warnings: Boolean = true,
+    private val interpreter: Option[Interpreter] = None
   ) extends MoeObject {
 
   private val VERSION         = "0.0.0"
@@ -132,6 +137,12 @@ class MoeRuntime (
   def warn  (msg: MoeObject*): Unit = system.getSTDERR.println(msg.map(_.unboxToString.get).mkString)
   def print (msg: MoeObject*): Unit = system.getSTDOUT.print(msg.map(_.unboxToString.get).mkString)
   def say   (msg: MoeObject*): Unit = system.getSTDOUT.println(msg.map(_.unboxToString.get).mkString)
+
+  def eval (line: String, env: MoeEnvironment) = interpreter.get.eval(
+    this, 
+    env, 
+    CompilationUnitNode(ScopeNode(MoeParser.parseFromEntry(line)))
+  )
 
   private def setupBuiltins = {
     import org.moe.runtime.builtins._

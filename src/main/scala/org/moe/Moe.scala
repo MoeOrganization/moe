@@ -64,7 +64,8 @@ object Moe {
 
     val interpreter = new Interpreter()
     val runtime     = new MoeRuntime(
-      warnings = cmd.hasOption("w")
+      warnings    = cmd.hasOption("w"),
+      interpreter = Some(interpreter)
     )
     runtime.bootstrap()
 

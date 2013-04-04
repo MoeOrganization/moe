@@ -52,6 +52,15 @@ object CorePackage {
 
     pkg.addSubroutine(
       new MoeSubroutine(
+        "eval",
+        new MoeSignature(List(new MoePositionalParameter("$source"))),
+        env,
+        (e) => r.eval(e.getAs[MoeStrObject]("$source").get.unboxToString.get, e)
+      )
+    )
+
+    pkg.addSubroutine(
+      new MoeSubroutine(
         "exit",
         new MoeSignature(List(new MoeOptionalParameter("$status"))),
         env,
