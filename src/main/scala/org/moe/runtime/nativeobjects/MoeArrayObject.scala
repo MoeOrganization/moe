@@ -80,6 +80,10 @@ class MoeArrayObject(
     r.NativeObjects.getUndef
   }
 
+  // MoeNativeObject overrides
+
+  override def copy = new MoeArrayObject(ArrayBuffer(getNativeValue:_*), getAssociatedClass)
+
   // MoeObject overrides
   
   override def isFalse: Boolean = getNativeValue.size == 0

@@ -67,6 +67,10 @@ class MoeNumObject(
     getNativeValue >= other.unboxToDouble.get
   )
 
+  // MoeNativeObject overrides
+
+  override def copy = new MoeNumObject(getNativeValue, getAssociatedClass)
+
   // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue == 0

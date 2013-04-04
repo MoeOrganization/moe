@@ -55,6 +55,10 @@ class MoeHashObject(
     ).toArray:_*
   )
 
+  // MoeNativeObject overrides
+ 
+  override def copy = new MoeHashObject(HashMap(getNativeValue.toSeq:_*), getAssociatedClass)
+
   // MoeObject overrides 
 
   override def isFalse: Boolean = getNativeValue.size == 0

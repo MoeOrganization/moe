@@ -95,6 +95,10 @@ class MoeStrObject(
   def greater_than_or_equal_to (r: MoeRuntime, other: MoeObject): MoeBoolObject =
     r.NativeObjects.getBool(getNativeValue >= other.unboxToString.get)
 
+  // MoeNativeObject overrides
+
+  override def copy = new MoeStrObject(getNativeValue, getAssociatedClass)
+
   // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue match {

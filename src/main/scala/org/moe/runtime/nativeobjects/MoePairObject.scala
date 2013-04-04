@@ -9,12 +9,18 @@ class MoePairObject(
     klass : Option[MoeClass] = None
   ) extends MoeNativeObject[(String, MoeObject)](v, klass) {
 
+  // runtime methods
+
   def key   (r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(getNativeValue._1)
   def value (r: MoeRuntime): MoeObject    = getNativeValue._2
 
   def kv (r: MoeRuntime): MoeArrayObject = r.NativeObjects.getArray(
     r.NativeObjects.getStr(getNativeValue._1), getNativeValue._2
   )
+
+  // MoeNativeObject overrides
+
+  override def copy = new MoePairObject(getNativeValue._1 -> getNativeValue._2, getAssociatedClass)
 
   // MoeObject overrides
 

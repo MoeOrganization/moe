@@ -134,6 +134,10 @@ class MoeIntObject(
   def log (r: MoeRuntime): MoeNumObject = r.NativeObjects.getNum(Math.log(unboxToDouble.get))
   def sqrt(r: MoeRuntime): MoeNumObject = r.NativeObjects.getNum(Math.sqrt(unboxToDouble.get))
 
+  // MoeNativeObject overrides
+
+  override def copy = new MoeIntObject(getNativeValue, getAssociatedClass)
+
   // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue == 0

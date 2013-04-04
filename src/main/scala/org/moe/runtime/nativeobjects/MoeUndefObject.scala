@@ -16,8 +16,12 @@ class MoeUndefObject(
     klass : Option[MoeClass] = None
   ) extends MoeObject(klass) {
 
+  // MoeNativeObject overrides
+
   def getNativeValue: AnyRef = null
   
+  def copy = new MoeUndefObject(getAssociatedClass)
+
   // MoeObject overrides
 
   override def isFalse: Boolean = true

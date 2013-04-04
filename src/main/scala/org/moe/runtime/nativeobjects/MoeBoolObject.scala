@@ -11,15 +11,21 @@ class MoeBoolObject(
 
   // runtime methods
 
-  def toInt: Int = if (getNativeValue) 1 else 0
+  // MoeNativeObject overrides
+
+  override def copy = new MoeBoolObject(getNativeValue, getAssociatedClass)
+
+  // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue == false
   override def toString: String = if (getNativeValue) "true" else "false"
 
   // unboxing
 
-  override def unboxToInt    : Try[Int]    = Try(toInt)
-  override def unboxToDouble : Try[Double] = Try(toInt.toDouble)
+  private def _toInt: Int = if (getNativeValue) 1 else 0
+
+  override def unboxToInt    : Try[Int]    = Try(_toInt)
+  override def unboxToDouble : Try[Double] = Try(_toInt.toDouble)
 
   // coercion
 

@@ -9,5 +9,7 @@ abstract class MoeNativeObject[A] (
 
   def getNativeValue: A = value
   protected def setNativeValue(v: A) = value = v
+
+  def copy: MoeNativeObject[A]
 }
 
