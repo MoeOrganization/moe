@@ -131,7 +131,7 @@ class MoeRuntime (
   // - SL
   def warn  (msg: MoeObject*): Unit = system.getSTDERR.println(msg.map(_.unboxToString.get).mkString)
   def print (msg: MoeObject*): Unit = system.getSTDOUT.print(msg.map(_.unboxToString.get).mkString)
-  def say   (msg: MoeObject*): Unit = system.getSTDOUT.println(msg.map(_.unboxToString.get).mkString)
+  def say   (msg: MoeObject*): Unit = system.getSTDOUT.println(msg.map(_.unboxToString.get + "\n").mkString)
 
   private def setupBuiltins = {
     import org.moe.runtime.builtins._
@@ -178,7 +178,6 @@ class MoeRuntime (
     def getHash  (value: (String, MoeObject)*) = new MoeHashObject(HashMap(value:_*), getCoreClassFor("Hash"))
     def getArray (value: MoeObject*)           = new MoeArrayObject(ArrayBuffer(value:_*), getCoreClassFor("Array"))
     def getPair  (value: (String, MoeObject))  = new MoePairObject((value._1, value._2), getCoreClassFor("Pair"))
-
   }
 
 }
