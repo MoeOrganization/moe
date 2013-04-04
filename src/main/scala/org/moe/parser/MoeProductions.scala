@@ -90,7 +90,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   // Perl6 uses ~ for stringification (same as its concatentation op);
   // since our concat op is ".", we use it as the prefix op
 
-  lazy val coerceOp: PackratParser[AST] = "[+?~]".r ~ applyOp ^^ {
+  lazy val coerceOp: PackratParser[AST] = "[+?~]".r ~ fileTestOps ^^ {
     case op ~ expr => PrefixUnaryOpNode(expr, op)
   } | fileTestOps
 
