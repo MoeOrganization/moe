@@ -56,6 +56,12 @@ class MoeIOObject(
     Source.fromFile(file).mkString
   )
 
+  def close (r: MoeRuntime): MoeUndefObject = {
+    reader.close()
+    writer.close()
+    r.NativeObjects.getUndef
+  }
+
   // MoeNativeObject overrides
 
   override def copy = new MoeIOObject(

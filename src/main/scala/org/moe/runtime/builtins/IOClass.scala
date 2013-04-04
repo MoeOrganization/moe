@@ -137,6 +137,15 @@ object IOClass {
       )
     )
 
+    ioClass.addMethod(
+      new MoeMethod(
+        "close",
+        new MoeSignature(),
+        env,
+        (e) => self(e).close(r)
+      )
+    )
+
     /**
      * NOTE:
      * This list needs some work, I have been punting on
