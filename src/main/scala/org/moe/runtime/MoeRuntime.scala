@@ -131,7 +131,7 @@ class MoeRuntime (
   // - SL
   def warn  (msg: MoeObject*): Unit = system.getSTDERR.println(msg.map(_.unboxToString.get).mkString)
   def print (msg: MoeObject*): Unit = system.getSTDOUT.print(msg.map(_.unboxToString.get).mkString)
-  def say   (msg: MoeObject*): Unit = system.getSTDOUT.println(msg.map(_.unboxToString.get + "\n").mkString)
+  def say   (msg: MoeObject*): Unit = system.getSTDOUT.println(msg.map(_.unboxToString.get).mkString)
 
   private def setupBuiltins = {
     import org.moe.runtime.builtins._

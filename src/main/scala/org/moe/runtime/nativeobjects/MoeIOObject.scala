@@ -38,7 +38,7 @@ class MoeIOObject(
   }
 
   def say (r: MoeRuntime, data: MoeArrayObject): MoeUndefObject = {
-    writer.write(data.unboxToArrayBuffer.get.map(_.unboxToString.get + "\n").mkString)
+    writer.write(data.unboxToArrayBuffer.get.map(_.unboxToString.get).mkString + "\n")
     writer.flush()
     r.NativeObjects.getUndef
   }
