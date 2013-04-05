@@ -80,6 +80,40 @@ class MoeArrayObject(
     r.NativeObjects.getUndef
   }
 
+  def first (r: MoeRuntime, f: MoeCode): MoeObject = 
+    array.dropWhile(i => f.execute(new MoeArguments(List(i))).isFalse).head
+
+  def max (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(
+      array.map(i => i.unboxToInt.get).max
+  )
+
+  def maxstr (r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(
+    array.map(s => s.unboxToString.get).max
+  )
+
+  def min (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(
+      array.map(i => i.unboxToInt.get).min
+  )
+
+  def minstr (r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(
+    array.map(s => s.unboxToString.get).min
+  )
+
+  // equality
+  def equal_to (r: MoeRuntime, that: MoeArrayObject): MoeBoolObject = 
+    r.NativeObjects.getBool(
+      length(r).equal_to(that.length(r))
+        &&
+      ((unboxToArrayBuffer.get, that.unboxToArrayBuffer.get).zipped.forall( (a, b) => a.equal_to(b) ))
+    )
+
+  def not_equal_to (r: MoeRuntime, that: MoeArrayObject): MoeBoolObject =
+    r.NativeObjects.getBool(
+      length(r).not_equal_to(that.length(r))
+        ||
+      ((unboxToArrayBuffer.get, that.unboxToArrayBuffer.get).zipped.exists( (a, b) => a.not_equal_to(b) ))
+    )
+
   // MoeNativeObject overrides
 
   override def copy = new MoeArrayObject(ArrayBuffer(getNativeValue:_*), getAssociatedClass)

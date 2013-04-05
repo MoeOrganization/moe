@@ -202,6 +202,60 @@ object ArrayClass {
       )
     )
 
+    arrayClass.addMethod(
+      new MoeMethod(
+        "eqv",
+        new MoeSignature(List(new MoePositionalParameter("@that"))),
+        env,
+        (e) => self(e).equal_to(r, e.getAs[MoeArrayObject]("@that").get)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "first",
+        new MoeSignature(List(new MoePositionalParameter("&f"))),
+        env,
+        (e) => self(e).first(r, e.getAs[MoeCode]("&f").get)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "max",
+        new MoeSignature(),
+        env,
+        (e) => self(e).max(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "maxstr",
+        new MoeSignature(),
+        env,
+        (e) => self(e).maxstr(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "min",
+        new MoeSignature(),
+        env,
+        (e) => self(e).min(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "minstr",
+        new MoeSignature(),
+        env,
+        (e) => self(e).minstr(r)
+      )
+    )
+
     /**
      * List of Methods to support:
      * - exists ($value)
