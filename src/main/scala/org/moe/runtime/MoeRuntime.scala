@@ -18,6 +18,8 @@ class MoeRuntime (
 
   private var is_bootstrapped = false
 
+  private val includeDirs = ArrayBuffer(new java.io.File(".").getCanonicalPath)
+
   private val rootEnv     = new MoeEnvironment()
   private val rootPackage = new MoePackage("*", rootEnv)
   private val corePackage = new MoePackage("CORE", new MoeEnvironment(Some(rootEnv)))
@@ -27,6 +29,9 @@ class MoeRuntime (
 
   def isBootstrapped     = is_bootstrapped
   def areWarningsEnabled = warnings
+
+  def getIncludeDirs = includeDirs
+  def addIncludeDir(path: String) = includeDirs += path
 
   def getVersion     = VERSION
   def getAuthority   = AUTHORITY
