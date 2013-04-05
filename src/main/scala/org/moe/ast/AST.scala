@@ -68,7 +68,7 @@ case class PackageDeclarationNode(name: String, body: StatementsNode) extends AS
 case class ConstructorDeclarationNode(signature: SignatureNode, body: StatementsNode) extends AST
 case class DestructorDeclarationNode(signature: SignatureNode, body: StatementsNode) extends AST
 case class MethodDeclarationNode(name: String, signature: SignatureNode, body: StatementsNode) extends AST
-case class SubroutineDeclarationNode(name: String, signature: SignatureNode, body: StatementsNode, traits: Option[List[String]]) extends AST
+case class SubroutineDeclarationNode(name: String, signature: SignatureNode, body: StatementsNode, traits: Option[List[String]] = None) extends AST
 case class AttributeDeclarationNode(name: String, expression: AST) extends AST
 case class VariableDeclarationNode(name: String, expression: AST) extends AST
 
