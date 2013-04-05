@@ -26,6 +26,11 @@ object Moe {
     e.setArgName("program")
     options.addOption(e)
 
+    val i = new Option("i", "directory to load modules from")
+    i.setArgs(1)
+    i.setArgName("include")
+    options.addOption(i)
+
     /*
      TODO:
 
@@ -65,9 +70,13 @@ object Moe {
     val interpreter = new Interpreter()
     val runtime     = new MoeRuntime(
       warnings    = cmd.hasOption("w"),
-      interpreter = Some(interpreter)
+      interpreter = Some(interpreter) 
     )
     runtime.bootstrap()
+
+    if (cmd.hasOption("i")) {
+      runtime.addIncludeDir(cmd.getOptionValue("i"))
+    }
 
     if (cmd.hasOption("v")) {
       printVersionInformation(runtime)
