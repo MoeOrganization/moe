@@ -11,13 +11,6 @@ object MoePackage {
     )
   }
 
-  def deconstructNamespace(full: String): (Option[Array[String]], String) = {
-    val split_name = full.split("::")
-    if (split_name.length == 1) 
-      (None -> split_name.last)
-    else   
-      (Some(split_name.dropRight(1)) -> split_name.last)
-  }
 }
 
 /**

@@ -115,14 +115,23 @@ class MoeRuntime (
     }
   }
 
-  def getCoreClassFor (name: String): Option[MoeClass] = corePackage.getClass(name)
+  def getCoreClassFor      (name: String): Option[MoeClass]      = corePackage.getClass(name)
+  def getCoreSubroutineFor (name: String): Option[MoeSubroutine] = corePackage.getSubroutine(name)
 
-  def lookupSubroutine (name: String, pkg: MoePackage): Option[MoeSubroutine] = (MoePackage.deconstructNamespace(name) match {
+  private def deconstructNamespace(full: String): (Option[Array[String]], String) = {
+    val split_name = full.split("::")
+    if (split_name.length == 1) 
+      (None -> split_name.last)
+    else   
+      (Some(split_name.dropRight(1)) -> split_name.last)
+  }
+
+  def lookupSubroutine (name: String, pkg: MoePackage): Option[MoeSubroutine] = (deconstructNamespace(name) match {
     case (Some(pkg_name), sub_name) => MoePackage.findPackageByName(pkg_name, pkg).flatMap(_.getSubroutine(sub_name))
     case (None,           sub_name) => pkg.getSubroutine(sub_name)
-  }).orElse(corePackage.getSubroutine(name))
+  }).orElse(getCoreSubroutineFor(name))
 
-  def lookupClass (name: String, pkg: MoePackage): Option[MoeClass] = (MoePackage.deconstructNamespace(name) match {
+  def lookupClass (name: String, pkg: MoePackage): Option[MoeClass] = (deconstructNamespace(name) match {
     case (Some(pkg_name), class_name) => MoePackage.findPackageByName(pkg_name, pkg).flatMap(_.getClass(class_name))
     case (None,           class_name) => pkg.getClass(class_name)
   }).orElse(getCoreClassFor(name))
