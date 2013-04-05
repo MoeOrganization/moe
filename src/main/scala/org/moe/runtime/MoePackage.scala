@@ -3,7 +3,6 @@ package org.moe.runtime
 import scala.collection.mutable.{HashMap,Map}
 
 object MoePackage {
-
   def findPackageByName (name: String, pkg: MoePackage): Option[MoePackage] = findPackageByName(name.split("::"), pkg)
   def findPackageByName (name: Array[String], pkg: MoePackage): Option[MoePackage] = {
     name.foldLeft[Option[MoePackage]](Some(pkg))(
@@ -11,6 +10,18 @@ object MoePackage {
     )
   }
 
+  def createPackageTreeFromName (name: String, env: MoeEnvironment): (MoePackage, MoePackage) = createPackageTreeFromName(name.split("::"), env)
+  def createPackageTreeFromName (name: Array[String], env: MoeEnvironment): (MoePackage, MoePackage) = {
+    val root = new MoePackage(name.head, env)
+    val leaf = name.tail.foldLeft[MoePackage](root)(
+      (parent, subpkg_name) => {
+        val subpkg = new MoePackage(subpkg_name, env)
+        parent.addSubPackage(subpkg)
+        subpkg
+      }
+    ) 
+    (root -> leaf)
+  }
 }
 
 /**

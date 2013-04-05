@@ -278,12 +278,15 @@ class Interpreter {
           val parent = env.getCurrentPackage.getOrElse(
             throw new MoeErrors.PackageNotFound("__PACKAGE__")
           )
-          val pkg = new MoePackage(name, newEnv)
-          parent.addSubPackage(pkg)
-          newEnv.setCurrentPackage(pkg)
+          val pkgs = MoePackage.createPackageTreeFromName(name, newEnv)
+          // attach the root
+          parent.addSubPackage(pkgs._1) 
+          // make the leaf the current package 
+          newEnv.setCurrentPackage(pkgs._2) 
           val result = eval(runtime, newEnv, body)
           newEnv.setCurrentPackage(parent)
-          pkg
+          // return the root
+          pkgs._1
         }
       }
 
@@ -487,11 +490,18 @@ class Interpreter {
           runtime.NativeObjects.getStr(path.toString)
         )
 
-        eval(
+        val result = eval(
           runtime, 
           env, 
           MoeParser.parseFromEntry(Source.fromFile(path).mkString)
         )
+
+        result match {
+          case (p: MoePackage) => println(p.getName)
+          case _               => ()
+        }
+
+        result
       }
 
       case IfNode(if_node) => {

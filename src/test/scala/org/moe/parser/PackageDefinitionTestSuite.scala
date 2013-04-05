@@ -29,4 +29,10 @@ class PackageDefinitionTestSuite extends FunSuite with BeforeAndAfter with Parse
     val result = interpretCode("package Foo { package Bar { sub baz {'BAZ'} sub bar {baz()} } } Foo::Bar::bar()")
     assert(result.unboxToString.get === "BAZ")
   }
+
+  test("... test automatic package tree creation") {
+    val result = interpretCode("package Foo::Bar { sub baz {'BAZ'} }; Foo::Bar::baz()")
+    assert(result.unboxToString.get === "BAZ")
+  }
+
 }
