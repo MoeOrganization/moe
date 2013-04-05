@@ -11,14 +11,6 @@ case class ScopeNode(body: StatementsNode) extends AST
 
 case class StatementsNode(nodes: List[AST]) extends AST
 
-case class IfStruct (
-  var condition: AST,
-  var body: AST, 
-  var else_node: Option[IfStruct] = None
-) extends AST
-
-case class IfNode(if_node: IfStruct) extends AST 
-
 // literals
 
 /**
@@ -96,6 +88,14 @@ case class MethodCallNode(invocant: AST, method_name: String, args: List[AST]) e
 case class SubroutineCallNode(function_name: String, args: List[AST]) extends AST
 
 // statements
+
+case class IfStruct (
+  var condition: AST,
+  var body: AST,
+  var else_node: Option[IfStruct] = None
+) extends AST
+
+case class IfNode(if_node: IfStruct) extends AST
 
 case class UnlessNode(unless_condition: AST, unless_body: AST) extends AST
 case class UnlessElseNode(unless_condition: AST, unless_body: AST, else_body: AST) extends AST
