@@ -204,10 +204,15 @@ object ArrayClass {
 
     arrayClass.addMethod(
       new MoeMethod(
-        "eqv",
-        new MoeSignature(List(new MoePositionalParameter("@that"))),
+        "reduce",
+        new MoeSignature(List(new MoePositionalParameter("&f"), new MoeOptionalParameter("$init"))),
         env,
-        (e) => self(e).equal_to(r, e.getAs[MoeArrayObject]("@that").get)
+        { (e) => e.get("$init") match {
+            case Some(none: MoeUndefObject) => self(e).reduce(r, e.getAs[MoeCode]("&f").get, None)
+            case Some(init: MoeObject) => self(e).reduce(r, e.getAs[MoeCode]("&f").get, Some(init))
+            case _                     => self(e).reduce(r, e.getAs[MoeCode]("&f").get, None)
+          }
+        }
       )
     )
 
@@ -253,6 +258,33 @@ object ArrayClass {
         new MoeSignature(),
         env,
         (e) => self(e).minstr(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "shuffle",
+        new MoeSignature(),
+        env,
+        (e) => self(e).shuffle(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "sum",
+        new MoeSignature(),
+        env,
+        (e) => self(e).sum(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "eqv",
+        new MoeSignature(List(new MoePositionalParameter("@that"))),
+        env,
+        (e) => self(e).equal_to(r, e.getAs[MoeArrayObject]("@that").get)
       )
     )
 

@@ -80,6 +80,11 @@ class MoeArrayObject(
     r.NativeObjects.getUndef
   }
 
+  def reduce (r: MoeRuntime, f: MoeCode, init: Option[MoeObject]): MoeObject = init match {
+    case Some(init_val) => array.foldLeft(init_val)({ (a, b) => f.execute(new MoeArguments(List(a, b))) })
+    case None           => array.reduceLeft        ({ (a, b) => f.execute(new MoeArguments(List(a, b))) })
+  }
+
   def first (r: MoeRuntime, f: MoeCode): MoeObject = 
     array.dropWhile(i => f.execute(new MoeArguments(List(i))).isFalse).head
 
@@ -97,6 +102,14 @@ class MoeArrayObject(
 
   def minstr (r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(
     array.map(s => s.unboxToString.get).min
+  )
+
+  def shuffle (r: MoeRuntime): MoeArrayObject = r.NativeObjects.getArray(
+    scala.util.Random.shuffle(array) : _*
+  )
+
+  def sum (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(
+    array.map(i => i.unboxToInt.get).sum
   )
 
   // equality

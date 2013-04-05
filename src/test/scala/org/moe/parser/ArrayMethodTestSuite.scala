@@ -40,24 +40,14 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     array(1).unboxToString.get should equal ("ba")
   }
 
-  test("... basic test with array.eqv (equal)") {
-    val result = interpretCode("my @a1 = ['a', 'b', 1, 2]; my @a2 = ['a', 'b', 1, 2]; @a1.eqv(@a2)")
-    result.unboxToBoolean.get should equal (true)
+  test("... basic test with array.reduce") {
+    val result = interpretCode("my @x = [1, 2, 3, 4, 5]; @x.reduce(-> ($a, $b) { $a + $b })")
+    result.unboxToInt.get should equal (15)
   }
 
-  test("... basic test with array.eqv (not-equal)") {
-    val result = interpretCode("my @a1 = ['a', 'b', 1, 2]; my @a2 = ['a', 'b', 1, '2']; @a1.eqv(@a2)")
-    result.unboxToBoolean.get should equal (false)
-  }
-
-  test("... basic test with array.eqv (nested arrays - equal)") {
-    val result = interpretCode("my @a1 = ['a', ['b', 1], 2]; my @a2 = ['a', ['b', 1], 2]; @a1.eqv(@a2)")
-    result.unboxToBoolean.get should equal (true)
-  }
-
-  test("... basic test with array.eqv (nested arrays - not equal)") {
-    val result = interpretCode("my @a1 = ['a', ['b', 1], 2]; my @a2 = ['a', ['b', 1, 2]]; @a1.eqv(@a2)")
-    result.unboxToBoolean.get should equal (false)
+  test("... basic test with array.reduce with initial value") {
+    val result = interpretCode("my @x = [1, 2, 3, 4, 5]; @x.reduce(-> ($a, $b) { $a + $b }, 100)")
+    result.unboxToInt.get should equal (115)
   }
 
   test("... basic test with array.first") {
@@ -84,4 +74,37 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     val result = interpretCode("my @a = ['foo', 'bar', 'baz']; @a.minstr")
     result.unboxToString.get should equal ("bar")
   }
+
+  test("... basic test with array.shuffle") {
+    val result = interpretCode("my @a = [1, 2, 3, 4, 5]; @a.shuffle")
+    val array = result.unboxToArrayBuffer.get
+    array.length should equal (5)
+    array.mkString("") should not equal "12345"
+  }
+
+  test("... basic test with array.sum") {
+    val result = interpretCode("my @a = [1, 2, 3, 4, 5]; @a.sum")
+    result.unboxToInt.get should equal (15)
+  }
+
+  test("... basic test with array.eqv (equal)") {
+    val result = interpretCode("my @a1 = ['a', 'b', 1, 2]; my @a2 = ['a', 'b', 1, 2]; @a1.eqv(@a2)")
+    result.unboxToBoolean.get should equal (true)
+  }
+
+  test("... basic test with array.eqv (not-equal)") {
+    val result = interpretCode("my @a1 = ['a', 'b', 1, 2]; my @a2 = ['a', 'b', 1, '2']; @a1.eqv(@a2)")
+    result.unboxToBoolean.get should equal (false)
+  }
+
+  test("... basic test with array.eqv (nested arrays - equal)") {
+    val result = interpretCode("my @a1 = ['a', ['b', 1], 2]; my @a2 = ['a', ['b', 1], 2]; @a1.eqv(@a2)")
+    result.unboxToBoolean.get should equal (true)
+  }
+
+  test("... basic test with array.eqv (nested arrays - not equal)") {
+    val result = interpretCode("my @a1 = ['a', ['b', 1], 2]; my @a2 = ['a', ['b', 1, 2]]; @a1.eqv(@a2)")
+    result.unboxToBoolean.get should equal (false)
+  }
+
 }
