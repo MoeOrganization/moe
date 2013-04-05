@@ -370,15 +370,20 @@ class Interpreter {
       case SubroutineDeclarationNode(name, signature, body) => {
         val sig = eval(runtime, env, signature).asInstanceOf[MoeSignature]
         throwForUndeclaredVars(env, sig, body)
+
+        val pkg = env.getCurrentPackage.getOrElse(throw new MoeErrors.PackageNotFound("__PACKAGE__"))
+
+        val decl_env = new MoeEnvironment(Some(env))
+        decl_env.setCurrentPackage(pkg)
+
         val sub = new MoeSubroutine(
           name            = name,
           signature       = sig,
-          declaration_env = env,
+          declaration_env = decl_env,
           body            = (e) => eval(runtime, e, body)
         )
-        env.getCurrentPackage.getOrElse(
-          throw new MoeErrors.PackageNotFound("__PACKAGE__")
-        ).addSubroutine( sub )
+
+        pkg.addSubroutine( sub )
         sub
       }
       
