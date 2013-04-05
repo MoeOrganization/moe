@@ -4,18 +4,19 @@ import scala.collection.mutable.{HashMap,Map}
 
 object MoePackage {
 
-  def findPackageByName (name: String, pkg: MoePackage): Option[MoePackage] = {
-    name.split("::").foldLeft[Option[MoePackage]](Some(pkg))(
+  def findPackageByName (name: String, pkg: MoePackage): Option[MoePackage] = findPackageByName(name.split("::"), pkg)
+  def findPackageByName (name: Array[String], pkg: MoePackage): Option[MoePackage] = {
+    name.foldLeft[Option[MoePackage]](Some(pkg))(
       (parent, sub) => parent.get.getSubPackage(sub)
     )
   }
 
-  def deconstructNamespace(full: String): (Option[String], String) = {
+  def deconstructNamespace(full: String): (Option[Array[String]], String) = {
     val split_name = full.split("::")
     if (split_name.length == 1) 
       (None -> split_name.last)
     else   
-      (Some(split_name.dropRight(1).mkString("::")) -> split_name.last)
+      (Some(split_name.dropRight(1)) -> split_name.last)
   }
 }
 
