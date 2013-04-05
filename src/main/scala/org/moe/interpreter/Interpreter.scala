@@ -3,6 +3,9 @@ package org.moe.interpreter
 import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 import org.moe.ast._
+import org.moe.parser._
+
+import scala.io.Source
 
 class Interpreter {
 
@@ -472,6 +475,24 @@ class Interpreter {
       }
 
       // statements
+
+      case UseStatement(name) => {
+        val path = runtime.findFilePathForPackageName(name).getOrElse(
+          throw new MoeErrors.MoeProblems("Could not load module " + name)       
+        )
+
+        env.getAs[MoeHashObject]("%INC").get.bind_key(
+          runtime, 
+          runtime.NativeObjects.getStr(name), 
+          runtime.NativeObjects.getStr(path.toString)
+        )
+
+        eval(
+          runtime, 
+          env, 
+          MoeParser.parseFromEntry(Source.fromFile(path).mkString)
+        )
+      }
 
       case IfNode(if_node) => {
         if (eval(runtime, env, if_node.condition).isTrue) {

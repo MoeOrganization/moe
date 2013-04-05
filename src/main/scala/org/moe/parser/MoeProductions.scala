@@ -346,6 +346,8 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    *********************************************************************
    */
 
+  def useStatement: Parser[UseStatement] = ("use" ~> namespacedIdentifier) <~ statementDelim ^^ UseStatement
+
   def elseBlock: Parser[IfStruct] = "else" ~> block ^^ { 
     case body => new IfStruct(BooleanLiteralNode(true), body) 
   }
@@ -406,6 +408,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
       variableDeclaration
     | variableAssignment
     | attributeAssignment  
+    | useStatement
     | expression <~ statementDelim.?
     | scopeBlock  
   )

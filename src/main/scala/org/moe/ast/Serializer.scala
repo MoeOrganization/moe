@@ -280,6 +280,8 @@ object Serializer {
       )
     )
 
+    case UseStatement(name) => JSONObject(Map("UseStatement" -> name))
+
     case IfStruct (condition, body, None)  => JSONObject(
       Map(
         "IfStruct" -> JSONObject(

@@ -10,7 +10,7 @@ import org.moe.parser._
 class MoeRuntime (
     private val system: MoeSystem = new MoeSystem(),
     private val warnings: Boolean = true,
-    private val interpreter: Option[Interpreter] = None
+    private val interpreter: Option[Interpreter] = None 
   ) extends MoeObject {
 
   private val VERSION         = "0.0.0"
@@ -140,6 +140,11 @@ class MoeRuntime (
     case (Some(pkg_name), class_name) => MoePackage.findPackageByName(pkg_name, pkg).flatMap(_.getClass(class_name))
     case (None,           class_name) => pkg.getClass(class_name)
   }).orElse(getCoreClassFor(name))
+
+  def findFilePathForPackageName (full: String): Option[java.io.File] = {
+    val p = "/" + full.split("::").mkString("/") + ".mo"
+    includeDirs.find(d => new java.io.File(d + p).exists()).map(d => new java.io.File(d + p))
+  }
 
   // TODO: 
   // add line numbers and such 

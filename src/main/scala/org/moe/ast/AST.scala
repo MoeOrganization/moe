@@ -89,13 +89,15 @@ case class SubroutineCallNode(function_name: String, args: List[AST]) extends AS
 
 // statements
 
+case class UseStatement(name: String) extends AST
+
 case class IfStruct (
   var condition: AST,
-  var body: AST,
+  var body: AST, 
   var else_node: Option[IfStruct] = None
 ) extends AST
 
-case class IfNode(if_node: IfStruct) extends AST
+case class IfNode(if_node: IfStruct) extends AST 
 
 case class UnlessNode(unless_condition: AST, unless_body: AST) extends AST
 case class UnlessElseNode(unless_condition: AST, unless_body: AST, else_body: AST) extends AST
