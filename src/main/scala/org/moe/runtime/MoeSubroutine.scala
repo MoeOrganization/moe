@@ -25,6 +25,7 @@ class MoeSubroutine (
    */
   def getTraits: List[String] = _traits
 
+  def hasTrait(t: String): Boolean = _traits.contains(t)
 
   /**
    * Returns the name of this subroutine
