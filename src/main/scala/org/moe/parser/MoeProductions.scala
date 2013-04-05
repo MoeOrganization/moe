@@ -299,9 +299,9 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case p ~ b => PackageDeclarationNode(p, b)
   }
 
-  def subroutineDecl: Parser[SubroutineDeclarationNode] = ("sub" ~> namespacedIdentifier ~ ("(" ~> repsep(parameter, ",") <~ ")").?) ~ block ^^ { 
-    case n ~ Some(p) ~ b => SubroutineDeclarationNode(n, SignatureNode(p), b) 
-    case n ~ None    ~ b => SubroutineDeclarationNode(n, SignatureNode(List()), b) 
+  def subroutineDecl: Parser[SubroutineDeclarationNode] = ("sub" ~> namespacedIdentifier ~ ("(" ~> repsep(parameter, ",") <~ ")").?) ~ rep("is" ~> identifier).? ~ block ^^ { 
+    case n ~ Some(p) ~ t ~ b => SubroutineDeclarationNode(n, SignatureNode(p), b, t) 
+    case n ~ None    ~ t ~ b => SubroutineDeclarationNode(n, SignatureNode(List()), b, t) 
   }
 
   // Classes

@@ -367,7 +367,7 @@ class Interpreter {
         method
       }
 
-      case SubroutineDeclarationNode(name, signature, body) => {
+      case SubroutineDeclarationNode(name, signature, body, traits) => {
         val sig = eval(runtime, env, signature).asInstanceOf[MoeSignature]
         throwForUndeclaredVars(env, sig, body)
 
@@ -380,7 +380,8 @@ class Interpreter {
           name            = name,
           signature       = sig,
           declaration_env = decl_env,
-          body            = (e) => eval(runtime, e, body)
+          body            = (e) => eval(runtime, e, body),
+          traits          = traits.getOrElse(List())
         )
 
         pkg.addSubroutine( sub )

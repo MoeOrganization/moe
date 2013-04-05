@@ -39,7 +39,7 @@ object InterpreterUtils {
       case ConstructorDeclarationNode(_, body) => walkAST(body, callback)
       case DestructorDeclarationNode(_, body) => walkAST(body, callback)
       case MethodDeclarationNode(_, _, body) => walkAST(body, callback)
-      case SubroutineDeclarationNode(_, _, body) => walkAST(body, callback)
+      case SubroutineDeclarationNode(_, _, body, _) => walkAST(body, callback)
 
       case AttributeAssignmentNode(name, expression) => walkAST(expression, callback)
       case AttributeDeclarationNode(name, expression) => walkAST(expression, callback)

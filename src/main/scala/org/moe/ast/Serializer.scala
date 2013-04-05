@@ -180,13 +180,14 @@ object Serializer {
       )
     )
 
-    case SubroutineDeclarationNode(name, signature, body) => JSONObject(
+    case SubroutineDeclarationNode(name, signature, body, traits) => JSONObject(
       Map(
         "SubroutineDeclarationNode" -> JSONObject(
           Map(
             "name"      -> name,
             "signature" -> toJSON(signature),
-            "body"      -> toJSON(body)
+            "body"      -> toJSON(body),
+            "traits"    -> traits.map(_.mkString(", ")).getOrElse("")
           )
         )
       )
