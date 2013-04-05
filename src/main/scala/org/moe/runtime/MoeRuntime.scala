@@ -118,16 +118,14 @@ class MoeRuntime (
   def getCoreClassFor (name: String): Option[MoeClass] = corePackage.getClass(name)
 
   def lookupSubroutine (name: String, pkg: MoePackage): Option[MoeSubroutine] = (MoePackage.deconstructNamespace(name) match {
-    case (Some(pkg_name), sub_name) => lookupPackage(pkg_name, pkg).flatMap(_.getSubroutine(sub_name))
+    case (Some(pkg_name), sub_name) => MoePackage.findPackageByName(pkg_name, pkg).flatMap(_.getSubroutine(sub_name))
     case (None,           sub_name) => pkg.getSubroutine(sub_name)
   }).orElse(corePackage.getSubroutine(name))
 
   def lookupClass (name: String, pkg: MoePackage): Option[MoeClass] = (MoePackage.deconstructNamespace(name) match {
-    case (Some(pkg_name), class_name) => lookupPackage(pkg_name, pkg).flatMap(_.getClass(class_name))
+    case (Some(pkg_name), class_name) => MoePackage.findPackageByName(pkg_name, pkg).flatMap(_.getClass(class_name))
     case (None,           class_name) => pkg.getClass(class_name)
   }).orElse(getCoreClassFor(name))
-
-  def lookupPackage (name: String, pkg: MoePackage): Option[MoePackage] = MoePackage.findPackageByName(name, pkg)
 
   // TODO: 
   // add line numbers and such 
