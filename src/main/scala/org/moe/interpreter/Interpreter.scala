@@ -275,12 +275,12 @@ class Interpreter {
           val parent = env.getCurrentPackage.getOrElse(
             throw new MoeErrors.PackageNotFound("__PACKAGE__")
           )
-          val pkg    = new MoePackage(name, newEnv)
+          val pkg = new MoePackage(name, newEnv)
           parent.addSubPackage(pkg)
           newEnv.setCurrentPackage(pkg)
           val result = eval(runtime, newEnv, body)
           newEnv.setCurrentPackage(parent)
-          result
+          pkg
         }
       }
 
