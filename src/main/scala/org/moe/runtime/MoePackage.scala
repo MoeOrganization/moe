@@ -87,6 +87,15 @@ class MoePackage(
     false
   }
 
+  /**
+   * returns a List of MoeSubroutines who have the export trait
+   */
+  def getExportedSubroutines: List[MoeSubroutine] = {
+    subs.foldLeft[List[MoeSubroutine]](List())(
+      (l, p) => if (p._2.hasTrait("export")) p._2 :: l else l
+    )
+  }
+
   // Classes ...
 
   /**

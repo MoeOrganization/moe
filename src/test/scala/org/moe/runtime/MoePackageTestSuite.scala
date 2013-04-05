@@ -45,4 +45,19 @@ class MoePackageTestSuite extends FunSuite with BeforeAndAfter {
     assert(pkg.hasSubPackage("Foo"))
   }
 
+  test("... basic package w/ exported subroutine") {
+    pkg.addSubroutine(
+      new MoeSubroutine(
+        name            = "ident2", 
+        declaration_env = new MoeEnvironment(),
+        signature       = new MoeSignature(List(new MoePositionalParameter("$x"))),
+        body            = (e) => e.get("$x").get,
+        traits          = List("export")
+      )
+    )
+    assert(pkg.hasSubroutine("ident2"))
+    val exports = pkg.getExportedSubroutines
+    assert(exports(0) === pkg.getSubroutine("ident2").get)
+  }
+
 }
