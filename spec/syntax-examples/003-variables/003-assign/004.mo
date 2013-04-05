@@ -1,0 +1,2 @@
+my $foo; 
+$foo = 'hello';

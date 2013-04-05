@@ -1,0 +1,1 @@
+ {"StatementsNode" : [{"HashLiteralNode" : [{"PairLiteralNode" : {"key" : {"StringLiteralNode" : "one"}, "value" : {"IntLiteralNode" : 10}}}, {"PairLiteralNode" : {"key" : {"StringLiteralNode" : "two"}, "value" : {"IntLiteralNode" : 20}}}, {"PairLiteralNode" : {"key" : {"StringLiteralNode" : "three"}, "value" : {"IntLiteralNode" : 30}}}]}]}
