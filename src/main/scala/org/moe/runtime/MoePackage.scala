@@ -107,6 +107,8 @@ class MoePackage(
     )
   }
 
+  def importSubroutines(subs: List[MoeSubroutine]) = subs.foreach(addSubroutine(_))
+
   // Classes ...
 
   /**

@@ -497,8 +497,12 @@ class Interpreter {
         )
 
         result match {
-          case (p: MoePackage) => println(p.getName)
-          case _               => ()
+          case (p: MoePackage) => env.getCurrentPackage.get.importSubroutines(
+            MoePackage.findPackageByName(name, runtime.getRootPackage).getOrElse(
+              throw new MoeErrors.PackageNotFound(name)
+            ).getExportedSubroutines
+          )
+          case _ => ()
         }
 
         result
