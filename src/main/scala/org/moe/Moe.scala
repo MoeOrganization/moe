@@ -26,7 +26,7 @@ object Moe {
     e.setArgName("program")
     options.addOption(e)
 
-    val i = new Option("i", "directory to load modules from")
+    val i = new Option("I", "directory to load modules from")
     i.setArgs(1)
     i.setArgName("include")
     options.addOption(i)
@@ -74,8 +74,8 @@ object Moe {
     )
     runtime.bootstrap()
 
-    if (cmd.hasOption("i")) {
-      runtime.addIncludeDir(cmd.getOptionValue("i"))
+    if (cmd.hasOption("I")) {
+      runtime.addIncludeDir(cmd.getOptionValue("I"))
     }
 
     if (cmd.hasOption("v")) {
