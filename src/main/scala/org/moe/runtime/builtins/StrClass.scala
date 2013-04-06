@@ -225,6 +225,24 @@ object StrClass {
       )
     )        
 
+    strClass.addMethod(
+      new MoeMethod(
+        "pad",
+        new MoeSignature(List(new MoePositionalParameter("$amount"))),
+        env, 
+        (e) => self(e).pad(r, e.getAs[MoeIntObject]("$amount").get)
+      )
+    )
+
+    strClass.addMethod(
+      new MoeMethod(
+        "rpad",
+        new MoeSignature(List(new MoePositionalParameter("$amount"))),
+        env, 
+        (e) => self(e).rpad(r, e.getAs[MoeIntObject]("$amount").get)
+      )
+    )
+
     // concatenation
 
     strClass.addMethod(

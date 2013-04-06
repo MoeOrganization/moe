@@ -53,6 +53,14 @@ class MoeStrObject(
     getNativeValue + a.unboxToArrayBuffer.get.map(_.unboxToString.get).mkString
   )
 
+  def pad (r: MoeRuntime, n: MoeIntObject): MoeStrObject = r.NativeObjects.getStr(
+    List.fill(n.unboxToInt.get)(" ").mkString + getNativeValue
+  )
+
+  def rpad (r: MoeRuntime, n: MoeIntObject): MoeStrObject = r.NativeObjects.getStr(
+    getNativeValue + List.fill(n.unboxToInt.get)(" ").mkString
+  )
+
   def index (r: MoeRuntime): Unit = {}  //(r: MoeRuntime): Unit = {} // ($substring, ?$position)
   def rindex (r: MoeRuntime): Unit = {} // ($substring, ?$position)
   def sprintf (r: MoeRuntime): Unit = {} // ($format, @items)
