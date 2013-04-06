@@ -216,9 +216,6 @@ object StrClass {
       )
     )
 
-    // FIXME
-    // this needs to support variable args
-    // - SL
     strClass.addMethod(
       new MoeMethod(
         "concat",
