@@ -481,7 +481,9 @@ class Interpreter {
 
       case UseStatement(name) => {
         val path = runtime.findFilePathForPackageName(name).getOrElse(
-          throw new MoeErrors.MoeProblems("Could not load module " + name)       
+          throw new MoeErrors.MoeProblems(
+            "Could not find module " + name + " in @INC [" + runtime.getIncludeDirs.mkString("; ") + "]"
+          )       
         )
 
         env.getAs[MoeHashObject]("%INC").get.bind_key(
