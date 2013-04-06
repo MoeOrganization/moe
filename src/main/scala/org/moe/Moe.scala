@@ -20,6 +20,7 @@ object Moe {
     options.addOption("v", false, "display version information")
     options.addOption("u", false, "dump the AST after parsing")
     options.addOption("w", false, "enable many useful warnings")
+    options.addOption("d", false, "debug mode")
 
     val e = new Option("e", "code to evaluate")
     e.setArgs(1)
@@ -39,7 +40,6 @@ object Moe {
      what else we are missing.
 
      options.addOption("c", false, "check syntax only")
-     options.addOption("d", false, "debug mode")
      */
 
     /*
@@ -70,6 +70,7 @@ object Moe {
     val interpreter = new Interpreter()
     val runtime     = new MoeRuntime(
       warnings    = cmd.hasOption("w"),
+      debug       = cmd.hasOption("d"),
       interpreter = Some(interpreter) 
     )
     runtime.bootstrap()
@@ -199,12 +200,19 @@ object Moe {
       }
       catch {
         case i: MoeErrors.ParserInputIncomplete => {
-          if (options.getOrElse("printParserErrors", false))
-            System.err.println(i)
+          if (options.getOrElse("printParserErrors", false)) {
+            if (runtime.isDebuggingOn)
+              i.printStackTrace(System.err) 
+            else 
+              System.err.println(i)
+          }
           EvalResult.Partial
         }
         case e: Exception => {
-          System.err.println(e)
+          if (runtime.isDebuggingOn) 
+            e.printStackTrace(System.err)
+          else 
+            System.err.println(e)
           EvalResult.Failure
         }
       }

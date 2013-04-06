@@ -10,6 +10,7 @@ import org.moe.parser._
 class MoeRuntime (
     private val system: MoeSystem = new MoeSystem(),
     private val warnings: Boolean = true,
+    private val debug: Boolean = false,
     private val interpreter: Option[Interpreter] = None 
   ) extends MoeObject {
 
@@ -29,6 +30,7 @@ class MoeRuntime (
 
   def isBootstrapped     = is_bootstrapped
   def areWarningsEnabled = warnings
+  def isDebuggingOn      = debug
 
   def getIncludeDirs = includeDirs
   def addIncludeDir(path: String) = includeDirs += path
