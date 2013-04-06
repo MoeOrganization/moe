@@ -1,0 +1,14 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+unless (-e "target/scala-2.10/moe-assembly-0.0.0.jar") {
+    warn "Please run `sbt assembly` first in order to generate the jar file.";
+    exit(0);
+}
+
+exec("scala", "target/scala-2.10/moe-assembly-0.0.0.jar", @ARGV)
+    or warn "Could not exec scala: $!";
+
+exit();
