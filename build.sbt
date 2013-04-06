@@ -1,3 +1,6 @@
+
+import AssemblyKeys._ // put this at the top of the file
+
 name := "moe"
 
 version := "0.0.0"
@@ -20,3 +23,5 @@ connectInput in run := true
 
 // send output to the build's standard output and error
 outputStrategy := Some(StdoutOutput)
+
+assemblySettings
