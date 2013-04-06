@@ -1,0 +1,3 @@
+#!/bin/sh
+
+prove --exec 'bin/moe -I lib/Test-More/lib' $@
