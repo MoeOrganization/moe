@@ -23,8 +23,12 @@ class MoeArrayObject(
 
   def bind_pos (r: MoeRuntime, i: MoeIntObject, v: MoeObject): MoeObject = {
     val idx = i.unboxToInt.get
-    if (idx >= array.length) setNativeValue(array.padTo(idx, r.NativeObjects.getUndef))
-    array.insert(idx, v)
+    if (idx < array.length)
+      array(idx) = v
+    else {
+      setNativeValue(array.padTo(idx, r.NativeObjects.getUndef))
+      array.insert(idx, v)
+    }
     v
   }
 

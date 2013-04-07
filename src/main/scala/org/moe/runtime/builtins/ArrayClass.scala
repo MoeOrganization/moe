@@ -35,15 +35,20 @@ object ArrayClass {
     arrayClass.addMethod(
       new MoeMethod(
         "postcircumfix:<[]>",
-        new MoeSignature(List(new MoePositionalParameter("$i"))),
+        new MoeSignature(List(new MoePositionalParameter("$i"), new MoeOptionalParameter("$value"))),
         env,
         { (e) => 
             var index = e.get("$i").get.unboxToInt.get
             val array = self(e).unboxToArrayBuffer.get
 
             while (index < 0) index += array.size
+
             try {
-              array(index)
+              e.get("$value") match {
+                case Some(none:  MoeUndefObject) => array(index)
+                case Some(value: MoeObject)      => self(e).bind_pos(r, getInt(index), value)
+                case _                           => array(index)
+              }
             } catch {
               case _: java.lang.IndexOutOfBoundsException => getUndef // TODO: warn
             }

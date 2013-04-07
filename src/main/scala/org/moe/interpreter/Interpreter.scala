@@ -83,6 +83,24 @@ class Interpreter {
         )
       }
 
+      case ArrayElementLvalueNode(arrayName: String, index: AST, expr: AST) => {
+        val index_result = eval(runtime, env, index)
+        val array_value = env.get(arrayName) match {
+          case Some(a: MoeArrayObject) => a
+          case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
+        }
+        val expr_value = eval(runtime, env, expr)
+
+        array_value.callMethod(
+          array_value.getAssociatedClass.getOrElse(
+            throw new MoeErrors.ClassNotFound("Array")
+          ).getMethod("postcircumfix:<[]>").getOrElse(
+            throw new MoeErrors.MethodNotFound("postcircumfix:<[]>")
+          ),
+          List(index_result, expr_value)
+        )
+      }
+
       case PairLiteralNode(key, value) => getPair(
         eval(runtime, env, key).unboxToString.get -> eval(runtime, env, value)
       )

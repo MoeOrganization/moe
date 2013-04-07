@@ -256,6 +256,10 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case v ~ _ ~ expr => AttributeAssignmentNode(v, expr)
   }
 
+  def arrayElementAssignment = array_index_rule ~ "=" ~ expression <~ statementDelim ^^ {
+    case "@" ~ array ~ index_expr ~ "=" ~ value_expr => ArrayElementLvalueNode("@" + array, index_expr, value_expr)
+  }
+
   /**
    *********************************************************************
    * Now we are getting into statements,
@@ -411,6 +415,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     | variableAssignment
     | attributeAssignment  
     | useStatement
+    | arrayElementAssignment
     | expression <~ statementDelim.?
     | scopeBlock  
   )

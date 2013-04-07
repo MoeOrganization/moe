@@ -257,6 +257,17 @@ object Serializer {
         )
       )
     )
+    case ArrayElementLvalueNode(arrayName, index, value) => JSONObject(
+      Map(
+        "ArrayElementLvalueNode" -> JSONObject(
+          Map(
+            "arrayname" -> arrayName,
+            "index"     -> toJSON(index),
+            "value"     -> toJSON(value)
+          )
+        )
+      )
+    )
 
     case MethodCallNode(invocant, method_name, args) => JSONObject(
       Map(
