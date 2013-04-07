@@ -31,11 +31,15 @@ object HashClass {
     hashClass.addMethod(
       new MoeMethod(
         "postcircumfix:<{}>",
-        new MoeSignature(List(new MoePositionalParameter("$key"))),
+        new MoeSignature(List(new MoePositionalParameter("$key"), new MoeOptionalParameter("$value"))),
         env,
         { (e) => 
           val hash = self(e)
-          hash.at_key(r, e.getAs[MoeStrObject]("$key").get)
+          e.get("$value") match {
+            case Some(none:  MoeUndefObject) => hash.at_key(r, e.getAs[MoeStrObject]("$key").get)
+            case Some(value: MoeObject)      => hash.bind_key(r, e.getAs[MoeStrObject]("$key").get, e.get("$value").get)
+            case _                           => hash.at_key(r, e.getAs[MoeStrObject]("$key").get)
+          }
         }
       )
     )
