@@ -29,10 +29,26 @@ package Test::More {
 
     sub is ($got, $expected, $msg?) is export {
         $test_count = $test_count + 1;
-        if (~$got eq ~$expected) {
+
+        my $result;
+        if ($got.isa("Str")) {
+            $result = $got eq ~$expected;
+            
+        } elsif ($got.isa("Int") || $got.isa("Num")) {
+            $result = $got == +$expected;
+        }
+
+        if ($result) {
             say([ "ok", $test_count, ($msg || "") ].join("".pad(1))); 
         } else {
-            say([ "not ok", $test_count, ($msg || "") ].join("".pad(1)))
+            say([ "not ok", $test_count, ($msg || "") ].join("".pad(1)));
+            warn( 
+                chr(35), "Failed test".pad(2), ($msg || ""),
+                "\n",
+                chr(35), "got:".pad(4).rpad(6), ~$got, 
+                "\n", 
+                chr(35), "expected:".pad(4).rpad(1), ~$expected
+            );
         }
     }
 
