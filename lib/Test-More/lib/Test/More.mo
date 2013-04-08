@@ -38,10 +38,11 @@ package Test::More {
 
         my $result;
         if ($got.isa("Str")) {
-            $result = $got eq ~$expected;
-            
+            $result = $got eq ~$expected;   
         } elsif ($got.isa("Int") || $got.isa("Num")) {
             $result = $got == +$expected;
+        } else {
+            die("Can only compare Str, Int and Num objects");
         }
 
         if ($result) {
