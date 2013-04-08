@@ -61,6 +61,24 @@ object CorePackage {
 
     pkg.addSubroutine(
       new MoeSubroutine(
+        "chr",
+        new MoeSignature(List(new MoePositionalParameter("$i"))),
+        env,
+        (e) => getStr(e.getAs[MoeIntObject]("$i").get.unboxToInt.get.toChar.toString)
+      )
+    )
+
+    pkg.addSubroutine(
+      new MoeSubroutine(
+        "ord",
+        new MoeSignature(List(new MoePositionalParameter("$i"))),
+        env,
+        (e) => getInt(e.getAs[MoeStrObject]("$i").get.unboxToString.get.charAt(0).toInt)
+      )
+    )
+
+    pkg.addSubroutine(
+      new MoeSubroutine(
         "exit",
         new MoeSignature(List(new MoeOptionalParameter("$status"))),
         env,
