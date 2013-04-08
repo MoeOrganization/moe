@@ -64,7 +64,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case left ~ op ~ right => BinaryOpNode(left, op, right)
   } | addOp
 
-  // left        + - .
+  // left        + - ~
   lazy val addOp: PackratParser[AST] = addOp ~ "[-+~]".r ~ mulOp            ^^ {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
   } | mulOp
@@ -87,9 +87,6 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   // used for explicit coercion
   // (see: http://perlcabal.org/syn/S03.html#Symbolic_unary_precedence)
 
-  // Perl6 uses ~ for stringification (same as its concatentation op);
-  // since our concat op is ".", we use it as the prefix op
-
   lazy val coerceOp: PackratParser[AST] = "[+?~]".r ~ fileTestOps ^^ {
     case op ~ expr => PrefixUnaryOpNode(expr, op)
   } | fileTestOps
@@ -107,7 +104,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    *********************************************************************
    */
 
-  // left        ->
+  // left        .
   lazy val applyOp: PackratParser[AST] = (applyOp <~ ".") ~ namespacedIdentifier ~ ("(" ~> repsep(expression, ",") <~ ")").? ^^ {
     case invocant ~ method ~ Some(args) => MethodCallNode(invocant, method, args)
     case invocant ~ method ~ None       => MethodCallNode(invocant, method, List())
