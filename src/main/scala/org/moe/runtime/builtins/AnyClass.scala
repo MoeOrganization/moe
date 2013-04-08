@@ -20,6 +20,8 @@ object AnyClass {
       throw new MoeErrors.InvocantNotFound("Could not find invocant")
     )
 
+    // MRO: Any, Object
+
     // output methods
 
     anyClass.addMethod(
@@ -58,11 +60,42 @@ object AnyClass {
       )
     )
 
+    // type checking
+
+    anyClass.addMethod(
+      new MoeMethod(
+        "isa",
+        new MoeSignature(List(new MoePositionalParameter("$name"))), 
+        env, 
+        (e) => getBool(self(e).isInstanceOf(e.getAs[MoeStrObject]("$name").get.unboxToString.get))
+      )
+    )
+
+    // definedness
+
+    anyClass.addMethod(
+      new MoeMethod(
+        "defined",
+        new MoeSignature(), 
+        env, 
+        (e) => getBool(!self(e).isUndef)
+      )
+    )
+
     // logical ops
 
     anyClass.addMethod(
       new MoeMethod(
         "prefix:<!>",
+        new MoeSignature(), 
+        env, 
+        (e) => if (self(e).isTrue) getFalse else getTrue
+      )
+    )
+
+    anyClass.addMethod(
+      new MoeMethod(
+        "not",
         new MoeSignature(), 
         env, 
         (e) => if (self(e).isTrue) getFalse else getTrue
@@ -128,12 +161,7 @@ object AnyClass {
       )
     )
 
-    // MRO: Any, Object
-
     /**
-     * List of Methods to support:
-     * - defined
-     *
      * See the following for details:
      * - https://metacpan.org/release/autobox-Core
      * - https://github.com/rakudo/rakudo/blob/nom/src/core/Any.pm
