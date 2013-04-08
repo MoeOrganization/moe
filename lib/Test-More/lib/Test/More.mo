@@ -11,11 +11,17 @@ package Test::More {
     }
 
     # NOTE:
-    # the "".pad(1) silliness is because 
+    # The "".pad(1) silliness is because 
     # the parser (for some reason) does 
     # not like strings with just spaces
     # and instead gives back an empty string
     # and I can't figure it out.
+    #
+    # The chr(35) silliness is because 
+    # our comment parser seems to like
+    # to sometimes gobble up quoted strings
+    # and again, I can't figure it out 
+    # so I added in chr() for now.
     # - SL
 
     sub ok ($test, $msg?) is export {
