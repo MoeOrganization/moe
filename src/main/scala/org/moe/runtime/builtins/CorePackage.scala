@@ -79,6 +79,17 @@ object CorePackage {
 
     pkg.addSubroutine(
       new MoeSubroutine(
+        "die",
+        new MoeSignature(List(new MoeSlurpyParameter("@msg"))),
+        env,
+        (e) => throw new MoeErrors.MoeProblems(
+          e.getAs[MoeArrayObject]("@msg").get.join(r).unboxToString.get
+        )
+      )
+    )
+
+    pkg.addSubroutine(
+      new MoeSubroutine(
         "exit",
         new MoeSignature(List(new MoeOptionalParameter("$status"))),
         env,
