@@ -181,7 +181,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   // Hash Literals
   
-  def barehashKey: Parser[StringLiteralNode] = """[0-9\w_]*""".r ^^ StringLiteralNode
+  def barehashKey: Parser[StringLiteralNode] = """[0-9\w_]+""".r ^^ StringLiteralNode
   def hashKey: Parser[AST] = variable | arrayIndex | hashIndex | literalValue | barehashKey
 
   def hashContent: Parser[List[PairLiteralNode]] = repsep(pair, ",")
