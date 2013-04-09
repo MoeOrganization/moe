@@ -112,6 +112,11 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   lazy val subroutineCall: PackratParser[AST] = namespacedIdentifier ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
     case sub ~ args => SubroutineCallNode(sub, args)
+  } | listOpLeftward
+
+  // left        terms and list operators (leftward)
+  lazy val listOpLeftward: PackratParser[AST] = namespacedIdentifier ~ rep1sep(expression, ",") ^^ {
+    case sub ~ args => SubroutineCallNode(sub, args)
   } | anonCodeCall
 
   def anonCodeInvocant: PackratParser[AST] = (
