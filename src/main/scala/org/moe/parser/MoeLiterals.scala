@@ -49,13 +49,15 @@ trait MoeLiterals extends JavaTokenParsers {
   // things a little)
   // - SL
 
-  def doubleQuoteStringContents: Parser[StringLiteralNode] =
-    """([^"\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*""".r ^^ { s => StringLiteralNode(formatStr(s)) }
-  def singleQuoteStringContents: Parser[StringLiteralNode] =
-    """([^'\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*""".r ^^ StringLiteralNode
+  val doubleQuoteStringPattern = """"((?:[^"\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*)"""".r
+  def doubleQuoteString: Parser[StringLiteralNode] = doubleQuoteStringPattern ^^ {
+    case doubleQuoteStringPattern(s) => StringLiteralNode(formatStr(s))
+ }
 
-  def doubleQuoteString: Parser[StringLiteralNode] = "\"" ~> doubleQuoteStringContents <~ "\""
-  def singleQuoteString: Parser[StringLiteralNode] = "'" ~> singleQuoteStringContents <~ "'"
+  val singleQuoteStringPattern = """'((?:[^'\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*)'""".r
+  def singleQuoteString: Parser[StringLiteralNode] = singleQuoteStringPattern ^^ {
+    case singleQuoteStringPattern(s) => StringLiteralNode(s)
+  }
 
   def string: Parser[StringLiteralNode] = doubleQuoteString | singleQuoteString
 

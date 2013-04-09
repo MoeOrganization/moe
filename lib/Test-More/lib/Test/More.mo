@@ -10,26 +10,12 @@ package Test::More {
         say 1, "..", $test_count;
     }
 
-    # NOTE:
-    # The "".pad(1) silliness is because 
-    # the parser (for some reason) does 
-    # not like strings with just spaces
-    # and instead gives back an empty string
-    # and I can't figure it out.
-    #
-    # The chr(35) silliness is because 
-    # our comment parser seems to like
-    # to sometimes gobble up quoted strings
-    # and again, I can't figure it out 
-    # so I added in chr() for now.
-    # - SL
-
     sub ok ($test, $msg?) is export {
         $test_count = $test_count + 1;
         if ($test) {
-            say [ "ok", $test_count, ($msg || "") ].join("".pad(1)); 
+            say [ "ok", $test_count, ($msg || "") ].join(" "); 
         } else {
-            say [ "not ok", $test_count, ($msg || "") ].join("".pad(1));
+            say [ "not ok", $test_count, ($msg || "") ].join(" ");
         }
     }
 
@@ -46,15 +32,15 @@ package Test::More {
         }
 
         if ($result) {
-            say [ "ok", $test_count, ($msg || "") ].join("".pad(1)); 
+            say [ "ok", $test_count, ($msg || "") ].join(" "); 
         } else {
-            say [ "not ok", $test_count, ($msg || "") ].join("".pad(1));
+            say [ "not ok", $test_count, ($msg || "") ].join(" ");
             warn( 
-                chr(35), "Failed test".pad(2), ($msg || ""),
+                "#  Failed test", ($msg || ""),
                 "\n",
-                chr(35), "got:".pad(4).rpad(6), ~$got, 
+                "#    got:      ", ~$got, 
                 "\n", 
-                chr(35), "expected:".pad(4).rpad(1), ~$expected
+                "#    expected: ", ~$expected
             );
         }
     }
