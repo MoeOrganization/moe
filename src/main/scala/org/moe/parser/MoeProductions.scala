@@ -212,7 +212,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    *********************************************************************
    */
 
-  def identifier           = ident
+  def identifier           = """[a-zA-Z_][a-zA-Z0-9_]*""".r
   def namespaceSeparator   = "::"
   def namespacedIdentifier = rep1sep(identifier, namespaceSeparator) ^^ { _.mkString(namespaceSeparator) }
 
@@ -259,7 +259,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case "@" ~ array ~ index_expr ~ "=" ~ value_expr => ArrayElementLvalueNode("@" + array, index_expr, value_expr)
   }
 
-def hashElementAssignment = hash_index_rule ~ "=" ~ expression <~ statementDelim ^^ {
+  def hashElementAssignment = hash_index_rule ~ "=" ~ expression <~ statementDelim ^^ {
     case "%" ~ hash ~ key_expr ~ "=" ~ value_expr => HashElementLvalueNode("%" + hash, key_expr, value_expr)
   }
 
