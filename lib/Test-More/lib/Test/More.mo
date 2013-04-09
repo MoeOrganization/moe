@@ -3,11 +3,11 @@ package Test::More {
     my $test_count = 0;
 
     sub plan ($count) is export {
-        say(1, "..", $count);
+        say 1, "..", $count;
     }
 
     sub done_testing is export {
-        say(1, "..", $test_count)
+        say 1, "..", $test_count;
     }
 
     # NOTE:
@@ -27,9 +27,9 @@ package Test::More {
     sub ok ($test, $msg?) is export {
         $test_count = $test_count + 1;
         if ($test) {
-            say([ "ok", $test_count, ($msg || "") ].join("".pad(1))); 
+            say [ "ok", $test_count, ($msg || "") ].join("".pad(1)); 
         } else {
-            say([ "not ok", $test_count, ($msg || "") ].join("".pad(1)))
+            say [ "not ok", $test_count, ($msg || "") ].join("".pad(1));
         }
     }
 
@@ -46,9 +46,9 @@ package Test::More {
         }
 
         if ($result) {
-            say([ "ok", $test_count, ($msg || "") ].join("".pad(1))); 
+            say [ "ok", $test_count, ($msg || "") ].join("".pad(1)); 
         } else {
-            say([ "not ok", $test_count, ($msg || "") ].join("".pad(1)));
+            say [ "not ok", $test_count, ($msg || "") ].join("".pad(1));
             warn( 
                 chr(35), "Failed test".pad(2), ($msg || ""),
                 "\n",
