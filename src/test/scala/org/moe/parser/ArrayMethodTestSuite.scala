@@ -106,9 +106,4 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     val result = interpretCode("my @a1 = ['a', ['b', 1], 2]; my @a2 = ['a', ['b', 1, 2]]; @a1.eqv(@a2)")
     result.unboxToBoolean.get should equal (false)
   }
-
-  test("... basic test with array.minstr") {
-    val result = interpretCode("my @a = ['foo', 'bar', 'baz']; @a.minstr")
-    result.unboxToString.get should equal ("bar")
-  }
 }
