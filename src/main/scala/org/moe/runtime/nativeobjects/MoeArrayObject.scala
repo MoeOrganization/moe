@@ -23,8 +23,12 @@ class MoeArrayObject(
 
   def bind_pos (r: MoeRuntime, i: MoeIntObject, v: MoeObject): MoeObject = {
     val idx = i.unboxToInt.get
-    if (idx >= array.length) setNativeValue(array.padTo(idx, r.NativeObjects.getUndef))
-    array.insert(idx, v)
+    if (idx < array.length)
+      array(idx) = v
+    else {
+      setNativeValue(array.padTo(idx, r.NativeObjects.getUndef))
+      array.insert(idx, v)
+    }
     v
   }
 
@@ -79,6 +83,53 @@ class MoeArrayObject(
     array.foreach({ i => f.execute(new MoeArguments(List(i))); ()})
     r.NativeObjects.getUndef
   }
+
+  def reduce (r: MoeRuntime, f: MoeCode, init: Option[MoeObject]): MoeObject = init match {
+    case Some(init_val) => array.foldLeft(init_val)({ (a, b) => f.execute(new MoeArguments(List(a, b))) })
+    case None           => array.reduceLeft        ({ (a, b) => f.execute(new MoeArguments(List(a, b))) })
+  }
+
+  def first (r: MoeRuntime, f: MoeCode): MoeObject = 
+    array.dropWhile(i => f.execute(new MoeArguments(List(i))).isFalse).head
+
+  def max (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(
+      array.map(i => i.unboxToInt.get).max
+  )
+
+  def maxstr (r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(
+    array.map(s => s.unboxToString.get).max
+  )
+
+  def min (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(
+      array.map(i => i.unboxToInt.get).min
+  )
+
+  def minstr (r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(
+    array.map(s => s.unboxToString.get).min
+  )
+
+  def shuffle (r: MoeRuntime): MoeArrayObject = r.NativeObjects.getArray(
+    scala.util.Random.shuffle(array) : _*
+  )
+
+  def sum (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(
+    array.map(i => i.unboxToInt.get).sum
+  )
+
+  // equality
+  def equal_to (r: MoeRuntime, that: MoeArrayObject): MoeBoolObject = 
+    r.NativeObjects.getBool(
+      length(r).equal_to(that.length(r))
+        &&
+      ((unboxToArrayBuffer.get, that.unboxToArrayBuffer.get).zipped.forall( (a, b) => a.equal_to(b) ))
+    )
+
+  def not_equal_to (r: MoeRuntime, that: MoeArrayObject): MoeBoolObject =
+    r.NativeObjects.getBool(
+      length(r).not_equal_to(that.length(r))
+        ||
+      ((unboxToArrayBuffer.get, that.unboxToArrayBuffer.get).zipped.exists( (a, b) => a.not_equal_to(b) ))
+    )
 
   // MoeNativeObject overrides
 

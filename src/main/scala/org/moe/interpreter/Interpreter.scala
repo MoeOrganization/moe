@@ -83,6 +83,24 @@ class Interpreter {
         )
       }
 
+      case ArrayElementLvalueNode(arrayName: String, index: AST, expr: AST) => {
+        val index_result = eval(runtime, env, index)
+        val array_value = env.get(arrayName) match {
+          case Some(a: MoeArrayObject) => a
+          case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
+        }
+        val expr_value = eval(runtime, env, expr)
+
+        array_value.callMethod(
+          array_value.getAssociatedClass.getOrElse(
+            throw new MoeErrors.ClassNotFound("Array")
+          ).getMethod("postcircumfix:<[]>").getOrElse(
+            throw new MoeErrors.MethodNotFound("postcircumfix:<[]>")
+          ),
+          List(index_result, expr_value)
+        )
+      }
+
       case PairLiteralNode(key, value) => getPair(
         eval(runtime, env, key).unboxToString.get -> eval(runtime, env, value)
       )
@@ -124,6 +142,24 @@ class Interpreter {
             throw new MoeErrors.MethodNotFound("postcircumfix:<{}>")
           ), 
           List(key_result)
+        )
+      }
+
+      case HashElementLvalueNode(hashName: String, key: AST, value: AST) => {
+        val key_result = eval(runtime, env, key)
+        val hash_map = env.get(hashName) match {
+          case Some(h: MoeHashObject) => h
+          case _ => throw new MoeErrors.UnexpectedType("MoeHashObject expected")
+        }
+        val value_result = eval(runtime, env, value)
+
+        hash_map.callMethod(
+          hash_map.getAssociatedClass.getOrElse(
+            throw new MoeErrors.ClassNotFound("Hash")
+          ).getMethod("postcircumfix:<{}>").getOrElse(
+            throw new MoeErrors.MethodNotFound("postcircumfix:<{}>")
+          ),
+          List(key_result, value_result)
         )
       }
 

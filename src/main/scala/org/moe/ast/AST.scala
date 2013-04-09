@@ -81,6 +81,8 @@ case class ArrayElementAccessNode(arrayName: String, index: AST) extends AST
 // TODO - these should get converted to binary ops
 case class AttributeAssignmentNode(name: String, expression: AST) extends AST
 case class VariableAssignmentNode(name: String, expression: AST) extends AST
+case class ArrayElementLvalueNode(arrayName: String, index: AST, expression: AST) extends AST
+case class HashElementLvalueNode(hashName: String, key: AST, expression: AST) extends AST
 
 // operations
 

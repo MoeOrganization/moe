@@ -35,15 +35,20 @@ object ArrayClass {
     arrayClass.addMethod(
       new MoeMethod(
         "postcircumfix:<[]>",
-        new MoeSignature(List(new MoePositionalParameter("$i"))),
+        new MoeSignature(List(new MoePositionalParameter("$i"), new MoeOptionalParameter("$value"))),
         env,
         { (e) => 
             var index = e.get("$i").get.unboxToInt.get
             val array = self(e).unboxToArrayBuffer.get
 
             while (index < 0) index += array.size
+
             try {
-              array(index)
+              e.get("$value") match {
+                case Some(none:  MoeUndefObject) => array(index)
+                case Some(value: MoeObject)      => self(e).bind_pos(r, getInt(index), value)
+                case _                           => array(index)
+              }
             } catch {
               case _: java.lang.IndexOutOfBoundsException => getUndef // TODO: warn
             }
@@ -199,6 +204,92 @@ object ArrayClass {
         new MoeSignature(List(new MoePositionalParameter("&f"))),
         env,
         (e) => self(e).each(r, e.getAs[MoeCode]("&f").get)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "reduce",
+        new MoeSignature(List(new MoePositionalParameter("&f"), new MoeOptionalParameter("$init"))),
+        env,
+        { (e) => e.get("$init") match {
+            case Some(none: MoeUndefObject) => self(e).reduce(r, e.getAs[MoeCode]("&f").get, None)
+            case Some(init: MoeObject) => self(e).reduce(r, e.getAs[MoeCode]("&f").get, Some(init))
+            case _                     => self(e).reduce(r, e.getAs[MoeCode]("&f").get, None)
+          }
+        }
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "first",
+        new MoeSignature(List(new MoePositionalParameter("&f"))),
+        env,
+        (e) => self(e).first(r, e.getAs[MoeCode]("&f").get)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "max",
+        new MoeSignature(),
+        env,
+        (e) => self(e).max(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "maxstr",
+        new MoeSignature(),
+        env,
+        (e) => self(e).maxstr(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "min",
+        new MoeSignature(),
+        env,
+        (e) => self(e).min(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "minstr",
+        new MoeSignature(),
+        env,
+        (e) => self(e).minstr(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "shuffle",
+        new MoeSignature(),
+        env,
+        (e) => self(e).shuffle(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "sum",
+        new MoeSignature(),
+        env,
+        (e) => self(e).sum(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "eqv",
+        new MoeSignature(List(new MoePositionalParameter("@that"))),
+        env,
+        (e) => self(e).equal_to(r, e.getAs[MoeArrayObject]("@that").get)
       )
     )
 

@@ -64,7 +64,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case left ~ op ~ right => BinaryOpNode(left, op, right)
   } | addOp
 
-  // left        + - .
+  // left        + - ~
   lazy val addOp: PackratParser[AST] = addOp ~ "[-+~]".r ~ mulOp            ^^ {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
   } | mulOp
@@ -87,9 +87,6 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   // used for explicit coercion
   // (see: http://perlcabal.org/syn/S03.html#Symbolic_unary_precedence)
 
-  // Perl6 uses ~ for stringification (same as its concatentation op);
-  // since our concat op is ".", we use it as the prefix op
-
   lazy val coerceOp: PackratParser[AST] = "[+?~]".r ~ fileTestOps ^^ {
     case op ~ expr => PrefixUnaryOpNode(expr, op)
   } | fileTestOps
@@ -107,7 +104,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    *********************************************************************
    */
 
-  // left        ->
+  // left        .
   lazy val applyOp: PackratParser[AST] = (applyOp <~ ".") ~ namespacedIdentifier ~ ("(" ~> repsep(expression, ",") <~ ")").? ^^ {
     case invocant ~ method ~ Some(args) => MethodCallNode(invocant, method, args)
     case invocant ~ method ~ None       => MethodCallNode(invocant, method, List())
@@ -124,9 +121,13 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   lazy val anonCodeCall: PackratParser[AST] = anonCodeInvocant ~ "." ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
     case anonCode ~ _ ~ args => MethodCallNode(anonCode, "call", args)
+  } | listOpLeftward
+
+  // left        terms and list operators (leftward)
+  lazy val listOpLeftward: PackratParser[AST] = namespacedIdentifier ~ rep1sep(expression, ",") ^^ {
+    case sub ~ args => SubroutineCallNode(sub, args)
   } | simpleExpression
 
-  // TODO: left        terms and list operators (leftward)
 
   /**
    *********************************************************************
@@ -181,7 +182,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   // Hash Literals
   
-  def barehashKey: Parser[StringLiteralNode] = """[0-9\w_]*""".r ^^ StringLiteralNode
+  def barehashKey: Parser[StringLiteralNode] = """[0-9\w_]+""".r ^^ StringLiteralNode
   def hashKey: Parser[AST] = variable | arrayIndex | hashIndex | literalValue | barehashKey
 
   def hashContent: Parser[List[PairLiteralNode]] = repsep(pair, ",")
@@ -252,6 +253,14 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   def attributeAssignment = attributeName ~ "=" ~ expression <~ statementDelim ^^ {
     case v ~ _ ~ expr => AttributeAssignmentNode(v, expr)
+  }
+
+  def arrayElementAssignment = array_index_rule ~ "=" ~ expression <~ statementDelim ^^ {
+    case "@" ~ array ~ index_expr ~ "=" ~ value_expr => ArrayElementLvalueNode("@" + array, index_expr, value_expr)
+  }
+
+def hashElementAssignment = hash_index_rule ~ "=" ~ expression <~ statementDelim ^^ {
+    case "%" ~ hash ~ key_expr ~ "=" ~ value_expr => HashElementLvalueNode("%" + hash, key_expr, value_expr)
   }
 
   /**
@@ -409,6 +418,8 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     | variableAssignment
     | attributeAssignment  
     | useStatement
+    | arrayElementAssignment
+    | hashElementAssignment
     | expression <~ statementDelim.?
     | scopeBlock  
   )

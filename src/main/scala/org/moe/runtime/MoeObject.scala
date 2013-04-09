@@ -86,6 +86,18 @@ class MoeObject(
     "{ #instance(" + id + ")" + associatedClass.map({ k => k.toString }).getOrElse("") + " }"
   }
 
+  /**
+   * returns true of this is equal to 'that'
+   * Should be overridden by subclasses
+   */
+  def equal_to(that: MoeObject): Boolean = toString == that.toString
+
+  /**
+   * returns true of this is not equal to 'that'
+   * Should be overridden by subclasses
+   */
+  def not_equal_to(that: MoeObject): Boolean = toString != that.toString
+
   // unboxing
 
   def unboxToBoolean : Try[Boolean] = Success(isTrue)
