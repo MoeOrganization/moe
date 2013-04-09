@@ -44,11 +44,11 @@ package Test::More {
         } else {
             say [ "not ok", $test_count, ($msg || "") ].join(" ");
             warn( 
-                chr(35), "  Failed test", ($msg || ""),
+                "#  Failed test", ($msg || ""),
                 "\n",
-                chr(35), "    got:      ", ~$got, 
+                "#    got:      ", ~$got, 
                 "\n", 
-                chr(35), "    expected: ", ~$expected
+                "#    expected: ", ~$expected
             );
         }
     }
