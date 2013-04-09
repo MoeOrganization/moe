@@ -13,7 +13,9 @@ The second option is the more preferred approach of course.
 
 ## How much of Perl are you planning to stay compatible with?
 
-A subset.
+A subset. Though let me be clear: pure Perl5 source code will
+never work with Moe without some level of (hopefully automated)
+syntax transformation.
 
 Exactly what subset, at this point I can not say. This should
 shake out in the next couple weeks or so as I try and spec out the
