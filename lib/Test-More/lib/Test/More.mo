@@ -10,14 +10,6 @@ package Test::More {
         say 1, "..", $test_count;
     }
 
-    # NOTE:
-    # The chr(35) silliness is because 
-    # our comment parser seems to like
-    # to sometimes gobble up quoted strings
-    # and again, I can't figure it out 
-    # so I added in chr() for now.
-    # - SL
-
     sub ok ($test, $msg?) is export {
         $test_count = $test_count + 1;
         if ($test) {
