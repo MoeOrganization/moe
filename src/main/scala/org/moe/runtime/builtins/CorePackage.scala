@@ -90,6 +90,23 @@ object CorePackage {
 
     pkg.addSubroutine(
       new MoeSubroutine(
+        "sleep",
+        new MoeSignature(List(new MoePositionalParameter("$seconds"))),
+        env,
+        { (e) => 
+            val seconds = e.getAs[MoeIntObject]("$seconds").get.unboxToInt.get * 1000
+            try {
+              Thread.sleep(seconds);
+            } catch {
+                case e: InterruptedException => Thread.currentThread().interrupt()
+            }
+            getUndef
+        }
+      )
+    )
+
+    pkg.addSubroutine(
+      new MoeSubroutine(
         "exit",
         new MoeSignature(List(new MoeOptionalParameter("$status"))),
         env,
