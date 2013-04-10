@@ -18,6 +18,17 @@ class Interpreter {
     // no need to do all that typing ..
     import runtime.NativeObjects._
 
+    def zipVars (names: List[String], expressions: List[MoeObject], f: ((String, MoeObject)) => Unit): Unit = {
+      if (expressions.isEmpty) {
+        names.foreach(f(_, getUndef)) 
+      } else if (names.isEmpty) {
+        ()
+      } else {
+        f(names.head, expressions.headOption.getOrElse(getUndef))
+        zipVars(names.tail, expressions.tail, f)
+      }
+    }
+
     val scoped = inNewEnv[MoeObject](env) _
 
     // interpret ..
@@ -471,11 +482,31 @@ class Interpreter {
         val expr = eval(runtime, env, expression)
         env.getCurrentInvocant match {
           case Some(invocant: MoeOpaque) => invocant.setValue(name, expr)
-                                            // XXX attr."setDefault"(expr) ?
           case Some(invocant)            => throw new MoeErrors.UnexpectedType(invocant.toString)
           case None                      => throw new MoeErrors.MoeException("Attribute default already declared")
         }
         expr
+      }
+      case MultiAttributeAssignmentNode(names, expressions) => {
+        val klass = env.getCurrentClass.getOrElse(throw new MoeErrors.ClassNotFound("__CLASS__"))
+
+        val evaled_expressions = expressions.map(eval(runtime, env, _)) 
+        env.getCurrentInvocant match {
+          case Some(invocant: MoeOpaque) => {
+            zipVars(
+              names, 
+              evaled_expressions, 
+              { (p) => 
+                  klass.getAttribute(p._1).getOrElse(throw new MoeErrors.AttributeNotFound(p._1))
+                  invocant.setValue(p._1, p._2)
+              }
+            )
+          }
+          case Some(invocant) => throw new MoeErrors.UnexpectedType(invocant.toString)
+          case None           => throw new MoeErrors.MoeException("Attribute default already declared")
+        }
+
+        evaled_expressions.last
       }
       case AttributeDeclarationNode(name, expression) => {
         val klass = env.getCurrentClass.getOrElse(
@@ -505,6 +536,15 @@ class Interpreter {
             throw new MoeErrors.VariableNotFound(name)
           }
         )
+
+      case MultiVariableAssignmentNode(names, expressions) => {
+        zipVars(
+          names, 
+          expressions.map(eval(runtime, env, _)), 
+          (p) => env.set(p._1, p._2).getOrElse(throw new MoeErrors.VariableNotFound(p._1))
+        )
+        env.get(names.last).getOrElse(throw new MoeErrors.VariableNotFound(names.last))
+      }
 
       case VariableAssignmentNode(name, expression) => {
         env.set(name, eval(runtime, env, expression)).getOrElse(

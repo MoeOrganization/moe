@@ -266,7 +266,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   }
 
   def multiVariableAssignment = ("(" ~> repsep(variableName, ",") <~ ")") ~ "=" ~ ("(" ~> repsep(expression, ",") <~ ")") <~ statementDelim ^^ {
-    case vars ~ _ ~ exprs => StatementsNode(zipEm(vars, exprs, (p) => VariableAssignmentNode(p._1, p._2)))
+    case vars ~ _ ~ exprs => MultiVariableAssignmentNode(vars, exprs)
   }    
 
   def attributeAssignment = attributeName ~ "=" ~ expression <~ statementDelim ^^ {
@@ -274,7 +274,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   }
 
   def multiAttributeAssignment = ("(" ~> repsep(attributeName, ",") <~ ")") ~ "=" ~ ("(" ~> repsep(expression, ",") <~ ")") <~ statementDelim ^^ {
-    case vars ~ _ ~ exprs => StatementsNode(zipEm(vars, exprs, (p) => AttributeAssignmentNode(p._1, p._2)))
+    case vars ~ _ ~ exprs => MultiAttributeAssignmentNode(vars, exprs)
   }   
 
   def arrayElementAssignment = array_index_rule ~ "=" ~ expression <~ statementDelim ^^ {

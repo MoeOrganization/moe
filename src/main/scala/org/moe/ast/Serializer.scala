@@ -216,6 +216,16 @@ object Serializer {
         )
       )
     )
+    case MultiAttributeAssignmentNode(names, expressions) => JSONObject(
+      Map(
+        "MultiAttributeAssignmentNode" -> JSONObject(
+          Map(
+            "names"       -> names.mkString(", "),
+            "expressions" -> List(expressions.map(toJSON(_)))
+          )
+        )
+      )
+    )
     case AttributeDeclarationNode(name, expression) => JSONObject(
       Map(
         "AttributeDeclarationNode" -> JSONObject(
@@ -238,6 +248,17 @@ object Serializer {
         )
       )
     )
+    case MultiVariableAssignmentNode(names, expressions) => JSONObject(
+      Map(
+        "MultiVariableAssignmentNode" -> JSONObject(
+          Map(
+            "names"       -> names.mkString(", "),
+            "expressions" -> List(expressions.map(toJSON(_)))
+          )
+        )
+      )
+    )
+
     case VariableDeclarationNode(name, expression) => JSONObject(
       Map(
         "VariableDeclarationNode" -> JSONObject(

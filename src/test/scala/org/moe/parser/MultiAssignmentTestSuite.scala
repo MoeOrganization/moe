@@ -60,6 +60,13 @@ class MultiAssignmentTestSuite extends FunSuite with BeforeAndAfter with ParserT
     a(1).unboxToInt.get should equal (2)
   }
 
+  test("... basic multi-assign w/ swap") {
+    val result = interpretCode("my ($x, $y) = (1, 2); ($x, $y) = ($y, $x); [$x, $y]")
+    var a = result.unboxToArrayBuffer.get
+    a(0).unboxToInt.get should equal (2)
+    a(1).unboxToInt.get should equal (1)
+  }
+
   // attribute assignment
 
   private val testClass = """
@@ -78,6 +85,11 @@ class MultiAssignmentTestSuite extends FunSuite with BeforeAndAfter with ParserT
 
       method test3 {
         ($!x, $!y) = (1, 2, 3);
+      }
+
+      method test4 {
+        ($!x, $!y) = (1, 2);
+        ($!x, $!y) = ($!y, $!x);
       }
 
       method get { [ $!x, $!y, $!z ] }
@@ -104,6 +116,13 @@ class MultiAssignmentTestSuite extends FunSuite with BeforeAndAfter with ParserT
     var a = result.unboxToArrayBuffer.get
     a(0).unboxToInt.get should equal (1)
     a(1).unboxToInt.get should equal (2)
+  }
+
+  test("... basic multi-attribute-assign w/ swap") {
+    val result = interpretCode(testClass + "; my $x = ^Foo.new; $x.test4; $x.get")
+    var a = result.unboxToArrayBuffer.get
+    a(0).unboxToInt.get should equal (2)
+    a(1).unboxToInt.get should equal (1)
   }
 
 }
