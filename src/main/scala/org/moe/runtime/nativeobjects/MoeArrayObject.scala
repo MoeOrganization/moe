@@ -116,6 +116,24 @@ class MoeArrayObject(
     array.map(i => i.unboxToInt.get).sum
   )
 
+  def flatten (r: MoeRuntime): MoeArrayObject = {
+    val acc = new ArrayBuffer[MoeObject]
+    array.foreach(
+      {
+        case a: MoeArrayObject => acc ++= a.flatten(r).getNativeValue
+        case x: MoeObject      => acc += x
+      }
+    )
+    r.NativeObjects.getArray(acc: _*)
+  }
+
+  def repeat (r: MoeRuntime, count: MoeIntObject): MoeArrayObject = {
+    val result = new ArrayBuffer[MoeObject]
+    for (i <- 1 to count.unboxToInt.get)
+      result ++= array
+    r.NativeObjects.getArray(result: _*)
+  }
+
   // equality
   def equal_to (r: MoeRuntime, that: MoeArrayObject): MoeBoolObject = 
     r.NativeObjects.getBool(
