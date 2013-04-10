@@ -1,26 +1,26 @@
 
 use Tree;
 
-my $t = ^Tree.new("0.0", [
-    ^Tree.new("1.0", [
-        ^Tree.new("1.1"),
-        ^Tree.new("1.2", [
-            ^Tree.new("1.2.1"),
-            ^Tree.new("1.2.2"),
+my $t = ^Tree::NAry.new("0.0", [
+    ^Tree::NAry.new("1.0", [
+        ^Tree::NAry.new("1.1"),
+        ^Tree::NAry.new("1.2", [
+            ^Tree::NAry.new("1.2.1"),
+            ^Tree::NAry.new("1.2.2"),
         ])
     ]),
-    ^Tree.new("2.0", [
-        ^Tree.new("2.1", [
-            ^Tree.new("2.1.1", [
-                ^Tree.new("2.1.1.1"),
+    ^Tree::NAry.new("2.0", [
+        ^Tree::NAry.new("2.1", [
+            ^Tree::NAry.new("2.1.1", [
+                ^Tree::NAry.new("2.1.1.1"),
             ]),
-            ^Tree.new("2.1.2", [
-                ^Tree.new("2.1.2.1"),
-                ^Tree.new("2.1.2.2"),
+            ^Tree::NAry.new("2.1.2", [
+                ^Tree::NAry.new("2.1.2.1"),
+                ^Tree::NAry.new("2.1.2.2"),
             ])
         ])
     ]),
-    ^Tree.new("3.0"),
+    ^Tree::NAry.new("3.0"),
 ]);
 
 $t.traverse(-> ($c) {
