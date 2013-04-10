@@ -293,6 +293,27 @@ object ArrayClass {
       )
     )
 
+    arrayClass.addMethod(
+      new MoeMethod(
+        "flatten",
+        new MoeSignature(),
+        env,
+        (e) => self(e).flatten(r)
+      )
+    )
+
+    // repetition
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "infix:<x>",
+        new MoeSignature(List(new MoePositionalParameter("$times"))),
+        env,
+        (e) => self(e).repeat(r, e.getAs[MoeIntObject]("$times").get)
+      )
+    )
+
+
     /**
      * List of Methods to support:
      * - exists ($value)
