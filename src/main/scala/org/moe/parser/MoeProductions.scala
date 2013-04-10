@@ -247,13 +247,35 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case v ~ expr => VariableDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
   }  
 
+  private def zipEm (x: List[String], y: List[AST], f: ((String, AST)) => AST): List[AST] = {
+    if (y.isEmpty) 
+      x.map(f(_, UndefLiteralNode())) 
+    else if (x.isEmpty) 
+      List() 
+    else 
+      f(x.head, y.headOption.getOrElse(UndefLiteralNode())) :: zipEm(x.tail, y.tail, f)
+  }
+
+  def multiVariableDeclaration = "my" ~> ("(" ~> repsep(variableName, ",") <~ ")") ~ ("=" ~> "(" ~> repsep(expression, ",") <~ ")").? <~ statementDelim ^^ {
+    case vars ~ None        => StatementsNode(vars.map(VariableDeclarationNode(_, UndefLiteralNode())))
+    case vars ~ Some(exprs) => StatementsNode(zipEm(vars, exprs, (p) => VariableDeclarationNode(p._1, p._2)))
+  }  
+
   def variableAssignment = variableName ~ "=" ~ expression <~ statementDelim ^^ {
     case v ~ _ ~ expr => VariableAssignmentNode(v, expr)
   }
 
+  def multiVariableAssignment = ("(" ~> repsep(variableName, ",") <~ ")") ~ "=" ~ ("(" ~> repsep(expression, ",") <~ ")") <~ statementDelim ^^ {
+    case vars ~ _ ~ exprs => StatementsNode(zipEm(vars, exprs, (p) => VariableAssignmentNode(p._1, p._2)))
+  }    
+
   def attributeAssignment = attributeName ~ "=" ~ expression <~ statementDelim ^^ {
     case v ~ _ ~ expr => AttributeAssignmentNode(v, expr)
   }
+
+  def multiAttributeAssignment = ("(" ~> repsep(attributeName, ",") <~ ")") ~ "=" ~ ("(" ~> repsep(expression, ",") <~ ")") <~ statementDelim ^^ {
+    case vars ~ _ ~ exprs => StatementsNode(zipEm(vars, exprs, (p) => AttributeAssignmentNode(p._1, p._2)))
+  }   
 
   def arrayElementAssignment = array_index_rule ~ "=" ~ expression <~ statementDelim ^^ {
     case "@" ~ array ~ index_expr ~ "=" ~ value_expr => ArrayElementLvalueNode("@" + array, index_expr, value_expr)
@@ -421,8 +443,11 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   lazy val statement: Parser[AST] = (
       variableDeclaration
+    | multiVariableDeclaration
     | variableAssignment
+    | multiVariableAssignment
     | attributeAssignment  
+    | multiAttributeAssignment
     | useStatement
     | arrayElementAssignment
     | hashElementAssignment
