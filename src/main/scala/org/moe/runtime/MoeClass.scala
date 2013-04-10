@@ -11,16 +11,17 @@ import scala.collection.mutable.{HashMap,Map}
  * @param superclass None
  */
 class MoeClass(
-    private val name: String,
-    private val version: Option[String] = None,
-    private val authority: Option[String] = None,
+    private val name:       String,
+    private val version:    Option[String]   = None,
+    private val authority:  Option[String]   = None,
     private var superclass: Option[MoeClass] = None
   ) extends MoeObject {
 
   private var constructor: Option[MoeMethod] = None // BUILD
-  private var destructor: Option[MoeMethod] = None  // DEMOLISH
+  private var destructor:  Option[MoeMethod] = None  // DEMOLISH
 
-  private val methods: Map[String,MoeMethod] = new HashMap[String, MoeMethod]()
+  private val methods:    Map[String,MoeMethod]    = new HashMap[String, MoeMethod]()
+  private val submethods: Map[String,MoeMethod]    = new HashMap[String, MoeMethod]()
   private val attributes: Map[String,MoeAttribute] = new HashMap[String, MoeAttribute]()
 
   // Identity ...
