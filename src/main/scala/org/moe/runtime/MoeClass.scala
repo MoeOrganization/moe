@@ -168,6 +168,17 @@ class MoeClass(
       { s => s.collectAllMethods ++ methods }
     ).getOrElse(methods.clone)  
 
+
+  // submethods
+
+  def addSubMethod(submethod: MoeMethod): Unit = submethods += (submethod.getName -> submethod)
+
+  def removeSubMethod(name: String): Unit = submethods -= name
+
+  def getSubMethod(name: String): Option[MoeMethod] = submethods.get(name)
+
+  def hasSubMethod(name: String): Boolean = getSubMethod(name).isDefined
+
   // Utils ...
 
   def isClassOf(klass:   MoeClass): Boolean = isClassOf(klass.getName)

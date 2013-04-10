@@ -324,6 +324,11 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case n ~ None    ~ b => MethodDeclarationNode(n, SignatureNode(List()), b) 
   }
 
+  def submethodDecl: Parser[SubMethodDeclarationNode] = ("submethod" ~> namespacedIdentifier ~ ("(" ~> repsep(parameter, ",") <~ ")").?) ~ block ^^ { 
+    case n ~ Some(p) ~ b => SubMethodDeclarationNode(n, SignatureNode(p), b) 
+    case n ~ None    ~ b => SubMethodDeclarationNode(n, SignatureNode(List()), b) 
+  }
+
   def constructorDecl: Parser[ConstructorDeclarationNode] = ("BUILD" ~> ("(" ~> repsep(parameter, ",") <~ ")").?) ~ block ^^ { 
     case Some(p) ~ b => ConstructorDeclarationNode(SignatureNode(p), b) 
     case None    ~ b => ConstructorDeclarationNode(SignatureNode(List()), b) 
@@ -336,6 +341,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   def classBodyParts: Parser[AST] = (
       methodDecl
+    | submethodDecl
     | constructorDecl
     | destructorDecl
     | attributeDecl

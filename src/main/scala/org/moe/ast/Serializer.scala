@@ -168,6 +168,18 @@ object Serializer {
       )
     )
 
+    case SubMethodDeclarationNode(name, signature, body) => JSONObject(
+      Map(
+        "SubMethodDeclarationNode" -> JSONObject(
+          Map(
+            "name"      -> name,
+            "signature" -> toJSON(signature),
+            "body"      -> toJSON(body)
+          )
+        )
+      )
+    )
+
     case MethodDeclarationNode(name, signature, body) => JSONObject(
       Map(
         "MethodDeclarationNode" -> JSONObject(

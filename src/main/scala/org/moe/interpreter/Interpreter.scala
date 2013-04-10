@@ -393,6 +393,22 @@ class Interpreter {
         destructor
       }
 
+      case SubMethodDeclarationNode(name, signature, body) => {
+        val klass = env.getCurrentClass.getOrElse(
+          throw new MoeErrors.ClassNotFound("__CLASS__")
+        )
+        val sig = eval(runtime, env, signature).asInstanceOf[MoeSignature]
+        throwForUndeclaredVars(env, sig, body)
+        val method = new MoeMethod(
+          name            = name,
+          signature       = sig,
+          declaration_env = env,
+          body            = (e) => eval(runtime, e, body)
+        )
+        klass.addSubMethod(method)
+        method
+      }
+
       case MethodDeclarationNode(name, signature, body) => {
         val klass = env.getCurrentClass.getOrElse(
           throw new MoeErrors.ClassNotFound("__CLASS__")
@@ -493,7 +509,9 @@ class Interpreter {
               throw new MoeErrors.ClassNotFound("__CLASS__")
             )
             val meth = klass.getMethod(method_name).getOrElse(
-              throw new MoeErrors.MethodNotFound(method_name)
+              klass.getSubMethod(method_name).getOrElse(
+                throw new MoeErrors.MethodNotFound(method_name)
+              )
             )
             obj.callMethod(meth, args.map(eval(runtime, env, _)))
           case _ => throw new MoeErrors.MoeException("Object expected")
