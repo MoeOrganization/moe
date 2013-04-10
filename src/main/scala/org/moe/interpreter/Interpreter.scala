@@ -489,13 +489,29 @@ class Interpreter {
 
       // TODO context etc
       case VariableAccessNode(name) => env.get(name).getOrElse(
-          throw new MoeErrors.VariableNotFound(name)
+          if (name.startsWith("&")) {
+            val function_name = name.drop(1)
+            val sub = runtime.lookupSubroutine(
+              function_name, 
+              env.getCurrentPackage.getOrElse(
+                throw new MoeErrors.PackageNotFound("__PACKAGE__")
+              )
+            ).getOrElse( 
+              throw new MoeErrors.SubroutineNotFound(function_name)
+            )
+            if (!sub.hasAssociatedClass) sub.setAssociatedClass(runtime.getCoreClassFor("Code"))
+            sub
+          } else {
+            throw new MoeErrors.VariableNotFound(name)
+          }
         )
+
       case VariableAssignmentNode(name, expression) => {
         env.set(name, eval(runtime, env, expression)).getOrElse(
           throw new MoeErrors.VariableNotFound(name)
         )
       }
+
       case VariableDeclarationNode(name, expression) => {
         env.create(name, eval(runtime, env, expression)).get
       }

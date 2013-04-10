@@ -42,4 +42,14 @@ class AnonCodeTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtil
     result.unboxToInt.get should equal (30)
   }
 
+  test("... a non-anon sub taken as a reference") {
+    val result = interpretCode("sub add($x, $y) { $x + $y }; &add.(1, 2)")
+    result.unboxToInt.get should equal (3)
+  }
+
+  test("... a non-anon sub taken as a reference w/ apply") {
+    val result = interpretCode("sub add($x, $y) { $x + $y }; &add.apply([1, 2])")
+    result.unboxToInt.get should equal (3)
+  }
+
 }
