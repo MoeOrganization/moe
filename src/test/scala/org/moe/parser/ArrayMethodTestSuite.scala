@@ -79,7 +79,7 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     val result = interpretCode("my @a = [1, 2, 3, 4, 5]; @a.shuffle")
     val array = result.unboxToArrayBuffer.get
     array.length should equal (5)
-    array.mkString("") should not equal "12345"
+    array.mkString("") should not equal ("12345")
   }
 
   test("... basic test with array.sum") {
@@ -106,4 +106,19 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     val result = interpretCode("my @a1 = ['a', ['b', 1], 2]; my @a2 = ['a', ['b', 1, 2]]; @a1.eqv(@a2)")
     result.unboxToBoolean.get should equal (false)
   }
+
+  test("... basic test with array.flatten") {
+    val result = interpretCode("my @a = [[1, 1], 2, [3, [5, 8]]]; @a.flatten")
+    val array = result.unboxToArrayBuffer.get
+    array.length should equal (6)
+    array.mkString(",") should equal ("1,1,2,3,5,8")
+  }
+
+  test("... basic test with array repetition") {
+    val result = interpretCode("my @a = [1, 2, 3]; @a x 3")
+    val array = result.unboxToArrayBuffer.get
+    array.length should equal (9)
+    array.mkString(",") should equal ("1,2,3,1,2,3,1,2,3")
+  }
+
 }
