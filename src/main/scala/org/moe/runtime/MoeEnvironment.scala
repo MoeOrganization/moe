@@ -86,4 +86,5 @@ class MoeEnvironment(
     Some(value)
   }
 
+  override def toString = pad.toString + "\n" + parent.map(_.toString)
 }
