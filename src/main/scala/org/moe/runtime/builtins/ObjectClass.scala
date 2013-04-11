@@ -41,6 +41,15 @@ object ObjectClass {
       )
     )
 
+    objectClass.addMethod(
+      new MoeMethod(
+        "class",
+        new MoeSignature(),
+        env,
+        (e) => self(e).getAssociatedClass.get
+      )
+    )
+
     /**
      * List of Methods to support:
      * 
