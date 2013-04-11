@@ -166,7 +166,11 @@ class MoeRuntime (
 
   def findFilePathForPackageName (full: String): Option[java.io.File] = {
     val p = "/" + full.split("::").mkString("/") + ".mo"
-    includeDirs.find(d => new java.io.File(d + p).exists()).map(d => new java.io.File(d + p))
+    includeDirs.find(
+      d => new java.io.File(d.unboxToString.get + p).exists()
+    ).map(
+      d => new java.io.File(d.unboxToString.get + p)
+    )
   }
 
   // TODO: 
