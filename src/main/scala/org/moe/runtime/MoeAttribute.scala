@@ -15,6 +15,7 @@ class MoeAttribute(
    * Return the name of this attribute.
    */
   def getName: String = name
+  def getKeyName = name.drop(2)
 
   /**
    * Returns true if this attribute has a default set.
