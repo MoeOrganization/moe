@@ -6,12 +6,8 @@ package Tree {
 
         has @!children = [];
 
-        BUILD ($node, @children?) { 
-            $!node = $node;
-            if (@children) {
-                @!children = @children;
-                self.fix_parent;
-            }
+        submethod BUILD { 
+            self.fix_parent;
         }
 
         method node { $!node }
