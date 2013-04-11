@@ -149,6 +149,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     | literalValue
     | classAccess
     | variable
+    | specialVariable
     | attribute
     | expressionParens
     | signedExpressionParens
@@ -213,6 +214,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    */
 
   def identifier           = """[a-zA-Z_][a-zA-Z0-9_]*""".r
+  def uppercaseIdentifier  = """[A-Z_]+""".r
   def namespaceSeparator   = "::"
   def namespacedIdentifier = rep1sep(identifier, namespaceSeparator) ^^ { _.mkString(namespaceSeparator) }
 
@@ -222,6 +224,9 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   def variableName = sigil ~ namespacedIdentifier ^^ { case a ~ b => a + b }
   def variable     = variableName ^^ VariableAccessNode
+
+  def specialVariableName = sigil ~ "[?*]".r ~ uppercaseIdentifier ^^ { case a ~ b ~ c => a + b + c }
+  def specialVariable     = specialVariableName ^^ VariableAccessNode
 
   def attributeName = sigil ~ "!" ~ identifier ^^ { case a ~ b ~ c => a + b + c }
   def attribute     = attributeName ^^ AttributeAccessNode
