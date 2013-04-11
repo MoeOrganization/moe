@@ -155,6 +155,14 @@ class MoeClass(
 
   def hasSubMethod(name: String): Boolean = getSubMethod(name).isDefined
 
+  def collectAllBUILDSubMethods: List[MoeMethod] = getMRO.foldLeft[List[MoeMethod]](List())(
+    (acc, c) => if (c.hasSubMethod("BUILD")) c.getSubMethod("BUILD").get :: acc else acc
+  )
+
+  def collectAllDEMOLISHSubMethods: List[MoeMethod] = getMRO.foldLeft[List[MoeMethod]](List())(
+    (acc, c) => if (c.hasSubMethod("DEMOLISH")) c.getSubMethod("DEMOLISH").get :: acc else acc
+  ).reverse
+
   // Utils ...
 
   def isClassOf(klass:   MoeClass): Boolean = isClassOf(klass.getName)
