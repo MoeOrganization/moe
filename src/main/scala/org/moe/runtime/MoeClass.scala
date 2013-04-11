@@ -188,13 +188,11 @@ class MoeClass(
     superclass.exists(_.isClassOf(klassname))
   }
 
-  override def getAssociatedClass = Some(this)
-
   /**
    * Returns a string representation of this class.
    */
   override def toString: String = {
-    "{ " + name + "-" + version.getOrElse("0.0.0") + "-" + authority.getOrElse("cpan:undef") + superclass.map({ s =>
+    "{ " + name + "-" + version.getOrElse("0.0.0") + "-" + authority.getOrElse("cpan:*") + superclass.map({ s =>
       " #extends " + s.toString
     }).getOrElse("") + " }"
   }
