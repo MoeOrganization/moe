@@ -28,7 +28,7 @@ object Moe {
     options.addOption(e)
 
     val i = new Option("I", "directory to load modules from")
-    i.setArgs(Option.UNLIMITED_VALUES)
+    i.setArgs(1)
     i.setArgName("include")
     options.addOption(i)
 
