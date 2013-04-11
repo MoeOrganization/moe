@@ -194,7 +194,7 @@ class MoeClass(
    * Returns a string representation of this class.
    */
   override def toString: String = {
-    "{ " + name + "-" + version.getOrElse("") + "-" + authority.getOrElse("") + superclass.map({ s =>
+    "{ " + name + "-" + version.getOrElse("0.0.0") + "-" + authority.getOrElse("cpan:undef") + superclass.map({ s =>
       " #extends " + s.toString
     }).getOrElse("") + " }"
   }
