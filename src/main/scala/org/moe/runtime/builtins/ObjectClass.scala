@@ -15,7 +15,11 @@ object ObjectClass {
 
     import r.NativeObjects._
 
-    def self(e: MoeEnvironment): MoeClass = e.getCurrentInvocantAs[MoeClass].getOrElse(
+    def klass(e: MoeEnvironment): MoeClass = e.getCurrentInvocantAs[MoeClass].getOrElse(
+      throw new MoeErrors.InvocantNotFound("Could not find invocant")
+    )
+
+    def self(e: MoeEnvironment): MoeObject = e.getCurrentInvocantAs[MoeObject].getOrElse(
       throw new MoeErrors.InvocantNotFound("Could not find invocant")
     )
 
@@ -29,7 +33,7 @@ object ObjectClass {
         env,
         {
           (e) => 
-            val c = self(e)
+            val c = klass(e)
             val i = c.newInstance.asInstanceOf[MoeOpaque]
             c.collectAllAttributes.foreach(a => a._2.getDefault.map(i.setValue(a._1, _)))
             i
