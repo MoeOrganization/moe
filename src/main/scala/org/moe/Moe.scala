@@ -28,7 +28,7 @@ object Moe {
     options.addOption(e)
 
     val i = new Option("I", "directory to load modules from")
-    i.setArgs(1)
+    i.setArgs(Option.UNLIMITED_VALUES)
     i.setArgName("include")
     options.addOption(i)
 
@@ -55,13 +55,6 @@ object Moe {
 
     val cmd: CommandLine = parser.parse(options, args);
 
-    /*
-     FIXME:
-     I am sure this can be done more
-     idiomatically, but just porting
-     the java straight for now.
-     - SL
-     */
     if (cmd.hasOption("h")) {
       printHelp(options)
       return
@@ -76,7 +69,10 @@ object Moe {
     runtime.bootstrap()
 
     if (cmd.hasOption("I")) {
-      runtime.addIncludeDir(cmd.getOptionValue("I"))
+      val includes = cmd.getOptionValues("I")
+      if (includes != null) {
+        includes.map(runtime.addIncludeDir(_))  
+      }
     }
 
     if (cmd.hasOption("v")) {
