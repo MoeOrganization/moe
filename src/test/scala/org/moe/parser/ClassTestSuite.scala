@@ -15,8 +15,6 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
     val result = interpretCode("class Foo {}")
     result.asInstanceOf[MoeClass].getName should be ("Foo")
     result.asInstanceOf[MoeClass].getSuperclass should be (runtime.getCoreClassFor("Any"))
-    result.asInstanceOf[MoeClass].getConstructor should be (None)
-    result.asInstanceOf[MoeClass].getDestructor should be (None)
   }
 
   test("... a basic class w/ method") {
@@ -32,15 +30,15 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
   }
 
   test("... a basic class w/ constructor") {
-    val result = interpretCode("class Foo { BUILD {} }")
+    val result = interpretCode("class Foo { submethod BUILD {} }")
     result.asInstanceOf[MoeClass].getName should be ("Foo")
-    result.asInstanceOf[MoeClass].hasConstructor should be (true)
+    result.asInstanceOf[MoeClass].hasSubMethod("BUILD") should be (true)
   }
 
   test("... a basic class w/ destructor") {
-    val result = interpretCode("class Foo { DEMOLISH {} }")
+    val result = interpretCode("class Foo { submethod DEMOLISH {} }")
     result.asInstanceOf[MoeClass].getName should be ("Foo")
-    result.asInstanceOf[MoeClass].hasDestructor should be (true)
+    result.asInstanceOf[MoeClass].hasSubMethod("DEMOLISH") should be (true)
   }
 
   test("... a basic class w/ instance creation") {
@@ -97,27 +95,8 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
     result.unboxToInt.get should be (10)
   }
 
-  private val pointClass_v2 = """
-    class Point {
-      has $!x = 0;
-      has $!y = 0;
-      BUILD ($x, $y) {
-        $!x = $x;
-        $!y = $y;
-      }
-      method x ($x?) { 
-        if ($x) { $!x = $x; }
-        $!x
-      }
-      method y ($y?) { 
-        if ($y) { $!y = $y; }
-        $!y
-      }
-    }
-  """
-
-  test("... a complex class v2 (take 1)") {
-    val result = interpretCode(pointClass_v2 + " my $p = ^Point.new(10, 20); $p.x")
+  test("... a complex class (take 3)") {
+    val result = interpretCode(pointClass + " my $p = ^Point.new(x => 10, y => 20); $p.x")
     result.unboxToInt.get should be (10)
   }
 

@@ -36,8 +36,7 @@ object InterpreterUtils {
       case ClassDeclarationNode(name, superclass, body) => walkAST(body, callback)
 
       case PackageDeclarationNode(_, body) => walkAST(body, callback)
-      case ConstructorDeclarationNode(_, body) => walkAST(body, callback)
-      case DestructorDeclarationNode(_, body) => walkAST(body, callback)
+      case SubMethodDeclarationNode(_, _, body) => walkAST(body, callback)
       case MethodDeclarationNode(_, _, body) => walkAST(body, callback)
       case SubroutineDeclarationNode(_, _, body, _) => walkAST(body, callback)
 

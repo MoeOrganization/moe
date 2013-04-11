@@ -352,60 +352,6 @@ class Interpreter {
         params.map(eval(runtime, env, _).asInstanceOf[MoeParameter])
       )
 
-      case ConstructorDeclarationNode(signature, body) => {
-        val klass = env.getCurrentClass.getOrElse(
-          throw new MoeErrors.ClassNotFound("__CLASS__")
-        )
-        val sig = eval(runtime, env, signature).asInstanceOf[MoeSignature]
-        throwForUndeclaredVars(env, sig, body)
-
-        val constructor = new MoeMethod(
-          name            = "BUILD",
-          signature       = sig,
-          declaration_env = env,
-          body            = (e) => eval(runtime, e, body)
-        )
-        klass.setConstructor(Some(constructor))
-
-        val new_method = new MoeMethod(
-          name            = "new",
-          signature       = sig,
-          declaration_env = env,
-          body            = {
-            (env) => 
-              val c = env.getCurrentInvocant.get.asInstanceOf[MoeClass]
-              val i = c.newInstance.asInstanceOf[MoeOpaque]
-              c.collectAllAttributes.foreach(a => a._2.getDefault.map(i.setValue(a._1, _)))
-
-              // call BUILD (this really should be a BUILDALL method)
-              val e = new MoeEnvironment(Some(env))
-              e.setCurrentInvocant(i)
-              c.getConstructor.map(_.executeBody(e))
-
-              i
-          }
-        )
-        klass.addMethod(new_method)
-        
-        constructor
-      }
-
-      case DestructorDeclarationNode(signature, body) => {
-        val klass = env.getCurrentClass.getOrElse(
-          throw new MoeErrors.ClassNotFound("__CLASS__")
-        )
-        val sig = eval(runtime, env, signature).asInstanceOf[MoeSignature]
-        throwForUndeclaredVars(env, sig, body)
-        val destructor = new MoeMethod(
-          name            = "DEMOLISH",
-          signature       = sig,
-          declaration_env = env,
-          body            = (e) => eval(runtime, e, body)
-        )
-        klass.setDestructor(Some(destructor))
-        destructor
-      }
-
       case SubMethodDeclarationNode(name, signature, body) => {
         val klass = env.getCurrentClass.getOrElse(
           throw new MoeErrors.ClassNotFound("__CLASS__")

@@ -146,28 +146,6 @@ object Serializer {
     )
     case SignatureNode(params) => JSONArray(params.map(toJSON(_)))
 
-    case ConstructorDeclarationNode(signature, body) => JSONObject(
-      Map(
-        "ConstructorDeclarationNode" -> JSONObject(
-          Map(
-            "signature" -> toJSON(signature),
-            "body"      -> toJSON(body)
-          )
-        )
-      )
-    )
-
-    case DestructorDeclarationNode(signature, body) => JSONObject(
-      Map(
-        "DestructorDeclarationNode" -> JSONObject(
-          Map(
-            "signature" -> toJSON(signature),
-            "body"      -> toJSON(body)
-          )
-        )
-      )
-    )
-
     case SubMethodDeclarationNode(name, signature, body) => JSONObject(
       Map(
         "SubMethodDeclarationNode" -> JSONObject(

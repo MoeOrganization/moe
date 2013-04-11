@@ -138,15 +138,6 @@ class ClassNodeTestSuite
             List(
               AttributeDeclarationNode("$!x", IntLiteralNode(0)),
               AttributeDeclarationNode("$!y", IntLiteralNode(0)),
-              ConstructorDeclarationNode(
-                SignatureNode(List(ParameterNode("$x"), ParameterNode("$y"))),
-                StatementsNode(
-                  List(
-                    AttributeAssignmentNode("$!x", VariableAccessNode("$x")),
-                    AttributeAssignmentNode("$!y", VariableAccessNode("$y"))
-                  )
-                )
-              ),
               MethodDeclarationNode(
                 "coords",
                 SignatureNode(List()),
@@ -168,7 +159,10 @@ class ClassNodeTestSuite
           MethodCallNode(
             ClassAccessNode("Point"),
             "new",
-            List(IntLiteralNode(150), IntLiteralNode(250))
+            List(
+              PairLiteralNode(StringLiteralNode("x"), IntLiteralNode(150)), 
+              PairLiteralNode(StringLiteralNode("y"), IntLiteralNode(250))
+            )
           ),
           "coords",
           List()
