@@ -49,6 +49,10 @@ object ObjectClass {
                   )
               }
             )
+            val e2 = new MoeEnvironment(Some(e))
+            e2.setCurrentClass(cls)
+            e2.setCurrentInvocant(inv)
+            cls.collectAllBUILDSubMethods.foreach(m => m.executeBody(e2))
             inv
         }
       )
