@@ -309,6 +309,8 @@ class Interpreter {
           superclass_class
         )
 
+        klass.setAssociatedClass(runtime.getCoreClassFor("Class"))
+
         pkg.addClass(klass)
 
         scoped { klass_env =>
