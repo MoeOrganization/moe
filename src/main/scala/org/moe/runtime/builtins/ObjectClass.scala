@@ -1,6 +1,7 @@
 package org.moe.runtime.builtins
 
 import org.moe.runtime._
+import org.moe.runtime.nativeobjects._
 
 /**
   * setup class Object
@@ -23,20 +24,32 @@ object ObjectClass {
       throw new MoeErrors.InvocantNotFound("Could not find invocant")
     )
 
-
     // MRO: Any, Object
 
     objectClass.addMethod(
       new MoeMethod(
         "new",
-        new MoeSignature(),
+        new MoeSignature(List(new MoeSlurpyNamedParameter("%args"))),
         env,
         {
           (e) => 
-            val c = klass(e)
-            val i = c.newInstance.asInstanceOf[MoeOpaque]
-            c.collectAllAttributes.foreach(a => a._2.getDefault.map(i.setValue(a._1, _)))
-            i
+            val cls  = klass(e)
+            val inv  = cls.newInstance.asInstanceOf[MoeOpaque]
+            val args = e.get("%args").get match {
+              case (x: MoeHashObject)  => x
+              case (x: MoeUndefObject) => getHash()
+            }
+            cls.collectAllAttributes.foreach(
+              { a => 
+                  val attr = a._2
+                  val key  = getStr(attr.getKeyName)
+                  inv.setValue(
+                    attr.getName,
+                    if (args.exists(r, key).isTrue) args.at_key(r, key) else attr.getDefault.getOrElse(getUndef)
+                  )
+              }
+            )
+            inv
         }
       )
     )
