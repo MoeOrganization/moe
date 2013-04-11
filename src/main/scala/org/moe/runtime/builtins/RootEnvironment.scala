@@ -16,6 +16,8 @@ object RootEnvironment {
     env.create("@ARGV", getArray())
     env.create("%INC",  getHash())
 
+    // SEE ALSO -> http://perlcabal.org/syn/S28.html
+
     /**
      * TODO:
      * we need to be able to alter 
@@ -31,7 +33,7 @@ object RootEnvironment {
      * and aren't reflecting correctly
      * in the runtime.
      */ 
-    env.create("%ENV", getHash(r.getSystem.getEnv.map(p => p._1 -> getStr(p._2)).toSeq:_*))
-    env.create("@INC", getArray(r.getIncludeDirs.map(getStr(_)):_*))
+    env.create("%ENV", getHash(r.getEnv))
+    env.create("@INC", getArray(r.getIncludeDirs))
   }
 }

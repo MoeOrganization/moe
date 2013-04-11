@@ -19,8 +19,13 @@ class MoeRuntime (
 
   private var is_bootstrapped = false
 
-  private val includeDirs = ArrayBuffer(new java.io.File(".").getCanonicalPath)
-
+  // these are global variables tied to the 
+  // runtime that we will expose to the user
+  // but also need to system to maintain a
+  // connection to them as well
+  private val systemEnv:   HashMap[String,MoeObject] = HashMap()
+  private val includeDirs: ArrayBuffer[MoeObject]    = ArrayBuffer()
+  
   private val rootEnv     = new MoeEnvironment()
   private val rootPackage = new MoePackage("*", rootEnv)
   private val corePackage = new MoePackage("CORE", new MoeEnvironment(Some(rootEnv)))
@@ -32,8 +37,9 @@ class MoeRuntime (
   def areWarningsEnabled = warnings
   def isDebuggingOn      = debug
 
+  def getEnv         = systemEnv
   def getIncludeDirs = includeDirs
-  def addIncludeDir(path: String) = includeDirs += path
+  def addIncludeDir(path: String) = includeDirs += NativeObjects.getStr(path)
 
   def getVersion     = VERSION
   def getAuthority   = AUTHORITY
@@ -110,15 +116,14 @@ class MoeRuntime (
 
       setupBuiltins
 
-      /*
-        TODO:
-        - bootstrap the other associtateClass for MoeClass, MoeAttribute,MoeMethod, etc.
-        - wrap STDIN, STDOUT, STDERR from MoeSystem in an IO class before they are exposed
-      */
+      rootEnv.setCurrentRuntime(this)
 
       is_bootstrapped = true
 
-      rootEnv.setCurrentRuntime(this)
+      // do some basic environment setup now that we are bootstrapped
+
+      getEnv ++= system.getEnv.map(p => p._1 -> NativeObjects.getStr(p._2))
+      addIncludeDir(new java.io.File(".").getCanonicalPath)
     }
   }
 
@@ -205,11 +210,16 @@ class MoeRuntime (
     def getStr  (value: String)  = new MoeStrObject(value, getCoreClassFor("Str"))
     def getBool (value: Boolean) = if (value) { True } else { False }
 
-    def getHash  (value: (String, MoeObject)*) = new MoeHashObject(HashMap(value:_*), getCoreClassFor("Hash"))
-    def getArray (value: MoeObject*)           = new MoeArrayObject(ArrayBuffer(value:_*), getCoreClassFor("Array"))
     def getPair  (value: (String, MoeObject))  = new MoePairObject((value._1, value._2), getCoreClassFor("Pair"))
 
+    def getHash  (value: (String, MoeObject)*)     = new MoeHashObject(HashMap(value:_*), getCoreClassFor("Hash"))
+    def getHash  (hash: HashMap[String,MoeObject]) = new MoeHashObject(hash, getCoreClassFor("Hash"))
+
+    def getArray (value: MoeObject*)             = new MoeArrayObject(ArrayBuffer(value:_*), getCoreClassFor("Array"))
+    def getArray (array: ArrayBuffer[MoeObject]) = new MoeArrayObject(array, getCoreClassFor("Array"))
+
     def getIO (path: String) = new MoeIOObject(new java.io.File(path), getCoreClassFor("IO"))
+    def getIO (file: java.io.File) = new MoeIOObject(file, getCoreClassFor("IO"))
   }
 
 }
