@@ -22,6 +22,11 @@ class MoeEnvironment(
     val Topic    = "$_"
   }
 
+  def isSpecialMarker(m: String) = 
+    m == Markers.Runtime || m == Markers.Package  || 
+    m == Markers.Class   || m == Markers.Invocant || 
+    m == Markers.Topic
+
   private val pad: Map[String, MoeObject] = new HashMap[String, MoeObject]()
 
   def getCurrentRuntime  : Option[MoeRuntime] = getAs[MoeRuntime](Markers.Runtime)

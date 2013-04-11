@@ -118,7 +118,7 @@ object InterpreterUtils {
             case VariableDeclarationNode(varname, _) =>
               declared += varname
             case VariableAccessNode(varname) =>
-              if (!env.has(varname) && !declared(varname)) {
+              if (!env.has(varname) && !declared(varname) && !env.isSpecialMarker(varname)) {
                 throw new MoeErrors.VariableNotFound(varname)
               }
             case _ => Unit
