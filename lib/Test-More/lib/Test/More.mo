@@ -8,6 +8,8 @@ package Test {
         method not_ok ($count, $msg) { say [ "not ok", $count, ($msg || "") ].join(" ") }
 
         method diag (*@msg) { warn @msg.join }
+
+        method bailout ($msg) { die $msg }
     }
 
     class Builder {
@@ -35,6 +37,8 @@ package Test {
             }
         }
 
+        method diag ($msg) { $!output.diag($msg) }
+
         submethod inc_count { $!count = $!count + 1; }
 
         submethod output_err ($got, $expected, $msg) {
@@ -53,7 +57,7 @@ package Test {
             } elsif ($got.isa("Bool")) {
                 $got == ?$expected;
             } else {
-                die("Can only compare Str, Int, Num and Bool objects");
+                $!output.bailout("Can only compare Str, Int, Num and Bool objects");
             }
         }
     }
@@ -65,12 +69,24 @@ package Test {
         sub plan ($count) is export { $builder.plan($count) }
         sub done_testing  is export { $builder.done_testing }
 
+        sub pass ($msg?) is export {
+            $builder.ok(true, $msg);
+        }
+
+        sub fail ($msg?) is export {
+            $builder.ok(false, $msg);
+        }
+
         sub ok ($test, $msg?) is export {
             $builder.ok($test, $msg);
         }
 
         sub is ($got, $expected, $msg?) is export {
             $builder.is($got, $expected, $msg);
+        }
+
+        sub diag ($msg) is export {
+            $builder.diag($msg);
         }
 
     }
