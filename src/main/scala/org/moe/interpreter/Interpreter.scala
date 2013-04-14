@@ -288,7 +288,12 @@ class Interpreter {
           throw new MoeErrors.PackageNotFound("__PACKAGE__")
         )
       ).getOrElse( 
-        throw new MoeErrors.ClassNotFound(name) 
+        runtime.lookupClass(
+          name, 
+          runtime.getRootPackage
+        ).getOrElse(
+          throw new MoeErrors.ClassNotFound(name) 
+        )
       )
 
       case ClassDeclarationNode(name, superclass, body) => {
