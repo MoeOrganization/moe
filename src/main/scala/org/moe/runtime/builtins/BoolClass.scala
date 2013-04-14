@@ -24,6 +24,26 @@ object BoolClass {
 
     import r.NativeObjects._
 
+    // equality operators
+
+    boolClass.addMethod(
+      new MoeMethod(
+        "infix:<==>",
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
+        env,
+        (e) => self(e).equal_to(r, e.get("$other").get)
+      )
+    )
+
+    boolClass.addMethod(
+      new MoeMethod(
+        "infix:<!=>",
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
+        env,
+        (e) => self(e).not_equal_to(r, e.get("$other").get)
+      )
+    )
+
     // coercion
 
     boolClass.addMethod(

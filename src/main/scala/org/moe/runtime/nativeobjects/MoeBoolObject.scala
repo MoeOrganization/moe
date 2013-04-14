@@ -11,6 +11,14 @@ class MoeBoolObject(
 
   // runtime methods
 
+  def equal_to (r: MoeRuntime, other: MoeObject): MoeBoolObject = r.NativeObjects.getBool(
+    (isTrue && other.isTrue) || (isFalse && other.isFalse)
+  )
+
+  def not_equal_to (r: MoeRuntime, other: MoeObject): MoeBoolObject = r.NativeObjects.getBool(
+    (isTrue && other.isFalse) || (isFalse && other.isTrue)
+  )
+
   // MoeNativeObject overrides
 
   override def copy = new MoeBoolObject(getNativeValue, getAssociatedClass)
