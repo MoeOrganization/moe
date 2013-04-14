@@ -27,8 +27,10 @@ package Test::More {
             $result = $got eq ~$expected;   
         } elsif ($got.isa("Int") || $got.isa("Num")) {
             $result = $got == +$expected;
+        } elsif ($got.isa("Bool")) {
+            $result = $got == ?$expected;
         } else {
-            die("Can only compare Str, Int and Num objects");
+            die("Can only compare Str, Int, Num and Bool objects");
         }
 
         if ($result) {
