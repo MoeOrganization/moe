@@ -1,37 +1,48 @@
 package Test {
 
+    class TAP {
+
+        method plan ($count) { say 1, "..", $count }
+
+        method ok     ($count, $msg) { say [ "ok",     $count, ($msg || "") ].join(" ") }
+        method not_ok ($count, $msg) { say [ "not ok", $count, ($msg || "") ].join(" ") }
+
+        method diag (*@msg) { warn @msg.join }
+    }
+
     class Builder {
-        has $!count = 0;
 
-        method plan ($count) {
-            say 1, "..", $count;
-        }
+        has $!output = ^Test::TAP.new;
+        has $!count  = 0;
 
-        method done_testing {
-            say 1, "..", $!count;
-        }
+        method plan ($count) { $!output.plan($count)  }
+        method done_testing  { $!output.plan($!count) }
 
         method ok ($test, $msg?) {
-            $!count = $!count + 1;
-            if ($test) {
-                say [ "ok", $!count, ($msg || "") ].join(" "); 
-            } else {
-                say [ "not ok", $!count, ($msg || "") ].join(" ");
-            }
+            self.inc_count;
+            ($test) 
+                ? $!output.ok($!count, $msg) 
+                : $!output.not_ok($!count, $msg);
         }
 
         method is ($got, $expected, $msg?) {
-            $!count = $!count + 1;
+            self.inc_count;
             if (self.compare($got, $expected)) {
-                say [ "ok", $!count, ($msg || "") ].join(" "); 
+                $!output.ok($!count, $msg);
             } else {
-                say [ "not ok", $!count, ($msg || "") ].join(" ");
-                warn( 
-                    "#  Failed test", ($msg || ""), "\n",
-                    "#    got:      ", ~$got,       "\n", 
-                    "#    expected: ", ~$expected
-                );
+                $!output.not_ok($!count, $msg);
+                $!output.output_diag($got, $expected, $msg); 
             }
+        }
+
+        submethod inc_count { $!count = $!count + 1; }
+
+        submethod output_diag ($got, $expected, $msg) {
+            $!output.diag( 
+                "#  Failed test", ($msg || ""), "\n",
+                "#    got:      ", ~$got,       "\n", 
+                "#    expected: ", ~$expected
+            );
         }
 
         submethod compare ($got, $expected) {
