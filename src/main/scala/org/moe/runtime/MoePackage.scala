@@ -10,14 +10,22 @@ object MoePackage {
     )
   }
 
-  def createPackageTreeFromName (name: String, env: MoeEnvironment): (MoePackage, MoePackage) = createPackageTreeFromName(name.split("::"), env)
-  def createPackageTreeFromName (name: Array[String], env: MoeEnvironment): (MoePackage, MoePackage) = {
-    val root = new MoePackage(name.head, env)
+  def createPackageTreeFromName (name: String, env: MoeEnvironment, parent: MoePackage): (MoePackage, MoePackage) = createPackageTreeFromName(name.split("::"), env, parent)
+  def createPackageTreeFromName (name: Array[String], env: MoeEnvironment, parent: MoePackage): (MoePackage, MoePackage) = {
+    val root = if (parent.hasSubPackage(name.head)) {
+      parent.getSubPackage(name.head).get 
+    } else {
+      new MoePackage(name.head, env)
+    }
     val leaf = name.tail.foldLeft[MoePackage](root)(
       (parent, subpkg_name) => {
-        val subpkg = new MoePackage(subpkg_name, env)
-        parent.addSubPackage(subpkg)
-        subpkg
+        if (parent.hasSubPackage(subpkg_name)) {
+          parent.getSubPackage(subpkg_name).get
+        } else {
+          val subpkg = new MoePackage(subpkg_name, env)
+          parent.addSubPackage(subpkg)
+          subpkg  
+        }
       }
     ) 
     (root -> leaf)

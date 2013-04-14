@@ -332,7 +332,7 @@ class Interpreter {
           val parent = env.getCurrentPackage.getOrElse(
             throw new MoeErrors.PackageNotFound("__PACKAGE__")
           )
-          val pkgs = MoePackage.createPackageTreeFromName(name, newEnv)
+          val pkgs = MoePackage.createPackageTreeFromName(name, newEnv, parent)
           // attach the root
           parent.addSubPackage(pkgs._1) 
           // make the leaf the current package 
