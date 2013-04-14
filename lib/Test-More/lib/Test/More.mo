@@ -1,50 +1,67 @@
-package Test::More {
+package Test {
 
-    my $test_count = 0;
+    class Builder {
+        has $!count = 0;
 
-    sub plan ($count) is export {
-        say 1, "..", $count;
-    }
+        method plan ($count) {
+            say 1, "..", $count;
+        }
 
-    sub done_testing is export {
-        say 1, "..", $test_count;
-    }
+        method done_testing {
+            say 1, "..", $!count;
+        }
 
-    sub ok ($test, $msg?) is export {
-        $test_count = $test_count + 1;
-        if ($test) {
-            say [ "ok", $test_count, ($msg || "") ].join(" "); 
-        } else {
-            say [ "not ok", $test_count, ($msg || "") ].join(" ");
+        method ok ($test, $msg?) {
+            $!count = $!count + 1;
+            if ($test) {
+                say [ "ok", $!count, ($msg || "") ].join(" "); 
+            } else {
+                say [ "not ok", $!count, ($msg || "") ].join(" ");
+            }
+        }
+
+        method is ($got, $expected, $msg?) {
+            $!count = $!count + 1;
+            if (self.compare($got, $expected)) {
+                say [ "ok", $!count, ($msg || "") ].join(" "); 
+            } else {
+                say [ "not ok", $!count, ($msg || "") ].join(" ");
+                warn( 
+                    "#  Failed test", ($msg || ""), "\n",
+                    "#    got:      ", ~$got,       "\n", 
+                    "#    expected: ", ~$expected
+                );
+            }
+        }
+
+        submethod compare ($got, $expected) {
+            if ($got.isa("Str")) {
+                $got eq ~$expected;   
+            } elsif ($got.isa("Int") || $got.isa("Num")) {
+                $got == +$expected;
+            } elsif ($got.isa("Bool")) {
+                $got == ?$expected;
+            } else {
+                die("Can only compare Str, Int, Num and Bool objects");
+            }
         }
     }
 
-    sub is ($got, $expected, $msg?) is export {
-        $test_count = $test_count + 1;
+    package More {
 
-        my $result;
-        if ($got.isa("Str")) {
-            $result = $got eq ~$expected;   
-        } elsif ($got.isa("Int") || $got.isa("Num")) {
-            $result = $got == +$expected;
-        } elsif ($got.isa("Bool")) {
-            $result = $got == ?$expected;
-        } else {
-            die("Can only compare Str, Int, Num and Bool objects");
+        my $builder = ^Test::Builder.new;
+
+        sub plan ($count) is export { $builder.plan($count) }
+        sub done_testing  is export { $builder.done_testing }
+
+        sub ok ($test, $msg?) is export {
+            $builder.ok($test, $msg);
         }
 
-        if ($result) {
-            say [ "ok", $test_count, ($msg || "") ].join(" "); 
-        } else {
-            say [ "not ok", $test_count, ($msg || "") ].join(" ");
-            warn( 
-                "#  Failed test", ($msg || ""),
-                "\n",
-                "#    got:      ", ~$got, 
-                "\n", 
-                "#    expected: ", ~$expected
-            );
+        sub is ($got, $expected, $msg?) is export {
+            $builder.is($got, $expected, $msg);
         }
+
     }
 
 }
