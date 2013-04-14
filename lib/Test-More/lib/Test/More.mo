@@ -31,13 +31,13 @@ package Test {
                 $!output.ok($!count, $msg);
             } else {
                 $!output.not_ok($!count, $msg);
-                $!output.output_diag($got, $expected, $msg); 
+                $!output.output_err($got, $expected, $msg); 
             }
         }
 
         submethod inc_count { $!count = $!count + 1; }
 
-        submethod output_diag ($got, $expected, $msg) {
+        submethod output_err ($got, $expected, $msg) {
             $!output.diag( 
                 "#  Failed test", ($msg || ""), "\n",
                 "#    got:      ", ~$got,       "\n", 
