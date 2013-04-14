@@ -173,9 +173,9 @@ object ArrayClass {
         "join",
         new MoeSignature(List(new MoeOptionalParameter("$sep"))),
         env,
-        (e) => e.getAs[MoeStrObject]("$sep") match {
-            case Some(sep) => self(e).join(r, sep)
-            case None      => self(e).join(r)
+        (e) => e.get("$sep").get match {
+            case (sep: MoeStrObject) => self(e).join(r, sep)
+            case _                   => self(e).join(r)
         }
       )
     )
