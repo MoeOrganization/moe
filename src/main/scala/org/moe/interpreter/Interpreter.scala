@@ -296,7 +296,7 @@ class Interpreter {
         )
       )
 
-      case ClassDeclarationNode(name, superclass, body) => {
+      case ClassDeclarationNode(name, superclass, body, version, authority) => {
         val pkg = env.getCurrentPackage.getOrElse(
           throw new MoeErrors.PackageNotFound("__PACKAGE__")
         )
@@ -309,8 +309,8 @@ class Interpreter {
 
         val klass = new MoeClass(
           name, 
-          None, 
-          None, 
+          version, 
+          authority, 
           superclass_class
         )
 
@@ -327,7 +327,7 @@ class Interpreter {
         klass
       }
 
-      case PackageDeclarationNode(name, body) => {
+      case PackageDeclarationNode(name, body, version, authority) => {
         scoped { newEnv =>
           val parent = env.getCurrentPackage.getOrElse(
             throw new MoeErrors.PackageNotFound("__PACKAGE__")
@@ -336,6 +336,10 @@ class Interpreter {
           // attach the root
           parent.addSubPackage(pkgs._1) 
           // make the leaf the current package 
+
+          pkgs._2.setVersion(version)
+          pkgs._2.setAuthority(authority)
+
           newEnv.setCurrentPackage(pkgs._2) 
           val result = eval(runtime, newEnv, body)
           newEnv.setCurrentPackage(parent)

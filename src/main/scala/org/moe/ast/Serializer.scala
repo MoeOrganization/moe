@@ -113,24 +113,28 @@ object Serializer {
 
     case ClassAccessNode(name) => JSONObject(Map("ClassAccessNode" -> name))
 
-    case ClassDeclarationNode(name, superclass, body) => JSONObject(
+    case ClassDeclarationNode(name, superclass, body, version, authority) => JSONObject(
       Map(
         "ClassDeclarationNode" -> JSONObject(
           Map(
             "name"       -> name,
-            "superclass" -> superclass,
+            "version"    -> version.getOrElse(""),
+            "authority"  -> authority.getOrElse(""),
+            "superclass" -> superclass.getOrElse(""),
             "body"       -> toJSON(body)
           )
         )
       )
     )
 
-    case PackageDeclarationNode(name, body) => JSONObject(
+    case PackageDeclarationNode(name, body, version, authority) => JSONObject(
       Map(
         "PackageDeclarationNode" -> JSONObject(
           Map(
-            "name" -> name,
-            "body" -> toJSON(body)
+            "name"      -> name,
+            "version"   -> version.getOrElse(""),
+            "authority" -> authority.getOrElse(""),            
+            "body"      -> toJSON(body)
           )
         )
       )

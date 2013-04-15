@@ -44,6 +44,9 @@ class MoePackage(
     private var env: MoeEnvironment
   ) extends MoeObject {
 
+  private var version: Option[String] = None
+  private var authority: Option[String] = None
+
   private var parent: Option[MoePackage] = None
   private val klasses: Map[String, MoeClass] = new HashMap[String, MoeClass]()
   private val subs: Map[String, MoeSubroutine] = new HashMap[String, MoeSubroutine]()
@@ -53,6 +56,20 @@ class MoePackage(
    * returns the name of this package
    */
   def getName: String = name
+
+  /**
+   * Returns the version of this package
+   */
+  def getVersion: Option[String] = version
+
+  def setVersion(v: Option[String]) = version = v
+
+  /**
+   * Returns the authority of this package
+   */
+  def getAuthority: Option[String] = authority
+
+  def setAuthority(a: Option[String]) = authority = a
 
   /**
    * returns the local package environment

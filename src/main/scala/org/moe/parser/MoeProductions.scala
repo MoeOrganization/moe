@@ -312,6 +312,11 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   def doBlock: Parser[StatementsNode] = "do".r ~> block
   def scopeBlock: Parser[ScopeNode] = block ^^ { ScopeNode(_) }
 
+  // versions and authority
+
+  def versionDecl   = """[0-9]+(\.[0-9]+)*""".r
+  def authorityDecl = """[a-z]+\:\S*""".r
+
   // Parameters
 
   def parameter = ("[*:]".r).? ~ sigil ~ namespacedIdentifier ~ "?".? ^^ { 
@@ -331,8 +336,11 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   // Packages
 
-  def packageDecl = ("package" ~> namespacedIdentifier) ~ block ^^ {
-    case p ~ b => PackageDeclarationNode(p, b)
+  def packageDecl = ("package" ~> namespacedIdentifier ~ ("-" ~> versionDecl).? ~ ("-" ~> authorityDecl).?) ~ block ^^ {
+    case p ~ None ~ None ~ b => PackageDeclarationNode(p, b)
+    case p ~ v    ~ None ~ b => PackageDeclarationNode(p, b, version = v)
+    case p ~ None ~ a    ~ b => PackageDeclarationNode(p, b, authority = a)
+    case p ~ v    ~ a    ~ b => PackageDeclarationNode(p, b, version = v, authority = a)
   }
 
   def subroutineDecl: Parser[SubroutineDeclarationNode] = ("sub" ~> namespacedIdentifier ~ ("(" ~> repsep(parameter, ",") <~ ")").?) ~ rep("is" ~> identifier).? ~ block ^^ { 
@@ -365,8 +373,11 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   def classBodyContent    : Parser[StatementsNode] = rep(classBodyParts) ^^ StatementsNode
   def classBody           : Parser[StatementsNode] = "{" ~> classBodyContent <~ "}"
 
-  def classDecl = ("class" ~> namespacedIdentifier) ~ ("extends" ~> namespacedIdentifier).? ~ classBody ^^ {
-    case c ~ s ~ b => ClassDeclarationNode(c, s, b) 
+  def classDecl = ("class" ~> namespacedIdentifier ~ ("-" ~> versionDecl).? ~ ("-" ~> authorityDecl).?) ~ ("extends" ~> namespacedIdentifier).? ~ classBody ^^ {
+    case c ~ None ~ None ~ s ~ b => ClassDeclarationNode(c, s, b) 
+    case c ~ v    ~ None ~ s ~ b => ClassDeclarationNode(c, s, b, version = v)
+    case c ~ None ~ a    ~ s ~ b => ClassDeclarationNode(c, s, b, authority = a) 
+    case c ~ v    ~ a    ~ s ~ b => ClassDeclarationNode(c, s, b, version = v, authority = a)
   }
 
   /**

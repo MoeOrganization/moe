@@ -63,8 +63,21 @@ case class ParameterNode(
 
 case class SignatureNode(params: List[ParameterNode]) extends AST
 
-case class ClassDeclarationNode(name: String, superclass: Option[String], body: StatementsNode) extends AST
-case class PackageDeclarationNode(name: String, body: StatementsNode) extends AST
+case class ClassDeclarationNode(
+  name       : String, 
+  superclass : Option[String], 
+  body       : StatementsNode,
+  version    : Option[String] = None,
+  authority  : Option[String] = None
+) extends AST
+
+case class PackageDeclarationNode(
+  name      : String, 
+  body      : StatementsNode,
+  version   : Option[String] = None,
+  authority : Option[String] = None  
+) extends AST
+
 case class SubMethodDeclarationNode(name: String, signature: SignatureNode, body: StatementsNode) extends AST
 case class MethodDeclarationNode(name: String, signature: SignatureNode, body: StatementsNode) extends AST
 case class SubroutineDeclarationNode(name: String, signature: SignatureNode, body: StatementsNode, traits: Option[List[String]] = None) extends AST
