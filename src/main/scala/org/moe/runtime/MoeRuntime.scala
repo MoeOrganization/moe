@@ -96,20 +96,20 @@ class MoeRuntime (
       val exceptionClass = new MoeClass("Exception",  Some(VERSION), Some(AUTHORITY), Some(scalarClass))
 
       // set the associated class for all classes
-      anyClass.setAssociatedClass(Some(classClass))
-      scalarClass.setAssociatedClass(Some(classClass))
-      arrayClass.setAssociatedClass(Some(classClass))
-      hashClass.setAssociatedClass(Some(classClass))
-      pairClass.setAssociatedClass(Some(classClass))
-      ioClass.setAssociatedClass(Some(classClass))
-      codeClass.setAssociatedClass(Some(classClass))
+      anyClass.setAssociatedClass(Some(anyClass))
+      scalarClass.setAssociatedClass(Some(scalarClass))
+      arrayClass.setAssociatedClass(Some(arrayClass))
+      hashClass.setAssociatedClass(Some(hashClass))
+      pairClass.setAssociatedClass(Some(pairClass))
+      ioClass.setAssociatedClass(Some(ioClass))
+      codeClass.setAssociatedClass(Some(codeClass))
 
-      undefClass.setAssociatedClass(Some(classClass))
-      boolClass.setAssociatedClass(Some(classClass))
-      strClass.setAssociatedClass(Some(classClass))
-      intClass.setAssociatedClass(Some(classClass))
-      numClass.setAssociatedClass(Some(classClass))
-      exceptionClass.setAssociatedClass(Some(classClass))
+      undefClass.setAssociatedClass(Some(undefClass))
+      boolClass.setAssociatedClass(Some(boolClass))
+      strClass.setAssociatedClass(Some(strClass))
+      intClass.setAssociatedClass(Some(intClass))
+      numClass.setAssociatedClass(Some(numClass))
+      exceptionClass.setAssociatedClass(Some(exceptionClass))
 
       // add all these classes to the corePackage
       corePackage.addClass(objectClass)

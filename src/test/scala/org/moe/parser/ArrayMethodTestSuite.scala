@@ -121,4 +121,18 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     array.mkString(",") should equal ("1,2,3,1,2,3,1,2,3")
   }
 
+  test("... basic test with array join") {
+    val result = interpretCode("""my @a = ["a", "b", "c"]; @a.join("|")""")
+    result.unboxToString.get should equal ("a|b|c")
+  }
+
+  test("... basic test with array join -- empty separator") {
+    val result = interpretCode("""my @a = ["a", "b", "c"]; @a.join("")""")
+    result.unboxToString.get should equal ("abc")
+  }
+
+  test("... basic test with array join -- no separator") {
+    val result = interpretCode("""my @a = ["a", "b", "c"]; @a.join""")
+    result.unboxToString.get should equal ("abc")
+  }
 }
