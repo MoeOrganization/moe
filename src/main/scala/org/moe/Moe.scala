@@ -82,8 +82,20 @@ object Moe {
 
     val dumpAST = cmd.hasOption("u")
 
+    def setupArgv(args: List[String]) =
+      runtime.getRootEnv.set(
+        "@ARGV",
+        runtime.NativeObjects.getArray(
+          args.map(arg => runtime.NativeObjects.getStr(arg)):_*
+        )
+      )
+
+    val rest: List[String] = cmd.getArgs().toList
+
     if (cmd.hasOption("e")) {
       val code: String = cmd.getOptionValue("e")
+      if (!rest.isEmpty)
+        setupArgv(rest)
       REPL.evalLine(
         interpreter,
         runtime,
@@ -93,8 +105,6 @@ object Moe {
       return
     }
     else {
-      val rest: List[String] = cmd.getArgs().toList
-
       def evalProgram (path: String) = REPL.evalLine(
         interpreter, 
         runtime, 
@@ -106,12 +116,7 @@ object Moe {
         case List()            => REPL.enter(interpreter, runtime, dumpAST)
         case program :: List() => evalProgram(program)
         case program :: args   => {
-          runtime.getRootEnv.set(
-            "@ARGV", 
-            runtime.NativeObjects.getArray(
-              args.map(arg => runtime.NativeObjects.getStr(arg)):_*
-            )
-          )
+          setupArgv(args)
           evalProgram(program)
         }
       }
