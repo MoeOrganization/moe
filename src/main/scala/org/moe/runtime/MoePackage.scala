@@ -10,19 +10,38 @@ object MoePackage {
     )
   }
 
-  def createPackageTreeFromName (name: String, env: MoeEnvironment, parent: MoePackage): (MoePackage, MoePackage) = createPackageTreeFromName(name.split("::"), env, parent)
-  def createPackageTreeFromName (name: Array[String], env: MoeEnvironment, parent: MoePackage): (MoePackage, MoePackage) = {
+  def createPackageTreeFromName (
+    name      : String, 
+    version   : Option[String], 
+    authority : Option[String], 
+    env       : MoeEnvironment, 
+    parent    : MoePackage
+  ): (MoePackage, MoePackage) = createPackageTreeFromName(
+    name.split("::"), 
+    version,
+    authority,
+    env, 
+    parent
+  )
+
+  def createPackageTreeFromName (
+    name      : Array[String], 
+    version   : Option[String], 
+    authority : Option[String], 
+    env       : MoeEnvironment, 
+    parent    : MoePackage
+  ): (MoePackage, MoePackage) = {
     val root = if (parent.hasSubPackage(name.head)) {
       parent.getSubPackage(name.head).get 
     } else {
-      new MoePackage(name.head, env)
+      new MoePackage(name.head, env, version, authority)
     }
     val leaf = name.tail.foldLeft[MoePackage](root)(
       (parent, subpkg_name) => {
         if (parent.hasSubPackage(subpkg_name)) {
           parent.getSubPackage(subpkg_name).get
         } else {
-          val subpkg = new MoePackage(subpkg_name, env)
+          val subpkg = new MoePackage(subpkg_name, env, version, authority)
           parent.addSubPackage(subpkg)
           subpkg  
         }
@@ -41,11 +60,10 @@ object MoePackage {
  */
 class MoePackage(
     private val name: String,
-    private var env: MoeEnvironment
+    private var env: MoeEnvironment,
+    private val version: Option[String] = None,
+    private val authority: Option[String] = None
   ) extends MoeObject {
-
-  private var version: Option[String] = None
-  private var authority: Option[String] = None
 
   private var parent: Option[MoePackage] = None
   private val klasses: Map[String, MoeClass] = new HashMap[String, MoeClass]()
@@ -62,14 +80,10 @@ class MoePackage(
    */
   def getVersion: Option[String] = version
 
-  def setVersion(v: Option[String]) = version = v
-
   /**
    * Returns the authority of this package
    */
   def getAuthority: Option[String] = authority
-
-  def setAuthority(a: Option[String]) = authority = a
 
   /**
    * returns the local package environment
