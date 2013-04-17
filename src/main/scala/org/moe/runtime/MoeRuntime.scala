@@ -66,6 +66,12 @@ class MoeRuntime (
       objectClass.setAssociatedClass(Some(classClass)) // Object is a class
       classClass.setAssociatedClass(Some(classClass))  // Class is a class
 
+      // we need a special subclass of Class
+      // for use with our core classes, this
+      // allows us to better control their 
+      // constructors
+      val coreClassClass = new MoeClass("CoreClass", Some(VERSION), Some(AUTHORITY), Some(classClass))
+
       /**
        * NOTE:
        * These are the core classes in our runtime. 
@@ -96,24 +102,27 @@ class MoeRuntime (
       val exceptionClass = new MoeClass("Exception",  Some(VERSION), Some(AUTHORITY), Some(scalarClass))
 
       // set the associated class for all classes
-      anyClass.setAssociatedClass(Some(anyClass))
-      scalarClass.setAssociatedClass(Some(scalarClass))
-      arrayClass.setAssociatedClass(Some(arrayClass))
-      hashClass.setAssociatedClass(Some(hashClass))
-      pairClass.setAssociatedClass(Some(pairClass))
-      ioClass.setAssociatedClass(Some(ioClass))
-      codeClass.setAssociatedClass(Some(codeClass))
-
-      undefClass.setAssociatedClass(Some(undefClass))
-      boolClass.setAssociatedClass(Some(boolClass))
-      strClass.setAssociatedClass(Some(strClass))
-      intClass.setAssociatedClass(Some(intClass))
-      numClass.setAssociatedClass(Some(numClass))
-      exceptionClass.setAssociatedClass(Some(exceptionClass))
+      // this must be classClass because these are
+      // instances of Class
+      anyClass.setAssociatedClass(Some(coreClassClass))
+      scalarClass.setAssociatedClass(Some(coreClassClass))
+      arrayClass.setAssociatedClass(Some(coreClassClass))
+      hashClass.setAssociatedClass(Some(coreClassClass))
+      pairClass.setAssociatedClass(Some(coreClassClass))
+      ioClass.setAssociatedClass(Some(coreClassClass))
+      codeClass.setAssociatedClass(Some(coreClassClass))
+      
+      undefClass.setAssociatedClass(Some(coreClassClass))
+      boolClass.setAssociatedClass(Some(coreClassClass))
+      strClass.setAssociatedClass(Some(coreClassClass))
+      intClass.setAssociatedClass(Some(coreClassClass))
+      numClass.setAssociatedClass(Some(coreClassClass))
+      exceptionClass.setAssociatedClass(Some(coreClassClass))
 
       // add all these classes to the corePackage
       corePackage.addClass(objectClass)
       corePackage.addClass(classClass)
+      corePackage.addClass(coreClassClass)
 
       corePackage.addClass(anyClass)
       corePackage.addClass(scalarClass)
@@ -193,6 +202,7 @@ class MoeRuntime (
 
     ClassClass(this) 
     ObjectClass(this)
+    CoreClassClass(this)
 
     AnyClass(this)
     ScalarClass(this)

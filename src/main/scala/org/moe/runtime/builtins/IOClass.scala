@@ -22,9 +22,9 @@ object IOClass {
 
     // MRO: IO, Any, Object
 
-    ioClass.addMethod(
+    ioClass.addSubMethod(
       new MoeMethod(
-        "new",
+        "CREATE",
         new MoeSignature(List(new MoePositionalParameter("$path"))),
         env,
         (e) => getIO(e.getAs[MoeStrObject]("$path").get.unboxToString.get)

@@ -23,9 +23,9 @@ object IntClass {
 
     // MRO: Int, Scalar, Any, Object
 
-    intClass.addMethod(
+    intClass.addSubMethod(
       new MoeMethod(
-        "new",
+        "CREATE",
         new MoeSignature(List(new MoeOptionalParameter("$int"))),
         env,
         (e) => e.get("$int") match {

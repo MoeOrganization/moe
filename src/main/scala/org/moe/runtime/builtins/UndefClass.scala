@@ -17,9 +17,9 @@ object UndefClass {
 
     // MRO: Undef, Scalar, Any, Object
 
-    undefClass.addMethod(
+    undefClass.addSubMethod(
       new MoeMethod(
-        "new",
+        "CREATE",
         new MoeSignature(),
         env,
         (e) => getUndef

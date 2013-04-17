@@ -22,9 +22,9 @@ object StrClass {
 
     // MRO: Str, Scalar, Any, Object
 
-    strClass.addMethod(
+    strClass.addSubMethod(
       new MoeMethod(
-        "new",
+        "CREATE",
         new MoeSignature(List(new MoeOptionalParameter("$string"))),
         env,
         (e) => e.get("$string") match {
