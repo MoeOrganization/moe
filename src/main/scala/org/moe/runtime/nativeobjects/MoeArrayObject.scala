@@ -66,7 +66,7 @@ class MoeArrayObject(
 
   def reverse(r: MoeRuntime): MoeArrayObject = r.NativeObjects.getArray(array.reverse:_*)
 
-  def join(r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(array.map(_.toString).mkString(""))
+  def join(r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(array.map(_.unboxToString.get).mkString(""))
   def join(r: MoeRuntime, sep: MoeStrObject): MoeStrObject = r.NativeObjects.getStr(
     array.map(_.unboxToString.get).mkString(sep.unboxToString.get)
   )
