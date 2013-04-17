@@ -29,13 +29,13 @@ object ObjectClass {
     objectClass.addMethod(
       new MoeMethod(
         "new",
-        new MoeSignature(List(new MoeSlurpyNamedParameter("%args"))),
+        new MoeSignature(List(new MoeSlurpyNamedParameter("%_"))),
         env,
         {
           (e) => 
             val cls  = klass(e)
             val inv  = cls.newInstance.asInstanceOf[MoeOpaque]
-            val args = e.get("%args").get match {
+            val args = e.get("%_").get match {
               case (x: MoeHashObject)  => x
               case (x: MoeUndefObject) => getHash()
             }
