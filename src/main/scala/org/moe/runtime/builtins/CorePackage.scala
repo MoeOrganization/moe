@@ -98,9 +98,42 @@ object CorePackage {
             try {
               Thread.sleep(seconds);
             } catch {
-                case e: InterruptedException => Thread.currentThread().interrupt()
+              case e: InterruptedException => Thread.currentThread().interrupt()
             }
             getUndef
+        }
+      )
+    )
+
+    /**
+     * NOTE:
+     * This is extremely naive and does not capture
+     * all the complexity of the true c<system> command
+     * in Perl, however it is something to start with.
+     */
+    pkg.addSubroutine(
+      new MoeSubroutine(
+        "system",
+        new MoeSignature(List(new MoeSlurpyParameter("@_"))),
+        env,
+        { (e) =>
+          val cmd = bufferAsJavaList(e.getAs[MoeArrayObject]("@_").get.unboxToArrayBuffer.get.map(_.unboxToString.get))
+          val pb  = new ProcessBuilder(cmd);
+          val env = pb.environment();
+          env.clear()
+          e.getAs[MoeHashObject]("%ENV").get.unboxToMap.get.map(p => env.put(p._1, p._2.unboxToString.get))
+          val p   = pb.start()
+          val err = new java.io.DataInputStream(p.getErrorStream())
+          p.waitFor()
+          val err_out = new java.io.BufferedReader(new java.io.InputStreamReader(err));
+          var x = err_out.readLine()
+          var err_txt = ""
+          while (x != null) {
+            err_txt = err_txt + x
+            x = err_out.readLine()
+          }
+          e.set("$OS_ERROR", if (err_txt == null) getUndef else getStr(err_txt))
+          getInt(p.exitValue)
         }
       )
     )
