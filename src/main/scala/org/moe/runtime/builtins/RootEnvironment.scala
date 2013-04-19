@@ -18,6 +18,8 @@ object RootEnvironment {
 
     // SEE ALSO -> http://perlcabal.org/syn/S28.html
 
+    env.create("$OS_ERROR", getUndef)
+
     /**
      * TODO:
      * we need to be able to alter 

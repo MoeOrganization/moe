@@ -3,6 +3,8 @@ package org.moe.runtime.builtins
 import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 
+import scala.collection.JavaConversions._
+
 /**
   * setup package CORE
   */
@@ -107,7 +109,7 @@ object CorePackage {
 
     /**
      * NOTE:
-     * This is extremely naive and does not capture
+     * This is extremely naive and does not capture 
      * all the complexity of the true c<system> command
      * in Perl, however it is something to start with.
      */
@@ -116,7 +118,7 @@ object CorePackage {
         "system",
         new MoeSignature(List(new MoeSlurpyParameter("@_"))),
         env,
-        { (e) =>
+        { (e) => 
           val cmd = bufferAsJavaList(e.getAs[MoeArrayObject]("@_").get.unboxToArrayBuffer.get.map(_.unboxToString.get))
           val pb  = new ProcessBuilder(cmd);
           val env = pb.environment();
