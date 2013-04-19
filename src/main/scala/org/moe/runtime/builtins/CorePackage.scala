@@ -80,10 +80,10 @@ object CorePackage {
     pkg.addSubroutine(
       new MoeSubroutine(
         "die",
-        new MoeSignature(List(new MoeSlurpyParameter("@msg"))),
+        new MoeSignature(List(new MoeSlurpyParameter("@_"))),
         env,
         (e) => throw new MoeErrors.MoeProblems(
-          e.getAs[MoeArrayObject]("@msg").get.join(r).unboxToString.get
+          e.getAs[MoeArrayObject]("@_").get.join(r).unboxToString.get
         )
       )
     )
