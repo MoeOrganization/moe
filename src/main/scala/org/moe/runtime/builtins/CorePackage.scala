@@ -63,6 +63,15 @@ object CorePackage {
 
     pkg.addSubroutine(
       new MoeSubroutine(
+        "not",
+        new MoeSignature(List(new MoePositionalParameter("$i"))),
+        env,
+        (e) => if (e.getAs[MoeObject]("$i").get.unboxToBoolean.get) getFalse else getTrue
+      )
+    )
+
+    pkg.addSubroutine(
+      new MoeSubroutine(
         "chr",
         new MoeSignature(List(new MoePositionalParameter("$i"))),
         env,
