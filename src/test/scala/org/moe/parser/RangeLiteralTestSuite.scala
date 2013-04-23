@@ -92,4 +92,12 @@ class RangeLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
     assert(array.size === 0)
   }
 
+  test("... basic test with expressions as range operands") {
+    val result = interpretCode(""" my $a = 2; my $b = 6; ($a+1)..($b-1) """)
+    val array = result.unboxToArrayBuffer.get
+    assert(array.size === 3)
+    assert(array(0).unboxToString.get === "3")
+    assert(array(1).unboxToString.get === "4")
+    assert(array(2).unboxToString.get === "5")
+  }
 }
