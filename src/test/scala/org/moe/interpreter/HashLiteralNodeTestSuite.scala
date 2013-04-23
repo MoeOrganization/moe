@@ -61,7 +61,7 @@ class HashLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         ),
         HashElementAccessNode(
           "%hash",
-          StringLiteralNode("foo")
+          List(StringLiteralNode("foo"))
         )
       )
     )
@@ -134,7 +134,7 @@ class HashLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
         ),
         HashElementAccessNode(
           "%hash",
-          StringLiteralNode("bar")
+          List(StringLiteralNode("bar"))
         )
       )
     )

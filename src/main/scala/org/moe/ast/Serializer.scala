@@ -252,22 +252,22 @@ object Serializer {
       )
     )
 
-    case HashElementAccessNode(hashName, key) => JSONObject(
+    case HashElementAccessNode(hashName, keys) => JSONObject(
       Map(
         "HashElementAccessNode" -> JSONObject(
           Map(
             "hashname" -> hashName,
-            "key"      -> toJSON(key)
+            "keys"     -> JSONArray(keys.map(toJSON(_)))
           )
         )
       )
     )
-    case HashElementLvalueNode(arrayName, index, value) => JSONObject(
+    case HashElementLvalueNode(hashName, keys, value) => JSONObject(
       Map(
         "HashElementLvalueNode" -> JSONObject(
           Map(
-            "hashname" -> arrayName,
-            "key"      -> toJSON(index),
+            "hashname" -> hashName,
+            "keys"     -> JSONArray(keys.map(toJSON(_))),
             "value"    -> toJSON(value)
           )
         )
