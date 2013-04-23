@@ -67,6 +67,10 @@ class MoeNumObject(
     getNativeValue >= other.unboxToDouble.get
   )
 
+  def compare_to (r: MoeRuntime, other: MoeObject): MoeIntObject = r.NativeObjects.getInt(
+    unboxToDouble.get compareTo other.unboxToDouble.get
+  )
+
   // MoeNativeObject overrides
 
   override def copy = new MoeNumObject(getNativeValue, getAssociatedClass)

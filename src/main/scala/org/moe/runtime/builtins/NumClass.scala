@@ -203,6 +203,15 @@ object NumClass {
       )
     )
 
+    numClass.addMethod(
+      new MoeMethod(
+        "infix:<<=>>",
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
+        env,
+        (e) => self(e).compare_to(r, e.get("$other").get)
+      )
+    )
+
     // coercion
 
     numClass.addMethod(
