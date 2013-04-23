@@ -191,18 +191,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   // Range Literals
 
-  def rangeOperands: Parser[AST] = (
-      floatNumber
-    | intNumber
-    | octIntNumber
-    | hexIntNumber
-    | binIntNumber
-    | zeroNumber
-    | string
-    | variable
-  )
-
-  def range: Parser[RangeLiteralNode] = rangeOperands ~ ".." ~ rangeOperands ^^ {
+  def range: Parser[RangeLiteralNode] = simpleExpression ~ ".." ~ simpleExpression ^^ {
     case s ~ _ ~ e => RangeLiteralNode(s, e)
   }
 
