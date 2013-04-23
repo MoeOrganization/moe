@@ -1,5 +1,18 @@
 use Test::More;
 
+# test the multiple ways to create an Int
+{
+    ok(10.isa("Int"), "... literal isa Int");
+
+    my $x = 10;
+    ok($x.isa("Int"), "... variable isa Int");
+
+    my $y = ^Int.new(10);
+    ok($y.isa("Int"), "... object instantiation isa Int");   
+    is($y, 10, "... object instantiation has the value we expected");    
+}
+
+# test the underscores
 {
     is(10000, 10_000, "... test the _ seperator");
     is(1000000, 1_000_000, "... test the _ seperator (twice)");

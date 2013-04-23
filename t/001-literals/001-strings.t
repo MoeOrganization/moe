@@ -1,5 +1,17 @@
 use Test::More;
 
+# test the multiple ways to create a Str
+{
+    ok("Foo".isa("Str"), "... literal isa Str");
+
+    my $x = "Foo";
+    ok($x.isa("Str"), "... variable isa Str");
+
+    my $y = ^Str.new("Foo");
+    ok($y.isa("Str"), "... object instantiation isa Str");   
+    is($y, "Foo", "... object instantiation has the value we expected");    
+}
+
 # test with raw literal
 {
     ok("foO".isa("Str"), "... this isa Str");
