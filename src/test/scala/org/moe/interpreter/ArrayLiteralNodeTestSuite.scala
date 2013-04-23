@@ -67,7 +67,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
             )
           )
         ),
-        ArrayElementAccessNode("@array", IntLiteralNode(0))
+        ArrayElementAccessNode("@array", List(IntLiteralNode(0)))
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -87,7 +87,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
             )
           )
         ),
-        ArrayElementAccessNode("@array", IntLiteralNode(1))
+        ArrayElementAccessNode("@array", List(IntLiteralNode(1)))
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -107,7 +107,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
             )
           )
         ),
-        ArrayElementAccessNode("@array", IntLiteralNode(-1))
+        ArrayElementAccessNode("@array", List(IntLiteralNode(-1)))
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -127,7 +127,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
             )
           )
         ),
-        ArrayElementAccessNode("@array", IntLiteralNode(-2))
+        ArrayElementAccessNode("@array", List(IntLiteralNode(-2)))
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -147,7 +147,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
             )
           )
         ),
-        ArrayElementAccessNode("@array", IntLiteralNode(-3))
+        ArrayElementAccessNode("@array", List(IntLiteralNode(-3)))
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)
@@ -167,7 +167,7 @@ class ArrayLiteralNodeTestSuite extends FunSuite with InterpreterTestUtils {
             )
           )
         ),
-        ArrayElementAccessNode("@array", IntLiteralNode(2))
+        ArrayElementAccessNode("@array", List(IntLiteralNode(2)))
       )
     )
     val result = interpreter.eval(runtime, runtime.getRootEnv, ast)

@@ -29,6 +29,16 @@ class Interpreter {
       }
     }
 
+    def callMethod(invocant: MoeObject, method: String, args: List[MoeObject], klass: String = null) =
+      invocant.callMethod(
+        invocant.getAssociatedClass.getOrElse(
+          throw new MoeErrors.ClassNotFound(Option(klass).getOrElse(invocant.getClassName))
+        ).getMethod(method).getOrElse(
+          throw new MoeErrors.MethodNotFound("method " + method + "> missing in class " + Option(klass).getOrElse(invocant.getClassName))
+        ),
+        args
+      )
+
     val scoped = inNewEnv[MoeObject](env) _
 
     // interpret ..
@@ -77,39 +87,36 @@ class Interpreter {
 
       case ArrayLiteralNode(values) => getArray(values.map(eval(runtime, env, _)):_*)
 
-      case ArrayElementAccessNode(arrayName: String, index: AST) => {
-        val index_result = eval(runtime, env, index)
-        val array_value = env.get(arrayName) match {
-          case Some(a: MoeArrayObject) => a
-          case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
+      case ArrayElementAccessNode(arrayName: String, indices: List[AST]) => {
+        var array_value = env.get(arrayName) match {
+           case Some(a: MoeArrayObject) => a
+           case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
         }
 
-        array_value.callMethod(
-          array_value.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound("Array")
-          ).getMethod("postcircumfix:<[]>").getOrElse(
-            throw new MoeErrors.MethodNotFound("postcircumfix:<[]>")
-          ), 
-          List(index_result)
-        )
+        indices.foldLeft[MoeObject](array_value) {
+          (a, i) =>
+            val index = eval(runtime, env, i)
+            callMethod(a, "postcircumfix:<[]>", List(index), "Array")
+        }
       }
 
-      case ArrayElementLvalueNode(arrayName: String, index: AST, expr: AST) => {
-        val index_result = eval(runtime, env, index)
+      case ArrayElementLvalueNode(arrayName: String, indices: List[AST], expr: AST) => {
         val array_value = env.get(arrayName) match {
           case Some(a: MoeArrayObject) => a
           case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
         }
-        val expr_value = eval(runtime, env, expr)
 
-        array_value.callMethod(
-          array_value.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound("Array")
-          ).getMethod("postcircumfix:<[]>").getOrElse(
-            throw new MoeErrors.MethodNotFound("postcircumfix:<[]>")
-          ),
-          List(index_result, expr_value)
-        )
+        // find the deepest array and position that will be assigned
+        var last_index = eval(runtime, env, indices.last)
+        val last_array = indices.dropRight(1).foldLeft[MoeObject](array_value) {
+          (a, i) =>
+            val index = eval(runtime, env, i)
+            callMethod(a, "postcircumfix:<[]>", List(index), "Array")
+        }
+
+        // perform the assignment
+        val expr_value = eval(runtime, env, expr)
+        callMethod(last_array, "postcircumfix:<[]>", List(last_index, expr_value), "Array")
       }
 
       case PairLiteralNode(key, value) => getPair(
@@ -139,39 +146,36 @@ class Interpreter {
         code
       }
 
-      case HashElementAccessNode(hashName: String, key: AST) => {
-        val key_result = eval(runtime, env, key)
+      case HashElementAccessNode(hashName: String, keys: List[AST]) => {
         val hash_map = env.get(hashName) match {
           case Some(h: MoeHashObject) => h
           case _ => throw new MoeErrors.UnexpectedType("MoeHashObject expected")
         }
 
-        hash_map.callMethod(
-          hash_map.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound("Hash")
-          ).getMethod("postcircumfix:<{}>").getOrElse(
-            throw new MoeErrors.MethodNotFound("postcircumfix:<{}>")
-          ), 
-          List(key_result)
-        )
+        keys.foldLeft[MoeObject](hash_map) {
+          (h, k) =>
+            val key = eval(runtime, env, k)
+            callMethod(h, "postcircumfix:<{}>", List(key), "Hash")
+        }
       }
 
-      case HashElementLvalueNode(hashName: String, key: AST, value: AST) => {
-        val key_result = eval(runtime, env, key)
+      case HashElementLvalueNode(hashName: String, keys: List[AST], value: AST) => {
         val hash_map = env.get(hashName) match {
           case Some(h: MoeHashObject) => h
           case _ => throw new MoeErrors.UnexpectedType("MoeHashObject expected")
         }
-        val value_result = eval(runtime, env, value)
 
-        hash_map.callMethod(
-          hash_map.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound("Hash")
-          ).getMethod("postcircumfix:<{}>").getOrElse(
-            throw new MoeErrors.MethodNotFound("postcircumfix:<{}>")
-          ),
-          List(key_result, value_result)
-        )
+        // find the deepest hash and key that will be assigned
+        val last_key = eval(runtime, env, keys.last)
+        val last_hash = keys.dropRight(1).foldLeft[MoeObject](hash_map) {
+          (h, k) =>
+            val key = eval(runtime, env, k)
+            callMethod(h, "postcircumfix:<{}>", List(key), "Hash")
+        }
+
+        // perform the assignment
+        val value_result = eval(runtime, env, value)
+        callMethod(last_hash, "postcircumfix:<{}>", List(last_key, value_result), "Hash")
       }
 
       case RangeLiteralNode(start, end) => {
@@ -211,26 +215,12 @@ class Interpreter {
 
       case PrefixUnaryOpNode(lhs: AST, operator: String) => {
         val receiver = eval(runtime, env, lhs)
-        receiver.callMethod(
-          receiver.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound(receiver.toString)
-          ).getMethod("prefix:<" + operator + ">").getOrElse(
-            throw new MoeErrors.MethodNotFound("method prefix:<" + operator + "> missing in class " + receiver.getClassName)
-          ),
-          List()
-        )
+        callMethod(receiver, "prefix:<" + operator + ">", List())
       }
 
       case PostfixUnaryOpNode(lhs: AST, operator: String) => {
         val receiver = eval(runtime, env, lhs)
-        receiver.callMethod(
-          receiver.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound(receiver.toString)
-          ).getMethod("postfix:<" + operator + ">").getOrElse(
-            throw new MoeErrors.MethodNotFound("method postfix:<" + operator + "> missing in class " + receiver.getClassName)
-          ), 
-          List()
-        )
+        callMethod(receiver, "postfix:<" + operator + ">", List())
       }
 
       // binary operators
@@ -238,14 +228,7 @@ class Interpreter {
       case BinaryOpNode(lhs: AST, operator: String, rhs: AST) => {
         val receiver = eval(runtime, env, lhs)
         val arg      = eval(runtime, env, rhs)
-        receiver.callMethod(
-          receiver.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound(receiver.toString)
-          ).getMethod("infix:<" + operator + ">").getOrElse(
-            throw new MoeErrors.MethodNotFound("method infix:<" + operator + "> missing in class " + receiver.getClassName)
-          ), 
-          List(arg)
-        )
+        callMethod(receiver, "infix:<" + operator + ">", List(arg))
       }
 
       // short circuit binary operators
@@ -254,14 +237,7 @@ class Interpreter {
       case ShortCircuitBinaryOpNode(lhs: AST, operator: String, rhs: AST) => {
         val receiver = eval(runtime, env, lhs)
         val arg      = new MoeLazyEval(this, runtime, env, rhs)
-        receiver.callMethod(
-          receiver.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound(receiver.toString)
-          ).getMethod("infix:<" + operator + ">").getOrElse(
-            throw new MoeErrors.MethodNotFound("method infix:<" + operator + "> missing in class " + receiver.getClassName)
-          ), 
-          List(arg)
-        )
+        callMethod(receiver, "infix:<" + operator + ">", List(arg))
       }
 
       // ternary operator
@@ -270,14 +246,7 @@ class Interpreter {
         val receiver = eval(runtime, env, cond)
         val argTrue  = new MoeLazyEval(this, runtime, env, trueExpr)
         val argFalse = new MoeLazyEval(this, runtime, env, falseExpr)
-        receiver.callMethod(
-          receiver.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound(receiver.toString)
-          ).getMethod("infix:<?:>").getOrElse(
-            throw new MoeErrors.MethodNotFound("method infix:<?:> missing in class " + receiver.getClassName)
-          ),
-          List(argTrue, argFalse)
-        )
+        callMethod(receiver, "infix:<?:>", List(argTrue, argFalse))
       }
 
       // value lookup, assignment and declaration
@@ -672,7 +641,7 @@ class Interpreter {
         )
 
       }
-      case _ => throw new MoeErrors.UnknownNode("Unknown Node")
+      case x => throw new MoeErrors.UnknownNode("Unknown Node: " + x)
     }
   }
 

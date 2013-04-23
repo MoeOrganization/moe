@@ -235,15 +235,15 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   // declaration
 
-  private lazy val array_index_rule = "@" ~ (namespacedIdentifier <~ "[") ~ (expression <~ "]")
-  private lazy val hash_index_rule  = "%" ~ (namespacedIdentifier <~ "{") ~ (expression <~ "}")
+  private lazy val array_index_rule = "@" ~ namespacedIdentifier ~ ( "[" ~> expression <~ "]" ).+
+  private lazy val hash_index_rule  = "%" ~ namespacedIdentifier ~ ( "{" ~> expression <~ "}" ).+
 
   def arrayIndex = array_index_rule ^^ {
-    case "@" ~ i ~ expr => ArrayElementAccessNode("@" + i, expr)
+    case "@" ~ i ~ exprs => ArrayElementAccessNode("@" + i, exprs)
   }
 
   def hashIndex = hash_index_rule ^^ {
-    case "%" ~ i ~ expr => HashElementAccessNode("%" + i, expr)
+    case "%" ~ i ~ exprs => HashElementAccessNode("%" + i, exprs)
   }
 
   // assignment
@@ -283,11 +283,11 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   }   
 
   def arrayElementAssignment = array_index_rule ~ "=" ~ expression <~ statementDelim ^^ {
-    case "@" ~ array ~ index_expr ~ "=" ~ value_expr => ArrayElementLvalueNode("@" + array, index_expr, value_expr)
+    case "@" ~ array ~ index_exprs ~ "=" ~ value_expr => ArrayElementLvalueNode("@" + array, index_exprs, value_expr)
   }
 
   def hashElementAssignment = hash_index_rule ~ "=" ~ expression <~ statementDelim ^^ {
-    case "%" ~ hash ~ key_expr ~ "=" ~ value_expr => HashElementLvalueNode("%" + hash, key_expr, value_expr)
+    case "%" ~ hash ~ key_exprs ~ "=" ~ value_expr => HashElementLvalueNode("%" + hash, key_exprs, value_expr)
   }
 
   /**
