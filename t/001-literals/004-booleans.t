@@ -3,6 +3,10 @@ use Test::More;
 # test the raw literal
 {
     ok(true, "... true is true");
+    ok(not(false), "... false is false");
+
+    ok(true.defined, "... true is defined");
+    ok(false.defined, "... false is defined");
 
     ok(true.isa("Bool"), "... true isa Bool");
     ok(false.isa("Bool"), "... false isa Bool");
@@ -39,6 +43,10 @@ use Test::More;
     my $f = false;
 
     ok($t, "... true is true");
+    ok(not($f), "... false is false");
+
+    ok($t.defined, "... true is defined");
+    ok($f.defined, "... false is defined");
 
     ok($t.isa("Bool"), "... true isa Bool");
     ok($f.isa("Bool"), "... false isa Bool");
