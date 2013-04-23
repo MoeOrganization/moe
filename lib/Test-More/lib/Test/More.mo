@@ -33,7 +33,7 @@ package Test {
                 $!output.ok($!count, $msg);
             } else {
                 $!output.not_ok($!count, $msg);
-                $!output.output_err($got, $expected, $msg); 
+                self.output_err($got, $expected, $msg); 
             }
         }
 
