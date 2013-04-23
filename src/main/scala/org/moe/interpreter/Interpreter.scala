@@ -93,10 +93,19 @@ class Interpreter {
            case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
         }
 
+        import scala.util.{Try, Success, Failure}
         indices.foldLeft[MoeObject](array_value) {
-          (a, i) =>
+          (array, i) =>
             val index = eval(runtime, env, i)
-            callMethod(a, "postcircumfix:<[]>", List(index), "Array")
+            index match {
+              case i: MoeIntObject => callMethod(array, "postcircumfix:<[]>", List(i), "Array")
+              case r: MoeObject => {
+                r.unboxToArrayBuffer match {
+                  case Success(a) => callMethod(array, "slice", a.toList, "Array")
+                  case _          => callMethod(array, "slice", List(r),  "Array")
+                }
+              }
+            }
         }
       }
 
