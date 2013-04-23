@@ -29,6 +29,16 @@ class Interpreter {
       }
     }
 
+    def callMethod(invocant: MoeObject, method: String, args: List[MoeObject], klass: String = null) =
+      invocant.callMethod(
+        invocant.getAssociatedClass.getOrElse(
+          throw new MoeErrors.ClassNotFound(Option(klass).getOrElse(invocant.getClassName))
+        ).getMethod(method).getOrElse(
+          throw new MoeErrors.MethodNotFound("method " + method + "> missing in class " + Option(klass).getOrElse(invocant.getClassName))
+        ),
+        args
+      )
+
     val scoped = inNewEnv[MoeObject](env) _
 
     // interpret ..
@@ -77,39 +87,36 @@ class Interpreter {
 
       case ArrayLiteralNode(values) => getArray(values.map(eval(runtime, env, _)):_*)
 
-      case ArrayElementAccessNode(arrayName: String, index: AST) => {
-        val index_result = eval(runtime, env, index)
-        val array_value = env.get(arrayName) match {
-          case Some(a: MoeArrayObject) => a
-          case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
+      case ArrayElementAccessNode(arrayName: String, indices: List[AST]) => {
+        var array_value = env.get(arrayName) match {
+           case Some(a: MoeArrayObject) => a
+           case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
         }
 
-        array_value.callMethod(
-          array_value.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound("Array")
-          ).getMethod("postcircumfix:<[]>").getOrElse(
-            throw new MoeErrors.MethodNotFound("postcircumfix:<[]>")
-          ), 
-          List(index_result)
-        )
+        indices.foldLeft[MoeObject](array_value) {
+          (a, i) =>
+            val index = eval(runtime, env, i)
+            callMethod(a, "postcircumfix:<[]>", List(index), "Array")
+        }
       }
 
-      case ArrayElementLvalueNode(arrayName: String, index: AST, expr: AST) => {
-        val index_result = eval(runtime, env, index)
+      case ArrayElementLvalueNode(arrayName: String, indices: List[AST], expr: AST) => {
         val array_value = env.get(arrayName) match {
           case Some(a: MoeArrayObject) => a
           case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
         }
-        val expr_value = eval(runtime, env, expr)
 
-        array_value.callMethod(
-          array_value.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound("Array")
-          ).getMethod("postcircumfix:<[]>").getOrElse(
-            throw new MoeErrors.MethodNotFound("postcircumfix:<[]>")
-          ),
-          List(index_result, expr_value)
-        )
+        // find the deepest array and position that will be assigned
+        var last_index = eval(runtime, env, indices.last)
+        val last_array = indices.dropRight(1).foldLeft[MoeObject](array_value) {
+          (a, i) =>
+            val index = eval(runtime, env, i)
+            callMethod(a, "postcircumfix:<[]>", List(index), "Array")
+        }
+
+        // perform the assignment
+        val expr_value = eval(runtime, env, expr)
+        callMethod(last_array, "postcircumfix:<[]>", List(last_index, expr_value), "Array")
       }
 
       case PairLiteralNode(key, value) => getPair(
@@ -672,7 +679,7 @@ class Interpreter {
         )
 
       }
-      case _ => throw new MoeErrors.UnknownNode("Unknown Node")
+      case x => throw new MoeErrors.UnknownNode("Unknown Node: " + x)
     }
   }
 

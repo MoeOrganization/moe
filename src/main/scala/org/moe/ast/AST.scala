@@ -34,6 +34,9 @@ case class PairLiteralNode(key: AST, value: AST) extends AST
 case class ArrayLiteralNode(values: List[AST]) extends AST
 case class HashLiteralNode(map: List[AST]) extends AST
 
+case class ArrayValueNode(expr: AST) extends AST
+case class HashValueNode(expr: AST) extends AST
+
 case class CodeLiteralNode(signature: SignatureNode, body: StatementsNode) extends AST
 
 case class RangeLiteralNode(start: AST, end: AST) extends AST
@@ -88,14 +91,14 @@ case class ClassAccessNode(name: String) extends AST
 case class AttributeAccessNode(name: String) extends AST
 case class VariableAccessNode(name: String) extends AST
 case class HashElementAccessNode(hashName: String, key: AST) extends AST
-case class ArrayElementAccessNode(arrayName: String, index: AST) extends AST
+case class ArrayElementAccessNode(arrayName: String, indices: List[AST]) extends AST
 
 // TODO - these should get converted to binary ops
 case class AttributeAssignmentNode(name: String, expression: AST) extends AST
 case class MultiAttributeAssignmentNode(names: List[String], expressions: List[AST]) extends AST
 case class VariableAssignmentNode(name: String, expression: AST) extends AST
 case class MultiVariableAssignmentNode(names: List[String], expressions: List[AST]) extends AST
-case class ArrayElementLvalueNode(arrayName: String, index: AST, expression: AST) extends AST
+case class ArrayElementLvalueNode(arrayName: String, indices: List[AST], expression: AST) extends AST
 case class HashElementLvalueNode(hashName: String, key: AST, expression: AST) extends AST
 
 // operations

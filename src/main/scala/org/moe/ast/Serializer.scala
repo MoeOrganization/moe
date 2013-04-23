@@ -274,22 +274,22 @@ object Serializer {
       )
     )
 
-    case ArrayElementAccessNode(arrayName, index) => JSONObject(
+    case ArrayElementAccessNode(arrayName, indices) => JSONObject(
       Map(
         "ArrayElementAccessNode" -> JSONObject(
           Map(
             "arrayname" -> arrayName,
-            "index"     -> toJSON(index)
+            "indices"   -> JSONArray(indices.map(toJSON(_)))
           )
         )
       )
     )
-    case ArrayElementLvalueNode(arrayName, index, value) => JSONObject(
+    case ArrayElementLvalueNode(arrayName, indices, value) => JSONObject(
       Map(
         "ArrayElementLvalueNode" -> JSONObject(
           Map(
             "arrayname" -> arrayName,
-            "index"     -> toJSON(index),
+            "indices"   -> JSONArray(indices.map(toJSON(_))),
             "value"     -> toJSON(value)
           )
         )
@@ -444,7 +444,7 @@ object Serializer {
       )
     )
 
-    case _ => "stub"
+    case x => "stub: " + x
   }
 
   // thanks to https://gist.github.com/umitanuki/944839
