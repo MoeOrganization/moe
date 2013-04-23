@@ -215,26 +215,12 @@ class Interpreter {
 
       case PrefixUnaryOpNode(lhs: AST, operator: String) => {
         val receiver = eval(runtime, env, lhs)
-        receiver.callMethod(
-          receiver.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound(receiver.toString)
-          ).getMethod("prefix:<" + operator + ">").getOrElse(
-            throw new MoeErrors.MethodNotFound("method prefix:<" + operator + "> missing in class " + receiver.getClassName)
-          ),
-          List()
-        )
+        callMethod(receiver, "prefix:<" + operator + ">", List())
       }
 
       case PostfixUnaryOpNode(lhs: AST, operator: String) => {
         val receiver = eval(runtime, env, lhs)
-        receiver.callMethod(
-          receiver.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound(receiver.toString)
-          ).getMethod("postfix:<" + operator + ">").getOrElse(
-            throw new MoeErrors.MethodNotFound("method postfix:<" + operator + "> missing in class " + receiver.getClassName)
-          ), 
-          List()
-        )
+        callMethod(receiver, "postfix:<" + operator + ">", List())
       }
 
       // binary operators
@@ -242,14 +228,7 @@ class Interpreter {
       case BinaryOpNode(lhs: AST, operator: String, rhs: AST) => {
         val receiver = eval(runtime, env, lhs)
         val arg      = eval(runtime, env, rhs)
-        receiver.callMethod(
-          receiver.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound(receiver.toString)
-          ).getMethod("infix:<" + operator + ">").getOrElse(
-            throw new MoeErrors.MethodNotFound("method infix:<" + operator + "> missing in class " + receiver.getClassName)
-          ), 
-          List(arg)
-        )
+        callMethod(receiver, "infix:<" + operator + ">", List(arg))
       }
 
       // short circuit binary operators
@@ -258,14 +237,7 @@ class Interpreter {
       case ShortCircuitBinaryOpNode(lhs: AST, operator: String, rhs: AST) => {
         val receiver = eval(runtime, env, lhs)
         val arg      = new MoeLazyEval(this, runtime, env, rhs)
-        receiver.callMethod(
-          receiver.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound(receiver.toString)
-          ).getMethod("infix:<" + operator + ">").getOrElse(
-            throw new MoeErrors.MethodNotFound("method infix:<" + operator + "> missing in class " + receiver.getClassName)
-          ), 
-          List(arg)
-        )
+        callMethod(receiver, "infix:<" + operator + ">", List(arg))
       }
 
       // ternary operator
@@ -274,14 +246,7 @@ class Interpreter {
         val receiver = eval(runtime, env, cond)
         val argTrue  = new MoeLazyEval(this, runtime, env, trueExpr)
         val argFalse = new MoeLazyEval(this, runtime, env, falseExpr)
-        receiver.callMethod(
-          receiver.getAssociatedClass.getOrElse(
-            throw new MoeErrors.ClassNotFound(receiver.toString)
-          ).getMethod("infix:<?:>").getOrElse(
-            throw new MoeErrors.MethodNotFound("method infix:<?:> missing in class " + receiver.getClassName)
-          ),
-          List(argTrue, argFalse)
-        )
+        callMethod(receiver, "infix:<?:>", List(argTrue, argFalse))
       }
 
       // value lookup, assignment and declaration
