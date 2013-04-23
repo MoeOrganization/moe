@@ -252,44 +252,56 @@ object Serializer {
       )
     )
 
-    case HashElementAccessNode(hashName, key) => JSONObject(
+    case HashElementAccessNode(hashName, keys) => JSONObject(
       Map(
         "HashElementAccessNode" -> JSONObject(
           Map(
             "hashname" -> hashName,
-            "key"      -> toJSON(key)
+            if (keys.length == 1)
+              "key"    -> toJSON(keys.head)
+            else
+              "keys"   -> JSONArray(keys.map(toJSON(_)))
           )
         )
       )
     )
-    case HashElementLvalueNode(arrayName, index, value) => JSONObject(
+    case HashElementLvalueNode(hashName, keys, value) => JSONObject(
       Map(
         "HashElementLvalueNode" -> JSONObject(
           Map(
-            "hashname" -> arrayName,
-            "key"      -> toJSON(index),
+            "hashname" -> hashName,
+            if (keys.length == 1)
+              "key"    -> toJSON(keys.head)
+            else
+              "keys"   -> JSONArray(keys.map(toJSON(_))),
             "value"    -> toJSON(value)
           )
         )
       )
     )
 
-    case ArrayElementAccessNode(arrayName, index) => JSONObject(
+    case ArrayElementAccessNode(arrayName, indices) => JSONObject(
       Map(
         "ArrayElementAccessNode" -> JSONObject(
           Map(
             "arrayname" -> arrayName,
-            "index"     -> toJSON(index)
+            if (indices.length == 1)
+              "index"   -> toJSON(indices.head)
+            else
+              "indices" -> JSONArray(indices.map(toJSON(_)))
           )
         )
       )
     )
-    case ArrayElementLvalueNode(arrayName, index, value) => JSONObject(
+    case ArrayElementLvalueNode(arrayName, indices, value) => JSONObject(
       Map(
         "ArrayElementLvalueNode" -> JSONObject(
           Map(
             "arrayname" -> arrayName,
-            "index"     -> toJSON(index),
+            if (indices.length == 1)
+              "index"   -> toJSON(indices.head)
+            else
+              "indices" -> JSONArray(indices.map(toJSON(_))),
             "value"     -> toJSON(value)
           )
         )
@@ -444,7 +456,7 @@ object Serializer {
       )
     )
 
-    case _ => "stub"
+    case x => "stub: " + x
   }
 
   // thanks to https://gist.github.com/umitanuki/944839

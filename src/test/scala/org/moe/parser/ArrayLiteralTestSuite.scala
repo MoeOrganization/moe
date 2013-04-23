@@ -85,4 +85,35 @@ class ArrayLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTest
     elems(3).unboxToString.get should equal ("foo");
   }
 
+  test("... basic test for nested array element access") {
+    val result = interpretCode("""my @a = [42, ['jason', "may"], true]; @a[1][1]""")
+    result.unboxToString.get should equal ("may");
+  }
+
+  test("... basic test for nested array element access -- non-existent element") {
+    val result = interpretCode("""my @a = [42, ['jason', "may"], true]; @a[1][2]""")
+    assert(result.isUndef);
+  }
+
+  test("... basic test for nested array element access -- three levels") {
+    val result = interpretCode("""my @a = [1, 2, [3, 4, [5, 6, 7]]]; @a[2][2][2]""")
+    result.unboxToInt.get should equal (7);
+  }
+
+
+  test("... basic test for nested array element assignment") {
+    val result = interpretCode("""my @a = [42, ['jason', "may"], true]; @a[1][1] = "May"; @a[1][1]""")
+    result.unboxToString.get should equal ("May");
+  }
+
+  test("... basic test for nested array element assignment -- non-existent element") {
+    val result = interpretCode("""my @a = [42, ['jason', "may"], true]; @a[1][2] = "rocks"; @a[1][2]""")
+    result.unboxToString.get should equal ("rocks");
+  }
+
+  test("... basic test for nested array element assignment -- three levels") {
+    val result = interpretCode("""my @a = [1, 2, [3, 4, [5, 6, 7]]]; @a[2][2][2] = 42; @a[2][2][2]""")
+    result.unboxToInt.get should equal (42);
+  }
+
 }

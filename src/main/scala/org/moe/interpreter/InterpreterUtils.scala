@@ -46,8 +46,8 @@ object InterpreterUtils {
       case VariableAssignmentNode(name, expression) => walkAST(expression, callback)
       case VariableDeclarationNode(name, expression) => walkAST(expression, callback)
 
-      case HashElementAccessNode(hashName, key) => walkAST(key, callback)
-      case ArrayElementAccessNode(arrayName, index) => walkAST(index, callback)
+      case HashElementAccessNode(hashName, keys) => keys.foreach(walkAST(_, callback))
+      case ArrayElementAccessNode(arrayName, indices) => indices.foreach(walkAST(_, callback))
       // ^ Maybe we need to walk VariableAccessNode(arrayName)? Not sure.
 
       case MethodCallNode(invocant, method_name, args) => {
