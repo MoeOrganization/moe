@@ -147,7 +147,6 @@ class Interpreter {
       }
 
       case HashElementAccessNode(hashName: String, keys: List[AST]) => {
-        // val key_result = eval(runtime, env, key)
         val hash_map = env.get(hashName) match {
           case Some(h: MoeHashObject) => h
           case _ => throw new MoeErrors.UnexpectedType("MoeHashObject expected")
@@ -158,32 +157,13 @@ class Interpreter {
             val key = eval(runtime, env, k)
             callMethod(h, "postcircumfix:<{}>", List(key), "Hash")
         }
-        // hash_map.callMethod(
-        //   hash_map.getAssociatedClass.getOrElse(
-        //     throw new MoeErrors.ClassNotFound("Hash")
-        //   ).getMethod("postcircumfix:<{}>").getOrElse(
-        //     throw new MoeErrors.MethodNotFound("postcircumfix:<{}>")
-        //   ), 
-        //   List(key_result)
-        // )
       }
 
       case HashElementLvalueNode(hashName: String, keys: List[AST], value: AST) => {
-        // val key_result = eval(runtime, env, key)
         val hash_map = env.get(hashName) match {
           case Some(h: MoeHashObject) => h
           case _ => throw new MoeErrors.UnexpectedType("MoeHashObject expected")
         }
-        // val value_result = eval(runtime, env, value)
-
-        // hash_map.callMethod(
-        //   hash_map.getAssociatedClass.getOrElse(
-        //     throw new MoeErrors.ClassNotFound("Hash")
-        //   ).getMethod("postcircumfix:<{}>").getOrElse(
-        //     throw new MoeErrors.MethodNotFound("postcircumfix:<{}>")
-        //   ),
-        //   List(key_result, value_result)
-        // )
 
         // find the deepest hash and key that will be assigned
         val last_key = eval(runtime, env, keys.last)
