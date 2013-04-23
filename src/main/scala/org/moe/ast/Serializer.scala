@@ -257,7 +257,10 @@ object Serializer {
         "HashElementAccessNode" -> JSONObject(
           Map(
             "hashname" -> hashName,
-            "keys"     -> JSONArray(keys.map(toJSON(_)))
+            if (keys.length == 1)
+              "key"    -> toJSON(keys.head)
+            else
+              "keys"   -> JSONArray(keys.map(toJSON(_)))
           )
         )
       )
@@ -267,7 +270,10 @@ object Serializer {
         "HashElementLvalueNode" -> JSONObject(
           Map(
             "hashname" -> hashName,
-            "keys"     -> JSONArray(keys.map(toJSON(_))),
+            if (keys.length == 1)
+              "key"    -> toJSON(keys.head)
+            else
+              "keys"   -> JSONArray(keys.map(toJSON(_))),
             "value"    -> toJSON(value)
           )
         )
@@ -279,7 +285,10 @@ object Serializer {
         "ArrayElementAccessNode" -> JSONObject(
           Map(
             "arrayname" -> arrayName,
-            "indices"   -> JSONArray(indices.map(toJSON(_)))
+            if (indices.length == 1)
+              "index"   -> toJSON(indices.head)
+            else
+              "indices" -> JSONArray(indices.map(toJSON(_)))
           )
         )
       )
@@ -289,7 +298,10 @@ object Serializer {
         "ArrayElementLvalueNode" -> JSONObject(
           Map(
             "arrayname" -> arrayName,
-            "indices"   -> JSONArray(indices.map(toJSON(_))),
+            if (indices.length == 1)
+              "index"   -> toJSON(indices.head)
+            else
+              "indices" -> JSONArray(indices.map(toJSON(_))),
             "value"     -> toJSON(value)
           )
         )
