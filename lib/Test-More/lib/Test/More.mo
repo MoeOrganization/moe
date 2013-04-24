@@ -37,6 +37,16 @@ package Test {
             }
         }
 
+        method is_deeply($got, $expected, $msg?) {
+            self.inc_count;
+            if (self.compare_deeply($got, $expected)) {
+                $!output.ok($!count, $msg);
+            } else {
+                $!output.not_ok($!count, $msg);
+                self.output_err($got, $expected, $msg); 
+            }
+        }
+
         method diag ($msg) { $!output.diag($msg) }
 
         submethod inc_count { $!count = $!count + 1; }
@@ -59,6 +69,26 @@ package Test {
             } else {
                 $!output.bailout("Can only compare Str, Int, Num and Bool objects");
             }
+        }
+
+        submethod compare_deeply($got, $expected) {
+            if ($got.isa("Array")) {
+                self.compare_arrays($got, $expected);
+            } elsif ($got.isa("Hash")) {
+                self.compare_hashes($got, $expected);
+            } else {
+                $!output.bailout("Can only compare deeply Array and Hash objects");
+            }
+        }
+
+        submethod compare_arrays($got, $expected) {
+            # poor man's deep-compare of arrays
+            self.compare($got.join("|"), $expected.join("|"));
+        }
+
+        submethod compare_hashes($got, $expected) {
+            # poor man's deep-compare of hashes
+            self.compare($got.pairs.join("|"), $expected.pairs.join("|"));
         }
     }
 
@@ -83,6 +113,10 @@ package Test {
 
         sub is ($got, $expected, $msg?) is export {
             $builder.is($got, $expected, $msg);
+        }
+
+        sub is_deeply ($got, $expected, $msg?) is export {
+            $builder.is_deeply($got, $expected, $msg);
         }
 
         sub diag ($msg) is export {
