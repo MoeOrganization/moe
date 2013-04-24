@@ -171,6 +171,22 @@ class MoeArrayObject(
     r.NativeObjects.getHash(classified)
   }
 
+  def categorize (r: MoeRuntime, mapper: MoeCode): MoeHashObject = {
+    val categorized = array.foldLeft (new HashMap[String, MoeObject]()) {
+      (hm, i) =>
+        val categories = mapper.execute(new MoeArguments(List(i))).unboxToArrayBuffer.get
+        categories.foreach(
+          {
+            c =>
+              val key = c.unboxToString.get
+              hm += ((key, hm.getOrElse(key, r.NativeObjects.getArray()).asInstanceOf[MoeArrayObject].append(r, i)))
+          }
+        )
+        hm
+    }
+    r.NativeObjects.getHash(categorized)
+  }
+
   // equality
   def equal_to (r: MoeRuntime, that: MoeArrayObject): MoeBoolObject = 
     r.NativeObjects.getBool(

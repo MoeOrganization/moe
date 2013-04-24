@@ -178,4 +178,24 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     evens(0).unboxToInt.get should equal (2)
     evens(1).unboxToInt.get should equal (4)
   }
+
+  test("... basic test with array.categorize") {
+    val result = interpretCode("""1..5.categorize(-> ($x) { my @c = [$x % 2 ? "odd" : "even"]; if ($x % 3 == 0) { @c.push('triple') } @c })""")
+    val map = result.unboxToMap.get
+
+    val odds = map("odd").asInstanceOf[MoeArrayObject].unboxToArrayBuffer.get
+    odds.length should be (3)
+    odds(0).unboxToInt.get should equal (1)
+    odds(1).unboxToInt.get should equal (3)
+    odds(2).unboxToInt.get should equal (5)
+
+    val evens = map("even").asInstanceOf[MoeArrayObject].unboxToArrayBuffer.get
+    evens.length should be (2)
+    evens(0).unboxToInt.get should equal (2)
+    evens(1).unboxToInt.get should equal (4)
+
+    val triples = map("triple").asInstanceOf[MoeArrayObject].unboxToArrayBuffer.get
+    triples.length should be (1)
+    triples(0).unboxToInt.get should equal (3)
+  }
 }

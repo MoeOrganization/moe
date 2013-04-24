@@ -358,6 +358,15 @@ object ArrayClass {
       )
     )
 
+    arrayClass.addMethod(
+      new MoeMethod(
+        "categorize",
+        new MoeSignature(List(new MoePositionalParameter("&mapper"))),
+        env,
+        (e) => self(e).categorize(r, e.getAs[MoeCode]("&mapper").get)
+      )
+    )
+
     /**
      * List of Methods to support:
      * - delete ($index | @indicies) 
