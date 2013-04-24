@@ -313,6 +313,14 @@ object ArrayClass {
       )
     )
 
+    arrayClass.addMethod(
+      new MoeMethod(
+        "zip",
+        new MoeSignature(List(new MoePositionalParameter("@that"))),
+        env,
+        (e) => self(e).zip(r, e.getAs[MoeArrayObject]("@that").get)
+      )
+    )
 
     /**
      * List of Methods to support:

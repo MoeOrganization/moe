@@ -134,6 +134,12 @@ class MoeArrayObject(
     r.NativeObjects.getArray(result: _*)
   }
 
+  def zip (r: MoeRuntime, that: MoeArrayObject): MoeArrayObject = {
+    val zipped = for ((x, y) <- unboxToArrayBuffer.get zip that.unboxToArrayBuffer.get)
+      yield r.NativeObjects.getArray(x, y)
+    r.NativeObjects.getArray(zipped: _*)
+  }
+
   // equality
   def equal_to (r: MoeRuntime, that: MoeArrayObject): MoeBoolObject = 
     r.NativeObjects.getBool(
