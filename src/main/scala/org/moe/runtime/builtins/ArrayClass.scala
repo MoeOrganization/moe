@@ -313,16 +313,66 @@ object ArrayClass {
       )
     )
 
+    arrayClass.addMethod(
+      new MoeMethod(
+        "exists",
+        new MoeSignature(List(new MoePositionalParameter("$item"))),
+        env,
+        (e) => self(e).exists(r, e.get("$item").get)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "uniq",
+        new MoeSignature(),
+        env,
+        (e) => self(e).uniq(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "zip",
+        new MoeSignature(List(new MoePositionalParameter("@that"))),
+        env,
+        (e) => self(e).zip(r, e.getAs[MoeArrayObject]("@that").get)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "kv",
+        new MoeSignature(),
+        env,
+        (e) => self(e).kv(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "classify",
+        new MoeSignature(List(new MoePositionalParameter("&mapper"))),
+        env,
+        (e) => self(e).classify(r, e.getAs[MoeCode]("&mapper").get)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
+        "categorize",
+        new MoeSignature(List(new MoePositionalParameter("&mapper"))),
+        env,
+        (e) => self(e).categorize(r, e.getAs[MoeCode]("&mapper").get)
+      )
+    )
 
     /**
      * List of Methods to support:
-     * - exists ($value)
      * - delete ($index | @indicies) 
      * - sort ($sorter)
-     * - first ($predicate)
      * - min ($comparator)
      * - max ($comparator)
-     * - sum
      *
      * See the following for details:
      * - https://metacpan.org/release/autobox-Core
