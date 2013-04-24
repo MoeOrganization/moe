@@ -166,5 +166,20 @@ object CorePackage {
       )
     )
 
+    pkg.addSubroutine(
+      new MoeSubroutine(
+        "rand",
+        new MoeSignature(List(new MoeOptionalParameter("$limit"))),
+        env,
+        { (e) =>
+          val limit = e.get("$limit") match {
+            case Some(none:  MoeUndefObject) => 1.0
+            case Some(value: MoeObject)      => value.unboxToDouble.get
+            case _                           => 1.0
+          }
+          getNum(limit * scala.util.Random.nextDouble)
+        }
+      )
+    )
   }
 }
