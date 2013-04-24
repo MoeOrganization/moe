@@ -29,5 +29,5 @@ is_deeply(encodeModified('a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 
           [[4, "a"], "b", [2, "c"], [2, "a"], "d", [4, "e"]],
           "... P11");
 
-done_testing(1);
+done_testing();
 

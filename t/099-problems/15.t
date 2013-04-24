@@ -14,5 +14,5 @@ is_deeply(duplicateN(3, ["a", "b", "c", "c", "d"]),
           ["a", "a", "a", "b", "b", "b", "c", "c", "c", "c", "c", "c", "d", "d", "d"],
           "... P15");
 
-done_testing(1);
+done_testing();
 

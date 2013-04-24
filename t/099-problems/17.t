@@ -17,5 +17,5 @@ is_deeply(split_list(3, ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"])
           [["a", "b", "c"], ["d", "e", "f", "g", "h", "i", "j", "k"]],
           "... P17");
 
-done_testing(1);
+done_testing();
 

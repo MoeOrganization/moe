@@ -21,5 +21,5 @@ sub compress(*@list) {
 
 is_deeply(compress('a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e'), ['a', 'b', 'c', 'a', 'd', 'e'], "... P08");
 
-done_testing(1);
+done_testing();
 

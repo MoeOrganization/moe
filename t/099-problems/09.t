@@ -25,5 +25,5 @@ is_deeply(pack('a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 
           [['a', 'a', 'a', 'a'], ['b'], ['c', 'c'], ['a', 'a'], ['d'], ['e', 'e', 'e', 'e']],
           "... P09");
 
-done_testing(1);
+done_testing();
 

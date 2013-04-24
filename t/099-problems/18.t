@@ -20,5 +20,5 @@ is_deeply(slice_list(3, 7, ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k
           ["d", "e", "f", "g"],
           "... P18");
 
-done_testing(1);
+done_testing();
 

@@ -6,5 +6,5 @@ my @list = [1, 1, 2, 3, 5, 8];
 
 is (@list.length, 6, "... P04");
 
-done_testing(1);
+done_testing();
 

@@ -16,5 +16,5 @@ sub insert_at($new, $at, @list) {
 
 is_deeply(insert_at('new', 1, ['a', 'b', 'c', 'd']), ['a', 'new', 'b', 'c', 'd'], "... P21");
 
-done_testing(1);
+done_testing();
 

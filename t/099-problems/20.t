@@ -17,5 +17,5 @@ sub remove_at($i, @list) {
 
 is_deeply(remove_at(1, ['a', 'b', 'c', 'd']), [['a', 'c', 'd'], 'b'], "... P20");
 
-done_testing(1);
+done_testing();
 

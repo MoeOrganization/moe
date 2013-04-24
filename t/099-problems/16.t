@@ -18,5 +18,5 @@ is_deeply(drop(3, ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"]),
           ["a", "b", "d", "e", "g", "h", "j", "k"],
           "... P16");
 
-done_testing(1);
+done_testing();
 

@@ -24,5 +24,5 @@ is_deeply(rotate(-2, ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"]),
           ["j", "k", "a", "b", "c", "d", "e", "f", "g", "h", "i"],
           "... P19 -- negative arg");
 
-done_testing(2);
+done_testing();
 
