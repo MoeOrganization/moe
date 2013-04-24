@@ -7,6 +7,8 @@
 #     moe> encodeDirect(["a", "a", "a", "a", "b", "c", "c", "a", "a", "d", "e", "e", "e", "e"])
 #     [[4, "a"], [1, "b"], [2, "c"], [2, "a"], [1, "d"], [4, "e"]]
 
+use Test::More;
+
 sub encodeDirect(*@list) {
     @list.reduce(-> (@a, $b) {
                      if (@a.length == 0 || @a[-1].at_pos(0) ne $b) {
@@ -21,4 +23,9 @@ sub encodeDirect(*@list) {
             .map(-> (@a) {[@a.length, @a[0]]})
 }
 
-say encodeDirect("a", "a", "a", "a", "b", "c", "c", "a", "a", "d", "e", "e", "e", "e");
+is_deeply(encodeDirect("a", "a", "a", "a", "b", "c", "c", "a", "a", "d", "e", "e", "e", "e"),
+          [[4, "a"], [1, "b"], [2, "c"], [2, "a"], [1, "d"], [4, "e"]],
+          "... P13");
+
+done_testing(1);
+

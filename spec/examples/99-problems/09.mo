@@ -4,7 +4,9 @@
 
 #     Example:
 #     moe> pack(['a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e')]
-#     [['a', 'a', 'a', 'a']', ['b']', ['c', 'c']', ['a', 'a']', ['d']', ['e', 'e', 'e', 'e']]
+#     [['a', 'a', 'a', 'a'], ['b'], ['c', 'c'], ['a', 'a'], ['d'], ['e', 'e', 'e', 'e']]
+
+use Test::More;
 
 sub pack(*@list) {
     @list.reduce(-> (@a, $b) {
@@ -19,4 +21,9 @@ sub pack(*@list) {
                  [])
 }
 
-say pack('a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e');
+is_deeply(pack('a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e'),
+          [['a', 'a', 'a', 'a'], ['b'], ['c', 'c'], ['a', 'a'], ['d'], ['e', 'e', 'e', 'e']],
+          "... P09");
+
+done_testing(1);
+

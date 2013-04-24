@@ -2,7 +2,11 @@
 #     Example:
 
 #     moe> insert_at('new', 1, ['a', 'b', 'c', 'd'])
-#     ['a', 'new', 'b', 'c', 'd')
+#     ['a', 'new', 'b', 'c', 'd']
+
+use Test::More;
+
+use Test::More;
 
 sub insert_at($new, $at, @list) {
     my @r = @list[0 .. ($at-1)];
@@ -10,4 +14,7 @@ sub insert_at($new, $at, @list) {
     @r.flatten
 }
 
-say insert_at('new', 1, ['a', 'b', 'c', 'd'])
+is_deeply(insert_at('new', 1, ['a', 'b', 'c', 'd']), ['a', 'new', 'b', 'c', 'd'], "... P21");
+
+done_testing(1);
+

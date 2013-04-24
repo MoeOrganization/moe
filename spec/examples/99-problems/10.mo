@@ -8,6 +8,8 @@
 #     moe> encode(["a", "a", "a", "a", "b", "c", "c", "a", "a", "d", "e", "e", "e", "e"])
 #     [[4, "a"], [1, "b"], [2, "c"], [2, "a"], [1, "d"], [4, "e"]]
 
+use Test::More;
+
 sub pack(@list) {
     @list.reduce(-> (@a, $b) {
                      if (@a.length == 0 || @a[-1].at_pos(0) ne $b) {
@@ -25,4 +27,9 @@ sub encode(*@list) {
     pack(@list).map(-> (@a) {[@a.length, @a[0]]})
 }
 
-say encode("a", "a", "a", "a", "b", "c", "c", "a", "a", "d", "e", "e", "e", "e");
+is_deeply(encode("a", "a", "a", "a", "b", "c", "c", "a", "a", "d", "e", "e", "e", "e"),
+          [[4, "a"], [1, "b"], [2, "c"], [2, "a"], [1, "d"], [4, "e"]],
+          "... P10");
+
+done_testing(1);
+

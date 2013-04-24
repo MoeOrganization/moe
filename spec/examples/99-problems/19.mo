@@ -7,6 +7,8 @@
 #     moe> rotate(-2, ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"])
 #     ["j", "k", "a", "b", "c", "d", "e", "f", "g", "h", "i"]
 
+use Test::More;
+
 sub rotate($n, @list) {
     my $len = @list.length;
     my @r = @list[($n < 0 ? $len + $n : $n) .. ($len - 1)];
@@ -14,5 +16,13 @@ sub rotate($n, @list) {
     @r.flatten
 }
 
-say rotate(3, ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"]);
-say rotate(-2, ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"]);
+is_deeply(rotate(3, ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"]),
+          ["d", "e", "f", "g", "h", "i", "j", "k", "a", "b", "c"],
+          "... P19 -- positive arg");
+
+is_deeply(rotate(-2, ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"]),
+          ["j", "k", "a", "b", "c", "d", "e", "f", "g", "h", "i"],
+          "... P19 -- negative arg");
+
+done_testing(2);
+
