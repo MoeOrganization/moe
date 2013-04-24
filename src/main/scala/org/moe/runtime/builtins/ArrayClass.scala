@@ -340,14 +340,21 @@ object ArrayClass {
       )
     )
 
+    arrayClass.addMethod(
+      new MoeMethod(
+        "kv",
+        new MoeSignature(),
+        env,
+        (e) => self(e).kv(r)
+      )
+    )
+
     /**
      * List of Methods to support:
      * - delete ($index | @indicies) 
      * - sort ($sorter)
-     * - first ($predicate)
      * - min ($comparator)
      * - max ($comparator)
-     * - sum
      *
      * See the following for details:
      * - https://metacpan.org/release/autobox-Core

@@ -150,6 +150,12 @@ class MoeArrayObject(
     r.NativeObjects.getArray(zipped: _*)
   }
 
+  def kv (r: MoeRuntime): MoeArrayObject = {
+    val indexed = for ((k, v) <- List.range(0, array.length) zip unboxToArrayBuffer.get)
+      yield r.NativeObjects.getArray(r.NativeObjects.getInt(k), v)
+    r.NativeObjects.getArray(indexed: _*)
+  }
+
   // equality
   def equal_to (r: MoeRuntime, that: MoeArrayObject): MoeBoolObject = 
     r.NativeObjects.getBool(

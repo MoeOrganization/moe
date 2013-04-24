@@ -156,4 +156,9 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     val result = interpretCode("""my @a = ["a", "b", "c"]; my @b = 1..3; @a.zip(@b).flatten.join""")
     result.unboxToString.get should equal ("a1b2c3")
   }
+
+  test("... basic test with array.kv") {
+    val result = interpretCode("""my @a = ["a", "b", "c"]; @a.kv.flatten.join""")
+    result.unboxToString.get should equal ("0a1b2c")
+  }
 }
