@@ -3,6 +3,7 @@ package org.moe.runtime.nativeobjects
 import org.moe.runtime._
 
 import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.HashMap
 import scala.util.{Try, Success, Failure}
 
 class MoeArrayObject(
@@ -132,6 +133,58 @@ class MoeArrayObject(
     for (i <- 1 to count.unboxToInt.get)
       result ++= array
     r.NativeObjects.getArray(result: _*)
+  }
+
+  def exists (r: MoeRuntime, item: MoeObject): MoeBoolObject = r.NativeObjects.getBool(
+    array.exists( x => x.equal_to(item) )
+  )
+
+  // this should preserve the order in the input list
+  def uniq (r: MoeRuntime): MoeArrayObject = {
+    val uniq_set = array.foldLeft (List[MoeObject]()) { (s, x) => if (s.exists(y => y.equal_to(x))) s else (x :: s) }
+    r.NativeObjects.getArray(uniq_set.reverse: _*)
+  }
+
+  def zip (r: MoeRuntime, that: MoeArrayObject): MoeArrayObject = {
+    val zipped = for ((x, y) <- unboxToArrayBuffer.get zip that.unboxToArrayBuffer.get)
+      yield r.NativeObjects.getArray(x, y)
+    r.NativeObjects.getArray(zipped: _*)
+  }
+
+  def kv (r: MoeRuntime): MoeArrayObject = {
+    val indexed = for ((k, v) <- List.range(0, array.length) zip unboxToArrayBuffer.get)
+      yield r.NativeObjects.getArray(r.NativeObjects.getInt(k), v)
+    r.NativeObjects.getArray(indexed: _*)
+  }
+
+  def append (r: MoeRuntime, item: MoeObject) = {
+    array += item
+    this
+  }
+
+  def classify (r: MoeRuntime, mapper: MoeCode): MoeHashObject = {
+    val classified = array.foldLeft (new HashMap[String, MoeObject]()) {
+      (hm, i) =>
+        val key = mapper.execute(new MoeArguments(List(i))).unboxToString.get
+        hm += ((key, hm.getOrElse(key, r.NativeObjects.getArray()).asInstanceOf[MoeArrayObject].append(r, i)))
+    }
+    r.NativeObjects.getHash(classified)
+  }
+
+  def categorize (r: MoeRuntime, mapper: MoeCode): MoeHashObject = {
+    val categorized = array.foldLeft (new HashMap[String, MoeObject]()) {
+      (hm, i) =>
+        val categories = mapper.execute(new MoeArguments(List(i))).unboxToArrayBuffer.get
+        categories.foreach(
+          {
+            c =>
+              val key = c.unboxToString.get
+              hm += ((key, hm.getOrElse(key, r.NativeObjects.getArray()).asInstanceOf[MoeArrayObject].append(r, i)))
+          }
+        )
+        hm
+    }
+    r.NativeObjects.getHash(categorized)
   }
 
   // equality
