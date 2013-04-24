@@ -23,6 +23,8 @@ class MoeBoolObject(
 
   override def copy = new MoeBoolObject(getNativeValue, getAssociatedClass)
 
+  override def isScalar: Boolean = true
+
   // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue == false

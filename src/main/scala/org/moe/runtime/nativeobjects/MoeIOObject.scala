@@ -69,6 +69,8 @@ class MoeIOObject(
     getAssociatedClass
   )
 
+  override def isScalar: Boolean = true
+
   // MoeObject overrides
 
   override def toString: String = getNativeValue.toString

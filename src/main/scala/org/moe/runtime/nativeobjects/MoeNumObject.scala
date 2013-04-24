@@ -75,6 +75,8 @@ class MoeNumObject(
 
   override def copy = new MoeNumObject(getNativeValue, getAssociatedClass)
 
+  override def isScalar: Boolean = true
+
   // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue == 0

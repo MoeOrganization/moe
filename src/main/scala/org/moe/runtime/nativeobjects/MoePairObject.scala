@@ -22,6 +22,8 @@ class MoePairObject(
 
   override def copy = new MoePairObject(getNativeValue._1 -> getNativeValue._2, getAssociatedClass)
 
+  override def isScalar: Boolean = true
+
   // MoeObject overrides
 
   override def toString: String = getNativeValue match {

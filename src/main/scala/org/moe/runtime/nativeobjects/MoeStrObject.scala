@@ -107,6 +107,8 @@ class MoeStrObject(
 
   override def copy = new MoeStrObject(getNativeValue, getAssociatedClass)
 
+  override def isScalar: Boolean = true
+
   // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue match {

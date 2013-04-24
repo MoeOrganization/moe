@@ -11,5 +11,9 @@ abstract class MoeNativeObject[A] (
   protected def setNativeValue(v: A) = value = v
 
   def copy: MoeNativeObject[A]
+
+  def isScalar: Boolean = false
+  def isArray : Boolean = false
+  def isHash  : Boolean = false
 }
 

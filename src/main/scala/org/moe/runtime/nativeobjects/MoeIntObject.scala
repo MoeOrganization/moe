@@ -138,6 +138,8 @@ class MoeIntObject(
 
   override def copy = new MoeIntObject(getNativeValue, getAssociatedClass)
 
+  override def isScalar: Boolean = true
+
   // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue == 0
