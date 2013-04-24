@@ -8,6 +8,7 @@ import org.moe.runtime._
 import org.moe.interpreter._
 import org.moe.ast._
 import org.moe.parser._
+import org.moe.runtime.nativeobjects._
 
 class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils with ShouldMatchers {
 
@@ -134,5 +135,67 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
   test("... basic test with array join -- no separator") {
     val result = interpretCode("""my @a = ["a", "b", "c"]; @a.join""")
     result.unboxToString.get should equal ("abc")
+  }
+
+  test("... basic test with array.exists") {
+    val result = interpretCode("""my @a = [2, 3, 4]; 1..5.map(-> ($x) { @a.exists($x) } )""")
+    val array = result.unboxToArrayBuffer.get
+    array.length should equal (5)
+    array(0).unboxToBoolean.get should equal (false)
+    array(1).unboxToBoolean.get should equal (true)
+    array(2).unboxToBoolean.get should equal (true)
+    array(3).unboxToBoolean.get should equal (true)
+    array(4).unboxToBoolean.get should equal (false)
+  }
+
+  test("... basic test with array.uniq") {
+    val result = interpretCode("""my @a = [1, 1, 2, 3, 4, 5, 4]; @a.uniq.join(",")""")
+    result.unboxToString.get should equal ("1,2,3,4,5")
+  }
+
+  test("... basic test with array.zip") {
+    val result = interpretCode("""my @a = ["a", "b", "c"]; my @b = 1..3; @a.zip(@b).flatten.join""")
+    result.unboxToString.get should equal ("a1b2c3")
+  }
+
+  test("... basic test with array.kv") {
+    val result = interpretCode("""my @a = ["a", "b", "c"]; @a.kv.flatten.join""")
+    result.unboxToString.get should equal ("0a1b2c")
+  }
+
+  test("... basic test with array.classify") {
+    val result = interpretCode("""1..5.classify(-> ($x) { $x % 2 ? "odd" : "even" })""")
+    val map = result.unboxToMap.get
+
+    val odds = map("odd").asInstanceOf[MoeArrayObject].unboxToArrayBuffer.get
+    odds.length should be (3)
+    odds(0).unboxToInt.get should equal (1)
+    odds(1).unboxToInt.get should equal (3)
+    odds(2).unboxToInt.get should equal (5)
+
+    val evens = map("even").asInstanceOf[MoeArrayObject].unboxToArrayBuffer.get
+    evens.length should be (2)
+    evens(0).unboxToInt.get should equal (2)
+    evens(1).unboxToInt.get should equal (4)
+  }
+
+  test("... basic test with array.categorize") {
+    val result = interpretCode("""1..5.categorize(-> ($x) { my @c = [$x % 2 ? "odd" : "even"]; if ($x % 3 == 0) { @c.push('triple') } @c })""")
+    val map = result.unboxToMap.get
+
+    val odds = map("odd").asInstanceOf[MoeArrayObject].unboxToArrayBuffer.get
+    odds.length should be (3)
+    odds(0).unboxToInt.get should equal (1)
+    odds(1).unboxToInt.get should equal (3)
+    odds(2).unboxToInt.get should equal (5)
+
+    val evens = map("even").asInstanceOf[MoeArrayObject].unboxToArrayBuffer.get
+    evens.length should be (2)
+    evens(0).unboxToInt.get should equal (2)
+    evens(1).unboxToInt.get should equal (4)
+
+    val triples = map("triple").asInstanceOf[MoeArrayObject].unboxToArrayBuffer.get
+    triples.length should be (1)
+    triples(0).unboxToInt.get should equal (3)
   }
 }
