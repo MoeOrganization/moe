@@ -9,6 +9,8 @@
 #     moe> encodeModified("a", "a", "a", "a", "b", "c", "c", "a", "a", "d", "e", "e", "e", "e")
 #     [[4, "a"], "b", [2, "c"], [2, "a"], "d", [4, "e"]]
 
+use Test::More;
+
 sub encodeModified(*@list) {
     @list.reduce(-> (@a, $b) {
                      if (@a.length == 0 || @a[-1].at_pos(0) ne $b) {
@@ -23,4 +25,9 @@ sub encodeModified(*@list) {
          .map(-> (@a) {@a.length == 1 ? @a[0] : [@a.length, @a[0]]})
 }
 
-say encodeModified('a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e');
+is_deeply(encodeModified('a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e'),
+          [[4, "a"], "b", [2, "c"], [2, "a"], "d", [4, "e"]],
+          "... P11");
+
+done_testing(1);
+

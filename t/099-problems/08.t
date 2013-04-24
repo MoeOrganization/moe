@@ -8,6 +8,8 @@
 #     moe> compress(['a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e'])
 #     ['a', 'b', 'c', 'a', 'd', 'e']
 
+use Test::More;
+
 sub compress(*@list) {
     @list.reduce(-> (@a, $b) {
                      if (@a.length == 0 || @a[-1] ne $b) {
@@ -17,4 +19,7 @@ sub compress(*@list) {
                  [])
 }
 
-say compress('a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e');
+is_deeply(compress('a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e'), ['a', 'b', 'c', 'a', 'd', 'e'], "... P08");
+
+done_testing(1);
+
