@@ -22,5 +22,19 @@ object MoeParser extends MoeProductions {
   }
 
   def parseStuff(input: String): StatementsNode = parseFromEntry(input)
+
+  // helper method to test with any parser combinator
+  def testParser(input: String, parser: Parser[AST] = getEntryPoint): AST = {
+    def error_msg(msg: String, next: Input) = "[" + next.pos + "] error: " + msg + "\n\n" + next.pos.longString
+
+    parseAll(parser, input) match {
+      case Success(result, _)   => result
+      case NoSuccess(msg, next) => if (next.atEnd)
+                                    throw new MoeErrors.ParserInputIncomplete(error_msg(msg, next))
+                                  else
+                                    throw new MoeErrors.ParserInputError(error_msg(msg, next))
+    }
+  }
+
 }
 
