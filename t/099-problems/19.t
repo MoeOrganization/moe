@@ -12,7 +12,7 @@ use Test::More;
 sub rotate($n, @list) {
     my $len = @list.length;
     my @r = @list[($n < 0 ? $len + $n : $n) .. ($len - 1)];
-    @r.push(@list[0 .. ($n < 0 ? $len + $n : $n-1)]);
+    @r.push(@list[0 .. ($n < 0 ? $len + $n-1 : $n-1)]);
     @r.flatten
 }
 

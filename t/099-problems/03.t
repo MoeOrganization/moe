@@ -10,6 +10,6 @@ use Test::More;
 
 sub nth($n, @list) { @list[$n] }
 
-is (nth(2, [1, 1, 2, 3, 5, 8]), 2, "... P03";
+is (nth(2, [1, 1, 2, 3, 5, 8], 2, "... P03");
 
 done_testing(1);
