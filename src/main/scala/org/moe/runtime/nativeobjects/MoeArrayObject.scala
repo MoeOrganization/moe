@@ -134,6 +134,12 @@ class MoeArrayObject(
     r.NativeObjects.getArray(result: _*)
   }
 
+  // this should preserve the order in the input list
+  def uniq (r: MoeRuntime): MoeArrayObject = {
+    val uniq_set = array.foldLeft (List[MoeObject]()) { (s, x) => if (s.exists(y => y.equal_to(x))) s else (x :: s) }
+    r.NativeObjects.getArray(uniq_set.reverse: _*)
+  }
+
   def zip (r: MoeRuntime, that: MoeArrayObject): MoeArrayObject = {
     val zipped = for ((x, y) <- unboxToArrayBuffer.get zip that.unboxToArrayBuffer.get)
       yield r.NativeObjects.getArray(x, y)

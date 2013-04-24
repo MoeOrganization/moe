@@ -315,6 +315,15 @@ object ArrayClass {
 
     arrayClass.addMethod(
       new MoeMethod(
+        "uniq",
+        new MoeSignature(),
+        env,
+        (e) => self(e).uniq(r)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
         "zip",
         new MoeSignature(List(new MoePositionalParameter("@that"))),
         env,

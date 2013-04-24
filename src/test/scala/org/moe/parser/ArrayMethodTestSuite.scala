@@ -136,6 +136,11 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     result.unboxToString.get should equal ("abc")
   }
 
+  test("... basic test with array.uniq") {
+    val result = interpretCode("""my @a = [1, 1, 2, 3, 4, 5, 4]; @a.uniq.join(",")""")
+    result.unboxToString.get should equal ("1,2,3,4,5")
+  }
+
   test("... basic test with array.zip") {
     val result = interpretCode("""my @a = ["a", "b", "c"]; my @b = 1..3; @a.zip(@b).flatten.join""")
     result.unboxToString.get should equal ("a1b2c3")
