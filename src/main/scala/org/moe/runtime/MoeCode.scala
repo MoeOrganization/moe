@@ -44,4 +44,8 @@ class MoeCode (
     signature.bindArgsToEnv(args, env)
     env
   }
+
+  // MoeObject overrides
+
+  override def isCode = true
 }

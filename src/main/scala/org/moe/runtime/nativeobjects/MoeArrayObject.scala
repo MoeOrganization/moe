@@ -153,13 +153,14 @@ class MoeArrayObject(
 
   override def copy = new MoeArrayObject(ArrayBuffer(getNativeValue:_*), getAssociatedClass)
 
-  override def isArray: Boolean = true
-
   // MoeObject overrides
   
   override def isFalse: Boolean = getNativeValue.size == 0
   override def toString: String =
     '[' + getNativeValue.map(_.toString).mkString(", ") + ']'
+  
+  override def isScalar = false
+  override def isArray  = true
   
   // unboxing
   

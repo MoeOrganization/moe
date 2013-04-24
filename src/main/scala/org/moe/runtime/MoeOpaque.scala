@@ -12,4 +12,5 @@ class MoeOpaque(
   def getValue(name: String): Option[MoeObject]      = data.get(name)
   def setValue(name: String, value: MoeObject): Unit = data.put(name, value)
 
+  override def isScalar = true
 }

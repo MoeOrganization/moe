@@ -22,13 +22,10 @@ class MoeUndefObject(
   
   def copy = new MoeUndefObject(getAssociatedClass)
 
-  def isScalar: Boolean = true
-  def isArray : Boolean = false
-  def isHash  : Boolean = false
-
   // MoeObject overrides
 
   override def isFalse: Boolean = true
   override def isUndef: Boolean = true
   override def toString: String = "undef"
+  override def isScalar = true
 }

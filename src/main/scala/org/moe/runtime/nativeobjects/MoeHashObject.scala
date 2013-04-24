@@ -66,6 +66,9 @@ class MoeHashObject(
     '{' + getNativeValue.map({
       case (k, v) => k + " => " + v.toString
     }).mkString(", ") + '}'
+    
+  override def isScalar = false
+  override def isHash   = true
 
   // unboxing
   

@@ -80,6 +80,14 @@ class MoeObject(
   def isUndef: Boolean = false
 
   /**
+   * Some predicates 
+   */
+  def isScalar: Boolean = false
+  def isArray : Boolean = false
+  def isHash  : Boolean = false
+  def isCode  : Boolean = false
+
+  /**
    * Returns a string representation of this object.
    */
   override def toString: String = {
