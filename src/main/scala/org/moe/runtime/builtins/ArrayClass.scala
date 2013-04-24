@@ -349,6 +349,15 @@ object ArrayClass {
       )
     )
 
+    arrayClass.addMethod(
+      new MoeMethod(
+        "classify",
+        new MoeSignature(List(new MoePositionalParameter("&mapper"))),
+        env,
+        (e) => self(e).classify(r, e.getAs[MoeCode]("&mapper").get)
+      )
+    )
+
     /**
      * List of Methods to support:
      * - delete ($index | @indicies) 

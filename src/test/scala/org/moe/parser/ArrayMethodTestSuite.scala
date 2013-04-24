@@ -8,6 +8,7 @@ import org.moe.runtime._
 import org.moe.interpreter._
 import org.moe.ast._
 import org.moe.parser._
+import org.moe.runtime.nativeobjects._
 
 class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils with ShouldMatchers {
 
@@ -160,5 +161,21 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
   test("... basic test with array.kv") {
     val result = interpretCode("""my @a = ["a", "b", "c"]; @a.kv.flatten.join""")
     result.unboxToString.get should equal ("0a1b2c")
+  }
+
+  test("... basic test with array.classify") {
+    val result = interpretCode("""1..5.classify(-> ($x) { $x % 2 ? "odd" : "even" })""")
+    val map = result.unboxToMap.get
+
+    val odds = map("odd").asInstanceOf[MoeArrayObject].unboxToArrayBuffer.get
+    odds.length should be (3)
+    odds(0).unboxToInt.get should equal (1)
+    odds(1).unboxToInt.get should equal (3)
+    odds(2).unboxToInt.get should equal (5)
+
+    val evens = map("even").asInstanceOf[MoeArrayObject].unboxToArrayBuffer.get
+    evens.length should be (2)
+    evens(0).unboxToInt.get should equal (2)
+    evens(1).unboxToInt.get should equal (4)
   }
 }
