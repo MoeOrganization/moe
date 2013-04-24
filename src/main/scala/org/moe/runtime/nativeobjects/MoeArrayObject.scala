@@ -134,6 +134,10 @@ class MoeArrayObject(
     r.NativeObjects.getArray(result: _*)
   }
 
+  def exists (r: MoeRuntime, item: MoeObject): MoeBoolObject = r.NativeObjects.getBool(
+    array.exists( x => x.equal_to(item) )
+  )
+
   // this should preserve the order in the input list
   def uniq (r: MoeRuntime): MoeArrayObject = {
     val uniq_set = array.foldLeft (List[MoeObject]()) { (s, x) => if (s.exists(y => y.equal_to(x))) s else (x :: s) }

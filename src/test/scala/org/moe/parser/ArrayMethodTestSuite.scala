@@ -136,6 +136,17 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     result.unboxToString.get should equal ("abc")
   }
 
+  test("... basic test with array.exists") {
+    val result = interpretCode("""my @a = [2, 3, 4]; 1..5.map(-> ($x) { @a.exists($x) } )""")
+    val array = result.unboxToArrayBuffer.get
+    array.length should equal (5)
+    array(0).unboxToBoolean.get should equal (false)
+    array(1).unboxToBoolean.get should equal (true)
+    array(2).unboxToBoolean.get should equal (true)
+    array(3).unboxToBoolean.get should equal (true)
+    array(4).unboxToBoolean.get should equal (false)
+  }
+
   test("... basic test with array.uniq") {
     val result = interpretCode("""my @a = [1, 1, 2, 3, 4, 5, 4]; @a.uniq.join(",")""")
     result.unboxToString.get should equal ("1,2,3,4,5")

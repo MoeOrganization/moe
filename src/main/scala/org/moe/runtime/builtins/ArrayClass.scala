@@ -315,6 +315,15 @@ object ArrayClass {
 
     arrayClass.addMethod(
       new MoeMethod(
+        "exists",
+        new MoeSignature(List(new MoePositionalParameter("$item"))),
+        env,
+        (e) => self(e).exists(r, e.get("$item").get)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
         "uniq",
         new MoeSignature(),
         env,
@@ -333,7 +342,6 @@ object ArrayClass {
 
     /**
      * List of Methods to support:
-     * - exists ($value)
      * - delete ($index | @indicies) 
      * - sort ($sorter)
      * - first ($predicate)
