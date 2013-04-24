@@ -367,6 +367,20 @@ object ArrayClass {
       )
     )
 
+    arrayClass.addMethod(
+      new MoeMethod(
+        "sort",
+        new MoeSignature(List(new MoeOptionalParameter("&sorter"))),
+        env,
+        (e) => // self(e).sort(r, e.getAs[MoeCode]("&sorter"))
+          e.get("&sorter") match {
+            case Some(none:   MoeUndefObject) => self(e).sort(r, None)
+            case Some(sorter: MoeCode)        => self(e).sort(r, Some(sorter))
+            case _                            => self(e).sort(r, None)
+          }
+      )
+    )
+
     /**
      * List of Methods to support:
      * - delete ($index | @indicies) 

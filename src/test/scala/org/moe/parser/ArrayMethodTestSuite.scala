@@ -198,4 +198,15 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     triples.length should be (1)
     triples(0).unboxToInt.get should equal (3)
   }
+
+  test("... basic test with array.sort -- no sorter") {
+    val result = interpretCode("""[2, 7, 10, 3, 4, 1].sort.join(",")""")
+    result.unboxToString.get should equal("1,10,2,3,4,7")
+  }
+
+  test("... basic test with array.sort -- numeric sorter") {
+    val result = interpretCode("""[2, 7, 10, 3, 4, 1].sort(-> ($a, $b) { $a <=> $b }).join(",")""")
+    result.unboxToString.get should equal("1,2,3,4,7,10")
+  }
+
 }

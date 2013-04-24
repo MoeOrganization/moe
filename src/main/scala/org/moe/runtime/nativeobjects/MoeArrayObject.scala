@@ -187,6 +187,14 @@ class MoeArrayObject(
     r.NativeObjects.getHash(categorized)
   }
 
+  def sort (r: MoeRuntime, sorter: Option[MoeCode]): MoeArrayObject = {
+    val s = sorter match {
+      case Some(code) => (a: MoeObject, b: MoeObject) => code.execute(new MoeArguments(List(a, b))).unboxToInt.get < 0
+      case None       => (a: MoeObject, b: MoeObject) => a.unboxToString.get < b.unboxToString.get
+    }
+    r.NativeObjects.getArray(array sortWith s)
+  }
+
   // equality
   def equal_to (r: MoeRuntime, that: MoeArrayObject): MoeBoolObject = 
     r.NativeObjects.getBool(
