@@ -6,6 +6,8 @@
 #     moe> remove_at(1, ['a', 'b', 'c', 'd'])
 #     [['a', 'c', 'd'],'b']
 
+use Test::More;
+
 sub remove_at($i, @list) {
     my $removed = @list[$i];
     my @rest = @list[0 .. ($i-1)];
@@ -13,4 +15,7 @@ sub remove_at($i, @list) {
     [@rest.flatten, $removed]
 }
 
-say remove_at(1, ['a', 'b', 'c', 'd']);
+is_deeply(remove_at(1, ['a', 'b', 'c', 'd']), [['a', 'c', 'd'], 'b'], "... P20");
+
+done_testing(1);
+
