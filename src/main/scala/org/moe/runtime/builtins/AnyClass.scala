@@ -161,6 +161,71 @@ object AnyClass {
       )
     )
 
+    // coercion
+
+    anyClass.addMethod(
+      new MoeMethod(
+        "Str",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeStrContext()))
+      )
+    )
+
+    anyClass.addMethod(
+      new MoeMethod(
+        "prefix:<~>",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeStrContext()))
+      )
+    )
+
+    anyClass.addMethod(
+      new MoeMethod(
+        "Int",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeIntContext()))
+      )
+    )
+
+    anyClass.addMethod(
+      new MoeMethod(
+        "Num",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeNumContext()))
+      )
+    )
+
+    anyClass.addMethod(
+      new MoeMethod(
+        "prefix:<+>",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeNumContext()))
+      )
+    )
+
+    anyClass.addMethod(
+      new MoeMethod(
+        "Bool",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeBoolContext()))
+      )
+    )
+
+    anyClass.addMethod(
+      new MoeMethod(
+        "prefix:<?>",
+        new MoeSignature(),
+        env,
+        (e) => self(e).coerce(r, Some(MoeBoolContext()))
+      )
+    )
+
     /**
      * See the following for details:
      * - https://metacpan.org/release/autobox-Core
