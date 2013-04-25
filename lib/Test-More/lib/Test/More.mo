@@ -37,13 +37,13 @@ package Test {
             }
         }
 
-        method is_deeply($got, $expected, $msg?) {
+        method is_deeply(@_) {
             self.inc_count;
-            if (self.compare_deeply($got, $expected)) {
-                $!output.ok($!count, $msg);
+            if (self.compare_deeply(@_)) {
+                $!output.ok($!count, @_[2]);
             } else {
-                $!output.not_ok($!count, $msg);
-                self.output_err($got, $expected, $msg); 
+                $!output.not_ok($!count, @_[2]);
+                # self.output_err(@_[0], @_[1], @_[2]); 
             }
         }
 
@@ -71,24 +71,24 @@ package Test {
             }
         }
 
-        submethod compare_deeply($got, $expected) {
-            if ($got.isa("Array")) {
-                self.compare_arrays($got, $expected);
-            } elsif ($got.isa("Hash")) {
-                self.compare_hashes($got, $expected);
+        submethod compare_deeply(@_) {
+            if (@_[0].isa("Array")) {
+                self.compare_arrays(@_[0], @_[1]);
+            } elsif (@_[0].isa("Hash")) {
+                self.compare_hashes(@_[0], @_[1]);
             } else {
                 $!output.bailout("Can only compare deeply Array and Hash objects");
             }
         }
 
-        submethod compare_arrays($got, $expected) {
+        submethod compare_arrays(@got, @expected) {
             # poor man's deep-compare of arrays
-            self.compare($got.join("|"), $expected.join("|"));
+            self.compare(@got.join("|"), @expected.join("|"));
         }
 
-        submethod compare_hashes($got, $expected) {
+        submethod compare_hashes(%got, %expected) {
             # poor man's deep-compare of hashes
-            self.compare($got.pairs.join("|"), $expected.pairs.join("|"));
+            self.compare(%got.pairs.join("|"), %expected.pairs.join("|"));
         }
     }
 
@@ -115,8 +115,8 @@ package Test {
             $builder.is($got, $expected, $msg);
         }
 
-        sub is_deeply ($got, $expected, $msg?) is export {
-            $builder.is_deeply($got, $expected, $msg);
+        sub is_deeply (*@_) is export {
+            $builder.is_deeply(@_);
         }
 
         sub diag ($msg) is export {
