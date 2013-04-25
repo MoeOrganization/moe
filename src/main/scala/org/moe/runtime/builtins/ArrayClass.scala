@@ -210,12 +210,11 @@ object ArrayClass {
     arrayClass.addMethod(
       new MoeMethod(
         "reduce",
-        new MoeSignature(List(new MoePositionalParameter("&f"), new MoeOptionalParameter("$init"))),
+        new MoeSignature(List(new MoePositionalParameter("&f"), new MoeSlurpyParameter("@init"))),
         env,
-        { (e) => e.get("$init") match {
-            case Some(none: MoeUndefObject) => self(e).reduce(r, e.getAs[MoeCode]("&f").get, None)
-            case Some(init: MoeObject) => self(e).reduce(r, e.getAs[MoeCode]("&f").get, Some(init))
-            case _                     => self(e).reduce(r, e.getAs[MoeCode]("&f").get, None)
+        { (e) => e.getAs[MoeArrayObject]("@init").get.at_pos(r, getInt(0)) match {
+            case none: MoeUndefObject => self(e).reduce(r, e.getAs[MoeCode]("&f").get, None)
+            case init: MoeObject      => self(e).reduce(r, e.getAs[MoeCode]("&f").get, Some(init))
           }
         }
       )
