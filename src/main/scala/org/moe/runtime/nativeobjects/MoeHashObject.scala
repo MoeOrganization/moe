@@ -8,8 +8,8 @@ import scala.util.{Try, Success, Failure}
 
 class MoeHashObject(
     v: HashMap[String, MoeObject],
-    klass : Option[MoeClass] = None
-  ) extends MoeNativeObject[HashMap[String, MoeObject]](v, klass) {
+    t : Option[MoeType] = None
+  ) extends MoeNativeObject[HashMap[String, MoeObject]](v, t) {
 
   private def hash = getNativeValue
 
@@ -57,7 +57,7 @@ class MoeHashObject(
 
   // MoeNativeObject overrides
  
-  override def copy = new MoeHashObject(HashMap(getNativeValue.toSeq:_*), getAssociatedClass)
+  override def copy = new MoeHashObject(HashMap(getNativeValue.toSeq:_*), getAssociatedType)
 
   // MoeObject overrides 
 
@@ -66,9 +66,6 @@ class MoeHashObject(
     '{' + getNativeValue.map({
       case (k, v) => k + " => " + v.toString
     }).mkString(", ") + '}'
-    
-  override def isScalar = false
-  override def isHash   = true
 
   // unboxing
   

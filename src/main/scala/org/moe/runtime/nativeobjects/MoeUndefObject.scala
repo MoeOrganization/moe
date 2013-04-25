@@ -2,8 +2,6 @@ package org.moe.runtime.nativeobjects
 
 import org.moe.runtime._
 
-import scala.util.{Try, Success, Failure}
-
 /**
  * NOTE:
  * this is the one outlyer, it doesn't need to be
@@ -13,19 +11,18 @@ import scala.util.{Try, Success, Failure}
  */
 
 class MoeUndefObject(
-    klass : Option[MoeClass] = None
-  ) extends MoeObject(klass) {
+    t : Option[MoeType] = None
+  ) extends MoeObject(t) {
 
   // MoeNativeObject overrides
 
   def getNativeValue: AnyRef = null
   
-  def copy = new MoeUndefObject(getAssociatedClass)
+  def copy = new MoeUndefObject(getAssociatedType)
 
   // MoeObject overrides
 
   override def isFalse: Boolean = true
   override def isUndef: Boolean = true
   override def toString: String = "undef"
-  override def isScalar = true
 }

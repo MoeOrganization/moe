@@ -151,7 +151,7 @@ class Interpreter {
         // have a MOP to expose)
         // But for now this will do.
         // - SL
-        code.setAssociatedClass(runtime.getCoreClassFor("Code"))
+        code.setAssociatedType(Some(MoeCodeType(runtime.getCoreClassFor("Code"))))
         code
       }
 
@@ -292,7 +292,7 @@ class Interpreter {
           superclass_class
         )
 
-        klass.setAssociatedClass(runtime.getCoreClassFor("Class"))
+        klass.setAssociatedType(Some(MoeClassType(runtime.getCoreClassFor("Class"))))
 
         pkg.addClass(klass)
 
@@ -462,7 +462,7 @@ class Interpreter {
             ).getOrElse( 
               throw new MoeErrors.SubroutineNotFound(function_name)
             )
-            if (!sub.hasAssociatedClass) sub.setAssociatedClass(runtime.getCoreClassFor("Code"))
+            if (!sub.hasAssociatedClass) sub.setAssociatedType(Some(MoeCodeType(runtime.getCoreClassFor("Code"))))
             sub
           } else {
             throw new MoeErrors.VariableNotFound(name)

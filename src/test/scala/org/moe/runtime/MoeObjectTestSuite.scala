@@ -14,28 +14,38 @@ class MoeObjectTestSuite extends FunSuite with BeforeAndAfter with ShouldMatcher
 
   test("... MoeObjects do not have a default class") {
     assert(!o.hasAssociatedClass)
+    assert(!o.hasAssociatedType)
   }
 
   test("... add an associatedClass") {
     val c = new MoeClass("Test")
-    o.setAssociatedClass(Some(c))
+    val t = MoeScalarType(Some(c))
+    o.setAssociatedType(Some(t))
     assert(o.hasAssociatedClass)
+    assert(o.hasAssociatedType)
     o.getAssociatedClass should be (Some(c))
+    o.getAssociatedType should be (Some(t))
   }
 
   test("... test isInstanceOf[String]") {
     val c = new MoeClass("Test")
-    o.setAssociatedClass(Some(c))
+    val t = MoeScalarType(Some(c))
+    o.setAssociatedType(Some(t))
     assert(o.hasAssociatedClass)
+    assert(o.hasAssociatedType)
     o.getAssociatedClass should be (Some(c))
+    o.getAssociatedType should be (Some(t))
     assert(o.isInstanceOf("Test"))
   }
 
   test("... test isInstanceOf[MoeClass]") {
     val c = new MoeClass("Test")
-    o.setAssociatedClass(Some(c))
+    val t = MoeScalarType(Some(c))
+    o.setAssociatedType(Some(t))
     assert(o.hasAssociatedClass)
+    assert(o.hasAssociatedType)
     o.getAssociatedClass should be (Some(c))
+    o.getAssociatedType should be (Some(t))
     assert(o.isInstanceOf(c))
   }
 
@@ -44,7 +54,7 @@ class MoeObjectTestSuite extends FunSuite with BeforeAndAfter with ShouldMatcher
     val Bar = new MoeClass(name = "Bar", superclass = Some(Foo))
     val Baz = new MoeClass(name = "Baz", superclass = Some(Bar))
 
-    o.setAssociatedClass(Some(Baz))
+    o.setAssociatedType(Some(MoeScalarType(Some(Baz))))
     assert(o.hasAssociatedClass)
     o.getAssociatedClass should be (Some(Baz))
 

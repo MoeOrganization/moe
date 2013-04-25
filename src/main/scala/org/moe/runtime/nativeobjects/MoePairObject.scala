@@ -6,8 +6,8 @@ import scala.util.{Try, Success, Failure}
 
 class MoePairObject(
     v: (String, MoeObject), 
-    klass : Option[MoeClass] = None
-  ) extends MoeNativeObject[(String, MoeObject)](v, klass) {
+    t : Option[MoeType] = None
+  ) extends MoeNativeObject[(String, MoeObject)](v, t) {
 
   // runtime methods
 
@@ -20,15 +20,13 @@ class MoePairObject(
 
   // MoeNativeObject overrides
 
-  override def copy = new MoePairObject(getNativeValue._1 -> getNativeValue._2, getAssociatedClass)
+  override def copy = new MoePairObject(getNativeValue._1 -> getNativeValue._2, getAssociatedType)
 
   // MoeObject overrides
 
   override def toString: String = getNativeValue match {
     case (k, v) => k + " => " + v.toString
   }
-
-  override def isScalar = true
 
   // unboxing
 

@@ -72,7 +72,7 @@ class MoeClassTestSuite extends FunSuite with BeforeAndAfter with ShouldMatchers
     )
     val ident = new MoeMethod("ident", new MoeSignature(), env, (e) => e.getCurrentInvocant.get)
     klass.addMethod(ident)
-    var obj = new MoeObject(Some(klass))
+    var obj = new MoeObject(Some(MoeScalarType(Some(klass))))
     assert(obj.isInstanceOf(klass))
     assert(obj.isInstanceOf("TestClass"))
     assert(obj.callMethod(ident) === obj)

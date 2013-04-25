@@ -104,7 +104,7 @@ class MoeClass(
   /**
    * Creates a new instance of this class.
    */
-  def newInstance: MoeObject = new MoeOpaque(Some(this))
+  def newInstance: MoeObject = new MoeOpaque(Some(MoeScalarType(Some(this))))
 
   // Methods ...
 

@@ -6,8 +6,8 @@ import org.moe.runtime.nativeobjects._
 import scala.util.{Try, Success, Failure}
 
 class MoeIntObject(
-    v: Int, klass : Option[MoeClass] = None
-  ) extends MoeNativeObject[Int](v, klass) {
+    v: Int, t : Option[MoeType] = None
+  ) extends MoeNativeObject[Int](v, t) {
 
   // runtime methods
 
@@ -136,13 +136,12 @@ class MoeIntObject(
 
   // MoeNativeObject overrides
 
-  override def copy = new MoeIntObject(getNativeValue, getAssociatedClass)
+  override def copy = new MoeIntObject(getNativeValue, getAssociatedType)
 
   // MoeObject overrides
 
   override def isFalse: Boolean = getNativeValue == 0
   override def toString = getNativeValue.toString
-  override def isScalar = true
 
   // unboxing
 

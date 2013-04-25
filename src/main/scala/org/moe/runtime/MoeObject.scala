@@ -8,7 +8,7 @@ import scala.util.{Try, Success, Failure}
  * @param associatedClass The class to associated with this object.
  */
 class MoeObject(
-    private var associatedClass: Option[MoeClass] = None
+    private var associatedType: Option[MoeType] = None
   ) {
 
   private val id: Int = System.identityHashCode(this)
@@ -21,30 +21,28 @@ class MoeObject(
   /**
    * Returns the class associted with this object, if there is one.
    */
-  def getAssociatedClass: Option[MoeClass] = associatedClass
+  def getAssociatedClass: Option[MoeClass] = associatedType.flatMap(_.getAssociatedClass)
 
   /**
    * Returns true if a class is associated with this object.
    */
-  def hasAssociatedClass: Boolean = associatedClass.isDefined
+  def hasAssociatedClass: Boolean = associatedType.exists(_.hasAssociatedClass)
 
-  /**
-   * Set the class that is associated with this object.
-   *
-   * @param c The class to associate with this object.
-   */
-  def setAssociatedClass(c: Option[MoeClass]) = associatedClass = c
+  // associated type ...
+  def getAssociatedType: Option[MoeType] = associatedType
+  def hasAssociatedType: Boolean = associatedType.isDefined
+  def setAssociatedType(t: Option[MoeType]) = associatedType = t
 
   /**
    * Ask if this object is-a instance of a class
    */
-  def isInstanceOf(klassname: String): Boolean = associatedClass.exists(_.isClassOf(klassname))
-  def isInstanceOf(klass:   MoeClass): Boolean = associatedClass.exists(_.isClassOf(klass))
+  def isInstanceOf(klassname: String): Boolean = getAssociatedClass.exists(_.isClassOf(klassname))
+  def isInstanceOf(klass:   MoeClass): Boolean = getAssociatedClass.exists(_.isClassOf(klass))
 
   /**
    * Return the name of the class this object is an instance of
    */
-  def getClassName: String = associatedClass match {
+  def getClassName: String = getAssociatedClass match {
     case Some(klass) => klass.getName
     case _ => ""
   }
@@ -80,18 +78,10 @@ class MoeObject(
   def isUndef: Boolean = false
 
   /**
-   * Some predicates 
-   */
-  def isScalar: Boolean = false
-  def isArray : Boolean = false
-  def isHash  : Boolean = false
-  def isCode  : Boolean = false
-
-  /**
    * Returns a string representation of this object.
    */
   override def toString: String = {
-    "{ #instance(" + id + ") " + associatedClass.map({ k => k.toString }).getOrElse("") + "}"
+    "{ #instance(" + id + ") " + getAssociatedClass.map({ k => k.toString }).getOrElse("") + "}"
   }
 
   /**

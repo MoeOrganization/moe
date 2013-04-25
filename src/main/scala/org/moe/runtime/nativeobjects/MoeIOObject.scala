@@ -13,8 +13,8 @@ import scala.util.{Try, Success, Failure}
  */
 
 class MoeIOObject(
-    v: java.io.File, klass : Option[MoeClass] = None
-  ) extends MoeNativeObject[java.io.File](v, klass) {
+    v: java.io.File, t : Option[MoeType] = None
+  ) extends MoeNativeObject[java.io.File](v, t) {
 
   private lazy val reader = new java.io.BufferedReader(new java.io.FileReader(getNativeValue))
   private lazy val writer = new java.io.FileWriter(getNativeValue)
@@ -66,13 +66,12 @@ class MoeIOObject(
 
   override def copy = new MoeIOObject(
     new java.io.File(getNativeValue.toString), 
-    getAssociatedClass
+    getAssociatedType
   )
 
   // MoeObject overrides
 
   override def toString: String = getNativeValue.toString
-  override def isScalar = true
 
   // unboxing
 

@@ -8,8 +8,8 @@ import scala.util.{Try, Success, Failure}
 
 class MoeArrayObject(
     v: ArrayBuffer[MoeObject],
-    klass : Option[MoeClass] = None
-  ) extends MoeNativeObject[ArrayBuffer[MoeObject]](v, klass) {
+    t : Option[MoeType] = None
+  ) extends MoeNativeObject[ArrayBuffer[MoeObject]](v, t) {
 
   def this(list: List[MoeObject]) = this(ArrayBuffer(list : _*))
 
@@ -204,16 +204,13 @@ class MoeArrayObject(
 
   // MoeNativeObject overrides
 
-  override def copy = new MoeArrayObject(ArrayBuffer(getNativeValue:_*), getAssociatedClass)
+  override def copy = new MoeArrayObject(ArrayBuffer(getNativeValue:_*), getAssociatedType)
 
   // MoeObject overrides
   
   override def isFalse: Boolean = getNativeValue.size == 0
   override def toString: String =
     '[' + getNativeValue.map(_.toString).mkString(", ") + ']'
-  
-  override def isScalar = false
-  override def isArray  = true
   
   // unboxing
   

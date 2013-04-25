@@ -63,8 +63,8 @@ class MoeRuntime (
       corePackage.getEnv.setCurrentPackage(corePackage) // bind it to the env
 
       // tie the knot
-      objectClass.setAssociatedClass(Some(classClass)) // Object is a class
-      classClass.setAssociatedClass(Some(classClass))  // Class is a class
+      objectClass.setAssociatedType(Some(MoeClassType(Some(classClass)))) // Object is a class
+      classClass.setAssociatedType(Some(MoeClassType(Some(classClass))))  // Class is a class
 
       // we need a special subclass of Class
       // for use with our core classes, this
@@ -104,20 +104,20 @@ class MoeRuntime (
       // set the associated class for all classes
       // this must be classClass because these are
       // instances of Class
-      anyClass.setAssociatedClass(Some(coreClassClass))
-      scalarClass.setAssociatedClass(Some(coreClassClass))
-      arrayClass.setAssociatedClass(Some(coreClassClass))
-      hashClass.setAssociatedClass(Some(coreClassClass))
-      pairClass.setAssociatedClass(Some(coreClassClass))
-      ioClass.setAssociatedClass(Some(coreClassClass))
-      codeClass.setAssociatedClass(Some(coreClassClass))
+      anyClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
+      scalarClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
+      arrayClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
+      hashClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
+      pairClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
+      ioClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
+      codeClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
       
-      undefClass.setAssociatedClass(Some(coreClassClass))
-      boolClass.setAssociatedClass(Some(coreClassClass))
-      strClass.setAssociatedClass(Some(coreClassClass))
-      intClass.setAssociatedClass(Some(coreClassClass))
-      numClass.setAssociatedClass(Some(coreClassClass))
-      exceptionClass.setAssociatedClass(Some(coreClassClass))
+      undefClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
+      boolClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
+      strClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
+      intClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
+      numClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
+      exceptionClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
 
       // add all these classes to the corePackage
       corePackage.addClass(objectClass)
@@ -227,29 +227,29 @@ class MoeRuntime (
   object NativeObjects {
     import org.moe.runtime.nativeobjects._
 
-    private lazy val Undef = new MoeUndefObject(getCoreClassFor("Undef"))
-    private lazy val True  = new MoeBoolObject(true, getCoreClassFor("Bool"))
-    private lazy val False = new MoeBoolObject(false, getCoreClassFor("Bool"))
+    private lazy val Undef = new MoeUndefObject(Some(MoeScalarType(getCoreClassFor("Undef"))))
+    private lazy val True  = new MoeBoolObject(true, Some(MoeScalarType(getCoreClassFor("Bool"))))
+    private lazy val False = new MoeBoolObject(false, Some(MoeScalarType(getCoreClassFor("Bool"))))
 
     def getUndef = Undef
     def getTrue  = True
     def getFalse = False
 
-    def getInt  (value: Int)     = new MoeIntObject(value, getCoreClassFor("Int"))
-    def getNum  (value: Double)  = new MoeNumObject(value, getCoreClassFor("Num"))
-    def getStr  (value: String)  = new MoeStrObject(value, getCoreClassFor("Str"))
+    def getInt  (value: Int)     = new MoeIntObject(value, Some(MoeScalarType(getCoreClassFor("Int"))))
+    def getNum  (value: Double)  = new MoeNumObject(value, Some(MoeScalarType(getCoreClassFor("Num"))))
+    def getStr  (value: String)  = new MoeStrObject(value, Some(MoeScalarType(getCoreClassFor("Str"))))
     def getBool (value: Boolean) = if (value) { True } else { False }
 
-    def getPair  (value: (String, MoeObject))  = new MoePairObject((value._1, value._2), getCoreClassFor("Pair"))
+    def getPair  (value: (String, MoeObject))  = new MoePairObject((value._1, value._2), Some(MoeScalarType(getCoreClassFor("Pair"))))
 
-    def getHash  (value: (String, MoeObject)*)     = new MoeHashObject(HashMap(value:_*), getCoreClassFor("Hash"))
-    def getHash  (hash: HashMap[String,MoeObject]) = new MoeHashObject(hash, getCoreClassFor("Hash"))
+    def getHash  (value: (String, MoeObject)*)     = new MoeHashObject(HashMap(value:_*), Some(MoeHashType(getCoreClassFor("Hash"))))
+    def getHash  (hash: HashMap[String,MoeObject]) = new MoeHashObject(hash, Some(MoeArrayType(getCoreClassFor("Hash"))))
 
-    def getArray (value: MoeObject*)             = new MoeArrayObject(ArrayBuffer(value:_*), getCoreClassFor("Array"))
-    def getArray (array: ArrayBuffer[MoeObject]) = new MoeArrayObject(array, getCoreClassFor("Array"))
+    def getArray (value: MoeObject*)             = new MoeArrayObject(ArrayBuffer(value:_*), Some(MoeArrayType(getCoreClassFor("Array"))))
+    def getArray (array: ArrayBuffer[MoeObject]) = new MoeArrayObject(array, Some(MoeArrayType(getCoreClassFor("Array"))))
 
-    def getIO (path: String) = new MoeIOObject(new java.io.File(path), getCoreClassFor("IO"))
-    def getIO (file: java.io.File) = new MoeIOObject(file, getCoreClassFor("IO"))
+    def getIO (path: String) = new MoeIOObject(new java.io.File(path), Some(MoeScalarType(getCoreClassFor("IO"))))
+    def getIO (file: java.io.File) = new MoeIOObject(file, Some(MoeScalarType(getCoreClassFor("IO"))))
   }
 
 }
