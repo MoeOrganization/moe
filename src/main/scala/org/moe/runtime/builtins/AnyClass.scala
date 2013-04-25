@@ -105,14 +105,14 @@ object AnyClass {
     anyClass.addMethod(
       new MoeMethod(
         "infix:<&&>",
-        new MoeSignature(List(new MoePositionalParameter("$other"))), 
+        new MoeSignature(List(new MoeSlurpyParameter("@other"))), 
         env, 
         { (e) =>
             val inv = self(e)
             if (inv.isFalse)
               inv
             else
-              e.get("$other").get match {
+              e.getAs[MoeArrayObject]("@other").get.at_pos(r, getInt(0)) match {
                 case deferred: MoeLazyEval => deferred.eval
                 case other:    MoeObject   => other
               }
@@ -123,14 +123,14 @@ object AnyClass {
     anyClass.addMethod(
       new MoeMethod(
         "infix:<||>",
-        new MoeSignature(List(new MoePositionalParameter("$other"))), 
+        new MoeSignature(List(new MoeSlurpyParameter("@other"))), 
         env, 
         { (e) =>
             val inv = self(e)
             if (inv.isTrue)
               inv
             else
-              e.get("$other").get match {
+              e.getAs[MoeArrayObject]("@other").get.at_pos(r, getInt(0)) match {
                 case deferred: MoeLazyEval => deferred.eval
                 case other:    MoeObject   => other
               }
@@ -143,17 +143,17 @@ object AnyClass {
     anyClass.addMethod(
       new MoeMethod(
         "infix:<?:>",
-        new MoeSignature(List(new MoePositionalParameter("$trueExpr"), new MoePositionalParameter("$falseExpr"))),
+        new MoeSignature(List(new MoeSlurpyParameter("@exprs"))),
         env,
         { (e) =>
             val inv = self(e)
             if (inv.isTrue)
-              e.get("$trueExpr").get match {
+              e.getAs[MoeArrayObject]("@exprs").get.at_pos(r, getInt(0)) match {
                 case deferredExpr: MoeLazyEval => deferredExpr.eval
                 case expr:         MoeObject   => expr
               }
             else
-              e.get("$falseExpr").get match {
+              e.getAs[MoeArrayObject]("@exprs").get.at_pos(r, getInt(1)) match {
                 case deferredExpr: MoeLazyEval => deferredExpr.eval
                 case expr:         MoeObject   => expr
               }
