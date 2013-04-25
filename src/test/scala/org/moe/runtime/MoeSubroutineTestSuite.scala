@@ -14,7 +14,7 @@ class MoeSubroutineTestSuite extends FunSuite with BeforeAndAfter {
 
   test("... basic sub") {
     val env    = r.getRootEnv
-    val value  = new MoeObject()
+    val value  = new MoeObject(Some(MoeScalarType(None)))
     val sub    = new MoeSubroutine(
       name            = "ident", 
       signature       = new MoeSignature(List(new MoePositionalParameter("$x"))),
