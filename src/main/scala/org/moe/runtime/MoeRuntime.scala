@@ -147,7 +147,7 @@ class MoeRuntime (
 
       // do some basic environment setup now that we are bootstrapped
 
-      getEnv ++= system.getEnv.map(p => p._1 -> NativeObjects.getStr(p._2))
+      getEnv ++= system.getEnv.map({ case (k, v) => k -> NativeObjects.getStr(v) })
       addIncludeDir(new java.io.File(".").getCanonicalPath)
     }
   }

@@ -132,7 +132,9 @@ object CorePackage {
           val pb  = new ProcessBuilder(cmd);
           val env = pb.environment();
           env.clear()
-          e.getAs[MoeHashObject]("%ENV").get.unboxToMap.get.map(p => env.put(p._1, p._2.unboxToString.get))
+          e.getAs[MoeHashObject]("%ENV").get.unboxToMap.get.map({
+            case (k, v) => env.put(k, v.unboxToString.get)
+          })
           val p   = pb.start()
           val err = new java.io.DataInputStream(p.getErrorStream())
           p.waitFor()

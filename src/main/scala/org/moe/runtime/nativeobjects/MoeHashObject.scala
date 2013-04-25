@@ -50,9 +50,9 @@ class MoeHashObject(
   )
 
   def kv(r: MoeRuntime) = r.NativeObjects.getArray(
-    hash.toList.map(
-      p => r.NativeObjects.getArray(r.NativeObjects.getStr(p._1), p._2)
-    ).toArray:_*
+    hash.toList.map({
+      case (k, v) => r.NativeObjects.getArray(r.NativeObjects.getStr(k), v)
+    }).toArray:_*
   )
 
   // MoeNativeObject overrides
