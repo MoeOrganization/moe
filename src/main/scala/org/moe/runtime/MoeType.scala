@@ -1,5 +1,10 @@
 package org.moe.runtime
 
+object MoeType {
+    def checkType (n: String, t: MoeType)   : Boolean = !n.startsWith(t.getSigil) 
+    def checkType (n: String, o: MoeObject) : Boolean = o.getAssociatedType.exists(checkType(n, _))
+}
+
 sealed abstract class MoeType (
     private val sigil: String,
     private val name: String,
