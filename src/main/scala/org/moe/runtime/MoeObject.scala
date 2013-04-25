@@ -121,4 +121,17 @@ class MoeObject(
     new MoeErrors.IncompatibleType("Cannot convert to (String, MoeObject)")
   )
 
+  // coercing
+
+  def coerce(r: MoeRuntime, ctx: Option[MoeContext]): MoeObject = {
+    ctx match {
+      case Some(MoeIntContext())  => r.NativeObjects.getInt(unboxToInt.getOrElse(0))
+      case Some(MoeNumContext())  => r.NativeObjects.getNum(unboxToDouble.getOrElse(0.0))
+      case Some(MoeBoolContext()) => r.NativeObjects.getBool(unboxToBoolean.get)
+      case Some(MoeStrContext())  => r.NativeObjects.getStr(unboxToString.get)
+      case None                   => this
+      case _                      => throw new MoeErrors.CannotCoerceError(this.toString)
+    }
+  }
+
 }
