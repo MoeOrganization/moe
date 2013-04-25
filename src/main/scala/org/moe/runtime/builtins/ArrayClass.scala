@@ -367,6 +367,18 @@ object ArrayClass {
       )
     )
 
+    arrayClass.addMethod(
+      new MoeMethod(
+        "sort",
+        new MoeSignature(List(new MoeSlurpyParameter("@sorter"))),
+        env,
+        (e) => e.getAs[MoeArrayObject]("@sorter").get.at_pos(r, getInt(0)) match {
+          case none:   MoeUndefObject => self(e).sort(r, None)
+          case sorter: MoeCode        => self(e).sort(r, Some(sorter))
+        }
+      )
+    )
+
     /**
      * List of Methods to support:
      * - delete ($index | @indicies) 
