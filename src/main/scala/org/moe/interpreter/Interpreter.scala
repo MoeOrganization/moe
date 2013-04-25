@@ -412,6 +412,11 @@ class Interpreter {
           throw new MoeErrors.AttributeNotFound(name)
         )
         val expr = eval(runtime, env, expression)
+
+        if (!name.startsWith(expr.getAssociatedType.get.getSigil)) throw new MoeErrors.IncompatibleType(
+            "the container (" + name + ") is not compatible with " + expr.getAssociatedType.get.getName
+          )
+
         env.getCurrentInvocant match {
           case Some(invocant: MoeOpaque) => invocant.setValue(name, expr)
           case Some(invocant)            => throw new MoeErrors.UnexpectedType(invocant.toString)
@@ -429,6 +434,9 @@ class Interpreter {
               names, 
               evaled_expressions, 
               { (p) => 
+                  if (!p._1.startsWith(p._2.getAssociatedType.get.getSigil)) throw new MoeErrors.IncompatibleType(
+                      "the container (" + p._1 + ") is not compatible with " + p._2.getAssociatedType.get.getName
+                    )
                   klass.getAttribute(p._1).getOrElse(throw new MoeErrors.AttributeNotFound(p._1))
                   invocant.setValue(p._1, p._2)
               }
@@ -473,19 +481,32 @@ class Interpreter {
         zipVars(
           names, 
           expressions.map(eval(runtime, env, _)), 
-          (p) => env.set(p._1, p._2).getOrElse(throw new MoeErrors.VariableNotFound(p._1))
+          { (p) => 
+            if (!p._1.startsWith(p._2.getAssociatedType.get.getSigil)) throw new MoeErrors.IncompatibleType(
+                "the container (" + p._1 + ") is not compatible with " + p._2.getAssociatedType.get.getName
+              )
+            env.set(p._1, p._2).getOrElse(throw new MoeErrors.VariableNotFound(p._1))
+          }
         )
         env.get(names.last).getOrElse(throw new MoeErrors.VariableNotFound(names.last))
       }
 
       case VariableAssignmentNode(name, expression) => {
-        env.set(name, eval(runtime, env, expression)).getOrElse(
+        val value = eval(runtime, env, expression)
+        if (!name.startsWith(value.getAssociatedType.get.getSigil)) throw new MoeErrors.IncompatibleType(
+            "the container (" + name + ") is not compatible with " + value.getAssociatedType.get.getName
+          )
+        env.set(name, value).getOrElse(
           throw new MoeErrors.VariableNotFound(name)
         )
       }
 
       case VariableDeclarationNode(name, expression) => {
-        env.create(name, eval(runtime, env, expression)).get
+        val value = eval(runtime, env, expression)
+        if (!name.startsWith(value.getAssociatedType.get.getSigil)) throw new MoeErrors.IncompatibleType(
+            "the container (" + name + ") is not compatible with " + value.getAssociatedType.get.getName
+          )
+        env.create(name, value).get
       }
 
       // operations
