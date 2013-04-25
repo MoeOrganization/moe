@@ -370,14 +370,12 @@ object ArrayClass {
     arrayClass.addMethod(
       new MoeMethod(
         "sort",
-        new MoeSignature(List(new MoeOptionalParameter("&sorter"))),
+        new MoeSignature(List(new MoeSlurpyParameter("@sorter"))),
         env,
-        (e) => // self(e).sort(r, e.getAs[MoeCode]("&sorter"))
-          e.get("&sorter") match {
-            case Some(none:   MoeUndefObject) => self(e).sort(r, None)
-            case Some(sorter: MoeCode)        => self(e).sort(r, Some(sorter))
-            case _                            => self(e).sort(r, None)
-          }
+        (e) => e.getAs[MoeArrayObject]("@sorter").get.at_pos(r, getInt(0)) match {
+          case none:   MoeUndefObject => self(e).sort(r, None)
+          case sorter: MoeCode        => self(e).sort(r, Some(sorter))
+        }
       )
     )
 
