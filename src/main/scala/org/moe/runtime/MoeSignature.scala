@@ -18,6 +18,12 @@ class MoeSignature(
     ):_*
   )
 
+  private def checkType (n: String, o: MoeObject) = {
+    if (!MoeType.checkType(n, o)) throw new MoeErrors.IncompatibleType(
+        "the argument (" + n + ") is not compatible with " + o.getAssociatedType.map(_.getName).getOrElse("NO TYPE")
+      )
+  }
+
   def getParams = params
 
   def bindArgsToEnv (args: MoeArguments, env: MoeEnvironment) = {
@@ -28,10 +34,26 @@ class MoeSignature(
 
     for (i <- 0.until(arity)) {
       params(i) match {
-        case MoePositionalParameter(name) => env.create(name, args.getArgAt(i).get)
+        case MoePositionalParameter(name) => {
+          val arg = args.getArgAt(i).get
+          checkType(name, arg)
+          env.create(name, arg)
+        }
         case MoeOptionalParameter(name) => args.getArgAt(i) match {
-          case Some(a) => env.create(name, a)
-          case None    => env.create(name, r.NativeObjects.getUndef)
+          case Some(a) => {
+            checkType(name, a)
+            env.create(name, a)
+          }
+          case None => {
+            // XXX
+            // this is not correct, we need to 
+            // intiailize the value based on the
+            // type and Undef is only appropriate
+            // for scalar types. This is also likely
+            // wrong in the Interpreter too.
+            // - SL
+            env.create(name, r.NativeObjects.getUndef)
+          }
         }
         case MoeSlurpyParameter(name) => env.create(
           name, 
@@ -52,7 +74,10 @@ class MoeSignature(
           val p = namedParameterMap.get(k).getOrElse(
             throw new MoeErrors.MoeProblems("Could not find matching key for " + k)
           )
-          env.create(p.getName, a.value(r))
+          val v = a.value(r)
+          val n = p.getName
+          checkType(n, v)
+          env.create(n, v)
         }
         case _ => throw new MoeErrors.MoeProblems("extra argument was not a pair")
       }
