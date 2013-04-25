@@ -413,7 +413,7 @@ class Interpreter {
         )
         val expr = eval(runtime, env, expression)
 
-        if (MoeType.checkType(name, expr)) throw new MoeErrors.IncompatibleType(
+        if (!MoeType.checkType(name, expr)) throw new MoeErrors.IncompatibleType(
             "the container (" + name + ") is not compatible with " + expr.getAssociatedType.get.getName
           )
 
@@ -435,7 +435,7 @@ class Interpreter {
               evaled_expressions, 
               { 
                 case (name, value) => {
-                  if (MoeType.checkType(name, value)) throw new MoeErrors.IncompatibleType(
+                  if (!MoeType.checkType(name, value)) throw new MoeErrors.IncompatibleType(
                       "the container (" + name + ") is not compatible with " + value.getAssociatedType.get.getName
                     )
                   klass.getAttribute(name).getOrElse(throw new MoeErrors.AttributeNotFound(name))
@@ -485,7 +485,7 @@ class Interpreter {
           expressions.map(eval(runtime, env, _)), 
           { 
             case (name, value) => {
-              if (MoeType.checkType(name, value)) throw new MoeErrors.IncompatibleType(
+              if (!MoeType.checkType(name, value)) throw new MoeErrors.IncompatibleType(
                   "the container (" + name + ") is not compatible with " + value.getAssociatedType.get.getName
                 )
               env.set(name, value).getOrElse(throw new MoeErrors.VariableNotFound(name))
@@ -497,7 +497,7 @@ class Interpreter {
 
       case VariableAssignmentNode(name, expression) => {
         val value = eval(runtime, env, expression)
-        if (MoeType.checkType(name, value)) throw new MoeErrors.IncompatibleType(
+        if (!MoeType.checkType(name, value)) throw new MoeErrors.IncompatibleType(
             "the container (" + name + ") is not compatible with " + value.getAssociatedType.get.getName
           )
         env.set(name, value).getOrElse(
@@ -507,7 +507,7 @@ class Interpreter {
 
       case VariableDeclarationNode(name, expression) => {
         val value = eval(runtime, env, expression)
-        if (MoeType.checkType(name, value)) throw new MoeErrors.IncompatibleType(
+        if (!MoeType.checkType(name, value)) throw new MoeErrors.IncompatibleType(
             "the container (" + name + ") is not compatible with " + value.getAssociatedType.get.getName
           )
         env.create(name, value).get
