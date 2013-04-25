@@ -215,4 +215,8 @@ class MoeArrayObject(
   // unboxing
   
   override def unboxToArrayBuffer: Try[ArrayBuffer[MoeObject]] = Success(getNativeValue)
+  override def unboxToInt: Try[Int] = Success(array.length)    
+  override def unboxToDouble: Try[Double] = Success(array.length.toDouble)
+
+
 }
