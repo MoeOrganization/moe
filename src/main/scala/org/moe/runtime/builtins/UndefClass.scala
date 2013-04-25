@@ -1,6 +1,7 @@
 package org.moe.runtime.builtins
 
 import org.moe.runtime._
+import org.moe.runtime.nativeobjects._
 
 /**
   * setup class Undef
@@ -15,6 +16,10 @@ object UndefClass {
 
     import r.NativeObjects._
 
+    def self(e: MoeEnvironment): MoeUndefObject = e.getCurrentInvocantAs[MoeUndefObject].getOrElse(
+      throw new MoeErrors.InvocantNotFound("Could not find invocant")
+    )
+
     // MRO: Undef, Scalar, Any, Object
 
     undefClass.addSubMethod(
@@ -23,6 +28,26 @@ object UndefClass {
         new MoeSignature(),
         env,
         (e) => getUndef
+      )
+    )
+
+    // equality operators
+
+    undefClass.addMethod(
+      new MoeMethod(
+        "infix:<==>",
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
+        env,
+        (e) => self(e).equal_to(r, e.get("$other").get)
+      )
+    )
+
+    undefClass.addMethod(
+      new MoeMethod(
+        "infix:<!=>",
+        new MoeSignature(List(new MoePositionalParameter("$other"))),
+        env,
+        (e) => self(e).not_equal_to(r, e.get("$other").get)
       )
     )
 

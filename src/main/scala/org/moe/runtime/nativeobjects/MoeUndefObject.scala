@@ -14,6 +14,16 @@ class MoeUndefObject(
     t : Option[MoeType] = None
   ) extends MoeObject(t) {
 
+  // runtime methods
+
+  def equal_to (r: MoeRuntime, other: Moe Object): MoeBoolObject = r.NativeObjects.getBool(
+    isUndef && other.isUndef
+  )
+
+  def not_equal_to (r: MoeRuntime, other: MoeObject): MoeBoolObject = r.NativeObjects.getBool(
+    isUndef && !other.isUndef
+  )
+
   // MoeNativeObject overrides
 
   def getNativeValue: AnyRef = null
