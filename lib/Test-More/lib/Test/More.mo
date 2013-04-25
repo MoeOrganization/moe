@@ -37,7 +37,7 @@ package Test {
             }
         }
 
-        method is_deeply(@_) {
+        method is_deeply (@_) {
             self.inc_count;
             if (self.compare_deeply(@_)) {
                 $!output.ok($!count, @_[2]);
@@ -66,12 +66,14 @@ package Test {
                 $got == +$expected;
             } elsif ($got.isa("Bool")) {
                 $got == ?$expected;
+            } elsif ($got.isa("Undef")) {
+                $got == $expected;
             } else {
-                $!output.bailout("Can only compare Str, Int, Num and Bool objects");
+                $!output.bailout("Can only compare Str, Int, Num, Bool and Undef objects");
             }
         }
 
-        submethod compare_deeply(@_) {
+        submethod compare_deeply (@_) {
             if (@_[0].isa("Array")) {
                 self.compare_arrays(@_[0], @_[1]);
             } elsif (@_[0].isa("Hash")) {
@@ -81,12 +83,12 @@ package Test {
             }
         }
 
-        submethod compare_arrays(@got, @expected) {
+        submethod compare_arrays (@got, @expected) {
             # poor man's deep-compare of arrays
             self.compare(@got.join("|"), @expected.join("|"));
         }
 
-        submethod compare_hashes(%got, %expected) {
+        submethod compare_hashes (%got, %expected) {
             # poor man's deep-compare of hashes
             self.compare(%got.pairs.join("|"), %expected.pairs.join("|"));
         }
