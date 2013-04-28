@@ -161,6 +161,15 @@ object ArrayClass {
 
     arrayClass.addMethod(
       new MoeMethod(
+        "range",
+        new MoeSignature(List(new MoePositionalParameter("$start"), new MoePositionalParameter("$end"))),
+        env,
+        (e) => self(e).range(r, e.getAs[MoeIntObject]("$start").get, e.getAs[MoeIntObject]("$end").get)
+      )
+    )
+
+    arrayClass.addMethod(
+      new MoeMethod(
         "reverse",
         new MoeSignature(),
         env,

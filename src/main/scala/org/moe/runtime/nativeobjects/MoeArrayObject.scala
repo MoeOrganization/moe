@@ -65,6 +65,10 @@ class MoeArrayObject(
     indicies.unboxToArrayBuffer.get.map(i => at_pos(r, i.asInstanceOf[MoeIntObject])) : _*
   )
 
+  def range(r: MoeRuntime, start: MoeIntObject, end: MoeIntObject): MoeArrayObject = r.NativeObjects.getArray(
+    array.slice(start.unboxToInt.get, end.unboxToInt.get + 1)
+  )
+
   def reverse(r: MoeRuntime): MoeArrayObject = r.NativeObjects.getArray(array.reverse:_*)
 
   def join(r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(array.map(_.unboxToString.get).mkString(""))

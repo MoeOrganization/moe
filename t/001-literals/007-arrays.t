@@ -52,6 +52,9 @@ use Test::More;
 
     is_deeply(@x.slice(0, 2), [ 10, 3 ], '... got the expected value from &slice');        
 
+    is_deeply(@x.range(1, 2), [ 5, 3 ], '... got the expected value from &range');  
+    is_deeply(@x.range(1, @x.length), [ 5, 3, 1 ], '... got the expected value from &range');    
+
     is_deeply(@x.reverse, [ 1, 3, 5, 10 ], '... got the expected value from &reverse');
 
     is(@x.join, "10531", '... got the expected value from &join');
