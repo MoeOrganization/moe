@@ -87,14 +87,16 @@ class MoeRuntime (
 
       val anyClass       = new MoeClass("Any",        Some(VERSION), Some(AUTHORITY), Some(objectClass))
 
+      // undef is special, it is kind of a top-type instance
+      val undefClass     = new MoeClass("Undef",      Some(VERSION), Some(AUTHORITY), Some(anyClass))
+
       val scalarClass    = new MoeClass("Scalar",     Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val arrayClass     = new MoeClass("Array",      Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val hashClass      = new MoeClass("Hash",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val pairClass      = new MoeClass("Pair",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val ioClass        = new MoeClass("IO",         Some(VERSION), Some(AUTHORITY), Some(anyClass))
       val codeClass      = new MoeClass("Code",       Some(VERSION), Some(AUTHORITY), Some(anyClass))
-       
-      val undefClass     = new MoeClass("Undef",      Some(VERSION), Some(AUTHORITY), Some(scalarClass))
+
       val boolClass      = new MoeClass("Bool",       Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val strClass       = new MoeClass("Str",        Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val intClass       = new MoeClass("Int",        Some(VERSION), Some(AUTHORITY), Some(scalarClass))
@@ -227,7 +229,7 @@ class MoeRuntime (
   object NativeObjects {
     import org.moe.runtime.nativeobjects._
 
-    private lazy val Undef = new MoeUndefObject(Some(MoeScalarType(getCoreClassFor("Undef"))))
+    private lazy val Undef = new MoeUndefObject(Some(MoeAnyType(getCoreClassFor("Undef"))))
     private lazy val True  = new MoeBoolObject(true, Some(MoeScalarType(getCoreClassFor("Bool"))))
     private lazy val False = new MoeBoolObject(false, Some(MoeScalarType(getCoreClassFor("Bool"))))
 

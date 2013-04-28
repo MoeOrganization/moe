@@ -20,7 +20,7 @@ object UndefClass {
       throw new MoeErrors.InvocantNotFound("Could not find invocant")
     )
 
-    // MRO: Undef, Scalar, Any, Object
+    // MRO: Undef, Any, Object
 
     undefClass.addSubMethod(
       new MoeMethod(
