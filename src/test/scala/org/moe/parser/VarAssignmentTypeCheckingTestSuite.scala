@@ -41,6 +41,22 @@ class VarAssignmentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter wi
     assert(result.isUndef === true)
   }
 
+  test("... exceptional scalar assignment w/ array") {
+    val result = interpretCode("my $x = [];")
+   assert(result.isInstanceOf[MoeArrayObject] === true)
+  }
+
+  test("... exceptional scalar assignment w/ hash") {
+    val result = interpretCode("my $x = {};")
+    assert(result.isInstanceOf[MoeHashObject] === true)
+  }
+
+  test("... exceptional scalar assignment w/ code") {
+    val result = interpretCode("my $x = -> {};")
+    assert(result.isInstanceOf[MoeCode] === true)
+  }
+
+
   // duplicate the tests with assignment seperate from declaration
 
   test("... simple scalar assignment #2 w/ int") {
@@ -63,52 +79,19 @@ class VarAssignmentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter wi
     result.unboxToBoolean.get should equal (true)
   }
 
-  // ------------------------------------------------------
-  // scalar (failures)
-  // ------------------------------------------------------
-
-  test("... exceptional scalar assignment w/ array") {
-    val e = intercept[Exception] {
-      interpretCode("my $x = [];")
-    }
-    e.getMessage should equal ("the container ($x) is not compatible with ARRAY")
-  }
-
-  test("... exceptional scalar assignment w/ hash") {
-    val e = intercept[Exception] {
-      interpretCode("my $x = {};")
-    }
-    e.getMessage should equal ("the container ($x) is not compatible with HASH")
-  }
-
-  test("... exceptional scalar assignment w/ code") {
-    val e = intercept[Exception] {
-      interpretCode("my $x = -> {};")
-    }
-    e.getMessage should equal ("the container ($x) is not compatible with CODE")
-  }
-
-  // duplicate the tests with assignment seperate from declaration
-
   test("... exceptional scalar assignment #2 w/ array") {
-    val e = intercept[Exception] {
-      interpretCode("my $x; $x = [];")
-    }
-    e.getMessage should equal ("the container ($x) is not compatible with ARRAY")
+    val result = interpretCode("my $x; $x = [];")
+   assert(result.isInstanceOf[MoeArrayObject] === true)
   }
 
   test("... exceptional scalar assignment #2 w/ hash") {
-    val e = intercept[Exception] {
-      interpretCode("my $x; $x = {};")
-    }
-    e.getMessage should equal ("the container ($x) is not compatible with HASH")
+    val result = interpretCode("my $x; $x = {};")
+    assert(result.isInstanceOf[MoeHashObject] === true)
   }
 
   test("... exceptional scalar assignment # w/ code") {
-    val e = intercept[Exception] {
-      interpretCode("my $x; $x = -> {};")
-    }
-    e.getMessage should equal ("the container ($x) is not compatible with CODE")
+    val result = interpretCode("my $x; $x = -> {};")
+    assert(result.isInstanceOf[MoeCode] === true)
   }
 
   // ------------------------------------------------------

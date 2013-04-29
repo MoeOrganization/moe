@@ -26,6 +26,11 @@ class MultiVarAssignmentTypeCheckingTestSuite extends FunSuite with BeforeAndAft
     assert(result.isInstanceOf[MoeCode] === true)
   }
 
+  test("... multi-assignment success #3") {
+    val result = interpretCode("my ($i, $n, $s, @a, %h, &c) = ([], 10.5, 'foo', [], {}, -> {}); $i")
+    assert(result.isInstanceOf[MoeArrayObject] === true)
+  }
+
   // failures
 
   test("... multi-assignment failure #1") {
@@ -40,13 +45,6 @@ class MultiVarAssignmentTypeCheckingTestSuite extends FunSuite with BeforeAndAft
       interpretCode("my ($i, $n, $s, @a, %h, &c) = (10, 10.5, 'foo', [], 'bar', -> {});")
     }
     e.getMessage should equal ("the container (%h) is not compatible with SCALAR")
-  }
-
-  test("... multi-assignment failure #3") {
-    val e = intercept[Exception] {
-      interpretCode("my ($i, $n, $s, @a, %h, &c) = ([], 10.5, 'foo', [], {}, -> {});")
-    }
-    e.getMessage should equal ("the container ($i) is not compatible with ARRAY")
   }
 
 }

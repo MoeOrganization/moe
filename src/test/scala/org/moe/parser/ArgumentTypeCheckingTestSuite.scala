@@ -53,29 +53,19 @@ class ArgumentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter with Pa
       assert(result.isUndef === true)
     }
 
-    // ------------------------------------------------------
-    // scalar (failures)
-    // ------------------------------------------------------
-
     test("... exceptional scalar assignment w/ array [" + name + "]") {
-      val e = intercept[Exception] {
-        interpretCode(code.format("[]"))
-      }
-      e.getMessage should equal ("the argument ($x) is not compatible with ARRAY")
+      val result = interpretCode(code.format("[]"))
+      assert(result.isInstanceOf[MoeArrayObject] === true)
     }
 
     test("... exceptional scalar assignment w/ hash [" + name + "]") {
-      val e = intercept[Exception] {
-        interpretCode(code.format("{}"))
-      }
-      e.getMessage should equal ("the argument ($x) is not compatible with HASH")
+      val result = interpretCode(code.format("{}"))
+      assert(result.isInstanceOf[MoeHashObject] === true)
     }
 
     test("... exceptional scalar assignment w/ code [" + name + "]") {
-      val e = intercept[Exception] {
-        interpretCode(code.format("->{}"))
-      }
-      e.getMessage should equal ("the argument ($x) is not compatible with CODE")
+      val result = interpretCode(code.format("->{}"))
+      assert(result.isInstanceOf[MoeCode] === true)
     }
   }
 
