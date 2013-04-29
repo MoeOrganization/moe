@@ -149,8 +149,8 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     | literalValue
     | classAccess
     | variable
-    | specialVariable
     | attribute
+    | specialVariable    
     | expressionParens
     | signedExpressionParens
   )
@@ -211,7 +211,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   def variableName = """[$@%&][a-zA-Z_][a-zA-Z0-9_]*""".r
   def variable     = variableName ^^ VariableAccessNode
 
-  def specialVariableName = """[$@%&][?*][A-Z_]+""".r
+  def specialVariableName = """[$@%&][?*][A-Z_]+""".r | "$!"
   def specialVariable     = specialVariableName ^^ VariableAccessNode
 
   def attributeName = """[$@%&]![a-zA-Z_][a-zA-Z0-9_]*""".r

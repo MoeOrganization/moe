@@ -19,6 +19,7 @@ object RootEnvironment {
     // SEE ALSO -> http://perlcabal.org/syn/S28.html
 
     env.create("$OS_ERROR", getUndef)
+    env.create("$!", getUndef)
 
     /**
      * TODO:
