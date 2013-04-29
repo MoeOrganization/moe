@@ -14,3 +14,27 @@ class MoeArguments(
   
   def slurpArgsAt(i: Int): List[MoeObject] = args.drop(i)
 }
+
+/**
+
+package Moe::Runtime {
+    
+    class MoeArguments {
+        
+        has @!args = [];
+        has $!invocant; 
+
+        method get_invocant { $!invocant }
+        method has_invocant { $!invocant.defined }
+
+        method get_arg_count { @!args.length }
+
+        method get_arg_at ( $idx ) { @!args[$idx] }
+
+        method slurp_args_at ( $idx ) {
+            @!args.range( $idx, @!args.length )     
+        }
+    }
+}
+
+**/

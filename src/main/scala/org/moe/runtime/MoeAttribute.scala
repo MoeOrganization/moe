@@ -28,12 +28,23 @@ class MoeAttribute(
   def getDefault: Option[MoeObject] = default.map(x => x())
 }
 
-/*
+/**
 
-NOTES:
+package Moe::Runtime {
+    
+    class MoeAttribute {
+      
+        has $!name;
+        has &!default;
 
-- the default value really should be cloned
-  but the question is how to actually go about
-  this, so I am punting for the time being
+        method get_name { $!name }
+        method get_key_name {
+          $!name.substr( 1, $!name.length )
+        }
 
-*/
+        method has_default { &!default.defined }
+        method get_default { &!default.call()  }
+    }
+}
+
+**/
