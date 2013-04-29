@@ -45,13 +45,8 @@ class MoeSignature(
             env.create(name, a)
           }
           case None => {
-            // XXX
-            // this is not correct, we need to 
-            // intiailize the value based on the
-            // type and Undef is only appropriate
-            // for scalar types. This is also likely
-            // wrong in the Interpreter too.
-            // - SL
+            // no need to check type because
+            // we know that undef will pass
             env.create(name, r.NativeObjects.getUndef)
           }
         }
