@@ -58,10 +58,11 @@ object CorePackage {
         new MoeSignature(List(new MoePositionalParameter("$source"))),
         env,
         (e) => try {
+            e.set("$!", getUndef)
             r.eval(e.getAs[MoeStrObject]("$source").get.unboxToString.get, e)
           } catch {
             case exception: MoeErrors.ParserInputError => {
-              e.set("$!", getStr(exception.getMessage))
+              e.set("$!", getException(exception.getMessage))
               getUndef
             }
           }
