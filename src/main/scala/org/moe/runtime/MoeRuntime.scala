@@ -252,6 +252,13 @@ class MoeRuntime (
 
     def getIO (path: String) = new MoeIOObject(new java.io.File(path), Some(MoeScalarType(getCoreClassFor("IO"))))
     def getIO (file: java.io.File) = new MoeIOObject(file, Some(MoeScalarType(getCoreClassFor("IO"))))
+
+    def getException (): MoeOpaque = new MoeOpaque(Some(MoeScalarType(getCoreClassFor("Exception"))))
+    def getException (msg: String): MoeOpaque = {
+      val e = getException()
+      e.setValue("$!msg", getStr(msg))
+      e
+    }
   }
 
 }
