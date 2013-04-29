@@ -20,14 +20,14 @@ package Test {
         method plan ($count) { $!output.plan($count)  }
         method done_testing  { $!output.plan($!count) }
 
-        method ok ($test, $msg?) {
+        method ok ($test, $msg) {
             self.inc_count;
             ($test) 
                 ? $!output.ok($!count, $msg) 
                 : $!output.not_ok($!count, $msg);
         }
 
-        method is ($got, $expected, $msg?) {
+        method is ($got, $expected, $msg) {
             self.inc_count;
             if (self.compare($got, $expected)) {
                 $!output.ok($!count, $msg);
@@ -37,13 +37,13 @@ package Test {
             }
         }
 
-        method is_deeply (@_) {
+        method is_deeply ($got, $expected, $msg) {
             self.inc_count;
-            if (self.compare_deeply(@_)) {
-                $!output.ok($!count, @_[2]);
+            if (self.compare_deeply($got, $expected)) {
+                $!output.ok($!count, $msg);
             } else {
-                $!output.not_ok($!count, @_[2]);
-                self.output_err(~@_[0], ~@_[1], @_[2]); 
+                $!output.not_ok($!count, $msg);
+                self.output_err($got, $expected, $msg); 
             }
         }
 
@@ -73,11 +73,11 @@ package Test {
             }
         }
 
-        submethod compare_deeply (@_) {
-            if (@_[0].isa("Array") && @_[1].isa("Array")) {
-                self.compare_arrays(@_[0], @_[1]);
-            } elsif (@_[0].isa("Hash") && @_[1].isa("Hash")) {
-                self.compare_hashes(@_[0], @_[1]);
+        submethod compare_deeply ($got, $expected) {
+            if ($got.isa("Array") && $expected.isa("Array")) {
+                self.compare_arrays($got, $expected);
+            } elsif ($got.isa("Hash") && $expected.isa("Hash")) {
+                self.compare_hashes($got, $expected);
             } else {
                 $!output.bailout("Can only compare deeply Array and Hash objects");
             }
@@ -117,19 +117,8 @@ package Test {
             $builder.is($got, $expected, $msg);
         }
 
-        # NOTE:
-        # since we need is_deeply to be polymorphic
-        # and accept both arrays and hashes we need 
-        # to use the slurpy array parameter. It is 
-        # inaccurate and not ideal, but it right now
-        # is the only way to handle the variable 
-        # argument types (that is until we figure 
-        # something else out). This effect ripples
-        # up through the is_deeply in builder and 
-        # the compare_deeply submethod as well.
-        # - SL
-        sub is_deeply (*@_) is export {
-            $builder.is_deeply(@_);
+        sub is_deeply ($got, $expected, $msg?) is export {
+            $builder.is_deeply($got, $expected, $msg);
         }
 
         sub diag ($msg) is export {
