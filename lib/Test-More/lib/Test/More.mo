@@ -74,9 +74,9 @@ package Test {
         }
 
         submethod compare_deeply (@_) {
-            if (@_[0].isa("Array")) {
+            if (@_[0].isa("Array") && @_[1].isa("Array")) {
                 self.compare_arrays(@_[0], @_[1]);
-            } elsif (@_[0].isa("Hash")) {
+            } elsif (@_[0].isa("Hash") && @_[1].isa("Hash")) {
                 self.compare_hashes(@_[0], @_[1]);
             } else {
                 $!output.bailout("Can only compare deeply Array and Hash objects");
@@ -117,6 +117,17 @@ package Test {
             $builder.is($got, $expected, $msg);
         }
 
+        # NOTE:
+        # since we need is_deeply to be polymorphic
+        # and accept both arrays and hashes we need 
+        # to use the slurpy array parameter. It is 
+        # inaccurate and not ideal, but it right now
+        # is the only way to handle the variable 
+        # argument types (that is until we figure 
+        # something else out). This effect ripples
+        # up through the is_deeply in builder and 
+        # the compare_deeply submethod as well.
+        # - SL
         sub is_deeply (*@_) is export {
             $builder.is_deeply(@_);
         }
