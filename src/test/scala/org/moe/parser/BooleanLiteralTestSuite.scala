@@ -40,7 +40,15 @@ class BooleanLiteralTestSuite extends FunSuite with BeforeAndAfter with ParserTe
     assert(result.unboxToBoolean.get === false)
   }
 
-  
+  test("... basic test with && (true && true)") {
+    val result = interpretCode("true && true")
+    assert(result.unboxToBoolean.get === true)
+  }
+
+  test("... basic test with && (false || true)") {
+    val result = interpretCode("false || true")
+    assert(result.unboxToBoolean.get === true)
+  }
 
 
 }
