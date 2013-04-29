@@ -80,7 +80,7 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     val result = interpretCode("my @a = [1, 2, 3, 4, 5]; @a.shuffle")
     val array = result.unboxToArrayBuffer.get
     array.length should equal (5)
-    array.mkString("") should not equal ("12345")
+    //array.mkString("") should not equal ("12345") // << this can happen
   }
 
   test("... basic test with array.sum") {
