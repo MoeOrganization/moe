@@ -105,7 +105,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    */
 
   // left        .
-  lazy val applyOp: PackratParser[AST] = (applyOp <~ ".") ~ namespacedIdentifier ~ ("(" ~> repsep(expression, ",") <~ ")").? ^^ {
+  lazy val applyOp: PackratParser[AST] = (applyOp <~ ".") ~ identifier ~ ("(" ~> repsep(expression, ",") <~ ")").? ^^ {
     case invocant ~ method ~ Some(args) => MethodCallNode(invocant, method, args)
     case invocant ~ method ~ None       => MethodCallNode(invocant, method, List())
   } | subroutineCall
@@ -203,36 +203,38 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    */
 
   def identifier           = """[a-zA-Z_][a-zA-Z0-9_]*""".r
-  def uppercaseIdentifier  = """[A-Z_]+""".r
   def namespaceSeparator   = "::"
   def namespacedIdentifier = rep1sep(identifier, namespaceSeparator) ^^ { _.mkString(namespaceSeparator) }
-
-  def sigil = """[$@%&]""".r
   
   // access
 
-  def variableName = sigil ~ namespacedIdentifier ^^ { case a ~ b => a + b }
+  def variableName = """[$@%&][a-zA-Z_][a-zA-Z0-9_]*""".r
   def variable     = variableName ^^ VariableAccessNode
 
-  def specialVariableName = sigil ~ "[?*]".r ~ uppercaseIdentifier ^^ { case a ~ b ~ c => a + b + c }
+  def specialVariableName = """[$@%&][?*][A-Z_]+""".r
   def specialVariable     = specialVariableName ^^ VariableAccessNode
 
-  def attributeName = sigil ~ "!" ~ identifier ^^ { case a ~ b ~ c => a + b + c }
+  def attributeName = """[$@%&]![a-zA-Z_][a-zA-Z0-9_]*""".r
   def attribute     = attributeName ^^ AttributeAccessNode
+
+  def parameterName = """([$@%&])([a-zA-Z_][a-zA-Z0-9_]*)""".r
 
   def classAccess = "^" ~> namespacedIdentifier ^^ ClassAccessNode
 
   // declaration
 
-  private lazy val array_index_rule = "@" ~ namespacedIdentifier ~ ( "[" ~> expression <~ "]" ).+
-  private lazy val hash_index_rule  = "%" ~ namespacedIdentifier ~ ( "{" ~> expression <~ "}" ).+
+  def arrayVariableName = """@[a-zA-Z_][a-zA-Z0-9_]*""".r
+  def hashVariableName  = """%[a-zA-Z_][a-zA-Z0-9_]*""".r
+
+  private lazy val array_index_rule = arrayVariableName ~ ( "[" ~> expression <~ "]" ).+
+  private lazy val hash_index_rule  = hashVariableName  ~ ( "{" ~> expression <~ "}" ).+
 
   def arrayIndex = array_index_rule ^^ {
-    case "@" ~ i ~ exprs => ArrayElementAccessNode("@" + i, exprs)
+    case i ~ exprs => ArrayElementAccessNode(i, exprs)
   }
 
   def hashIndex = hash_index_rule ^^ {
-    case "%" ~ i ~ exprs => HashElementAccessNode("%" + i, exprs)
+    case i ~ exprs => HashElementAccessNode(i, exprs)
   }
 
   // assignment
@@ -272,11 +274,11 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   }   
 
   def arrayElementAssignment = array_index_rule ~ "=" ~ expression <~ statementDelim ^^ {
-    case "@" ~ array ~ index_exprs ~ "=" ~ value_expr => ArrayElementLvalueNode("@" + array, index_exprs, value_expr)
+    case array ~ index_exprs ~ "=" ~ value_expr => ArrayElementLvalueNode(array, index_exprs, value_expr)
   }
 
   def hashElementAssignment = hash_index_rule ~ "=" ~ expression <~ statementDelim ^^ {
-    case "%" ~ hash ~ key_exprs ~ "=" ~ value_expr => HashElementLvalueNode("%" + hash, key_exprs, value_expr)
+    case hash ~ key_exprs ~ "=" ~ value_expr => HashElementLvalueNode(hash, key_exprs, value_expr)
   }
 
   /**
@@ -308,12 +310,17 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   // Parameters
 
-  def parameter = ("[*:]".r).? ~ sigil ~ namespacedIdentifier ~ "?".? ^^ { 
-    case None      ~  a  ~ b ~ None      => ParameterNode(a + b)
-    case None      ~  a  ~ b ~ Some("?") => ParameterNode(a + b, optional = true)
-    case Some(":") ~  a  ~ b ~ None      => ParameterNode(a + b, named = true)
-    case Some("*") ~ "@" ~ b ~ None      => ParameterNode("@" + b, slurpy = true)
-    case Some("*") ~ "%" ~ b ~ None      => ParameterNode("%" + b, slurpy = true, named = true)
+  def parameter = ("[*:]".r).? ~ parameterName ~ "?".? ^^ { 
+    case None      ~ a ~ None      => ParameterNode(a)
+    case None      ~ a ~ Some("?") => ParameterNode(a, optional = true)
+    case Some(":") ~ a ~ None      => ParameterNode(a, named = true)
+    case Some("*") ~ a ~ None      => {
+      a.take(1) match {
+        case "@" => ParameterNode(a, slurpy = true)
+        case "%" => ParameterNode(a, slurpy = true, named = true) 
+        case  _  => throw new Exception("slurpy parameters must be either arrays or hashes")
+      }
+    }
   }
 
   // Code literals
@@ -332,7 +339,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case p ~ v    ~ a    ~ b => PackageDeclarationNode(p, b, version = v, authority = a)
   }
 
-  def subroutineDecl: Parser[SubroutineDeclarationNode] = ("sub" ~> namespacedIdentifier ~ ("(" ~> repsep(parameter, ",") <~ ")").?) ~ rep("is" ~> identifier).? ~ block ^^ { 
+  def subroutineDecl: Parser[SubroutineDeclarationNode] = ("sub" ~> identifier ~ ("(" ~> repsep(parameter, ",") <~ ")").?) ~ rep("is" ~> identifier).? ~ block ^^ { 
     case n ~ Some(p) ~ t ~ b => SubroutineDeclarationNode(n, SignatureNode(p), b, t) 
     case n ~ None    ~ t ~ b => SubroutineDeclarationNode(n, SignatureNode(List()), b, t) 
   }
@@ -343,12 +350,12 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case v ~ expr => AttributeDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
   }
 
-  def methodDecl: Parser[MethodDeclarationNode] = ("method" ~> namespacedIdentifier ~ ("(" ~> repsep(parameter, ",") <~ ")").?) ~ block ^^ { 
+  def methodDecl: Parser[MethodDeclarationNode] = ("method" ~> identifier ~ ("(" ~> repsep(parameter, ",") <~ ")").?) ~ block ^^ { 
     case n ~ Some(p) ~ b => MethodDeclarationNode(n, SignatureNode(p), b) 
     case n ~ None    ~ b => MethodDeclarationNode(n, SignatureNode(List()), b) 
   }
 
-  def submethodDecl: Parser[SubMethodDeclarationNode] = ("submethod" ~> namespacedIdentifier ~ ("(" ~> repsep(parameter, ",") <~ ")").?) ~ block ^^ { 
+  def submethodDecl: Parser[SubMethodDeclarationNode] = ("submethod" ~> identifier ~ ("(" ~> repsep(parameter, ",") <~ ")").?) ~ block ^^ { 
     case n ~ Some(p) ~ b => SubMethodDeclarationNode(n, SignatureNode(p), b) 
     case n ~ None    ~ b => SubMethodDeclarationNode(n, SignatureNode(List()), b) 
   }
@@ -362,7 +369,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   def classBodyContent    : Parser[StatementsNode] = rep(classBodyParts) ^^ StatementsNode
   def classBody           : Parser[StatementsNode] = "{" ~> classBodyContent <~ "}"
 
-  def classDecl = ("class" ~> namespacedIdentifier ~ ("-" ~> versionDecl).? ~ ("-" ~> authorityDecl).?) ~ ("extends" ~> namespacedIdentifier).? ~ classBody ^^ {
+  def classDecl = ("class" ~> identifier ~ ("-" ~> versionDecl).? ~ ("-" ~> authorityDecl).?) ~ ("extends" ~> namespacedIdentifier).? ~ classBody ^^ {
     case c ~ None ~ None ~ s ~ b => ClassDeclarationNode(c, s, b) 
     case c ~ v    ~ None ~ s ~ b => ClassDeclarationNode(c, s, b, version = v)
     case c ~ None ~ a    ~ s ~ b => ClassDeclarationNode(c, s, b, authority = a) 
