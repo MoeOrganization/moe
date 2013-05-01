@@ -38,9 +38,12 @@ class Interpreter {
   def compile  (env: MoeEnvironment, node: AST): MoeObject = compiler(env -> node) 
   def evaluate (env: MoeEnvironment, node: AST): MoeObject = evaluator(env -> node)
 
+  def canCompile  (env: MoeEnvironment, node: AST): Boolean = compiler.isDefinedAt(env -> node)
+  def canEvaluate (env: MoeEnvironment, node: AST): Boolean = evaluator.isDefinedAt(env -> node)
+
   def compile_and_evaluate(env: MoeEnvironment, node: AST): MoeObject = {
-    if (compiler.isDefinedAt(env -> node))  return compile(env, node)
-    if (evaluator.isDefinedAt(env -> node)) return evaluate(env, node)
+    if (canCompile(env, node))  return compile(env, node)
+    if (canEvaluate(env, node)) return evaluate(env, node)
     throw new MoeErrors.UnknownNode(node.toString)
   }
 
