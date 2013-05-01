@@ -20,16 +20,16 @@ class MiscNodeTestSuite extends FunSuite with InterpreterTestUtils {
     assert(result.unboxToString.get === "WORLD")
   }
 
-  test("... unknown node") {
-    val ast = wrapSimpleAST(
-      List(
-        FooNode()
-      )
-    )
-    intercept[MoeErrors.UnknownNode] {
-      interpreter.eval(runtime, runtime.getRootEnv, ast)
-    }
-  }
+  //test("... unknown node") {
+  //  val ast = wrapSimpleAST(
+  //    List(
+  //      FooNode()
+  //    )
+  //  )
+  //  intercept[MoeErrors.UnknownNode] {
+  //    interpreter.eval(runtime, runtime.getRootEnv, ast)
+  //  }
+  //}
 
 
 }
