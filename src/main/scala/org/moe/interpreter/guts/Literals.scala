@@ -33,21 +33,21 @@ object Literals {
       )
     }
 
-    case (env, ArrayLiteralNode(values)) => r.NativeObjects.getArray(values.map(i.eval(r, env, _)):_*)
+    case (env, ArrayLiteralNode(values)) => r.NativeObjects.getArray(values.map(i.evaluate(env, _)):_*)
 
     case (env, PairLiteralNode(key, value)) => r.NativeObjects.getPair(
-      i.eval(r, env, key).unboxToString.get -> i.eval(r, env, value)
+      i.evaluate(env, key).unboxToString.get -> i.evaluate(env, value)
     )
 
-    case (env, HashLiteralNode(values)) => r.NativeObjects.getHash(values.map(i.eval(r, env, _).unboxToTuple.get):_*)
+    case (env, HashLiteralNode(values)) => r.NativeObjects.getHash(values.map(i.evaluate(env, _).unboxToTuple.get):_*)
 
     case (env, CodeLiteralNode(signature, body)) => {
-      val sig = i.eval(r, env, signature).asInstanceOf[MoeSignature]
+      val sig = i.compile(env, signature).asInstanceOf[MoeSignature]
       throwForUndeclaredVars(env, sig, body)
       val code = new MoeCode(
         signature       = sig,
         declaration_env = env,
-        body            = (e) => i.eval(r, e, body)
+        body            = (e) => i.evaluate(e, body)
       )
       // FIXME:
       // This should probably be done
@@ -63,8 +63,8 @@ object Literals {
     }
 
     case (env, RangeLiteralNode(start, end)) => {
-      val s = i.eval(r, env, start)
-      val e = i.eval(r, env, end)
+      val s = i.evaluate(env, start)
+      val e = i.evaluate(env, end)
 
       var result: List[MoeObject] = List();
 

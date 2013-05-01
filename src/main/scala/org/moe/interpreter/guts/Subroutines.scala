@@ -11,7 +11,7 @@ object Subroutines {
 
   def declaration (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     case (env, SubroutineDeclarationNode(name, signature, body, traits)) => {
-      val sig = i.eval(r, env, signature).asInstanceOf[MoeSignature]
+      val sig = i.compile(env, signature).asInstanceOf[MoeSignature]
       throwForUndeclaredVars(env, sig, body)
 
       val pkg = env.getCurrentPackage.getOrElse(throw new MoeErrors.PackageNotFound("__PACKAGE__"))
@@ -23,7 +23,7 @@ object Subroutines {
         name            = name,
         signature       = sig,
         declaration_env = decl_env,
-        body            = (e) => i.eval(r, e, body),
+        body            = (e) => i.evaluate(e, body),
         traits          = traits.getOrElse(List())
       )
 
@@ -41,7 +41,7 @@ object Subroutines {
         throw new MoeErrors.SubroutineNotFound(function_name)
       )
 
-      sub.execute(new MoeArguments(args.map(i.eval(r, env, _))))
+      sub.execute(new MoeArguments(args.map(i.evaluate(env, _))))
     }
   }
 }

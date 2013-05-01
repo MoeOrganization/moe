@@ -34,20 +34,20 @@ object Classes {
 
       val klass_env = new MoeEnvironment(Some(env))
       klass_env.setCurrentClass(klass)
-      i.eval(r, klass_env, body)
+      i.compile(klass_env, body)
 
       klass
     }
 
     case (env, SubMethodDeclarationNode(name, signature, body)) => {
       val klass = env.getCurrentClass.getOrElse(throw new MoeErrors.ClassNotFound("__CLASS__"))
-      val sig = i.eval(r, env, signature).asInstanceOf[MoeSignature]
+      val sig = i.compile(env, signature).asInstanceOf[MoeSignature]
       throwForUndeclaredVars(env, sig, body)
       val method = new MoeMethod(
         name            = name,
         signature       = sig,
         declaration_env = env,
-        body            = (e) => i.eval(r, e, body)
+        body            = (e) => i.evaluate(e, body)
       )
       klass.addSubMethod(method)
       method
@@ -55,13 +55,13 @@ object Classes {
 
     case (env, MethodDeclarationNode(name, signature, body)) => {
       val klass = env.getCurrentClass.getOrElse(throw new MoeErrors.ClassNotFound("__CLASS__"))
-      val sig = i.eval(r, env, signature).asInstanceOf[MoeSignature]
+      val sig = i.compile(env, signature).asInstanceOf[MoeSignature]
       throwForUndeclaredVars(env, sig, body)
       val method = new MoeMethod(
         name            = name,
         signature       = sig,
         declaration_env = env,
-        body            = (e) => i.eval(r, e, body)
+        body            = (e) => i.evaluate(e, body)
       )
       klass.addMethod(method)
       method
@@ -69,7 +69,7 @@ object Classes {
 
     case (env, AttributeDeclarationNode(name, expression)) => {
       val klass = env.getCurrentClass.getOrElse(throw new MoeErrors.ClassNotFound("__CLASS__"))
-      val attr_default = () => i.eval(r, env, expression)
+      val attr_default = () => i.evaluate(env, expression)
       val attr = new MoeAttribute(name, Some(attr_default))
       klass.addAttribute(attr)
       attr
@@ -99,7 +99,7 @@ object Classes {
     case (env, AttributeAssignmentNode(name, expression)) => {
       val klass = env.getCurrentClass.getOrElse(throw new MoeErrors.ClassNotFound("__CLASS__"))
       val attr  = klass.getAttribute(name).getOrElse(throw new MoeErrors.AttributeNotFound(name))
-      val expr  = i.eval(r, env, expression)
+      val expr  = i.evaluate(env, expression)
 
       if (!MoeType.checkType(name, expr)) throw new MoeErrors.IncompatibleType(
           "the container (" + name + ") is not compatible with " + expr.getAssociatedType.get.getName
@@ -116,7 +116,7 @@ object Classes {
     case (env, MultiAttributeAssignmentNode(names, expressions)) => {
       val klass = env.getCurrentClass.getOrElse(throw new MoeErrors.ClassNotFound("__CLASS__"))
 
-      val evaled_expressions = expressions.map(i.eval(r, env, _)) 
+      val evaled_expressions = expressions.map(i.evaluate(env, _)) 
       env.getCurrentInvocant match {
         case Some(invocant: MoeOpaque) => {
           i.zipVars(
@@ -142,7 +142,7 @@ object Classes {
     }
 
     case (env, MethodCallNode(invocant, method_name, args)) => {
-      val invocant_object = i.eval(r, env, invocant)
+      val invocant_object = i.evaluate(env, invocant)
       invocant_object match {
         case obj: MoeObject =>
           val klass = obj.getAssociatedClass.getOrElse(throw new MoeErrors.ClassNotFound("__CLASS__"))
@@ -151,7 +151,7 @@ object Classes {
               throw new MoeErrors.MethodNotFound(method_name)
             )
           )
-          obj.callMethod(meth, args.map(i.eval(r, env, _)))
+          obj.callMethod(meth, args.map(i.evaluate(env, _)))
         case _ => throw new MoeErrors.MoeException("Object expected")
       }
     }

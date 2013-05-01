@@ -19,7 +19,7 @@ object Signatures {
     }
 
     case (env, SignatureNode(params)) => new MoeSignature(
-      params.map(i.eval(r, env, _).asInstanceOf[MoeParameter])
+      params.map(i.compile(env, _).asInstanceOf[MoeParameter])
     )
   }
 }

@@ -21,7 +21,7 @@ object ElementAccess {
 
       indices.foldLeft[MoeObject](array_value) {
         (array, item) =>
-          val index = i.eval(r, env, item)
+          val index = i.evaluate(env, item)
           index match {
             case int: MoeIntObject => i.callMethod(array, "postcircumfix:<[]>", List(int), "Array")
             case obj: MoeObject => {
@@ -41,15 +41,15 @@ object ElementAccess {
       }
 
       // find the deepest array and position that will be assigned
-      var last_index = i.eval(r, env, indices.last)
+      var last_index = i.evaluate(env, indices.last)
       val last_array = indices.dropRight(1).foldLeft[MoeObject](array_value) {
         (array, item) =>
-          val index = i.eval(r, env, item)
+          val index = i.evaluate(env, item)
           i.callMethod(array, "postcircumfix:<[]>", List(index), "Array")
       }
 
       // perform the assignment
-      val expr_value = i.eval(r, env, expr)
+      val expr_value = i.evaluate(env, expr)
       i.callMethod(last_array, "postcircumfix:<[]>", List(last_index, expr_value), "Array")
     }
 
@@ -61,7 +61,7 @@ object ElementAccess {
 
       keys.foldLeft[MoeObject](hash_map) {
         (h, k) =>
-          val key = i.eval(r, env, k)
+          val key = i.evaluate(env, k)
           i.callMethod(h, "postcircumfix:<{}>", List(key), "Hash")
       }
     }
@@ -73,15 +73,15 @@ object ElementAccess {
       }
 
       // find the deepest hash and key that will be assigned
-      val last_key = i.eval(r, env, keys.last)
+      val last_key = i.evaluate(env, keys.last)
       val last_hash = keys.dropRight(1).foldLeft[MoeObject](hash_map) {
         (h, k) =>
-          val key = i.eval(r, env, k)
+          val key = i.evaluate(env, k)
           i.callMethod(h, "postcircumfix:<{}>", List(key), "Hash")
       }
 
       // perform the assignment
-      val value_result = i.eval(r, env, value)
+      val value_result = i.evaluate(env, value)
       i.callMethod(last_hash, "postcircumfix:<{}>", List(last_key, value_result), "Hash")
     }
   }

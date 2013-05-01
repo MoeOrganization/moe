@@ -19,7 +19,7 @@ object Packages {
       // make the leaf the current package 
       newEnv.setCurrentPackage(pkgs._2) 
 
-      val result = i.eval(r, newEnv, body)
+      val result = i.compile_and_evaluate(newEnv, body)
       newEnv.setCurrentPackage(parent)
       // return the root
       pkgs._1

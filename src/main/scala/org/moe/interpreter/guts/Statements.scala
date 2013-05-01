@@ -47,17 +47,17 @@ object Statements {
     }
 
     case (env, IfNode(if_node)) => {
-      if (i.eval(r, env, if_node.condition).isTrue) {
-        i.eval(r, env, if_node.body)
+      if (i.evaluate(env, if_node.condition).isTrue) {
+        i.evaluate(env, if_node.body)
       } else if (if_node.else_node.isDefined) {
-        i.eval(r, env, IfNode(if_node.else_node.get))
+        i.evaluate(env, IfNode(if_node.else_node.get))
       } else {
         r.NativeObjects.getUndef
       }
     }
         
     case (env, UnlessNode(unless_condition, unless_body)) => {
-      i.eval(r, env,
+      i.evaluate(env,
         UnlessElseNode(
           unless_condition,
           unless_body,
@@ -76,7 +76,7 @@ object Statements {
           )
         )
       )
-      i.eval(r, env, IfNode(if_node))
+      i.evaluate(env, IfNode(if_node))
     }
 
     case (env, TryNode(body, catch_nodes, finally_nodes)) => stub
@@ -85,8 +85,8 @@ object Statements {
 
     case (env, WhileNode(condition, body)) => {
       val newEnv = new MoeEnvironment(Some(env))
-      while (i.eval(r, newEnv, condition).isTrue) {
-        i.eval(r, newEnv, body)
+      while (i.evaluate(newEnv, condition).isTrue) {
+        i.evaluate(newEnv, body)
       }
       r.NativeObjects.getUndef // XXX
     }
@@ -94,13 +94,13 @@ object Statements {
     case (env, DoWhileNode(condition, body)) => {
       val newEnv = new MoeEnvironment(Some(env))
       do {
-        i.eval(r, newEnv, body)
-      } while (i.eval(r, newEnv, condition).isTrue)
+        i.evaluate(newEnv, body)
+      } while (i.evaluate(newEnv, condition).isTrue)
       r.NativeObjects.getUndef // XXX
     }
 
     case (env, ForeachNode(topic, list, body)) => {
-      i.eval(r, env, list) match {
+      i.evaluate(env, list) match {
         case objects: MoeArrayObject => {
           val applyScopeInjection = {
             (
@@ -110,14 +110,14 @@ object Statements {
               f: (MoeEnvironment, String, MoeObject) => Any
             ) =>
             f(env, name, obj)
-            i.eval(r, newEnv, body)
+            i.evaluate(newEnv, body)
           }
 
           val newEnv = new MoeEnvironment(Some(env))
           for (o <- objects.getNativeValue) // XXX - fix this usage of getNativeValue
             topic match {
-              // XXX ran into issues trying to i.eval(r, env, ScopeNode(...))
-              // since o is already i.evaluated at this point
+              // XXX ran into issues trying to i.evaluate(env, ScopeNode(...))
+              // since o is already i.evaluateuated at this point
               case VariableDeclarationNode(name, expr) =>
                 applyScopeInjection(newEnv, name, o, (_.create(_, _)))
               // Don't do anything special here, env access will just walk back
@@ -131,10 +131,10 @@ object Statements {
 
     case (env, ForNode(init, condition, update, body)) => {
       val newEnv = new MoeEnvironment(Some(env))
-      i.eval(r, newEnv, init)
-      while (i.eval(r, newEnv, condition).isTrue) {
-        i.eval(r, newEnv, body)
-        i.eval(r, newEnv, update)
+      i.compile(newEnv, init)
+      while (i.evaluate(newEnv, condition).isTrue) {
+        i.evaluate(newEnv, body)
+        i.evaluate(newEnv, update)
       }
       r.NativeObjects.getUndef
     }

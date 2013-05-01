@@ -11,7 +11,7 @@ object Variables {
 
   def declaration (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     case (env, VariableDeclarationNode(name, expression)) => {
-      val value = i.eval(r, env, expression)
+      val value = i.evaluate(env, expression)
       if (!MoeType.checkType(name, value)) throw new MoeErrors.IncompatibleType(
           "the container (" + name + ") is not compatible with " + value.getAssociatedType.get.getName
         )
@@ -40,7 +40,7 @@ object Variables {
       i.zipVars(
         r,
         names, 
-        expressions.map(i.eval(r, env, _)), 
+        expressions.map(i.evaluate(env, _)), 
         { 
           case (name, value) => {
             if (!MoeType.checkType(name, value)) throw new MoeErrors.IncompatibleType(
@@ -54,7 +54,7 @@ object Variables {
     }
 
     case (env, VariableAssignmentNode(name, expression)) => {
-      val value = i.eval(r, env, expression)
+      val value = i.evaluate(env, expression)
       if (!MoeType.checkType(name, value)) throw new MoeErrors.IncompatibleType(
           "the container (" + name + ") is not compatible with " + value.getAssociatedType.get.getName
         )
