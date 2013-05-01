@@ -9,22 +9,22 @@ import InterpreterUtils._
 
 object Literals {
 
-  def apply (i: Interpreter, r: MoeRuntime, env: MoeEnvironment): PartialFunction[AST, MoeObject] = {
-    case IntLiteralNode(value)     => r.NativeObjects.getInt(value)
-    case FloatLiteralNode(value)   => r.NativeObjects.getNum(value)
-    case StringLiteralNode(value)  => r.NativeObjects.getStr(value)
-    case BooleanLiteralNode(value) => r.NativeObjects.getBool(value)
-    case UndefLiteralNode()        => r.NativeObjects.getUndef
+  def apply (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+    case (env, IntLiteralNode(value))     => r.NativeObjects.getInt(value)
+    case (env, FloatLiteralNode(value))   => r.NativeObjects.getNum(value)
+    case (env, StringLiteralNode(value))  => r.NativeObjects.getStr(value)
+    case (env, BooleanLiteralNode(value)) => r.NativeObjects.getBool(value)
+    case (env, UndefLiteralNode())        => r.NativeObjects.getUndef
 
 
-    case SelfLiteralNode()  => env.getCurrentInvocant.getOrElse(
+    case (env, SelfLiteralNode())  => env.getCurrentInvocant.getOrElse(
         throw new MoeErrors.InvocantNotFound("__SELF__")
       )
-    case ClassLiteralNode() => env.getCurrentClass.getOrElse(
+    case (env, ClassLiteralNode()) => env.getCurrentClass.getOrElse(
         throw new MoeErrors.ClassNotFound("__CLASS__")
       )
 
-    case SuperLiteralNode() => {
+    case (env, SuperLiteralNode()) => {
       val klass = env.getCurrentClass
       klass.getOrElse(
         throw new MoeErrors.ClassNotFound("__CLASS__")
@@ -33,15 +33,15 @@ object Literals {
       )
     }
 
-    case ArrayLiteralNode(values) => r.NativeObjects.getArray(values.map(i.eval(r, env, _)):_*)
+    case (env, ArrayLiteralNode(values)) => r.NativeObjects.getArray(values.map(i.eval(r, env, _)):_*)
 
-    case PairLiteralNode(key, value) => r.NativeObjects.getPair(
+    case (env, PairLiteralNode(key, value)) => r.NativeObjects.getPair(
       i.eval(r, env, key).unboxToString.get -> i.eval(r, env, value)
     )
 
-    case HashLiteralNode(values) => r.NativeObjects.getHash(values.map(i.eval(r, env, _).unboxToTuple.get):_*)
+    case (env, HashLiteralNode(values)) => r.NativeObjects.getHash(values.map(i.eval(r, env, _).unboxToTuple.get):_*)
 
-    case CodeLiteralNode(signature, body) => {
+    case (env, CodeLiteralNode(signature, body)) => {
       val sig = i.eval(r, env, signature).asInstanceOf[MoeSignature]
       throwForUndeclaredVars(env, sig, body)
       val code = new MoeCode(
@@ -62,7 +62,7 @@ object Literals {
       code
     }
 
-    case RangeLiteralNode(start, end) => {
+    case (env, RangeLiteralNode(start, end)) => {
       val s = i.eval(r, env, start)
       val e = i.eval(r, env, end)
 

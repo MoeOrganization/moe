@@ -9,22 +9,22 @@ import InterpreterUtils._
 
 object Operators {
 
-  def apply (i: Interpreter, r: MoeRuntime, env: MoeEnvironment): PartialFunction[AST, MoeObject] = {
+  def apply (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     // unary operators
 
-    case PrefixUnaryOpNode(lhs: AST, operator: String) => {
+    case (env, PrefixUnaryOpNode(lhs: AST, operator: String)) => {
       val receiver = i.eval(r, env, lhs)
       i.callMethod(receiver, "prefix:<" + operator + ">", List())
     }
 
-    case PostfixUnaryOpNode(lhs: AST, operator: String) => {
+    case (env, PostfixUnaryOpNode(lhs: AST, operator: String)) => {
       val receiver = i.eval(r, env, lhs)
       i.callMethod(receiver, "postfix:<" + operator + ">", List())
     }
 
     // binary operators
 
-    case BinaryOpNode(lhs: AST, operator: String, rhs: AST) => {
+    case (env, BinaryOpNode(lhs: AST, operator: String, rhs: AST)) => {
       val receiver = i.eval(r, env, lhs)
       val arg      = i.eval(r, env, rhs)
       i.callMethod(receiver, "infix:<" + operator + ">", List(arg))
@@ -33,7 +33,7 @@ object Operators {
     // short circuit binary operators
     // rhs is not evaluated, unless it is necessary
 
-    case ShortCircuitBinaryOpNode(lhs: AST, operator: String, rhs: AST) => {
+    case (env, ShortCircuitBinaryOpNode(lhs: AST, operator: String, rhs: AST)) => {
       val receiver = i.eval(r, env, lhs)
       val arg      = new MoeLazyEval(i, r, env, rhs)
       i.callMethod(receiver, "infix:<" + operator + ">", List(arg))
@@ -41,7 +41,7 @@ object Operators {
 
     // ternary operator
 
-    case TernaryOpNode(cond: AST, trueExpr: AST, falseExpr: AST) => {
+    case (env, TernaryOpNode(cond: AST, trueExpr: AST, falseExpr: AST)) => {
       val receiver = i.eval(r, env, cond)
       val argTrue  = new MoeLazyEval(i, r, env, trueExpr)
       val argFalse = new MoeLazyEval(i, r, env, falseExpr)

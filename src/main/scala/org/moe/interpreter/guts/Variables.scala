@@ -9,8 +9,8 @@ import InterpreterUtils._
 
 object Variables {
 
-  def declaration (i: Interpreter, r: MoeRuntime, env: MoeEnvironment): PartialFunction[AST, MoeObject] = {
-    case VariableDeclarationNode(name, expression) => {
+  def declaration (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+    case (env, VariableDeclarationNode(name, expression)) => {
       val value = i.eval(r, env, expression)
       if (!MoeType.checkType(name, value)) throw new MoeErrors.IncompatibleType(
           "the container (" + name + ") is not compatible with " + value.getAssociatedType.get.getName
@@ -19,8 +19,8 @@ object Variables {
     }
   }
 
-  def apply (i: Interpreter, r: MoeRuntime, env: MoeEnvironment): PartialFunction[AST, MoeObject] = {
-    case VariableAccessNode(name) => env.get(name).getOrElse(
+  def apply (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+    case (env, VariableAccessNode(name)) => env.get(name).getOrElse(
         if (name.startsWith("&")) {
           val function_name = name.drop(1)
           val sub = r.lookupSubroutine(
@@ -36,7 +36,7 @@ object Variables {
         }
       )
 
-    case MultiVariableAssignmentNode(names, expressions) => {
+    case (env, MultiVariableAssignmentNode(names, expressions)) => {
       i.zipVars(
         r,
         names, 
@@ -53,7 +53,7 @@ object Variables {
       env.get(names.last).getOrElse(throw new MoeErrors.VariableNotFound(names.last))
     }
 
-    case VariableAssignmentNode(name, expression) => {
+    case (env, VariableAssignmentNode(name, expression)) => {
       val value = i.eval(r, env, expression)
       if (!MoeType.checkType(name, value)) throw new MoeErrors.IncompatibleType(
           "the container (" + name + ") is not compatible with " + value.getAssociatedType.get.getName

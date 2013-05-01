@@ -9,8 +9,8 @@ import InterpreterUtils._
 
 object Subroutines {
 
-  def declaration (i: Interpreter, r: MoeRuntime, env: MoeEnvironment): PartialFunction[AST, MoeObject] = {
-    case SubroutineDeclarationNode(name, signature, body, traits) => {
+  def declaration (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+    case (env, SubroutineDeclarationNode(name, signature, body, traits)) => {
       val sig = i.eval(r, env, signature).asInstanceOf[MoeSignature]
       throwForUndeclaredVars(env, sig, body)
 
@@ -32,8 +32,8 @@ object Subroutines {
     }
   }
 
-  def apply (i: Interpreter, r: MoeRuntime, env: MoeEnvironment): PartialFunction[AST, MoeObject] = {
-    case SubroutineCallNode(function_name, args) => {
+  def apply (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+    case (env, SubroutineCallNode(function_name, args)) => {
       val sub = r.lookupSubroutine(
         function_name, 
         env.getCurrentPackage.getOrElse(throw new MoeErrors.PackageNotFound("__PACKAGE__"))

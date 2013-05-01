@@ -30,29 +30,44 @@ class Interpreter {
     }
   }
 
+  var compiler  : PartialFunction[(MoeEnvironment, AST), MoeObject] = _
+  var evaluator : PartialFunction[(MoeEnvironment, AST), MoeObject] = _
+
+  def prepare(runtime: MoeRuntime) = {
+    if (compiler == null) {
+      compiler = CompilationUnits(this, runtime).orElse(
+        Signatures.declaration(this, runtime).orElse(
+        Packages.declaration(this, runtime).orElse(
+        Variables.declaration(this, runtime).orElse(
+        Subroutines.declaration(this, runtime).orElse(
+        Classes.declaration(this, runtime)
+      )))))
+    }
+    if (evaluator == null) {
+      evaluator = CompilationUnits(this, runtime).orElse(
+        Literals(this, runtime).orElse(
+        Operators(this, runtime).orElse(
+        ElementAccess(this, runtime).orElse(
+        Statements(this, runtime).orElse(
+        Variables(this, runtime).orElse(
+        Subroutines(this, runtime).orElse(
+        Classes(this, runtime)
+      )))))))
+    }
+  }
+
+  def compile  (env: MoeEnvironment, node: AST): MoeObject = compiler(env -> node) 
+  def evaluate (env: MoeEnvironment, node: AST): MoeObject = evaluator(env -> node)
+
   def eval(runtime: MoeRuntime, env: MoeEnvironment, node: AST): MoeObject = {
-
-    val evaluator = 
-        CompilationUnits(this, runtime, env).orElse(
-        Literals(this, runtime, env).orElse(
-        Operators(this, runtime, env).orElse(
-        ElementAccess(this, runtime, env).orElse(
-        Statements(this, runtime, env).orElse(
-
-          Signatures.declaration(this, runtime, env).orElse(
-          Packages.declaration(this, runtime, env).orElse(
-
-            Variables(this, runtime, env).orElse(
-              Variables.declaration(this, runtime, env).orElse(
-            Subroutines(this, runtime, env).orElse(
-              Subroutines.declaration(this, runtime, env).orElse(
-            Classes(this, runtime, env).orElse(
-              Classes.declaration(this, runtime, env)
-            )))))
-          ))
-        )))))
-
-    evaluator(node)
+    prepare(runtime)
+    if (compiler.isDefinedAt(env -> node)) {
+      return compile(env, node)
+    }
+    if (evaluator.isDefinedAt(env -> node)) {
+      return evaluate(env, node)
+    }
+    throw new MoeErrors.UnknownNode(node.toString)
   }
 
 }

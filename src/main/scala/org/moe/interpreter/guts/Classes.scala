@@ -9,8 +9,8 @@ import InterpreterUtils._
 
 object Classes {
 
-  def declaration (i: Interpreter, r: MoeRuntime, env: MoeEnvironment): PartialFunction[AST, MoeObject] = {
-    case ClassDeclarationNode(name, superclass, body, version, authority) => {
+  def declaration (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+    case (env, ClassDeclarationNode(name, superclass, body, version, authority)) => {
       val pkg = env.getCurrentPackage.getOrElse(
         throw new MoeErrors.PackageNotFound("__PACKAGE__")
       )
@@ -39,7 +39,7 @@ object Classes {
       klass
     }
 
-    case SubMethodDeclarationNode(name, signature, body) => {
+    case (env, SubMethodDeclarationNode(name, signature, body)) => {
       val klass = env.getCurrentClass.getOrElse(throw new MoeErrors.ClassNotFound("__CLASS__"))
       val sig = i.eval(r, env, signature).asInstanceOf[MoeSignature]
       throwForUndeclaredVars(env, sig, body)
@@ -53,7 +53,7 @@ object Classes {
       method
     }
 
-    case MethodDeclarationNode(name, signature, body) => {
+    case (env, MethodDeclarationNode(name, signature, body)) => {
       val klass = env.getCurrentClass.getOrElse(throw new MoeErrors.ClassNotFound("__CLASS__"))
       val sig = i.eval(r, env, signature).asInstanceOf[MoeSignature]
       throwForUndeclaredVars(env, sig, body)
@@ -67,7 +67,7 @@ object Classes {
       method
     }
 
-    case AttributeDeclarationNode(name, expression) => {
+    case (env, AttributeDeclarationNode(name, expression)) => {
       val klass = env.getCurrentClass.getOrElse(throw new MoeErrors.ClassNotFound("__CLASS__"))
       val attr_default = () => i.eval(r, env, expression)
       val attr = new MoeAttribute(name, Some(attr_default))
@@ -76,15 +76,15 @@ object Classes {
     }
   }
 
-  def apply (i: Interpreter, r: MoeRuntime, env: MoeEnvironment): PartialFunction[AST, MoeObject] = {
-    case ClassAccessNode(name) => r.lookupClass(
+  def apply (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+    case (env, ClassAccessNode(name)) => r.lookupClass(
       name, 
       env.getCurrentPackage.getOrElse(throw new MoeErrors.PackageNotFound("__PACKAGE__"))
     ).getOrElse( 
       r.lookupClass(name, r.getRootPackage).getOrElse(throw new MoeErrors.ClassNotFound(name))
     )
 
-    case AttributeAccessNode(name) => {
+    case (env, AttributeAccessNode(name)) => {
       val klass    = env.getCurrentClass.getOrElse(throw new MoeErrors.ClassNotFound("__CLASS__"))
       val attr     = klass.getAttribute(name).getOrElse(throw new MoeErrors.AttributeNotFound(name))
       val invocant = env.getCurrentInvocant
@@ -96,7 +96,7 @@ object Classes {
       }
     }
 
-    case AttributeAssignmentNode(name, expression) => {
+    case (env, AttributeAssignmentNode(name, expression)) => {
       val klass = env.getCurrentClass.getOrElse(throw new MoeErrors.ClassNotFound("__CLASS__"))
       val attr  = klass.getAttribute(name).getOrElse(throw new MoeErrors.AttributeNotFound(name))
       val expr  = i.eval(r, env, expression)
@@ -113,7 +113,7 @@ object Classes {
       expr
     }
 
-    case MultiAttributeAssignmentNode(names, expressions) => {
+    case (env, MultiAttributeAssignmentNode(names, expressions)) => {
       val klass = env.getCurrentClass.getOrElse(throw new MoeErrors.ClassNotFound("__CLASS__"))
 
       val evaled_expressions = expressions.map(i.eval(r, env, _)) 
@@ -141,7 +141,7 @@ object Classes {
       evaled_expressions.last
     }
 
-    case MethodCallNode(invocant, method_name, args) => {
+    case (env, MethodCallNode(invocant, method_name, args)) => {
       val invocant_object = i.eval(r, env, invocant)
       invocant_object match {
         case obj: MoeObject =>

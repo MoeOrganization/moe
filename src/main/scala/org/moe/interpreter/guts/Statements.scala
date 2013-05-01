@@ -14,8 +14,8 @@ object Statements {
 
   private val stub = new MoeObject()
 
-  def apply (i: Interpreter, r: MoeRuntime, env: MoeEnvironment): PartialFunction[AST, MoeObject] = {
-    case UseStatement(name) => {
+  def apply (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+    case (env, UseStatement(name)) => {
       val path = r.findFilePathForPackageName(name).getOrElse(
         throw new MoeErrors.MoeProblems(
           "Could not find module " + name + " in @INC [" + r.getIncludeDirs.mkString("; ") + "]"
@@ -46,7 +46,7 @@ object Statements {
       result
     }
 
-    case IfNode(if_node) => {
+    case (env, IfNode(if_node)) => {
       if (i.eval(r, env, if_node.condition).isTrue) {
         i.eval(r, env, if_node.body)
       } else if (if_node.else_node.isDefined) {
@@ -56,7 +56,7 @@ object Statements {
       }
     }
         
-    case UnlessNode(unless_condition, unless_body) => {
+    case (env, UnlessNode(unless_condition, unless_body)) => {
       i.eval(r, env,
         UnlessElseNode(
           unless_condition,
@@ -65,7 +65,7 @@ object Statements {
         )
       )
     }
-    case UnlessElseNode(unless_condition, unless_body, else_body) => {
+    case (env, UnlessElseNode(unless_condition, unless_body, else_body)) => {
       var if_node = new IfStruct(
         PrefixUnaryOpNode(unless_condition, "!"), 
         unless_body, 
@@ -79,11 +79,11 @@ object Statements {
       i.eval(r, env, IfNode(if_node))
     }
 
-    case TryNode(body, catch_nodes, finally_nodes) => stub
-    case CatchNode(type_name, local_name, body) => stub
-    case FinallyNode(body) => stub
+    case (env, TryNode(body, catch_nodes, finally_nodes)) => stub
+    case (env, CatchNode(type_name, local_name, body)) => stub
+    case (env, FinallyNode(body)) => stub
 
-    case WhileNode(condition, body) => {
+    case (env, WhileNode(condition, body)) => {
       val newEnv = new MoeEnvironment(Some(env))
       while (i.eval(r, newEnv, condition).isTrue) {
         i.eval(r, newEnv, body)
@@ -91,7 +91,7 @@ object Statements {
       r.NativeObjects.getUndef // XXX
     }
 
-    case DoWhileNode(condition, body) => {
+    case (env, DoWhileNode(condition, body)) => {
       val newEnv = new MoeEnvironment(Some(env))
       do {
         i.eval(r, newEnv, body)
@@ -99,7 +99,7 @@ object Statements {
       r.NativeObjects.getUndef // XXX
     }
 
-    case ForeachNode(topic, list, body) => {
+    case (env, ForeachNode(topic, list, body)) => {
       i.eval(r, env, list) match {
         case objects: MoeArrayObject => {
           val applyScopeInjection = {
@@ -129,7 +129,7 @@ object Statements {
       }
     }
 
-    case ForNode(init, condition, update, body) => {
+    case (env, ForNode(init, condition, update, body)) => {
       val newEnv = new MoeEnvironment(Some(env))
       i.eval(r, newEnv, init)
       while (i.eval(r, newEnv, condition).isTrue) {

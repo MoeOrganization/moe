@@ -11,9 +11,9 @@ import InterpreterUtils._
 
 object ElementAccess {
 
-  def apply (i: Interpreter, r: MoeRuntime, env: MoeEnvironment): PartialFunction[AST, MoeObject] = {
+  def apply (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
 
-    case ArrayElementAccessNode(arrayName: String, indices: List[AST]) => {
+    case (env, ArrayElementAccessNode(arrayName: String, indices: List[AST])) => {
       var array_value = env.get(arrayName) match {
          case Some(a: MoeArrayObject) => a
          case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
@@ -34,7 +34,7 @@ object ElementAccess {
       }
     }
 
-    case ArrayElementLvalueNode(arrayName: String, indices: List[AST], expr: AST) => {
+    case (env, ArrayElementLvalueNode(arrayName: String, indices: List[AST], expr: AST)) => {
       val array_value = env.get(arrayName) match {
         case Some(a: MoeArrayObject) => a
         case _ => throw new MoeErrors.UnexpectedType("MoeArrayObject expected")
@@ -53,7 +53,7 @@ object ElementAccess {
       i.callMethod(last_array, "postcircumfix:<[]>", List(last_index, expr_value), "Array")
     }
 
-    case HashElementAccessNode(hashName: String, keys: List[AST]) => {
+    case (env, HashElementAccessNode(hashName: String, keys: List[AST])) => {
       val hash_map = env.get(hashName) match {
         case Some(h: MoeHashObject) => h
         case _ => throw new MoeErrors.UnexpectedType("MoeHashObject expected")
@@ -66,7 +66,7 @@ object ElementAccess {
       }
     }
 
-    case HashElementLvalueNode(hashName: String, keys: List[AST], value: AST) => {
+    case (env, HashElementLvalueNode(hashName: String, keys: List[AST], value: AST)) => {
       val hash_map = env.get(hashName) match {
         case Some(h: MoeHashObject) => h
         case _ => throw new MoeErrors.UnexpectedType("MoeHashObject expected")
