@@ -11,12 +11,11 @@ import org.moe.ast._
 
 class MoeLazyEval (
   interpreter: MoeInterpreter,
-  runtime: MoeRuntime,
   env: MoeEnvironment,
   node: AST
 ) extends MoeObject {
   def eval = {
     // println("lazy eval - " + Serializer.toJSONPretty(node))
-    interpreter.eval(runtime, env, node)
+    interpreter.evaluate(env, node)
   }
 }

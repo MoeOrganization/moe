@@ -33,7 +33,7 @@ object Operators {
 
     case (env, ShortCircuitBinaryOpNode(lhs: AST, operator: String, rhs: AST)) => {
       val receiver = i.evaluate(env, lhs)
-      val arg      = new MoeLazyEval(i, r, env, rhs)
+      val arg      = new MoeLazyEval(i, env, rhs)
       i.callMethod(receiver, "infix:<" + operator + ">", List(arg))
     }
 
@@ -41,8 +41,8 @@ object Operators {
 
     case (env, TernaryOpNode(cond: AST, trueExpr: AST, falseExpr: AST)) => {
       val receiver = i.evaluate(env, cond)
-      val argTrue  = new MoeLazyEval(i, r, env, trueExpr)
-      val argFalse = new MoeLazyEval(i, r, env, falseExpr)
+      val argTrue  = new MoeLazyEval(i, env, trueExpr)
+      val argFalse = new MoeLazyEval(i, env, falseExpr)
       i.callMethod(receiver, "infix:<?:>", List(argTrue, argFalse))
     }
   }
