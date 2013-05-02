@@ -86,6 +86,15 @@ object HashClass {
     hashClass.addMethod(new MoeMethod("kv",     new MoeSignature(), env, (e) => self(e).kv(r)))
     hashClass.addMethod(new MoeMethod("pairs",  new MoeSignature(), env, (e) => self(e).pairs(r)))
 
+    hashClass.addMethod(
+      new MoeMethod(
+        "eqv",
+        new MoeSignature(List(new MoePositionalParameter("%that"))),
+        env,
+        (e) => self(e).equal_to(r, e.getAs[MoeHashObject]("%that").get)
+      )
+    )
+
     /**
      * List of Methods to support:
      * - each ($callback)
