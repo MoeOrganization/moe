@@ -5,11 +5,9 @@ import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 import org.moe.ast._
 
-import InterpreterUtils._
-
 object Operators {
 
-  def apply (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+  def apply (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     // unary operators
 
     case (env, PrefixUnaryOpNode(lhs: AST, operator: String)) => {

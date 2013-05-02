@@ -5,11 +5,9 @@ import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 import org.moe.ast._
 
-import InterpreterUtils._
-
 object Variables {
 
-  def declaration (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+  def declaration (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     case (env, VariableDeclarationNode(name, expression)) => {
       val value = i.evaluate(env, expression)
       if (!MoeType.checkType(name, value)) throw new MoeErrors.IncompatibleType(
@@ -19,7 +17,7 @@ object Variables {
     }
   }
 
-  def apply (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+  def apply (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     case (env, VariableAccessNode(name)) => env.get(name).getOrElse(
         if (name.startsWith("&")) {
           val function_name = name.drop(1)

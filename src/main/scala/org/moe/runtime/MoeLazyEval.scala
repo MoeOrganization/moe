@@ -10,7 +10,7 @@ import org.moe.ast._
  */
 
 class MoeLazyEval (
-  interpreter: Interpreter,
+  interpreter: MoeInterpreter,
   runtime: MoeRuntime,
   env: MoeEnvironment,
   node: AST

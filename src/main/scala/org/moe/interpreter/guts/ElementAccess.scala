@@ -7,11 +7,9 @@ import org.moe.ast._
 
 import scala.util.{Try, Success, Failure}
 
-import InterpreterUtils._
-
 object ElementAccess {
 
-  def apply (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+  def apply (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
 
     case (env, ArrayElementAccessNode(arrayName: String, indices: List[AST])) => {
       var array_value = env.get(arrayName) match {

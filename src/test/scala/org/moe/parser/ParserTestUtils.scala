@@ -10,11 +10,11 @@ import org.scalatest.BeforeAndAfter
 
 trait ParserTestUtils extends FunSuite with BeforeAndAfter  {
 
-  var interpreter: Interpreter = _
+  var interpreter: MoeInterpreter = _
   var runtime : MoeRuntime = _
 
   before {
-    interpreter = new Interpreter()
+    interpreter = new MoeInterpreter()
     runtime = new MoeRuntime()
     runtime.bootstrap()
   }

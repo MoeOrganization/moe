@@ -5,11 +5,9 @@ import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 import org.moe.ast._
 
-import InterpreterUtils._
-
 object Packages {
 
-  def declaration (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+  def declaration (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     case (env, PackageDeclarationNode(name, body, version, authority)) => {
       val newEnv = new MoeEnvironment(Some(env))
       val parent = env.getCurrentPackage.getOrElse(throw new MoeErrors.PackageNotFound("__PACKAGE__"))

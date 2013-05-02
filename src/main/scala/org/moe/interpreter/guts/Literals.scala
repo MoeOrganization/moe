@@ -5,11 +5,9 @@ import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 import org.moe.ast._
 
-import InterpreterUtils._
+object Literals extends Utils {
 
-object Literals {
-
-  def apply (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+  def apply (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     case (env, IntLiteralNode(value))     => r.NativeObjects.getInt(value)
     case (env, FloatLiteralNode(value))   => r.NativeObjects.getNum(value)
     case (env, StringLiteralNode(value))  => r.NativeObjects.getStr(value)

@@ -5,11 +5,9 @@ import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 import org.moe.ast._
 
-import InterpreterUtils._
+object Classes extends Utils {
 
-object Classes {
-
-  def declaration (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+  def declaration (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     case (env, ClassDeclarationNode(name, superclass, body, version, authority)) => {
       val pkg = env.getCurrentPackage.getOrElse(
         throw new MoeErrors.PackageNotFound("__PACKAGE__")
@@ -76,7 +74,7 @@ object Classes {
     }
   }
 
-  def apply (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+  def apply (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     case (env, ClassAccessNode(name)) => r.lookupClass(
       name, 
       env.getCurrentPackage.getOrElse(throw new MoeErrors.PackageNotFound("__PACKAGE__"))

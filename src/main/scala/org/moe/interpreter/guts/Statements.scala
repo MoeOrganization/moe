@@ -6,15 +6,13 @@ import org.moe.runtime.nativeobjects._
 import org.moe.ast._
 import org.moe.parser._
 
-import InterpreterUtils._
-
 import scala.io.Source
 
 object Statements {
 
   private val stub = new MoeObject()
 
-  def apply (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+  def apply (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     case (env, UseStatement(name)) => {
       val path = r.findFilePathForPackageName(name).getOrElse(
         throw new MoeErrors.MoeProblems(

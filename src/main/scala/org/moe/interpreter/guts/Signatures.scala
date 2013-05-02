@@ -4,11 +4,9 @@ import org.moe.interpreter._
 import org.moe.runtime._
 import org.moe.ast._
 
-import InterpreterUtils._
-
 object Signatures {
 
-  def declaration (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+  def declaration (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     case (env, ParameterNode(name, optional, slurpy, named)) => (optional, slurpy, named) match {
       case (false, false, false) => new MoePositionalParameter(name)
       case (true,  false, false) => new MoeOptionalParameter(name)

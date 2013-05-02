@@ -12,11 +12,11 @@ trait InterpreterTestUtils
   with BeforeAndAfter
   with ShouldMatchers {
 
-  var interpreter : Interpreter = _
+  var interpreter : MoeInterpreter = _
   var runtime : MoeRuntime = _
 
   before {
-    interpreter = new Interpreter()
+    interpreter = new MoeInterpreter()
     runtime = new MoeRuntime()
     runtime.bootstrap()
   }

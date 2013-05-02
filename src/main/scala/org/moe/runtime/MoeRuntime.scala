@@ -11,7 +11,7 @@ class MoeRuntime (
     private val system: MoeSystem = new MoeSystem(),
     private val warnings: Boolean = true,
     private val debug: Boolean = false,
-    private val interpreter: Option[Interpreter] = None 
+    private val interpreter: Option[MoeInterpreter] = None 
   ) extends MoeObject {
 
   private val VERSION         = "0.0.0"

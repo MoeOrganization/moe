@@ -7,7 +7,7 @@ import org.moe.parser._
 
 import org.moe.interpreter.guts._
 
-class Interpreter {
+class MoeInterpreter {
 
   private var compiler  : PartialFunction[(MoeEnvironment, AST), MoeObject] = _
   private var evaluator : PartialFunction[(MoeEnvironment, AST), MoeObject] = _

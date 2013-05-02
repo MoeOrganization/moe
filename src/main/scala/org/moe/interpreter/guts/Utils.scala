@@ -1,15 +1,32 @@
-package org.moe.interpreter
+package org.moe.interpreter.guts
 
 import org.moe.runtime._
 import org.moe.ast._
 
-object InterpreterUtils {
-  def inNewEnv[T](env: MoeEnvironment)(body: MoeEnvironment => T): T = {
-    val newEnv = new MoeEnvironment(Some(env))
+trait Utils {
 
-    body(env)
+  // Throw an exception if a variable isn't closed over at declaration time
+  // This is to prevent variables in the same env but after declaration getting
+  // sucked into the closure and causing unexpected behavior.
+  def throwForUndeclaredVars(env: MoeEnvironment, signature: MoeSignature, body: StatementsNode): Unit = {
+      var declared: Set[String] = signature.getParams.map(_.getName).toSet
+      walkAST(
+        body,
+        { ast: AST =>
+          ast match {
+            case VariableDeclarationNode(varname, _) =>
+              declared += varname
+            case VariableAccessNode(varname) =>
+              if (!env.has(varname) && !declared(varname) && !env.isSpecialMarker(varname)) {
+                throw new MoeErrors.VariableNotFound(varname)
+              }
+            case _ => Unit
+          }
+        }
+      )
   }
 
+  // XXX - this no longer captures all the AST nodes anymore
   def walkAST(ast: AST, callback: (AST) => Unit): Unit = {
     callback(ast)
     ast match {
@@ -106,26 +123,6 @@ object InterpreterUtils {
     }
   }
 
-  // Throw an exception if a variable isn't closed over at declaration time
-  // This is to prevent variables in the same env but after declaration getting
-  // sucked into the closure and causing unexpected behavior.
-  def throwForUndeclaredVars(env: MoeEnvironment, signature: MoeSignature, body: StatementsNode): Unit = {
-      var declared: Set[String] = signature.getParams.map(_.getName).toSet
-      walkAST(
-        body,
-        { ast: AST =>
-          ast match {
-            case VariableDeclarationNode(varname, _) =>
-              declared += varname
-            case VariableAccessNode(varname) =>
-              if (!env.has(varname) && !declared(varname) && !env.isSpecialMarker(varname)) {
-                throw new MoeErrors.VariableNotFound(varname)
-              }
-            case _ => Unit
-          }
-        }
-      )
-  }
 
 }
 

@@ -2,7 +2,6 @@ package org.moe.runtime.builtins
 
 import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
-import org.moe.interpreter.InterpreterUtils._
 
 /**
   * setup class Num 

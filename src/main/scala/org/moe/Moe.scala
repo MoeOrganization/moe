@@ -60,7 +60,7 @@ object Moe {
       return
     }
 
-    val interpreter = new Interpreter()
+    val interpreter = new MoeInterpreter()
     val runtime     = new MoeRuntime(
       warnings    = cmd.hasOption("w"),
       debug       = cmd.hasOption("d"),
@@ -145,7 +145,7 @@ object Moe {
   }
 
   object REPL {
-    def enter (interpreter: Interpreter, runtime: MoeRuntime, dumpAST: Boolean = false): Unit = {
+    def enter (interpreter: MoeInterpreter, runtime: MoeRuntime, dumpAST: Boolean = false): Unit = {
       import jline.{ConsoleReader, History}
 
       def isReplCommand(input: String) = input(0) == ':'
@@ -181,7 +181,7 @@ object Moe {
       }
     }
 
-    def evalLine(interpreter: Interpreter, runtime: MoeRuntime, line: String, options: Map[String, Boolean]) = {
+    def evalLine(interpreter: MoeInterpreter, runtime: MoeRuntime, line: String, options: Map[String, Boolean]) = {
       try {
         val nodes = MoeParser.parseFromEntry(line)
         val ast = CompilationUnitNode(

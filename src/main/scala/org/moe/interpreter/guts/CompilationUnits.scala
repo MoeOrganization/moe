@@ -7,7 +7,7 @@ import org.moe.ast._
 
 object CompilationUnits {
 
-  def apply (i: Interpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
+  def apply (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     case (env, CompilationUnitNode(body)) => i.eval(r, env, body)
     case (env, ScopeNode(body))           => i.compile_and_evaluate(new MoeEnvironment(Some(env)), body)
     case (env, StatementsNode(nodes))     => {
