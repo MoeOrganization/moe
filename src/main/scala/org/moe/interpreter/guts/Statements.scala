@@ -28,8 +28,7 @@ object Statements {
         r.NativeObjects.getStr(path.toString)
       )
 
-      val result = i.eval(
-        r, 
+      val result = i.compile_and_evaluate(
         env, 
         MoeParser.parseFromEntry(Source.fromFile(path).mkString)
       )
