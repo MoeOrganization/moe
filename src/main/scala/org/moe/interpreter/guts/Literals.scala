@@ -14,22 +14,13 @@ object Literals extends Utils {
     case (env, BooleanLiteralNode(value)) => r.NativeObjects.getBool(value)
     case (env, UndefLiteralNode())        => r.NativeObjects.getUndef
 
-
+    case (env, ClassLiteralNode()) => getCurrentClass(env)
     case (env, SelfLiteralNode())  => env.getCurrentInvocant.getOrElse(
-        throw new MoeErrors.InvocantNotFound("__SELF__")
-      )
-    case (env, ClassLiteralNode()) => env.getCurrentClass.getOrElse(
-        throw new MoeErrors.ClassNotFound("__CLASS__")
-      )
-
-    case (env, SuperLiteralNode()) => {
-      val klass = env.getCurrentClass
-      klass.getOrElse(
-        throw new MoeErrors.ClassNotFound("__CLASS__")
-      ).getSuperclass.getOrElse(
-        throw new MoeErrors.SuperclassNotFound(klass.get.getName)
-      )
-    }
+      throw new MoeErrors.InvocantNotFound("__SELF__")
+    )
+    case (env, SuperLiteralNode()) => getCurrentClass(env).getSuperclass.getOrElse(
+      throw new MoeErrors.SuperclassNotFound("__SUPER__")
+    )
 
     case (env, ArrayLiteralNode(values)) => r.NativeObjects.getArray(values.map(i.evaluate(env, _)):_*)
 

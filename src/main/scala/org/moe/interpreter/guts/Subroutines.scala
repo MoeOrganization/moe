@@ -12,7 +12,7 @@ object Subroutines extends Utils {
       val sig = i.compile(env, signature).asInstanceOf[MoeSignature]
       throwForUndeclaredVars(env, sig, body)
 
-      val pkg = env.getCurrentPackage.getOrElse(throw new MoeErrors.PackageNotFound("__PACKAGE__"))
+      val pkg = getCurrentPackage(env)
 
       val decl_env = new MoeEnvironment(Some(env))
       decl_env.setCurrentPackage(pkg)
@@ -34,7 +34,7 @@ object Subroutines extends Utils {
     case (env, SubroutineCallNode(function_name, args)) => {
       val sub = r.lookupSubroutine(
         function_name, 
-        env.getCurrentPackage.getOrElse(throw new MoeErrors.PackageNotFound("__PACKAGE__"))
+        getCurrentPackage(env)
       ).getOrElse( 
         throw new MoeErrors.SubroutineNotFound(function_name)
       )

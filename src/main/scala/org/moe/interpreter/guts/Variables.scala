@@ -23,7 +23,7 @@ object Variables extends Utils {
           val function_name = name.drop(1)
           val sub = r.lookupSubroutine(
             function_name, 
-            env.getCurrentPackage.getOrElse(throw new MoeErrors.PackageNotFound("__PACKAGE__"))
+            getCurrentPackage(env)
           ).getOrElse( 
             throw new MoeErrors.SubroutineNotFound(function_name)
           )

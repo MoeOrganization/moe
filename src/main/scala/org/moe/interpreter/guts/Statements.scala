@@ -8,7 +8,7 @@ import org.moe.parser._
 
 import scala.io.Source
 
-object Statements {
+object Statements extends Utils {
 
   private val stub = new MoeObject()
 
@@ -32,7 +32,7 @@ object Statements {
       )
 
       result match {
-        case (p: MoePackage) => env.getCurrentPackage.get.importSubroutines(
+        case (p: MoePackage) => getCurrentPackage(env).importSubroutines(
           MoePackage.findPackageByName(name, r.getRootPackage).getOrElse(
             throw new MoeErrors.PackageNotFound(name)
           ).getExportedSubroutines

@@ -5,7 +5,14 @@ import org.moe.ast._
 
 trait Utils {
 
-  
+  def getCurrentPackage (env: MoeEnvironment): MoePackage = env.getCurrentPackage.getOrElse(
+    throw new MoeErrors.PackageNotFound("__PACKAGE__")
+  )
+
+  def getCurrentClass (env: MoeEnvironment): MoeClass = env.getCurrentClass.getOrElse(
+    throw new MoeErrors.ClassNotFound("__CLASS__")
+  )
+
   def callMethod(invocant: MoeObject, method: String, args: List[MoeObject], klass: String = null) =
     invocant.callMethod(
       invocant.getAssociatedClass.getOrElse(
