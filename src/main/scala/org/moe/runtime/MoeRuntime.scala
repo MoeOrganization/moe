@@ -193,8 +193,7 @@ class MoeRuntime (
   def print (msg: MoeObject*): Unit = system.getSTDOUT.print(msg.map(_.unboxToString.get).mkString)
   def say   (msg: MoeObject*): Unit = system.getSTDOUT.println(msg.map(_.unboxToString.get).mkString)
 
-  def eval (line: String, env: MoeEnvironment) = interpreter.get.eval(
-    this, 
+  def eval (line: String, env: MoeEnvironment) = interpreter.get.compile_and_evaluate(
     env, 
     CompilationUnitNode(ScopeNode(MoeParser.parseFromEntry(line)))
   )
