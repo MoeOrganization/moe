@@ -61,7 +61,7 @@ object CorePackage {
             e.set("$!", getUndef)
             r.eval(e.getAs[MoeStrObject]("$source").get.unboxToString.get, e)
           } catch {
-            case exception: MoeErrors.ParserInputError => {
+            case exception: Exception => {
               e.set("$!", getException(exception.getMessage))
               getUndef
             }
