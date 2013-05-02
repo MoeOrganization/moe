@@ -5,19 +5,19 @@ import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 import org.moe.ast._
 
-object Operators {
+object Operators extends Utils {
 
   def apply (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     // unary operators
 
     case (env, PrefixUnaryOpNode(lhs: AST, operator: String)) => {
       val receiver = i.evaluate(env, lhs)
-      i.callMethod(receiver, "prefix:<" + operator + ">", List())
+      callMethod(receiver, "prefix:<" + operator + ">", List())
     }
 
     case (env, PostfixUnaryOpNode(lhs: AST, operator: String)) => {
       val receiver = i.evaluate(env, lhs)
-      i.callMethod(receiver, "postfix:<" + operator + ">", List())
+      callMethod(receiver, "postfix:<" + operator + ">", List())
     }
 
     // binary operators
@@ -25,7 +25,7 @@ object Operators {
     case (env, BinaryOpNode(lhs: AST, operator: String, rhs: AST)) => {
       val receiver = i.evaluate(env, lhs)
       val arg      = i.evaluate(env, rhs)
-      i.callMethod(receiver, "infix:<" + operator + ">", List(arg))
+      callMethod(receiver, "infix:<" + operator + ">", List(arg))
     }
 
     // short circuit binary operators
@@ -34,7 +34,7 @@ object Operators {
     case (env, ShortCircuitBinaryOpNode(lhs: AST, operator: String, rhs: AST)) => {
       val receiver = i.evaluate(env, lhs)
       val arg      = new MoeLazyEval(i, env, rhs)
-      i.callMethod(receiver, "infix:<" + operator + ">", List(arg))
+      callMethod(receiver, "infix:<" + operator + ">", List(arg))
     }
 
     // ternary operator
@@ -43,7 +43,7 @@ object Operators {
       val receiver = i.evaluate(env, cond)
       val argTrue  = new MoeLazyEval(i, env, trueExpr)
       val argFalse = new MoeLazyEval(i, env, falseExpr)
-      i.callMethod(receiver, "infix:<?:>", List(argTrue, argFalse))
+      callMethod(receiver, "infix:<?:>", List(argTrue, argFalse))
     }
   }
 }

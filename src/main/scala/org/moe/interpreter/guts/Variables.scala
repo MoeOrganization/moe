@@ -5,7 +5,7 @@ import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 import org.moe.ast._
 
-object Variables {
+object Variables extends Utils {
 
   def declaration (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     case (env, VariableDeclarationNode(name, expression)) => {
@@ -35,7 +35,7 @@ object Variables {
       )
 
     case (env, MultiVariableAssignmentNode(names, expressions)) => {
-      i.zipVars(
+      zipVars(
         r,
         names, 
         expressions.map(i.evaluate(env, _)), 

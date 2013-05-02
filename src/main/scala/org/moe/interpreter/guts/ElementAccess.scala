@@ -7,7 +7,7 @@ import org.moe.ast._
 
 import scala.util.{Try, Success, Failure}
 
-object ElementAccess {
+object ElementAccess extends Utils {
 
   def apply (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
 
@@ -21,11 +21,11 @@ object ElementAccess {
         (array, item) =>
           val index = i.evaluate(env, item)
           index match {
-            case int: MoeIntObject => i.callMethod(array, "postcircumfix:<[]>", List(int), "Array")
+            case int: MoeIntObject => callMethod(array, "postcircumfix:<[]>", List(int), "Array")
             case obj: MoeObject => {
               obj.unboxToArrayBuffer match {
-                case Success(a) => i.callMethod(array, "slice", a.toList, "Array")
-                case _          => i.callMethod(array, "slice", List(obj),  "Array")
+                case Success(a) => callMethod(array, "slice", a.toList, "Array")
+                case _          => callMethod(array, "slice", List(obj),  "Array")
               }
             }
           }
@@ -43,12 +43,12 @@ object ElementAccess {
       val last_array = indices.dropRight(1).foldLeft[MoeObject](array_value) {
         (array, item) =>
           val index = i.evaluate(env, item)
-          i.callMethod(array, "postcircumfix:<[]>", List(index), "Array")
+          callMethod(array, "postcircumfix:<[]>", List(index), "Array")
       }
 
       // perform the assignment
       val expr_value = i.evaluate(env, expr)
-      i.callMethod(last_array, "postcircumfix:<[]>", List(last_index, expr_value), "Array")
+      callMethod(last_array, "postcircumfix:<[]>", List(last_index, expr_value), "Array")
     }
 
     case (env, HashElementAccessNode(hashName: String, keys: List[AST])) => {
@@ -60,7 +60,7 @@ object ElementAccess {
       keys.foldLeft[MoeObject](hash_map) {
         (h, k) =>
           val key = i.evaluate(env, k)
-          i.callMethod(h, "postcircumfix:<{}>", List(key), "Hash")
+          callMethod(h, "postcircumfix:<{}>", List(key), "Hash")
       }
     }
 
@@ -75,12 +75,12 @@ object ElementAccess {
       val last_hash = keys.dropRight(1).foldLeft[MoeObject](hash_map) {
         (h, k) =>
           val key = i.evaluate(env, k)
-          i.callMethod(h, "postcircumfix:<{}>", List(key), "Hash")
+          callMethod(h, "postcircumfix:<{}>", List(key), "Hash")
       }
 
       // perform the assignment
       val value_result = i.evaluate(env, value)
-      i.callMethod(last_hash, "postcircumfix:<{}>", List(last_key, value_result), "Hash")
+      callMethod(last_hash, "postcircumfix:<{}>", List(last_key, value_result), "Hash")
     }
   }
 

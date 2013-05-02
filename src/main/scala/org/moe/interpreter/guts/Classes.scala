@@ -117,7 +117,7 @@ object Classes extends Utils {
       val evaled_expressions = expressions.map(i.evaluate(env, _)) 
       env.getCurrentInvocant match {
         case Some(invocant: MoeOpaque) => {
-          i.zipVars(
+          zipVars(
             r,
             names, 
             evaled_expressions, 

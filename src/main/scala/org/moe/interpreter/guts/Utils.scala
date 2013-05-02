@@ -5,6 +5,28 @@ import org.moe.ast._
 
 trait Utils {
 
+  
+  def callMethod(invocant: MoeObject, method: String, args: List[MoeObject], klass: String = null) =
+    invocant.callMethod(
+      invocant.getAssociatedClass.getOrElse(
+        throw new MoeErrors.ClassNotFound(Option(klass).getOrElse(invocant.getClassName))
+      ).getMethod(method).getOrElse(
+        throw new MoeErrors.MethodNotFound("method " + method + "> missing in class " + Option(klass).getOrElse(invocant.getClassName))
+      ),
+      args
+    )
+
+  def zipVars (r: MoeRuntime, names: List[String], expressions: List[MoeObject], f: ((String, MoeObject)) => Unit): Unit = {
+    if (expressions.isEmpty) {
+      names.foreach(f(_, r.NativeObjects.getUndef)) 
+    } else if (names.isEmpty) {
+      ()
+    } else {
+      f(names.head, expressions.headOption.getOrElse(r.NativeObjects.getUndef))
+      zipVars(r, names.tail, expressions.tail, f)
+    }
+  }
+
   // Throw an exception if a variable isn't closed over at declaration time
   // This is to prevent variables in the same env but after declaration getting
   // sucked into the closure and causing unexpected behavior.
