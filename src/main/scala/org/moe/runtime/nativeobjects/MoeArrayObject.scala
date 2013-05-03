@@ -76,26 +76,51 @@ class MoeArrayObject(
     array.map(_.unboxToString.get).mkString(sep.unboxToString.get)
   )
 
-  def map (r: MoeRuntime, f: MoeCode): MoeArrayObject = r.NativeObjects.getArray(
-    array.map(i => f.execute(new MoeArguments(List(i)))) : _*
-  )
+  def map (r: MoeRuntime, f: MoeCode): MoeArrayObject = {
+    val result = array.map({
+      (i) => 
+        f.getDeclarationEnvironment.setCurrentTopic(i)
+        f.execute(new MoeArguments(List(i)))
+    })
+    f.getDeclarationEnvironment.clearCurrentTopic
+    r.NativeObjects.getArray(result : _*)
+  }
 
-  def grep (r: MoeRuntime, f: MoeCode): MoeArrayObject = r.NativeObjects.getArray(
-    array.filter(i => f.execute(new MoeArguments(List(i))).isTrue) : _*
-  )
+  def grep (r: MoeRuntime, f: MoeCode): MoeArrayObject = {
+    val result = array.filter({
+      (i) => 
+        f.getDeclarationEnvironment.setCurrentTopic(i)
+        f.execute(new MoeArguments(List(i))).isTrue
+    })
+    f.getDeclarationEnvironment.clearCurrentTopic
+    r.NativeObjects.getArray(result : _*)
+  }
 
   def each (r: MoeRuntime, f: MoeCode): MoeUndefObject = {
-    array.foreach({ i => f.execute(new MoeArguments(List(i))); ()})
+    array.foreach({
+      (i) => 
+        f.getDeclarationEnvironment.setCurrentTopic(i)
+        f.execute(new MoeArguments(List(i)))
+        ()
+    })
+    f.getDeclarationEnvironment.clearCurrentTopic
     r.NativeObjects.getUndef
+  }
+
+  def first (r: MoeRuntime, f: MoeCode): MoeObject = {
+    val result = array.dropWhile({
+      (i) => 
+        f.getDeclarationEnvironment.setCurrentTopic(i)
+        f.execute(new MoeArguments(List(i))).isFalse
+    })
+    f.getDeclarationEnvironment.clearCurrentTopic
+    result.head
   }
 
   def reduce (r: MoeRuntime, f: MoeCode, init: Option[MoeObject]): MoeObject = init match {
     case Some(init_val) => array.foldLeft(init_val)({ (a, b) => f.execute(new MoeArguments(List(a, b))) })
     case None           => array.reduceLeft        ({ (a, b) => f.execute(new MoeArguments(List(a, b))) })
-  }
-
-  def first (r: MoeRuntime, f: MoeCode): MoeObject = 
-    array.dropWhile(i => f.execute(new MoeArguments(List(i))).isFalse).head
+  }  
 
   def max (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt(
       array.map(i => i.unboxToInt.get).max

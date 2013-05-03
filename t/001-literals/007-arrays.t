@@ -61,13 +61,16 @@ use Test::More;
     is(@x.join(", "), "10, 5, 3, 1", '... got the expected value from &join($sep)');
 
     is_deeply(@x.map(-> ($x) { $x + 10 }), [ 20, 15, 13, 11 ], '... got the expected value from &map');
+    is_deeply(@x.map(-> { $_ + 10 }), [ 20, 15, 13, 11 ], '... got the expected value from &map using $_');
 
     is_deeply(@x.grep(-> ($x) { ($x % 2) == 0 }), [ 10 ], '... got the expected value from &grep');
+    is_deeply(@x.grep(-> { ($_ % 2) == 0 }), [ 10 ], '... got the expected value from &grep using $_');
 
     is(@x.reduce(-> ($a, $b) { $a + $b }), 19, '... got the exepected value from &reduce');
     is(@x.reduce(-> ($a, $b) { $a + $b }, 100), 119, '... got the exepected value from &reduce($init)');    
 
     is(@x.first(-> ($x) { $x > 5 }), 10, '... got the exepected value from &first');
+    is(@x.first(-> { $_ > 5 }), 10, '... got the exepected value from &first using $_');
 
     is(@x.max, 10, '... got the exepected value from &max');
     is(@x.min, 1,  '... got the exepected value from &min');
@@ -91,6 +94,8 @@ use Test::More;
     my @x = [ 'foo', 'bar', 'baz' ];
     is(@x.each(-> ($x) { $x.chop }), undef, '... got the exepected value from &each');
     is_deeply(@x, [ 'fo', 'ba', 'ba' ], '... the array has been changed');
+    is(@x.each(-> { $_.chop }), undef, '... got the exepected value from &each using $_');
+    is_deeply(@x, [ 'f', 'b', 'b' ], '... the array has been changed');
 }
 
 { 
