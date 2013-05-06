@@ -124,6 +124,29 @@ object CorePackage {
       )
     )
 
+    pkg.addSubroutine(
+      new MoeSubroutine(
+        "caller",
+        new MoeSignature(List(new MoeOptionalParameter("$index"))),
+        env,
+        (e) => e.get("$index") match {
+          case Some(i: MoeIntObject) => try { 
+            val frame = r.getInterpreterCallStack.drop(1).get(i.unboxToInt.get)
+            getArray(frame.map(getStr(_)):_*) 
+          } catch { 
+            case e: java.lang.IndexOutOfBoundsException => getUndef 
+          }
+          case _ => {
+            getArray(
+              r.getInterpreterCallStack.drop(1).map(
+                (x) => getArray(x.map(getStr(_)):_*)
+              ):_*
+            )
+          }
+        } 
+      )
+    )
+
     /**
      * NOTE:
      * This is extremely naive and does not capture 
