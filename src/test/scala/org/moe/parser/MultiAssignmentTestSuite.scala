@@ -97,14 +97,14 @@ class MultiAssignmentTestSuite extends FunSuite with BeforeAndAfter with ParserT
   """
 
   test("... basic multi-attribute-assign") {
-    val result = interpretCode(testClass + "; my $x = ^Foo.new; $x.test1; $x.get")
+    val result = interpretCode(testClass + "; my $x = Foo.new; $x.test1; $x.get")
     var a = result.unboxToArrayBuffer.get
     a(0).unboxToInt.get should equal (1)
     a(1).unboxToInt.get should equal (2)
   }
 
   test("... basic multi-attribute-assign w/ extra var") {
-    val result = interpretCode(testClass + "; my $x = ^Foo.new; $x.test2; $x.get")
+    val result = interpretCode(testClass + "; my $x = Foo.new; $x.test2; $x.get")
     var a = result.unboxToArrayBuffer.get
     a(0).unboxToInt.get should equal (1)
     a(1).unboxToInt.get should equal (2)
@@ -112,14 +112,14 @@ class MultiAssignmentTestSuite extends FunSuite with BeforeAndAfter with ParserT
   }
 
   test("... basic multi-attribute-assign w/ extra element") {
-    val result = interpretCode(testClass + "; my $x = ^Foo.new; $x.test3; $x.get")
+    val result = interpretCode(testClass + "; my $x = Foo.new; $x.test3; $x.get")
     var a = result.unboxToArrayBuffer.get
     a(0).unboxToInt.get should equal (1)
     a(1).unboxToInt.get should equal (2)
   }
 
   test("... basic multi-attribute-assign w/ swap") {
-    val result = interpretCode(testClass + "; my $x = ^Foo.new; $x.test4; $x.get")
+    val result = interpretCode(testClass + "; my $x = Foo.new; $x.test4; $x.get")
     var a = result.unboxToArrayBuffer.get
     a(0).unboxToInt.get should equal (2)
     a(1).unboxToInt.get should equal (1)
