@@ -1,5 +1,7 @@
 package org.moe.interpreter
 
+import scala.collection.mutable.Stack
+
 import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 import org.moe.ast._
@@ -8,6 +10,12 @@ import org.moe.parser._
 import org.moe.interpreter.guts._
 
 class MoeInterpreter {
+
+  private val callstack: Stack[List[String]] = new Stack[List[String]]()
+
+  def getCallStack: List[List[String]] = callstack.toList
+  def pushCallStack (frame: List[String]) = callstack.push(frame)
+  def popCallStack: List[String] = callstack.pop  
 
   private var compiler  : PartialFunction[(MoeEnvironment, AST), MoeObject] = _
   private var evaluator : PartialFunction[(MoeEnvironment, AST), MoeObject] = _
