@@ -114,7 +114,7 @@ class MoeArrayObject(
         f.execute(new MoeArguments(List(i))).isFalse
     })
     f.getDeclarationEnvironment.clearCurrentTopic
-    result.head
+    if (result.isEmpty) r.NativeObjects.getUndef else result.head
   }
 
   def reduce (r: MoeRuntime, f: MoeCode, init: Option[MoeObject]): MoeObject = init match {

@@ -55,6 +55,19 @@ class MoeHashObject(
     }).toArray:_*
   )
 
+  // equality
+  def equal_to (r: MoeRuntime, that: MoeHashObject): MoeBoolObject = {
+    val k1 = hash.keys.toList.sortWith(_ < _)
+    val k2 = that.getNativeValue.keys.toList.sortWith(_ < _)
+    r.NativeObjects.getBool(
+      k1.length == k2.length
+        &&
+      k1 == k2
+        &&
+      ((k1.map(k => hash(k)), k1.map(k => that.getNativeValue(k))).zipped.forall( (a, b) => a.equal_to(b) ))
+    )
+  }
+
   // MoeNativeObject overrides
  
   override def copy = new MoeHashObject(HashMap(getNativeValue.toSeq:_*), getAssociatedType)

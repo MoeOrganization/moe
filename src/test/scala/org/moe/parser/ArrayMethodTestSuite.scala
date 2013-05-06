@@ -56,6 +56,11 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
     result.unboxToString.get should equal ("bar")
   }
 
+  test("... basic test with array.first -- non-matching case") {
+    val result = interpretCode("my @a = ['foo', 'bar', 'baz']; @a.first(-> ($_) { $_ eq 'bazz' } )")
+    result.unboxToString.get should equal ("undef")
+  }
+
   test("... basic test with array.max") {
     val result = interpretCode("my @a = [3, 12, 9]; @a.max")
     result.unboxToInt.get should equal (12)

@@ -219,7 +219,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   def parameterName = """([$@%&])([a-zA-Z_][a-zA-Z0-9_]*)""".r
 
-  def classAccess = "^" ~> namespacedIdentifier ^^ ClassAccessNode
+  def classAccess = namespacedIdentifier ^^ ClassAccessNode
 
   // declaration
 
