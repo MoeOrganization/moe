@@ -5,7 +5,7 @@ import scala.util.parsing.json._
 object Serializer {
   def toJSON(ast: AST): Any = ast match {
     case CompilationUnitNode(body) => JSONObject(Map("CompilationUnitNode" -> toJSON(body)))
-    case ScopeNode(body)           => JSONObject(Map("ScopeNode" -> toJSON(body)))
+    case ScopeNode(body, _)        => JSONObject(Map("ScopeNode" -> toJSON(body)))
     case StatementsNode(nodes)     => JSONObject(Map("StatementsNode" -> JSONArray(nodes.map(toJSON(_)))))
 
     case IntLiteralNode(value)     => JSONObject(Map("IntLiteralNode" -> value))

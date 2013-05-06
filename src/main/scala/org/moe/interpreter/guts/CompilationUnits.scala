@@ -9,7 +9,8 @@ object CompilationUnits {
 
   def apply (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     case (env, CompilationUnitNode(body)) => i.eval(r, env, body)
-    case (env, ScopeNode(body))           => i.compile_and_evaluate(new MoeEnvironment(Some(env)), body)
+    case (env, ScopeNode(body, false))    => i.compile_and_evaluate(env, body)
+    case (env, ScopeNode(body, true))     => i.compile_and_evaluate(new MoeEnvironment(Some(env)), body)
     case (env, StatementsNode(nodes))     => {
       nodes.foldLeft[MoeObject](r.NativeObjects.getUndef)(
         (_, node) => i.compile_and_evaluate(env, node)

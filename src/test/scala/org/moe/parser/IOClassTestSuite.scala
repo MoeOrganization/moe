@@ -19,37 +19,37 @@ class IOClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils
   private val badPath  = """my $path = "t/000-load.x";"""
 
   test("... basic IO test -- .new") {
-    val result = interpretCode(goodPath + """my $io = ^IO.new($path); $io.isa("IO")""")
+    val result = interpretCode(goodPath + """my $io = IO.new($path); $io.isa("IO")""")
     result.unboxToBoolean.get should equal (true)
   }
 
   test("... basic IO test -- existence") {
-    val result = interpretCode(goodPath + """my $io = ^IO.new($path); -e $io""")
+    val result = interpretCode(goodPath + """my $io = IO.new($path); -e $io""")
     result.unboxToBoolean.get should equal (true)
   }
 
   test("... basic IO test -- existence with invalid file") {
-    val result = interpretCode(badPath + """my $io = ^IO.new($path); -e $io""")
+    val result = interpretCode(badPath + """my $io = IO.new($path); -e $io""")
     result.unboxToBoolean.get should equal (false)
   }
 
   test("... basic IO test -- readable") {
-    val result = interpretCode(goodPath + """my $io = ^IO.new($path); -r $io""")
+    val result = interpretCode(goodPath + """my $io = IO.new($path); -r $io""")
     result.unboxToBoolean.get should equal (true)
   }
 
   test("... basic IO test -- readable with invalid file") {
-    val result = interpretCode(badPath + """my $io = ^IO.new($path); -r $io""")
+    val result = interpretCode(badPath + """my $io = IO.new($path); -r $io""")
     result.unboxToBoolean.get should equal (false)
   }
 
   test("... basic IO test -- readline") {
-    val result = interpretCode(goodPath + """my $io = ^IO.new($path); $io.readline""")
+    val result = interpretCode(goodPath + """my $io = IO.new($path); $io.readline""")
     result.unboxToString.get should equal ("use Test::More;")
   }
 
   test("... basic IO test -- readlines") {
-    val result = interpretCode(goodPath + """my $io = ^IO.new($path); $io.readlines""")
+    val result = interpretCode(goodPath + """my $io = IO.new($path); $io.readlines""")
     val lines = result.unboxToArrayBuffer.get
     lines(0).unboxToString.get should equal ("use Test::More;")
     lines(1).unboxToString.get should equal ("")

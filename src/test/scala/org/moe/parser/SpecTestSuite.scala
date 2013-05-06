@@ -42,7 +42,7 @@ class SpecTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils {
             try { 
               basicAST(MoeParser.parseStuff(moe_content)) match {
                 case CompilationUnitNode(scope) => scope match {
-                  case ScopeNode(stmts) => {
+                  case ScopeNode(stmts, _) => {
                     assert(Serializer.toJSON(stmts).toString().trim === ast_content.trim)
                   }
                 }

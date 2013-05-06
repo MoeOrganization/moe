@@ -42,18 +42,18 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
   }
 
   test("... a basic class w/ instance creation") {
-    val result = interpretCode("class Foo {} ^Foo.new")
+    val result = interpretCode("class Foo {} Foo.new")
     result.asInstanceOf[MoeOpaque].isInstanceOf("Foo") should be (true)
     result.asInstanceOf[MoeOpaque].getAssociatedClass.get.getName should be ("Foo")
   }
 
   test("... a basic class w/ instance creation and method calling") {
-    val result = interpretCode("class Foo { method bar { 10 } } ^Foo.new.bar")
+    val result = interpretCode("class Foo { method bar { 10 } } Foo.new.bar")
     result.unboxToInt.get should be (10)
   }
 
   test("... a basic class w/ instance creation and attribute init and access") {
-    val result = interpretCode("class Foo { has $!bar = 10; method bar { $!bar } } ^Foo.new.bar")
+    val result = interpretCode("class Foo { has $!bar = 10; method bar { $!bar } } Foo.new.bar")
     result.unboxToInt.get should be (10)
   }
 
@@ -66,7 +66,7 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
   """
 
   test("... test that attribute defaults are cloned properly") {
-    val result = interpretCode(attrDefault + " my $f1 = ^Foo.new; my $f2 = ^Foo.new; [ $f1.bar, $f1.baz, $f2.bar, $f2.baz ]")
+    val result = interpretCode(attrDefault + " my $f1 = Foo.new; my $f2 = Foo.new; [ $f1.bar, $f1.baz, $f2.bar, $f2.baz ]")
     result.toString should be ("[5, [0, 1, 2, 3, 4], 5, [0, 1, 2, 3, 4]]")
   }
 
@@ -86,17 +86,17 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
   """
 
   test("... a complex class (take 1)") {
-    val result = interpretCode(pointClass + " my $p = ^Point.new; $p.x")
+    val result = interpretCode(pointClass + " my $p = Point.new; $p.x")
     result.unboxToInt.get should be (0)
   }
 
   test("... a complex class (take 2)") {
-    val result = interpretCode(pointClass + " my $p = ^Point.new; $p.x(10); $p.x")
+    val result = interpretCode(pointClass + " my $p = Point.new; $p.x(10); $p.x")
     result.unboxToInt.get should be (10)
   }
 
   test("... a complex class (take 3)") {
-    val result = interpretCode(pointClass + " my $p = ^Point.new(x => 10, y => 20); $p.x")
+    val result = interpretCode(pointClass + " my $p = Point.new(x => 10, y => 20); $p.x")
     result.unboxToInt.get should be (10)
   }
 
@@ -110,12 +110,12 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
     }
   """
   test("... a complex class v3 (take 1)") {
-    val result = interpretCode(greeterClass + " ^Greater.new.greet(\"World\").uc")
+    val result = interpretCode(greeterClass + " Greater.new.greet(\"World\").uc")
     result.unboxToString.get should be ("HELLO WORLD")
   }
 
   test("... make sure $?SELF and $?CLASS work") {
-    val result = interpretCode("class Foo { method bar { [ $?SELF, $?CLASS ] } }; ^Foo.new.bar")
+    val result = interpretCode("class Foo { method bar { [ $?SELF, $?CLASS ] } }; Foo.new.bar")
     val array  = result.unboxToArrayBuffer.get
     val obj    = array(0).asInstanceOf[MoeObject]
     val cls    = array(1).asInstanceOf[MoeClass]
@@ -142,7 +142,7 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
   """
 
   test("... submethod test") {
-    val result = interpretCode(submethodTest + "; my $b = ^Bar.new; [ $b.get_foo, $b.get_bar ]")
+    val result = interpretCode(submethodTest + "; my $b = Bar.new; [ $b.get_foo, $b.get_bar ]")
     val array  = result.unboxToArrayBuffer.get
 
     assert(array(0).unboxToString.get === "FOO")

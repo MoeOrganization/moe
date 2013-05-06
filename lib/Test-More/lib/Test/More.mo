@@ -14,7 +14,7 @@ package Test {
 
     class Builder {
 
-        has $!output = ^Test::TAP.new;
+        has $!output = Test::TAP.new;
         has $!count  = 0;
 
         method plan ($count) { $!output.plan($count)  }
@@ -96,7 +96,7 @@ package Test {
 
     package More {
 
-        my $builder = ^Test::Builder.new;
+        my $builder = Test::Builder.new;
 
         sub plan ($count) is export { $builder.plan($count) }
         sub done_testing  is export { $builder.done_testing }

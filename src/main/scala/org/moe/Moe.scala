@@ -173,7 +173,7 @@ object Moe {
           case _      => if (isReplCommand(line))
                            replOptions = processReplCommand(line, replOptions)
                          else
-                           evalLine(interpreter, runtime, partialInput + line, replOptions) match {
+                           evalLine(interpreter, runtime, partialInput + line, replOptions + ("inREPL" -> true)) match {
                              case EvalResult.Partial => partialInput += line
                              case _                  => partialInput = ""
                            }
@@ -185,7 +185,7 @@ object Moe {
       try {
         val nodes = MoeParser.parseFromEntry(line)
         val ast = CompilationUnitNode(
-          ScopeNode(nodes)
+          ScopeNode(nodes, !options.getOrElse("inREPL", false))
         )
         if (options.getOrElse("dumpAST", false)) {
           if (options.getOrElse("prettyPrintAST", false))

@@ -89,11 +89,11 @@ class MoeRuntimeTestSuite extends FunSuite with BeforeAndAfter with ShouldMatche
     val msg  = runtime.NativeObjects.getStr("HELLO PRINT WORLD");
     val msgs = List("HELLO", "PRINT", "WORLD").map(runtime.NativeObjects.getStr(_))
 
-    var out = msg.unboxToString.get + "\n"
+    var out = msg.unboxToString.get + util.Properties.lineSeparator
     runtime.warn(msg)
     assert(outStream.toString() === out)
 
-    out += msgs.map(_.unboxToString.get).mkString + "\n"
+    out += msgs.map(_.unboxToString.get).mkString + util.Properties.lineSeparator
     runtime.warn(msgs:_*)
     assert(outStream.toString() === out)
   }
@@ -137,11 +137,11 @@ class MoeRuntimeTestSuite extends FunSuite with BeforeAndAfter with ShouldMatche
     val msg  = runtime.NativeObjects.getStr("HELLO PRINT WORLD");
     val msgs = List("HELLO", "PRINT", "WORLD").map(runtime.NativeObjects.getStr(_))
 
-    var out = msg.unboxToString.get + "\n"
+    var out = msg.unboxToString.get + util.Properties.lineSeparator
     runtime.say(msg)
     assert(outStream.toString() === out)
 
-    out += msgs.map(_.unboxToString.get).mkString + "\n"
+    out += msgs.map(_.unboxToString.get).mkString + util.Properties.lineSeparator
     runtime.say(msgs:_*)
     assert(outStream.toString() === out)
   }
