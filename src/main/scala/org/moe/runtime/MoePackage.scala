@@ -75,6 +75,10 @@ class MoePackage(
    */
   def getName: String = name
 
+  def getFullyQualifiedName: String = parent.map(
+    (p) => if (p.isRoot) "" else (p.getFullyQualifiedName + "::")
+  ).getOrElse("") + name 
+
   /**
    * Returns the version of this package
    */

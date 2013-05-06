@@ -27,7 +27,7 @@ class MoeRuntime (
   private val includeDirs: ArrayBuffer[MoeObject]    = ArrayBuffer()
   
   private val rootEnv     = new MoeEnvironment()
-  private val rootPackage = new MoePackage("*", rootEnv)
+  private val rootPackage = new MoePackage("main", rootEnv)
   private val corePackage = new MoePackage("CORE", new MoeEnvironment(Some(rootEnv)))
 
   private val objectClass = new MoeClass("Object", Some(VERSION), Some(AUTHORITY))
@@ -165,15 +165,35 @@ class MoeRuntime (
       (Some(split_name.dropRight(1)) -> split_name.last)
   }
 
-  def lookupSubroutine (name: String, pkg: MoePackage): Option[MoeSubroutine] = (deconstructNamespace(name) match {
-    case (Some(pkg_name), sub_name) => MoePackage.findPackageByName(pkg_name, pkg).flatMap(_.getSubroutine(sub_name))
-    case (None,           sub_name) => pkg.getSubroutine(sub_name)
-  }).orElse(getCoreSubroutineFor(name))
+  def lookupSubroutine (name: String, pkg: MoePackage): Option[(MoePackage, MoeSubroutine)] = (deconstructNamespace(name) match {
+    case (None,           sub_name) => pkg.getSubroutine(sub_name).flatMap((s) => Some(pkg, s))
+    case (Some(pkg_name), sub_name) => MoePackage.findPackageByName(pkg_name, pkg).flatMap(
+      (p) => p.getSubroutine(sub_name).flatMap((s) => Some(p, s))
+    )
+  }).orElse(
+    if (name.contains("::")) {
+      lookupSubroutine(name, rootPackage).orElse(
+        getCoreSubroutineFor(name).flatMap((s) => Some(corePackage, s))
+      )
+    } else {
+      getCoreSubroutineFor(name).flatMap((s) => Some(corePackage, s))
+    }
+  )
 
-  def lookupClass (name: String, pkg: MoePackage): Option[MoeClass] = (deconstructNamespace(name) match {
-    case (Some(pkg_name), class_name) => MoePackage.findPackageByName(pkg_name, pkg).flatMap(_.getClass(class_name))
-    case (None,           class_name) => pkg.getClass(class_name)
-  }).orElse(getCoreClassFor(name))
+  def lookupClass (name: String, pkg: MoePackage): Option[(MoePackage, MoeClass)] = (deconstructNamespace(name) match {
+    case (None,           class_name) => pkg.getClass(class_name).flatMap((c) => Some(pkg, c))
+    case (Some(pkg_name), class_name) => MoePackage.findPackageByName(pkg_name, pkg).flatMap(
+      (p) => p.getClass(class_name).flatMap((c) => Some(p, c))
+    )
+  }).orElse(
+    if (name.contains("::")) {
+      lookupClass(name, rootPackage).orElse(
+        getCoreClassFor(name).flatMap((c) => Some(corePackage, c))
+      )
+    } else {
+      getCoreClassFor(name).flatMap((c) => Some(corePackage, c))
+    }
+  )
 
   def findFilePathForPackageName (full: String): Option[java.io.File] = {
     val p = "/" + full.split("::").mkString("/") + ".mo"
@@ -197,6 +217,8 @@ class MoeRuntime (
     env, 
     CompilationUnitNode(ScopeNode(MoeParser.parseFromEntry(line)))
   )
+
+  def getInterpreterCallStack: List[List[String]] = interpreter.get.getCallStack
 
   private def setupBuiltins = {
     import org.moe.runtime.builtins._

@@ -14,7 +14,7 @@ object Classes extends Utils {
       val superclass_class: Option[MoeClass] = superclass.map(
         r.lookupClass(_, pkg).getOrElse(
           throw new MoeErrors.ClassNotFound(superclass.getOrElse(""))
-        )
+        )._2
       ).orElse(r.getCoreClassFor("Any"))
 
       val klass = new MoeClass(
@@ -77,8 +77,8 @@ object Classes extends Utils {
       name, 
       getCurrentPackage(env)
     ).getOrElse( 
-      r.lookupClass(name, r.getRootPackage).getOrElse(throw new MoeErrors.ClassNotFound(name))
-    )
+      throw new MoeErrors.ClassNotFound(name)
+    )._2
 
     case (env, AttributeAccessNode(name)) => {
       val klass    = getCurrentClass(env)
@@ -140,14 +140,21 @@ object Classes extends Utils {
     case (env, MethodCallNode(invocant, method_name, args)) => {
       val invocant_object = i.evaluate(env, invocant)
       invocant_object match {
-        case obj: MoeObject =>
+        case obj: MoeObject => {
           val klass = obj.getAssociatedClass.getOrElse(throw new MoeErrors.ClassNotFound("__CLASS__"))
           val meth = klass.getMethod(method_name).getOrElse(
             klass.getSubMethod(method_name).getOrElse(
               throw new MoeErrors.MethodNotFound(method_name)
             )
           )
-          obj.callMethod(meth, args.map(i.evaluate(env, _)))
+
+          val evaluated_args = args.map(i.evaluate(env, _))
+
+          i.pushCallStack(List(klass.getFullyQualifiedName, meth.getName)) 
+          val result = obj.callMethod(meth, evaluated_args)
+          i.popCallStack
+          result
+        }
         case _ => throw new MoeErrors.MoeException("Object expected")
       }
     }
