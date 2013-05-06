@@ -35,7 +35,9 @@ class MoeSignature(
     for (i <- 0.until(arity)) {
       params(i) match {
         case MoePositionalParameter(name) => {
-          val arg = args.getArgAt(i).get
+          val arg = args.getArgAt(i).getOrElse(
+            throw new MoeErrors.MissingParameter(name)
+          )
           checkType(name, arg)
           env.create(name, arg)
         }
@@ -67,7 +69,7 @@ class MoeSignature(
         case (a: MoePairObject) => {
           val k = a.key(r).unboxToString.get
           val p = namedParameterMap.get(k).getOrElse(
-            throw new MoeErrors.MoeProblems("Could not find matching key for " + k)
+            throw new MoeErrors.MissingParameter("Could not find matching parameter key for " + k)
           )
           val v = a.value(r)
           val n = p.getName
