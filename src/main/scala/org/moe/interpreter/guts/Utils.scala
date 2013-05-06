@@ -60,7 +60,7 @@ trait Utils {
     callback(ast)
     ast match {
       case CompilationUnitNode(body) => walkAST(body, callback)
-      case ScopeNode(body)           => walkAST(body, callback)
+      case ScopeNode(body, _)        => walkAST(body, callback)
       case StatementsNode(nodes)     => nodes.foreach(walkAST(_, callback))
 
       case PairLiteralNode(key, value) => {

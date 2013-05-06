@@ -7,7 +7,7 @@ abstract class AST
 // AST containers
 
 case class CompilationUnitNode(body: ScopeNode) extends AST
-case class ScopeNode(body: StatementsNode) extends AST
+case class ScopeNode(body: StatementsNode, makeNewEnv: Boolean = true) extends AST
 
 case class StatementsNode(nodes: List[AST]) extends AST
 
