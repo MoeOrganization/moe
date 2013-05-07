@@ -59,12 +59,16 @@ object CorePackage {
         env,
         (e) => try {
             e.set("$!", getUndef)
+            e.setCurrentPackage(r.getRootPackage)
             r.eval(e.getAs[MoeStrObject]("$source").get.unboxToString.get, e)
           } catch {
             case exception: Exception => {
-              e.set("$!", getException(exception.getMessage))
+              //exception.printStackTrace()
+              e.set("$!", getException(exception.toString()))
               getUndef
             }
+          } finally {
+            e.setCurrentPackage(r.getCorePackage)
           }
       )
     )
