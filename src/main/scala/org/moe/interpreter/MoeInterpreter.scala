@@ -19,6 +19,7 @@ class MoeInterpreter {
 
   private var compiler  : PartialFunction[(MoeEnvironment, AST), MoeObject] = _
   private var evaluator : PartialFunction[(MoeEnvironment, AST), MoeObject] = _
+  private var both      : PartialFunction[(MoeEnvironment, AST), MoeObject] = _
 
   def prepare(runtime: MoeRuntime) = {
     if (compiler == null) {
@@ -41,6 +42,9 @@ class MoeInterpreter {
         Classes(this, runtime)
       )))))))
     }
+    if (both == null) {
+      both = compiler.orElse(evaluator)
+    }
   }
 
   def compile  (env: MoeEnvironment, node: AST): MoeObject = compiler(env -> node) 
@@ -50,9 +54,11 @@ class MoeInterpreter {
   def canEvaluate (env: MoeEnvironment, node: AST): Boolean = evaluator.isDefinedAt(env -> node)
 
   def compile_and_evaluate(env: MoeEnvironment, node: AST): MoeObject = {
-    if (canCompile(env, node))  return compile(env, node)
-    if (canEvaluate(env, node)) return evaluate(env, node)
-    throw new MoeErrors.UnknownNode(node.toString)
+    if (both.isDefinedAt(env -> node)) { 
+      return both(env -> node)
+    } else {
+     throw new MoeErrors.UnknownNode(node.toString)
+    }
   }
 
   def eval(runtime: MoeRuntime, env: MoeEnvironment, node: AST): MoeObject = {
