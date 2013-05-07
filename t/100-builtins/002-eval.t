@@ -11,7 +11,7 @@ use Test::More;
     ok($!.defined, "... an expection should have been thrown");
 
     eval("foo()");
-    ok(not($!.defined), "... the environment has been rest");
+    ok(not($!.defined), '... the $! variable has been reset');
 }
 
 done_testing();
