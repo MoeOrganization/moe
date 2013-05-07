@@ -7,7 +7,7 @@ use Test::More;
     my $x = 12.325;
     ok($x.isa("Num"), "... variable isa Num");
 
-    my $y = ^Num.new(12.325);
+    my $y = Num.new(12.325);
     ok($y.isa("Num"), "... object instantiation isa Num");   
     is($y, 12.325, "... object instantiation has the value we expected");    
 }

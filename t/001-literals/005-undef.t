@@ -24,7 +24,7 @@ use Test::More;
 
 # test with object creation
 {
-    my $x = ^Undef.new;
+    my $x = Undef.new;
 
     ok(not($x.defined), "... undef is not defined");
     ok($x.isa("Undef"), "... undef isa Undef");
