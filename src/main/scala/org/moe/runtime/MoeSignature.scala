@@ -64,6 +64,12 @@ class MoeSignature(
       }
     }
 
+    if (!args.wereAllArgsConsumed) {
+      throw new MoeErrors.InvalidParameter(
+        "Not all arguments were consumed " + args.consumedArgCount + " were consumed, but we had " + args.getArgCount
+      )
+    }
+
     for (arg <- extra) {
       arg match {
         case (a: MoePairObject) => {
@@ -76,7 +82,7 @@ class MoeSignature(
           checkType(n, v)
           env.create(n, v)
         }
-        case _ => throw new MoeErrors.MoeProblems("extra argument was not a pair")
+        case _ => throw new MoeErrors.IncompatibleType("argument was not a pair")
       }
     }
 

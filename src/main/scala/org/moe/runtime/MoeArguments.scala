@@ -5,14 +5,29 @@ class MoeArguments(
     private val invocant: Option[MoeObject] = None
   ) {
 
+  private var consumed_count = 0
+
   def getInvocant: Option[MoeObject] = invocant
   def hasInvocant: Boolean = invocant.isDefined
 
   def getArgCount: Int = args.length
 
-  def getArgAt(i: Int): Option[MoeObject] = if (i < args.length) Some(args(i)) else None
+  def getArgAt(i: Int): Option[MoeObject] = {
+    if (i < args.length) {
+      consumed_count = consumed_count + 1
+      Some(args(i)) 
+    } else {
+      None
+    }
+  }
   
-  def slurpArgsAt(i: Int): List[MoeObject] = args.drop(i)
+  def slurpArgsAt(i: Int): List[MoeObject] = {
+    consumed_count = args.length
+    args.drop(i)
+  }
+
+  def consumedArgCount = consumed_count
+  def wereAllArgsConsumed: Boolean = consumed_count == args.length
 }
 
 /**
