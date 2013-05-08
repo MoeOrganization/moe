@@ -21,6 +21,13 @@ sub adder_w_optional ($x, $y?) { $x + ($y || 10) }
     is(adder_w_optional(2), 12, '... calling adder_w_optional() worked (supply only one)');
 }
 
+sub adder_w_default ($x, $y = 10) { $x + $y }
+
+{
+    is(adder_w_default(2, 2), 4, '... calling adder_w_default() worked (supply both)');
+    is(adder_w_default(2), 12, '... calling adder_w_default() worked (supply only one)');
+}
+
 sub collector ($x, *@y) { $x + @y.length }
 
 {
