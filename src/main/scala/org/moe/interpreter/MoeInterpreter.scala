@@ -11,19 +11,12 @@ import org.moe.interpreter.guts._
 
 class MoeInterpreter {
 
-  // TODO:
-  // Eventually it will likely make more sense 
-  // to formalize the Stack frames, in which 
-  // case we should follow this model I think:
-  // http://docs.oracle.com/javase/6/docs/api/java/lang/StackTraceElement.html
-  // because how Perl does it is messy (with 
-  // the junk that gets returned from caller()) 
-  // - SL
-  private val callstack: Stack[List[String]] = new Stack[List[String]]()
+  private val callstack: Stack[MoeStackFrame] = new Stack[MoeStackFrame]()
 
-  def getCallStack: List[List[String]] = callstack.toList
-  def pushCallStack (frame: List[String]) = callstack.push(frame)
-  def popCallStack: List[String] = callstack.pop  
+  def getCallStack: List[MoeStackFrame] = callstack.toList
+  def pushCallStack (frame: MoeStackFrame) = callstack.push(frame)
+  def popCallStack: MoeStackFrame = callstack.pop 
+  def peakCallStack: MoeStackFrame = callstack.top  
 
   private var compiler  : PartialFunction[(MoeEnvironment, AST), MoeObject] = _
   private var evaluator : PartialFunction[(MoeEnvironment, AST), MoeObject] = _

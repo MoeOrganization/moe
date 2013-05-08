@@ -128,6 +128,7 @@ object CorePackage {
       )
     )
 
+    // [ $package, $class, $sub_or_method_name, $invocant, @args ]
     pkg.addSubroutine(
       new MoeSubroutine(
         "caller",
@@ -135,18 +136,11 @@ object CorePackage {
         env,
         (e) => e.get("$index") match {
           case Some(i: MoeIntObject) => try { 
-            val frame = r.getInterpreterCallStack.drop(1).get(i.unboxToInt.get)
-            getArray(frame.map(getStr(_)):_*) 
+            r.convertInterpreterStackFrame(r.getInterpreterCallStack.drop(1).get(i.unboxToInt.get))
           } catch { 
             case e: java.lang.IndexOutOfBoundsException => getUndef 
           }
-          case _ => {
-            getArray(
-              r.getInterpreterCallStack.drop(1).map(
-                (x) => getArray(x.map(getStr(_)):_*)
-              ):_*
-            )
-          }
+          case _ => getArray(r.getInterpreterCallStack.drop(1).map(r.convertInterpreterStackFrame(_)):_*)
         } 
       )
     )

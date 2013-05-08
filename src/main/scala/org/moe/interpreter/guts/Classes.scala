@@ -150,7 +150,7 @@ object Classes extends Utils {
 
           val evaluated_args = args.map(i.evaluate(env, _))
 
-          i.pushCallStack(List(klass.getFullyQualifiedName, meth.getName)) 
+          i.pushCallStack(new MoeStackFrame(meth, evaluated_args, Some(obj))) 
           val result = obj.callMethod(meth, evaluated_args)
           i.popCallStack
           result

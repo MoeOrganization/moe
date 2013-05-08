@@ -210,7 +210,15 @@ class MoeRuntime (
     CompilationUnitNode(ScopeNode(MoeParser.parseFromEntry(line)))
   )
 
-  def getInterpreterCallStack: List[List[String]] = interpreter.get.getCallStack
+  def getInterpreterCallStack: List[MoeStackFrame] = interpreter.get.getCallStack
+
+  def convertInterpreterStackFrame (frame: MoeStackFrame) = this.NativeObjects.getArray(
+    frame.getCurrentPackage.map((x) => this.NativeObjects.getStr(x.getFullyQualifiedName)).getOrElse(this.NativeObjects.getUndef),
+    frame.getCurrentClass.map((x) => this.NativeObjects.getStr(x.getName)).getOrElse(this.NativeObjects.getUndef),
+    this.NativeObjects.getStr(frame.getCode.getName),
+    frame.getCurrentInvocant.getOrElse(this.NativeObjects.getUndef),
+    this.NativeObjects.getArray(frame.getArgs:_*)
+  )
 
   private def setupBuiltins = {
     import org.moe.runtime.builtins._
