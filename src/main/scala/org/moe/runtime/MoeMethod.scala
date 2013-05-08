@@ -14,14 +14,7 @@ class MoeMethod (
     signature: MoeSignature,
     declaration_env: MoeEnvironment,
     body: (MoeEnvironment) => MoeObject
-  ) extends MoeCode(signature, declaration_env, body) {
-
-  private val _name: String = name
-
-  /**
-   * Returns the name of this method
-   */
-  def getName: String = _name
+  ) extends MoeCode(signature, declaration_env, body, Some(name)) {
 
   override def prepareExecutionEnvironment(args: MoeArguments): MoeEnvironment = {
     if (!args.hasInvocant)

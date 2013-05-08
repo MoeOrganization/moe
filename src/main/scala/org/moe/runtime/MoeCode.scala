@@ -11,8 +11,14 @@ package org.moe.runtime
 class MoeCode (
     private val signature: MoeSignature,
     private val declaration_env: MoeEnvironment,
-    private val body: (MoeEnvironment) => MoeObject
+    private val body: (MoeEnvironment) => MoeObject,
+    private val name: Option[String] = None
   ) extends MoeObject {
+
+  /**
+   * Returns the name of this method
+   */
+  def getName: String = name.getOrElse("__ANON__")
 
   /**
    * Returns the signature of this method

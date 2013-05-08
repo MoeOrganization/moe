@@ -15,10 +15,9 @@ class MoeSubroutine (
     declaration_env: MoeEnvironment,
     body: (MoeEnvironment) => MoeObject,
     traits: List[String] = List()
-  ) extends MoeCode(signature, declaration_env, body) { 
+  ) extends MoeCode(signature, declaration_env, body, Some(name)) { 
 
   private val _traits: List[String] = traits
-  private val _name: String = name
 
   /**
    * Returns the traits associated with this subroutine
@@ -26,9 +25,5 @@ class MoeSubroutine (
   def getTraits: List[String] = _traits
 
   def hasTrait(t: String): Boolean = _traits.contains(t)
-
-  /**
-   * Returns the name of this subroutine
-   */
-  def getName: String = _name
+  
 }
