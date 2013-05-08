@@ -140,7 +140,16 @@ object Serializer {
       )
     )
 
-    case ParameterNode(name, optional, slurpy, named) => JSONObject(
+    case ParameterNode(name, optional, slurpy, named, Some(default)) => JSONObject(
+      Map(
+        "name"     -> name, 
+        "optional" -> optional.toString, 
+        "slurpy"   -> slurpy.toString,
+        "named"    -> named.toString,
+        "default"  -> toJSON(default)
+      )
+    )
+    case ParameterNode(name, optional, slurpy, named, None) => JSONObject(
       Map(
         "name"     -> name, 
         "optional" -> optional.toString, 

@@ -310,17 +310,18 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   // Parameters
 
-  def parameter = ("[*:]".r).? ~ parameterName ~ "?".? ^^ { 
-    case None      ~ a ~ None      => ParameterNode(a)
-    case None      ~ a ~ Some("?") => ParameterNode(a, optional = true)
-    case Some(":") ~ a ~ None      => ParameterNode(a, named = true)
-    case Some("*") ~ a ~ None      => {
+  def parameter = ("[*:]".r).? ~ parameterName ~ "?".? ~ opt("=" ~> expression) ^^ { 
+    case None      ~ a ~ None      ~ None   => ParameterNode(a)
+    case None      ~ a ~ Some("?") ~ None   => ParameterNode(a, optional = true)
+    case Some(":") ~ a ~ None      ~ None   => ParameterNode(a, named = true)
+    case Some("*") ~ a ~ None      ~ None   => {
       a.take(1) match {
         case "@" => ParameterNode(a, slurpy = true)
         case "%" => ParameterNode(a, slurpy = true, named = true) 
         case  _  => throw new Exception("slurpy parameters must be either arrays or hashes")
       }
     }
+    case None     ~ a ~ None       ~ defVal => ParameterNode(a, default = defVal)
   }
 
   // Code literals
