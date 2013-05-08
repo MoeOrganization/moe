@@ -101,5 +101,25 @@ class Point3D extends Point {
     is($p3D.z, 0, '... z is back to the default value');
 }
 
+{
+    my $p3D = Point3D.new(x => 10, y => 20, z => 30);
+    ok($p3D.defined, '... the instance is defined');
+    ok($p3D.isa("Point3D"),  '... the instance isa Point3D');
+
+    is($p3D.x, 10, '... x has the value from the constructor');
+    is($p3D.y, 20, '... y has the value from the constructor');
+    is($p3D.z, 30, '... z has the value from the constructor');
+}
+
+{
+    my $p3D = Point3D.new(x => 10);
+    ok($p3D.defined, '... the instance is defined');
+    ok($p3D.isa("Point3D"),  '... the instance isa Point3D');
+
+    is($p3D.x, 10, '... x has the value from the constructor');
+    is($p3D.y, 0, '... y has the default value');
+    is($p3D.z, 0, '... z has the default value');
+}
+
 
 done_testing();
