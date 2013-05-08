@@ -18,7 +18,7 @@ object Packages extends Utils {
       newEnv.setCurrentPackage(pkgs._2) 
 
       val result = i.compile_and_evaluate(newEnv, body)
-      newEnv.setCurrentPackage(parent)
+      
       // return the root
       pkgs._1
     }
