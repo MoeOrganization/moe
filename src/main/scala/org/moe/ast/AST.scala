@@ -56,9 +56,10 @@ case class TernaryOpNode(cond: AST, trueExpr: AST, falseExpr: AST) extends AST
 
 case class ParameterNode(
     name     : String, 
-    optional : Boolean = false, 
-    slurpy   : Boolean = false, 
-    named    : Boolean = false
+    optional : Boolean     = false, 
+    slurpy   : Boolean     = false, 
+    named    : Boolean     = false,
+    default  : Option[AST] = None
 ) extends AST 
 
 case class SignatureNode(params: List[ParameterNode]) extends AST

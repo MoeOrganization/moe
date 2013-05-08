@@ -10,6 +10,7 @@ case class MoeOptionalParameter    (val n: String) extends MoeParameter(n)
 case class MoeSlurpyParameter      (val n: String) extends MoeParameter(n)
 case class MoeNamedParameter       (val n: String) extends MoeParameter(n)
 case class MoeSlurpyNamedParameter (val n: String) extends MoeParameter(n)
+case class MoeDefaultValueParameter(val n: String, val default: MoeObject) extends MoeParameter(n)
 
 /**
 
