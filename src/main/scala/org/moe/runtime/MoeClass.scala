@@ -28,12 +28,6 @@ class MoeClass(
    */
   def getName: String = name
 
-  // TODO:
-  // make this find the package package 
-  // and actually provide the full name
-  // - SL
-  def getFullyQualifiedName: String = name
-
   /**
    * Returns the version of this class
    */
