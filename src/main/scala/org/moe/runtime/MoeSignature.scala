@@ -60,6 +60,15 @@ class MoeSignature(
           name, 
           r.NativeObjects.getHash(args.slurpArgsAt(i).map(_.unboxToTuple.get):_*)
         )
+        case MoeDefaultValueParameter(name, value) => args.getArgAt(i) match {
+          case Some(a) => {
+            checkType(name, a)
+            env.create(name, a)
+          }
+          case None => {
+            env.create(name, value)
+          }
+        }
         case _ => extra = args.getArgAt(i).get :: extra 
       }
     }
