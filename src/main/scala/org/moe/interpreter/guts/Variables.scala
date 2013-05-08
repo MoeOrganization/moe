@@ -26,7 +26,7 @@ object Variables extends Utils {
             getCurrentPackage(env)
           ).getOrElse( 
             throw new MoeErrors.SubroutineNotFound(function_name)
-          )._2
+          )
           if (!sub.hasAssociatedClass) sub.setAssociatedType(Some(MoeCodeType(r.getCoreClassFor("Code"))))
           sub
         } else {

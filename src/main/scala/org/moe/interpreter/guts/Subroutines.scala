@@ -32,12 +32,10 @@ object Subroutines extends Utils {
 
   def apply (i: MoeInterpreter, r: MoeRuntime): PartialFunction[(MoeEnvironment, AST), MoeObject] = {
     case (env, SubroutineCallNode(function_name, args)) => {
-      val set = r.lookupSubroutine(function_name, getCurrentPackage(env)).getOrElse( 
+      val sub = r.lookupSubroutine(function_name, getCurrentPackage(env)).getOrElse(
         throw new MoeErrors.SubroutineNotFound(function_name)
       )
 
-      val pkg = set._1
-      val sub = set._2
 
       val evaluated_args = new MoeArguments(args.map(i.evaluate(env, _)))
 

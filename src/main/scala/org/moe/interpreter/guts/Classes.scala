@@ -14,7 +14,7 @@ object Classes extends Utils {
       val superclass_class: Option[MoeClass] = superclass.map(
         r.lookupClass(_, pkg).getOrElse(
           throw new MoeErrors.ClassNotFound(superclass.getOrElse(""))
-        )._2
+        )
       ).orElse(r.getCoreClassFor("Any"))
 
       val klass = new MoeClass(
@@ -78,7 +78,7 @@ object Classes extends Utils {
       getCurrentPackage(env)
     ).getOrElse( 
       throw new MoeErrors.ClassNotFound(name)
-    )._2
+    )
 
     case (env, AttributeAccessNode(name)) => {
       val klass    = getCurrentClass(env)

@@ -165,33 +165,25 @@ class MoeRuntime (
       (Some(split_name.dropRight(1)) -> split_name.last)
   }
 
-  def lookupSubroutine (name: String, pkg: MoePackage): Option[(MoePackage, MoeSubroutine)] = (deconstructNamespace(name) match {
-    case (None,           sub_name) => pkg.getSubroutine(sub_name).flatMap((s) => Some(pkg, s))
-    case (Some(pkg_name), sub_name) => MoePackage.findPackageByName(pkg_name, pkg).flatMap(
-      (p) => p.getSubroutine(sub_name).flatMap((s) => Some(p, s))
-    )
+  def lookupSubroutine (name: String, pkg: MoePackage): Option[MoeSubroutine] = (deconstructNamespace(name) match {
+    case (None,           sub_name) => pkg.getSubroutine(sub_name)
+    case (Some(pkg_name), sub_name) => MoePackage.findPackageByName(pkg_name, pkg).flatMap(_.getSubroutine(sub_name))
   }).orElse(
     if (name.contains("::")) {
-      lookupSubroutine(name, rootPackage).orElse(
-        getCoreSubroutineFor(name).flatMap((s) => Some(corePackage, s))
-      )
+      lookupSubroutine(name, rootPackage).orElse(getCoreSubroutineFor(name))
     } else {
-      getCoreSubroutineFor(name).flatMap((s) => Some(corePackage, s))
+      getCoreSubroutineFor(name)
     }
   )
 
-  def lookupClass (name: String, pkg: MoePackage): Option[(MoePackage, MoeClass)] = (deconstructNamespace(name) match {
-    case (None,           class_name) => pkg.getClass(class_name).flatMap((c) => Some(pkg, c))
-    case (Some(pkg_name), class_name) => MoePackage.findPackageByName(pkg_name, pkg).flatMap(
-      (p) => p.getClass(class_name).flatMap((c) => Some(p, c))
-    )
+  def lookupClass (name: String, pkg: MoePackage): Option[MoeClass] = (deconstructNamespace(name) match {
+    case (None,           class_name) => pkg.getClass(class_name)
+    case (Some(pkg_name), class_name) => MoePackage.findPackageByName(pkg_name, pkg).flatMap(_.getClass(class_name))
   }).orElse(
     if (name.contains("::")) {
-      lookupClass(name, rootPackage).orElse(
-        getCoreClassFor(name).flatMap((c) => Some(corePackage, c))
-      )
+      lookupClass(name, rootPackage).orElse(getCoreClassFor(name))
     } else {
-      getCoreClassFor(name).flatMap((c) => Some(corePackage, c))
+      getCoreClassFor(name)
     }
   )
 
