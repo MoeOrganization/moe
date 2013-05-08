@@ -18,9 +18,6 @@ object Literals extends Utils {
     case (env, SelfLiteralNode())  => env.getCurrentInvocant.getOrElse(
       throw new MoeErrors.InvocantNotFound("__SELF__")
     )
-    case (env, SuperLiteralNode()) => getCurrentClass(env).getSuperclass.getOrElse(
-      throw new MoeErrors.SuperclassNotFound("__SUPER__")
-    )
 
     case (env, ArrayLiteralNode(values)) => r.NativeObjects.getArray(values.map(i.evaluate(env, _)):_*)
 

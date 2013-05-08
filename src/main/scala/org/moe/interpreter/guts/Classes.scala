@@ -80,6 +80,26 @@ object Classes extends Utils {
       throw new MoeErrors.ClassNotFound(name)
     )
 
+    case (env, SuperCallNode()) => {
+      val superclass = getCurrentClass(env).getSuperclass.getOrElse(
+        throw new MoeErrors.SuperclassNotFound("__SUPER__")
+      )
+      val stack_frame = i.peakCallStack
+      val meth_name   = stack_frame.getCode.getName 
+      val args        = stack_frame.getArgs
+      val invocant    = stack_frame.getCurrentInvocant.getOrElse(
+        throw new MoeErrors.InvocantNotFound("super()")
+      )
+      val meth        = superclass.getMethod(meth_name).getOrElse(
+        throw new MoeErrors.MethodNotFound(superclass.getName + "::" + meth_name)
+      )
+
+      i.pushCallStack(new MoeStackFrame(meth, args, Some(invocant))) 
+      val result = invocant.callMethod(meth, args)
+      i.popCallStack
+      result
+    }
+
     case (env, AttributeAccessNode(name)) => {
       val klass    = getCurrentClass(env)
       val attr     = klass.getAttribute(name).getOrElse(throw new MoeErrors.AttributeNotFound(name))

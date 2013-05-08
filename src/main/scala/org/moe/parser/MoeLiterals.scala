@@ -63,7 +63,8 @@ trait MoeLiterals extends JavaTokenParsers {
 
   // Self Literal
 
-  def selfLiteral: Parser[SelfLiteralNode] = "self".r ^^^ SelfLiteralNode()
+  def selfLiteral  : Parser[SelfLiteralNode]  = "self".r ^^^ SelfLiteralNode()
+  def superLiteral : Parser[SuperCallNode] = "super".r ^^^ SuperCallNode()
 
   def literalValue: Parser[AST] = (
       floatNumber
@@ -77,5 +78,6 @@ trait MoeLiterals extends JavaTokenParsers {
     | constUndef
     | string
     | selfLiteral
+    | superLiteral
   )
 }

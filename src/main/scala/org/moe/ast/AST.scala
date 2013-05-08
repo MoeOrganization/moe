@@ -27,7 +27,7 @@ case class UndefLiteralNode() extends AST
 
 case class SelfLiteralNode() extends AST
 case class ClassLiteralNode() extends AST
-case class SuperLiteralNode() extends AST
+case class SuperCallNode() extends AST
 
 case class PairLiteralNode(key: AST, value: AST) extends AST
 

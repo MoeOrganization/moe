@@ -16,7 +16,7 @@ object Serializer {
     case UndefLiteralNode() => "UndefLiteralNode"
     case SelfLiteralNode()  => "SelfLiteralNode"
     case ClassLiteralNode() => "ClassLiteralNode"
-    case SuperLiteralNode() => "SuperLiteralNode"
+    case SuperCallNode() => "SuperCallNode"
 
     case PairLiteralNode(key, value) => JSONObject(
       Map(
