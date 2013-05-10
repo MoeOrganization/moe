@@ -24,6 +24,13 @@ object Moe {
 
     options.addOption("n", false, """assume "while (<>) { ... }" loop around program""")
     options.addOption("p", false, """assume loop like -n but print line also""")
+    options.addOption("a", false, """autosplit mode with -n or -p (splits $_ into @F)""")
+    // options.addOption("F", true,  """split() pattern for -a switch""")
+
+    val f = new Option("F", "split() pattern for -a switch")
+    f.setArgs(1)
+    f.setArgName("pattern")
+    options.addOption(f)
 
     val e = new Option("e", "code to evaluate")
     e.setArgs(1)
@@ -95,30 +102,35 @@ object Moe {
 
     def wrapCode(code: String) = {
       if (cmd.hasOption("n") || cmd.hasOption("p")) {
+
+        // TODO: should support regex pattern for -F option
+        val autosplitCode =
+          if (cmd.hasOption("a")) {
+            val split_pattern = if (cmd.hasOption("F")) cmd.getOptionValue("F") else " "
+            s"""my @F = $$_.split("$split_pattern");\n"""
+          }
+          else ""
+
+        val printOutputCode = if (cmd.hasOption("p")) "; say $_;" else ""
+
         val wrapped = 
-          """
-          my $__RUNNING_LINE_COUNT__ = 0;
-          for $ARGV (@ARGV) {
-              my $__ARGV_IO__ = IO.new($ARGV);
-              my $__LINE__ = 0;
-              while (!($__ARGV_IO__.eof)) {
-                  my $_ = $__ARGV_IO__.readline;
-                  if (!($__ARGV_IO__.eof)) {
-                      $__LINE__ = $__RUNNING_LINE_COUNT__ + $argv_io.input_line_number;
+          s"""
+          my $$__RUNNING_LINE_COUNT__ = 0;
+          for $$ARGV (@ARGV) {
+              my $$__ARGV_IO__ = IO.new($$ARGV);
+              my $$__LINE__ = 0;
+              while (!($$__ARGV_IO__.eof)) {
+                  my $$_ = $$__ARGV_IO__.readline;
+                  if (!($$__ARGV_IO__.eof)) {
+                      $$__LINE__ = $$__RUNNING_LINE_COUNT__ + $$__ARGV_IO__.input_line_number;
+                      $autosplitCode
                       ## BEGIN INPUT CODE ##
-          """ +
-          "            " + code.replaceAll("""\$\.""", """\$__LINE__""") +
-          """
-                      ## END INPUT CODE ##""" +
-          (if (cmd.hasOption("p"))
-             """
-                      ;
-                      say $_;"""
-           else "") +
-          """
+                      ${code.replaceAll("\\$\\.", "\\$__LINE__")}
+                      ## END INPUT CODE ##
+                      $printOutputCode
                   }
               }
-              $__RUNNING_LINE_COUNT__ = $__RUNNING_LINE_COUNT__ + $__LINE__;
+              $$__RUNNING_LINE_COUNT__ = $$__RUNNING_LINE_COUNT__ + $$__LINE__;
           }
           """
         if (runtime.isDebuggingOn) println("---\n" + wrapped + "\n---")
