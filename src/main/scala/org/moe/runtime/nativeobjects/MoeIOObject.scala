@@ -59,9 +59,6 @@ class MoeIOObject(
   def readlines (r: MoeRuntime): MoeArrayObject = r.NativeObjects.getArray(
     {
       Source.fromFile(file).getLines.toList.map(r.NativeObjects.getStr(_)):_*
-      // val lines = Source.fromFile(file).getLines
-      // isAtEOF = true
-      // lines.toList.map(r.NativeObjects.getStr(_)):_*
     }
   )
 
