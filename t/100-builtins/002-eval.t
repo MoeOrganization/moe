@@ -16,6 +16,7 @@ use Test::More;
     is($r2, "foo", '... got the expected result');
 }
 
+# test it can access variables
 {
     my $x = 10;
 
@@ -24,6 +25,7 @@ use Test::More;
     is($r, 20, '... got the expected value back');
 }
 
+# test that it can change variables
 {
     my $x = 10;
 
