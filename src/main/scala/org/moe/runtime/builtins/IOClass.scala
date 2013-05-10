@@ -143,6 +143,24 @@ object IOClass {
       )
     )
 
+    ioClass.addMethod(
+      new MoeMethod(
+        "input_line_number",
+        new MoeSignature(),
+        env,
+        (e) => self(e).currentLineNumber(r)
+      )
+    )
+
+    ioClass.addMethod(
+      new MoeMethod(
+        "eof",
+        new MoeSignature(),
+        env,
+        (e) => self(e).atEndOfFile(r)
+      )
+    )
+
     /**
      * NOTE:
      * This list needs some work, I have been punting on
