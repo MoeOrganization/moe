@@ -16,10 +16,11 @@ class MoeIOObject(
     v: java.io.File, t : Option[MoeType] = None
   ) extends MoeNativeObject[java.io.File](v, t) {
 
-  private lazy val reader = new java.io.BufferedReader(new java.io.FileReader(getNativeValue))
+  private lazy val reader = new java.io.LineNumberReader(new java.io.BufferedReader(new java.io.FileReader(getNativeValue)))
   private lazy val writer = new java.io.FileWriter(getNativeValue)
 
   private def file = getNativeValue
+  private var isAtEOF = false
 
   // runtime methods
 
@@ -45,15 +46,31 @@ class MoeIOObject(
 
   def readline (r: MoeRuntime): MoeStrObject = {
     val line = reader.readLine()
-    r.NativeObjects.getStr(if (line == null) "" else line)
+    r.NativeObjects.getStr(
+      if (line == null) {
+        isAtEOF = true
+        ""
+      }
+      else
+        line
+    )
   }
 
   def readlines (r: MoeRuntime): MoeArrayObject = r.NativeObjects.getArray(
-    Source.fromFile(file).getLines.toList.map(r.NativeObjects.getStr(_)):_*
+    {
+      Source.fromFile(file).getLines.toList.map(r.NativeObjects.getStr(_)):_*
+      // val lines = Source.fromFile(file).getLines
+      // isAtEOF = true
+      // lines.toList.map(r.NativeObjects.getStr(_)):_*
+    }
   )
 
   def slurp (r: MoeRuntime): MoeStrObject = r.NativeObjects.getStr(
-    Source.fromFile(file).mkString
+    {
+      val slurped = Source.fromFile(file).mkString
+      isAtEOF = true
+      slurped
+    }
   )
 
   def close (r: MoeRuntime): MoeUndefObject = {
@@ -61,6 +78,10 @@ class MoeIOObject(
     writer.close()
     r.NativeObjects.getUndef
   }
+
+  def currentLineNumber (r: MoeRuntime): MoeIntObject = r.NativeObjects.getInt( reader.getLineNumber )
+
+  def atEndOfFile (r: MoeRuntime): MoeBoolObject = r.NativeObjects.getBool( isAtEOF )
 
   // MoeNativeObject overrides
 
