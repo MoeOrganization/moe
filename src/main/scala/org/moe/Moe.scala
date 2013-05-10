@@ -22,6 +22,9 @@ object Moe {
     options.addOption("w", false, "enable many useful warnings")
     options.addOption("d", false, "debug mode")
 
+    options.addOption("n", false, """assume "while (<>) { ... }" loop around program""")
+    options.addOption("p", false, """assume loop like -n but print line also""")
+
     val e = new Option("e", "code to evaluate")
     e.setArgs(1)
     e.setArgName("program")
@@ -90,25 +93,61 @@ object Moe {
         )
       )
 
+    def wrapCode(code: String) = {
+      if (cmd.hasOption("n") || cmd.hasOption("p")) {
+        val wrapped = 
+          """
+          my $__RUNNING_LINE_COUNT__ = 0;
+          for $ARGV (@ARGV) {
+              my $argv_io = IO.new($ARGV);
+              my $__LINE__ = 0;
+              while (!($argv_io.eof)) {
+                  my $_ = $argv_io.readline;
+                  if (!($argv_io.eof)) {
+                      $__LINE__ = $__RUNNING_LINE_COUNT__ + $argv_io.input_line_number;
+                      ## BEGIN INPUT CODE ##
+          """ +
+          "            " + code.replaceAll("""\$\.""", """\$__LINE__""") +
+          """
+                      ## END INPUT CODE ##""" +
+          (if (cmd.hasOption("p"))
+             """
+                      ;
+                      say $_;"""
+           else "") +
+          """
+                  }
+              }
+              $__RUNNING_LINE_COUNT__ = $__RUNNING_LINE_COUNT__ + $__LINE__;
+          }
+          """
+        if (runtime.isDebuggingOn) println("---\n" + wrapped + "\n---")
+        wrapped
+      }
+      else
+        code
+    }
+
     val rest: List[String] = cmd.getArgs().toList
 
     if (cmd.hasOption("e")) {
       val code: String = cmd.getOptionValue("e")
-      if (!rest.isEmpty)
+      if (!rest.isEmpty) {
         setupArgv(rest)
+      }
       REPL.evalLine(
         interpreter,
         runtime,
-        code,
+        wrapCode(code),
         Map("printOutput" -> false, "dumpAST" -> dumpAST, "printParserErrors" -> true)
       )
       return
     }
     else {
       def evalProgram (path: String) = REPL.evalLine(
-        interpreter, 
-        runtime, 
-        Source.fromFile(path).mkString, 
+        interpreter,
+        runtime,
+        wrapCode(Source.fromFile(path).mkString),
         Map("printOutput" -> false, "dumpAST" -> dumpAST, "printParserErrors" -> true)
       )
 
