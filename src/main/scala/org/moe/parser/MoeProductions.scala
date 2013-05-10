@@ -239,7 +239,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   // assignment
 
-  def variableDeclaration = "my" ~> variableName ~ ("=" ~> expression).? <~ statementDelim ^^ {
+  def variableDeclaration = "my" ~> variableName ~ ("=" ~> expression).? ^^ {
     case v ~ expr => VariableDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
   }  
 
@@ -252,32 +252,32 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
       f(x.head, y.headOption.getOrElse(UndefLiteralNode())) :: zipEm(x.tail, y.tail, f)
   }
 
-  def multiVariableDeclaration = "my" ~> ("(" ~> repsep(variableName, ",") <~ ")") ~ ("=" ~> "(" ~> repsep(expression, ",") <~ ")").? <~ statementDelim ^^ {
+  def multiVariableDeclaration = "my" ~> ("(" ~> repsep(variableName, ",") <~ ")") ~ ("=" ~> "(" ~> repsep(expression, ",") <~ ")").? ^^ {
     case vars ~ None        => StatementsNode(vars.map(VariableDeclarationNode(_, UndefLiteralNode())))
     case vars ~ Some(exprs) => StatementsNode(zipEm(vars, exprs, (p) => VariableDeclarationNode(p._1, p._2)))
   }  
 
-  def variableAssignment = variableName ~ "=" ~ expression <~ statementDelim ^^ {
+  def variableAssignment = variableName ~ "=" ~ expression ^^ {
     case v ~ _ ~ expr => VariableAssignmentNode(v, expr)
   }
 
-  def multiVariableAssignment = ("(" ~> repsep(variableName, ",") <~ ")") ~ "=" ~ ("(" ~> repsep(expression, ",") <~ ")") <~ statementDelim ^^ {
+  def multiVariableAssignment = ("(" ~> repsep(variableName, ",") <~ ")") ~ "=" ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
     case vars ~ _ ~ exprs => MultiVariableAssignmentNode(vars, exprs)
   }    
 
-  def attributeAssignment = attributeName ~ "=" ~ expression <~ statementDelim ^^ {
+  def attributeAssignment = attributeName ~ "=" ~ expression ^^ {
     case v ~ _ ~ expr => AttributeAssignmentNode(v, expr)
   }
 
-  def multiAttributeAssignment = ("(" ~> repsep(attributeName, ",") <~ ")") ~ "=" ~ ("(" ~> repsep(expression, ",") <~ ")") <~ statementDelim ^^ {
+  def multiAttributeAssignment = ("(" ~> repsep(attributeName, ",") <~ ")") ~ "=" ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
     case vars ~ _ ~ exprs => MultiAttributeAssignmentNode(vars, exprs)
   }   
 
-  def arrayElementAssignment = array_index_rule ~ "=" ~ expression <~ statementDelim ^^ {
+  def arrayElementAssignment = array_index_rule ~ "=" ~ expression ^^ {
     case array ~ index_exprs ~ "=" ~ value_expr => ArrayElementLvalueNode(array, index_exprs, value_expr)
   }
 
-  def hashElementAssignment = hash_index_rule ~ "=" ~ expression <~ statementDelim ^^ {
+  def hashElementAssignment = hash_index_rule ~ "=" ~ expression ^^ {
     case hash ~ key_exprs ~ "=" ~ value_expr => HashElementLvalueNode(hash, key_exprs, value_expr)
   }
 
@@ -292,13 +292,18 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   def statementDelim: Parser[List[String]] = rep1(";")
 
-  def statements: Parser[StatementsNode] = repsep((
+  def statements: Parser[StatementsNode] = rep((
       blockStatement
     | declarationStatement
-    | statement
-  ), statementDelim.?) ^^ StatementsNode
+    | terminatedStatement
+    | simpleStatement
+    | scopeBlock
+  )) ~ opt(statement) ^^ {
+    case stmts ~ Some(lastStmt) => StatementsNode(stmts ++ List(lastStmt))
+    case stmts ~ None           => StatementsNode(stmts)
+  }
 
-  def block: Parser[StatementsNode] = "{" ~> statements <~ "}"
+  def block: Parser[StatementsNode] = ("{" ~> statements <~ "}")
 
   def doBlock: Parser[StatementsNode] = "do".r ~> block
   def scopeBlock: Parser[ScopeNode] = block ^^ { ScopeNode(_) }
@@ -347,7 +352,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   // Classes
 
-  def attributeDecl = "has" ~> attributeName ~ ("=" ~> expression).? <~ statementDelim ^^ {
+  def attributeDecl = "has" ~> attributeName ~ ("=" ~> expression).? ^^ {
     case v ~ expr => AttributeDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
   }
 
@@ -364,6 +369,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   def classBodyParts: Parser[AST] = (
       methodDecl
     | submethodDecl
+    | (attributeDecl <~ statementDelim)
     | attributeDecl
   )
 
@@ -384,7 +390,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    *********************************************************************
    */
 
-  def useStatement: Parser[UseStatement] = ("use" ~> namespacedIdentifier) <~ statementDelim ^^ UseStatement
+  def useStatement: Parser[UseStatement] = ("use" ~> namespacedIdentifier) ^^ UseStatement
 
   def elseBlock: Parser[IfStruct] = "else" ~> block ^^ { 
     case body => new IfStruct(BooleanLiteralNode(true), body) 
@@ -408,8 +414,17 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case cond ~ body => WhileNode(PrefixUnaryOpNode(cond, "!"), body)
   }
 
-  // def forLoop = "for" ~ "(" ~> expression <~ ";" ~> expression <~ ";" ~> expression <~ ")" ~ block
-  // def foreachLoop = "for(each)?".r ~ varDeclare ~ "(" ~> expression <~ ")" ~ block
+  def topicVariable = ("my".? ~> variableName) ^^ {
+    v => VariableDeclarationNode(v, UndefLiteralNode())
+  }
+  def foreachBlock = "for(each)?".r ~> opt(topicVariable) ~ ("(" ~> expression <~ ")") ~ block ^^ {
+    case Some(topic) ~ list ~ block => ForeachNode(topic, list, block)
+    case None        ~ list ~ block => ForeachNode(VariableDeclarationNode("$_", UndefLiteralNode()), list, block)
+  }
+
+  def forBlock = "for" ~> (("(" ~> variableDeclaration) <~ ";") ~ (expression <~ ";") ~ (statement <~ ")") ~ block ^^ {
+    case init ~ termCond ~ step ~ block => ForNode(init, termCond, step, block)
+  }
 
   def tryBlock: Parser[TryNode] = ("try" ~> block) ~ rep(catchBlock) ~ rep(finallyBlock) ^^ {
     case a ~ b ~ c => TryNode(a, b, c)
@@ -432,17 +447,19 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
       ifElseBlock
     | whileBlock
     | untilBlock
+    | foreachBlock
+    | forBlock
     | doBlock
     | tryBlock
-  )
+  ) <~ opt(statementDelim)
 
   lazy val declarationStatement: Parser[AST] = (
       packageDecl
     | subroutineDecl
     | classDecl
-  )
+  ) <~ opt(statementDelim)
 
-  lazy val statement: Parser[AST] = (
+  lazy val simpleStatement: Parser[AST] = (
       variableDeclaration
     | multiVariableDeclaration
     | variableAssignment
@@ -452,8 +469,10 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     | useStatement
     | arrayElementAssignment
     | hashElementAssignment
-    | expression <~ statementDelim.?
-    | scopeBlock  
+    | expression
+    // | scopeBlock  
   )
 
+  lazy val statement: Parser[AST] = simpleStatement
+  lazy val terminatedStatement: Parser[AST] = simpleStatement <~ statementDelim
 }

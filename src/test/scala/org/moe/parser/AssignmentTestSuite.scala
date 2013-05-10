@@ -17,4 +17,8 @@ class AssignmentTestSuite extends FunSuite with BeforeAndAfter with ParserTestUt
     result.unboxToInt.get should equal (20)
   }
 
+  test("... a basic assignment -- multiple statements") {
+    val result = interpretCode("my $foo = 10; sub foo { $foo = $foo + 10; $foo = $foo + 20 } foo()")
+    result.unboxToInt.get should equal (40)
+  }
 }

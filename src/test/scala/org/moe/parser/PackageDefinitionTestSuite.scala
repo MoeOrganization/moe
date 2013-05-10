@@ -31,17 +31,17 @@ class PackageDefinitionTestSuite extends FunSuite with BeforeAndAfter with Parse
   }
 
   test("... test automatic package tree creation") {
-    val result = interpretCode("package Foo::Bar { sub baz {'BAZ'} }; Foo::Bar::baz()")
+    val result = interpretCode("package Foo::Bar { sub baz {'BAZ'} } Foo::Bar::baz()")
     assert(result.unboxToString.get === "BAZ")
   }
 
   test("... test automatic package tree creation doesn't clobber existing packages") {
-    val result = interpretCode("package Foo { sub bar { 'BAR' } }; package Foo::Bar { sub baz { 'BAZ' } }; Foo::bar();")
+    val result = interpretCode("package Foo { sub bar { 'BAR' } } package Foo::Bar { sub baz { 'BAZ' } } Foo::bar();")
     assert(result.unboxToString.get === "BAR")
   }
 
   test("... test automatic package tree creation doesn't clobber existing packages (again)") {
-    val result = interpretCode("package Foo { sub bar {'BAR'} }; package Foo { sub baz {'BAZ'} }; Foo::bar() ~ Foo::baz()")
+    val result = interpretCode("package Foo { sub bar {'BAR'} } package Foo { sub baz {'BAZ'} } Foo::bar() ~ Foo::baz()")
     assert(result.unboxToString.get === "BARBAZ")
   }
 
