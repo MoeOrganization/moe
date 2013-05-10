@@ -6,7 +6,8 @@ package Foo {
     sub gorch { Foo::baz() ~ "::gorch" }
 }
 
-eval_lives_ok("Foo::bar()", '... calling a sub in a package works');
+eval("Foo::bar()");
+ok(not($!.defined), '... calling a sub in a package works');
 
 is(Foo::bar(),   "Foo::bar", '... and that sub does what we expect');
 is(Foo::baz(),   "Foo::bar::baz", '... subs can call other subs locally inside the package');

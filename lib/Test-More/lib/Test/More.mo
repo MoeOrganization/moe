@@ -121,16 +121,6 @@ package Test {
             $builder.is_deeply($got, $expected, $msg);
         }
 
-        sub eval_dies_ok ($code, $msg?) is export {
-            eval($code);
-            $builder.ok($!.defined, $msg);   
-        }
-
-        sub eval_lives_ok ($code, $msg?) is export {
-            eval($code);
-            $builder.ok(not($!.defined), $msg);   
-        }
-
         sub diag ($msg) is export {
             $builder.diag($msg);
         }
