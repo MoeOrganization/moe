@@ -94,7 +94,7 @@ object Classes extends Utils {
         throw new MoeErrors.MethodNotFound(superclass.getName + "::" + meth_name)
       )
 
-      i.pushCallStack(new MoeStackFrame(meth, args, Some(invocant))) 
+      i.pushCallStack(new MoeStackFrame(meth, args, env, Some(invocant))) 
       val result = invocant.callMethod(meth, args)
       i.popCallStack
       result
@@ -170,7 +170,7 @@ object Classes extends Utils {
 
           val evaluated_args = args.map(i.evaluate(env, _))
 
-          i.pushCallStack(new MoeStackFrame(meth, evaluated_args, Some(obj))) 
+          i.pushCallStack(new MoeStackFrame(meth, evaluated_args, env, Some(obj))) 
           val result = obj.callMethod(meth, evaluated_args)
           i.popCallStack
           result

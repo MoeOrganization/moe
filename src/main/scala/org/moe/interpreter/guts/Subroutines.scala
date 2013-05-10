@@ -38,7 +38,7 @@ object Subroutines extends Utils {
 
       val evaluated_args = args.map(i.evaluate(env, _))
 
-      i.pushCallStack(new MoeStackFrame(sub, evaluated_args)) 
+      i.pushCallStack(new MoeStackFrame(sub, evaluated_args, env)) 
       val result = sub.execute(new MoeArguments(evaluated_args))
       i.popCallStack
       result
