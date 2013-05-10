@@ -58,7 +58,7 @@ class MoeInterpreter {
     if (both.isDefinedAt(env -> node)) { 
       return both(env -> node)
     } else {
-     throw new MoeErrors.UnknownNode(node.toString)
+      throw new MoeErrors.UnknownNode(node.toString)
     }
   }
 
