@@ -414,14 +414,16 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case cond ~ body => WhileNode(PrefixUnaryOpNode(cond, "!"), body)
   }
 
-  // def forLoop = "for" ~ "(" ~> expression <~ ";" ~> expression <~ ";" ~> expression <~ ")" ~ block
-
   def topicVariable = ("my".? ~> variableName) ^^ {
     v => VariableDeclarationNode(v, UndefLiteralNode())
   }
   def foreachBlock = "for(each)?".r ~> opt(topicVariable) ~ ("(" ~> expression <~ ")") ~ block ^^ {
     case Some(topic) ~ list ~ block => ForeachNode(topic, list, block)
     case None        ~ list ~ block => ForeachNode(VariableDeclarationNode("$_", UndefLiteralNode()), list, block)
+  }
+
+  def forBlock = "for" ~> (("(" ~> variableDeclaration) <~ ";") ~ (expression <~ ";") ~ (statement <~ ")") ~ block ^^ {
+    case init ~ termCond ~ step ~ block => ForNode(init, termCond, step, block)
   }
 
   def tryBlock: Parser[TryNode] = ("try" ~> block) ~ rep(catchBlock) ~ rep(finallyBlock) ^^ {
@@ -446,6 +448,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     | whileBlock
     | untilBlock
     | foreachBlock
+    | forBlock
     | doBlock
     | tryBlock
   ) <~ opt(statementDelim)

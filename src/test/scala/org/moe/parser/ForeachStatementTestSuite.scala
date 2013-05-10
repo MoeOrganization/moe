@@ -10,7 +10,6 @@ import org.moe.parser._
 
 class ForeachStatementTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils {
 
-  // TODO test environment stack via syntax when we are far enough
   test("... a foreach block") {
     val result = interpretCode("my @a = [1,2,3]; my $sum = 0; foreach (0..2) { $sum = $sum + @a[$_]  } $sum")
     assert(result.unboxToInt.get === 6)
