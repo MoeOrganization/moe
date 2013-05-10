@@ -115,7 +115,7 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
   }
 
   test("... make sure $?SELF and $?CLASS work") {
-    val result = interpretCode("class Foo { method bar { [ $?SELF, $?CLASS ] } }; Foo.new.bar")
+    val result = interpretCode("class Foo { method bar { [ $?SELF, $?CLASS ] } } Foo.new.bar")
     val array  = result.unboxToArrayBuffer.get
     val obj    = array(0).asInstanceOf[MoeObject]
     val cls    = array(1).asInstanceOf[MoeClass]
@@ -132,17 +132,17 @@ class ClassTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils w
       submethod BUILD { self.set_foo } 
       method set_foo { $!foo = "FOO"; } 
       method get_foo { $!foo } 
-    }; 
+    }
     class Bar extends Foo { 
       has $!bar;
       submethod BUILD { self.set_bar } 
       method set_bar { $!bar = "BAR"; } 
       method get_bar { $!bar } 
-    }; 
+    }
   """
 
   test("... submethod test") {
-    val result = interpretCode(submethodTest + "; my $b = Bar.new; [ $b.get_foo, $b.get_bar ]")
+    val result = interpretCode(submethodTest + "my $b = Bar.new; [ $b.get_foo, $b.get_bar ]")
     val array  = result.unboxToArrayBuffer.get
 
     assert(array(0).unboxToString.get === "FOO")

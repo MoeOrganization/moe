@@ -106,7 +106,7 @@ object Statements extends Utils {
               obj: MoeObject, 
               f: (MoeEnvironment, String, MoeObject) => Any
             ) =>
-            f(env, name, obj)
+            f(newEnv, name, obj)
             i.evaluate(newEnv, body)
           }
 
