@@ -4,14 +4,33 @@ use Test::More;
 {
     sub foo { "foo" }
 
-    eval("foo()");
+    my $r = eval("foo()");
     ok(not($!.defined), "... no expection should have been thrown");
+    is($r, "foo", '... got the expected result');
 
     eval("foobar()");
     ok($!.defined, "... an expection should have been thrown");
 
-    eval("foo()");
+    my $r2 = eval("foo()");
     ok(not($!.defined), '... the $! variable has been reset');
+    is($r2, "foo", '... got the expected result');
+}
+
+{
+    my $x = 10;
+
+    my $r = eval('$x + 10');
+    ok(not($!.defined), "... no expection should have been thrown");
+    is($r, 20, '... got the expected value back');
+}
+
+{
+    my $x = 10;
+
+    my $r = eval('$x = $x + 10');
+    ok(not($!.defined), "... no expection should have been thrown");
+    is($r, 20, '... got the expected value back');
+    is($x, 20, '... got the expected value back');
 }
 
 done_testing();

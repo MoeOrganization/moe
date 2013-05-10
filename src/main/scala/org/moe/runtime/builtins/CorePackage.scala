@@ -60,7 +60,10 @@ object CorePackage {
         (e) => try {
             e.set("$!", getUndef)
             e.setCurrentPackage(r.getRootPackage)
-            r.eval(e.getAs[MoeStrObject]("$source").get.unboxToString.get, e)
+            r.eval(
+              e.getAs[MoeStrObject]("$source").get.unboxToString.get, 
+              r.getInterpreterCallStack.head.getCallSiteEnvironment
+            )
           } catch {
             case exception: Exception => {
               //exception.printStackTrace()
