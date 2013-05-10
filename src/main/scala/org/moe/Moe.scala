@@ -99,11 +99,11 @@ object Moe {
           """
           my $__RUNNING_LINE_COUNT__ = 0;
           for $ARGV (@ARGV) {
-              my $argv_io = IO.new($ARGV);
+              my $__ARGV_IO__ = IO.new($ARGV);
               my $__LINE__ = 0;
-              while (!($argv_io.eof)) {
-                  my $_ = $argv_io.readline;
-                  if (!($argv_io.eof)) {
+              while (!($__ARGV_IO__.eof)) {
+                  my $_ = $__ARGV_IO__.readline;
+                  if (!($__ARGV_IO__.eof)) {
                       $__LINE__ = $__RUNNING_LINE_COUNT__ + $argv_io.input_line_number;
                       ## BEGIN INPUT CODE ##
           """ +
