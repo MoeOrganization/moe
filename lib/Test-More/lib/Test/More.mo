@@ -49,7 +49,7 @@ package Test {
 
         method diag ($msg) { $!output.diag($msg) }
 
-        submethod inc_count { $!count = $!count + 1; }
+        submethod inc_count { $!count = $!count + 1 }
 
         submethod output_err ($got, $expected, $msg) {
             $!output.diag( 
