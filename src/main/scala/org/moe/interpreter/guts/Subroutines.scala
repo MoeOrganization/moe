@@ -22,7 +22,7 @@ object Subroutines extends Utils {
         signature       = sig,
         declaration_env = decl_env,
         body            = (e) => i.evaluate(e, body),
-        traits          = traits.getOrElse(List())
+        traits          = traits.getOrElse(List()).map(MoeSubroutineTraits.withName(_))
       )
 
       pkg.addSubroutine( sub )

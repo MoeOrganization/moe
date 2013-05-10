@@ -146,7 +146,7 @@ class MoePackage(
    */
   def getExportedSubroutines: List[MoeSubroutine] = {
     subs.foldLeft[List[MoeSubroutine]](List())(
-      (l, p) => if (p._2.hasTrait("export")) p._2 :: l else l
+      (l, p) => if (p._2.hasTrait(MoeSubroutineTraits.Export)) p._2 :: l else l
     )
   }
 

@@ -52,7 +52,7 @@ class MoePackageTestSuite extends FunSuite with BeforeAndAfter {
         declaration_env = new MoeEnvironment(),
         signature       = new MoeSignature(List(new MoePositionalParameter("$x"))),
         body            = (e) => e.get("$x").get,
-        traits          = List("export")
+        traits          = List(MoeSubroutineTraits.Export)
       )
     )
     assert(pkg.hasSubroutine("ident2"))
