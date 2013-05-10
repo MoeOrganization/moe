@@ -415,7 +415,14 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   }
 
   // def forLoop = "for" ~ "(" ~> expression <~ ";" ~> expression <~ ";" ~> expression <~ ")" ~ block
-  // def foreachLoop = "for(each)?".r ~ varDeclare ~ "(" ~> expression <~ ")" ~ block
+
+  def topicVariable = ("my".? ~> variableName) ^^ {
+    v => VariableDeclarationNode(v, UndefLiteralNode())
+  }
+  def foreachBlock = "for(each)?".r ~> opt(topicVariable) ~ ("(" ~> expression <~ ")") ~ block ^^ {
+    case Some(topic) ~ list ~ block => ForeachNode(topic, list, block)
+    case None        ~ list ~ block => ForeachNode(VariableDeclarationNode("$_", UndefLiteralNode()), list, block)
+  }
 
   def tryBlock: Parser[TryNode] = ("try" ~> block) ~ rep(catchBlock) ~ rep(finallyBlock) ^^ {
     case a ~ b ~ c => TryNode(a, b, c)
@@ -438,6 +445,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
       ifElseBlock
     | whileBlock
     | untilBlock
+    | foreachBlock
     | doBlock
     | tryBlock
   ) <~ opt(statementDelim)
