@@ -14,38 +14,42 @@ class MoeEnvironment(
     private val parent: Option[MoeEnvironment] = None
   ) {
 
-  object Markers {
-    val Runtime  = "$?RUNTIME"
-    val Package  = "$?PACKAGE"
-    val Class    = "$?CLASS"
-    val Invocant = "$?SELF"
-    val Topic    = "$_"
+  private object Markers {
+    val Runtime   = "$?RUNTIME"
+    val Package   = "$?PACKAGE"
+    val Class     = "$?CLASS"
+    val Invocant  = "$?SELF"
+    val Topic     = "$_"
+    val Exception = "$!"
   }
 
-  def isSpecialMarker(m: String) = 
-    m == Markers.Runtime || m == Markers.Package  || 
-    m == Markers.Class   || m == Markers.Invocant || 
-    m == Markers.Topic
+  def isSpecialMarker(m: String) =
+    m == Markers.Runtime || m == Markers.Package  ||
+    m == Markers.Class   || m == Markers.Invocant ||
+    m == Markers.Topic   || m == Markers.Exception
 
   private val pad: Map[String, MoeObject] = new HashMap[String, MoeObject]()
 
-  def getCurrentRuntime  : Option[MoeRuntime] = getAs[MoeRuntime](Markers.Runtime)
-  def getCurrentPackage  : Option[MoePackage] = getAs[MoePackage](Markers.Package)
-  def getCurrentClass    : Option[MoeClass]   = getAs[MoeClass](Markers.Class)
-  def getCurrentInvocant : Option[MoeObject]  = get(Markers.Invocant)
-  def getCurrentTopic    : Option[MoeObject]  = get(Markers.Topic)
+  def getCurrentRuntime   : Option[MoeRuntime] = getAs[MoeRuntime](Markers.Runtime)
+  def getCurrentPackage   : Option[MoePackage] = getAs[MoePackage](Markers.Package)
+  def getCurrentClass     : Option[MoeClass]   = getAs[MoeClass](Markers.Class)
+  def getCurrentInvocant  : Option[MoeObject]  = get(Markers.Invocant)
+  def getCurrentTopic     : Option[MoeObject]  = get(Markers.Topic)
+  def getCurrentException : Option[MoeObject]  = get(Markers.Exception) 
 
-  def setCurrentRuntime  (p: MoeRuntime): Unit = setLocal(Markers.Runtime,  p.asInstanceOf[MoeObject])
-  def setCurrentPackage  (p: MoePackage): Unit = setLocal(Markers.Package,  p.asInstanceOf[MoeObject])
-  def setCurrentClass    (c: MoeClass  ): Unit = setLocal(Markers.Class,    c.asInstanceOf[MoeObject])
-  def setCurrentInvocant (i: MoeObject ): Unit = setLocal(Markers.Invocant, i)
-  def setCurrentTopic    (t: MoeObject ): Unit = setLocal(Markers.Topic,    t)
+  def setCurrentRuntime   (p: MoeRuntime): Unit = setLocal(Markers.Runtime,   p.asInstanceOf[MoeObject])
+  def setCurrentPackage   (p: MoePackage): Unit = setLocal(Markers.Package,   p.asInstanceOf[MoeObject])
+  def setCurrentClass     (c: MoeClass  ): Unit = setLocal(Markers.Class,     c.asInstanceOf[MoeObject])
+  def setCurrentInvocant  (i: MoeObject ): Unit = setLocal(Markers.Invocant,  i)
+  def setCurrentTopic     (t: MoeObject ): Unit = setLocal(Markers.Topic,     t)
+  def setCurrentException (e: MoeObject ): Unit = setLocal(Markers.Exception, e)
 
-  def clearCurrentRuntime  : Unit = clearLocal(Markers.Runtime)
-  def clearCurrentPackage  : Unit = clearLocal(Markers.Package)
-  def clearCurrentClass    : Unit = clearLocal(Markers.Class)
-  def clearCurrentInvocant : Unit = clearLocal(Markers.Invocant)
-  def clearCurrentTopic    : Unit = clearLocal(Markers.Topic)
+  def clearCurrentRuntime   : Unit = clearLocal(Markers.Runtime)
+  def clearCurrentPackage   : Unit = clearLocal(Markers.Package)
+  def clearCurrentClass     : Unit = clearLocal(Markers.Class)
+  def clearCurrentInvocant  : Unit = clearLocal(Markers.Invocant)
+  def clearCurrentTopic     : Unit = clearLocal(Markers.Topic)
+  def clearCurrentException : Unit = clearLocal(Markers.Exception)
 
   def getParent = parent
   def isRoot    = !parent.isDefined

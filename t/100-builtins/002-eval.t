@@ -35,4 +35,17 @@ use Test::More;
     is($x, 20, '... got the expected value back');
 }
 
+# test that we are not setting it globally
+{
+    ok(not($!.defined), '... no exception here');
+    
+    {
+        eval("$x");
+        ok($!.defined, '... the exception has been raised');
+    }
+
+    ok(not($!.defined), '... no exception here');
+}
+
+
 done_testing();

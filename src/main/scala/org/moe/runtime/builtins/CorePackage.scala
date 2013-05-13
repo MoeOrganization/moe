@@ -57,22 +57,26 @@ object CorePackage {
         "eval",
         new MoeSignature(List(new MoePositionalParameter("$source"))),
         env,
-        (e) => try {
-            e.set("$!", getUndef)
-            e.setCurrentPackage(r.getRootPackage)
-            r.eval(
-              e.getAs[MoeStrObject]("$source").get.unboxToString.get, 
-              r.getInterpreterCallStack.head.getCallSiteEnvironment
-            )
-          } catch {
-            case exception: Exception => {
-              //exception.printStackTrace()
-              e.set("$!", getException(exception.toString()))
-              getUndef
+        {
+          (e) => 
+            val caller_env = r.getInterpreterCallStack.head.getCallSiteEnvironment
+            caller_env.clearCurrentException
+            try {
+              e.setCurrentPackage(r.getRootPackage)
+              r.eval(
+                e.getAs[MoeStrObject]("$source").get.unboxToString.get, 
+                caller_env
+              )
+            } catch {
+              case exception: Exception => {
+                //exception.printStackTrace()
+                caller_env.setCurrentException(getException(exception.toString()))
+                getUndef
+              }
+            } finally {
+              e.setCurrentPackage(r.getCorePackage)
             }
-          } finally {
-            e.setCurrentPackage(r.getCorePackage)
-          }
+        }
       )
     )
 
@@ -165,6 +169,9 @@ object CorePackage {
           val env = pb.environment();
           env.clear()
           e.getAs[MoeHashObject]("%ENV").get.unboxToMap.get.map({ case (k, v) => env.put(k, v.unboxToString.get) })
+
+          val caller_env = r.getInterpreterCallStack.head.getCallSiteEnvironment
+          caller_env.clearCurrentException
           try {
             val p   = pb.start()
             val err = new java.io.DataInputStream(p.getErrorStream())
@@ -177,12 +184,12 @@ object CorePackage {
               x = err_out.readLine()
             }
             if (err_txt != "") {
-              e.set("$!", getException(err_txt))
+              caller_env.setCurrentException(getException(err_txt))
             }
             getInt(p.exitValue)
           } catch {
             case exception: java.io.IOException => {
-              e.set("$!", getException(exception.toString()))
+              caller_env.setCurrentException(getException(exception.toString()))
               getInt(1)
             }
           }
