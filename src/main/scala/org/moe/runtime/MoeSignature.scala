@@ -75,7 +75,13 @@ class MoeSignature(
 
     if (!args.wereAllArgsConsumed) {
       throw new MoeErrors.InvalidParameter(
-        "Not all arguments were consumed " + args.consumedArgCount + " were consumed, but we had " + args.getArgCount
+        "Not all arguments were consumed " 
+        + args.consumedArgCount 
+        + " were consumed, but we had " 
+        + args.getArgCount 
+        + " with signature (" 
+        + params.map(_.getName).mkString(", ")
+        + ")"
       )
     }
 
