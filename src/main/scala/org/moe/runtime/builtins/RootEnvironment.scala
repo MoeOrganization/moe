@@ -17,8 +17,8 @@ object RootEnvironment {
     ** The Outside world
     ***************************************/
 
-    env.create("@ARGV", getArray())        // command line arguments
-    env.create("%ENV", getHash(r.getEnv))  // environment hash
+    env.create("@ARGV", getArray())         // command line arguments
+    env.create("%ENV",  getHash(r.getEnv))  // environment hash
 
     /***************************************
     ** The Internal world
