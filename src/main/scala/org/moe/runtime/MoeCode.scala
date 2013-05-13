@@ -38,7 +38,12 @@ class MoeCode (
   /**
    * Execute the body (assuming the environment is all prepared for you)
    */
-  def executeBody(e: MoeEnvironment): MoeObject = body(e)
+  def executeBody(e: MoeEnvironment): MoeObject = {
+    e.setCurrentRoutine(this)
+    val r = body(e)
+    e.clearCurrentRoutine
+    r
+  }
   
   /**
    * Executes the body of this code

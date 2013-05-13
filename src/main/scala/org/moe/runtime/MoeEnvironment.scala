@@ -19,6 +19,7 @@ class MoeEnvironment(
     val Package   = "$?PACKAGE"
     val Class     = "$?CLASS"
     val Invocant  = "$?SELF"
+    val Routine   = "&?ROUTINE"
     val Topic     = "$_"
     val Exception = "$!"
   }
@@ -26,6 +27,7 @@ class MoeEnvironment(
   def isSpecialMarker(m: String) =
     m == Markers.Runtime || m == Markers.Package  ||
     m == Markers.Class   || m == Markers.Invocant ||
+    m == Markers.Routine ||
     m == Markers.Topic   || m == Markers.Exception
 
   private val pad: Map[String, MoeObject] = new HashMap[String, MoeObject]()
@@ -34,6 +36,7 @@ class MoeEnvironment(
   def getCurrentPackage   : Option[MoePackage] = getAs[MoePackage](Markers.Package)
   def getCurrentClass     : Option[MoeClass]   = getAs[MoeClass](Markers.Class)
   def getCurrentInvocant  : Option[MoeObject]  = get(Markers.Invocant)
+  def getCurrentRoutine   : Option[MoeCode]    = getAs[MoeCode](Markers.Routine)
   def getCurrentTopic     : Option[MoeObject]  = get(Markers.Topic)
   def getCurrentException : Option[MoeObject]  = get(Markers.Exception) 
 
@@ -41,6 +44,7 @@ class MoeEnvironment(
   def setCurrentPackage   (p: MoePackage): Unit = setLocal(Markers.Package,   p.asInstanceOf[MoeObject])
   def setCurrentClass     (c: MoeClass  ): Unit = setLocal(Markers.Class,     c.asInstanceOf[MoeObject])
   def setCurrentInvocant  (i: MoeObject ): Unit = setLocal(Markers.Invocant,  i)
+  def setCurrentRoutine   (c: MoeCode   ): Unit = setLocal(Markers.Routine,   c.asInstanceOf[MoeObject])
   def setCurrentTopic     (t: MoeObject ): Unit = setLocal(Markers.Topic,     t)
   def setCurrentException (e: MoeObject ): Unit = setLocal(Markers.Exception, e)
 
@@ -48,6 +52,7 @@ class MoeEnvironment(
   def clearCurrentPackage   : Unit = clearLocal(Markers.Package)
   def clearCurrentClass     : Unit = clearLocal(Markers.Class)
   def clearCurrentInvocant  : Unit = clearLocal(Markers.Invocant)
+  def clearCurrentRoutine   : Unit = clearLocal(Markers.Routine)
   def clearCurrentTopic     : Unit = clearLocal(Markers.Topic)
   def clearCurrentException : Unit = clearLocal(Markers.Exception)
 
