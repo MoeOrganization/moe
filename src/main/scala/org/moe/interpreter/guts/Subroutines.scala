@@ -17,15 +17,17 @@ object Subroutines extends Utils {
       val decl_env = new MoeEnvironment(Some(env))
       decl_env.setCurrentPackage(pkg)
 
-      val sub = new MoeSubroutine(
-        name            = name,
-        signature       = sig,
-        declaration_env = decl_env,
-        body            = (e) => i.evaluate(e, body),
-        traits          = traits.getOrElse(List()).map(MoeSubroutineTraits.withName(_))
+      val sub = r.NativeObjects.fixupSubroutine(
+        new MoeSubroutine(
+          name            = name,
+          signature       = sig,
+          declaration_env = decl_env,
+          body            = (e) => i.evaluate(e, body),
+          traits          = traits.getOrElse(List()).map(MoeSubroutineTraits.withName(_))
+        )
       )
 
-      pkg.addSubroutine( sub )
+      pkg.addSubroutine(sub)
       sub
     }
   }

@@ -280,6 +280,11 @@ class MoeRuntime (
       e.setValue("$!msg", getStr(msg))
       e
     }
+
+    def fixupSubroutine (c: MoeSubroutine): MoeSubroutine = {
+      c.setAssociatedType(Some(MoeCodeType(getCoreClassFor("Code"))))
+      c
+    }
   }
 
 }

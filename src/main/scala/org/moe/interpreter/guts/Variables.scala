@@ -21,14 +21,12 @@ object Variables extends Utils {
     case (env, VariableAccessNode(name)) => env.get(name).getOrElse(
         if (name.startsWith("&")) {
           val function_name = name.drop(1)
-          val sub = r.lookupSubroutine(
+          r.lookupSubroutine(
             function_name, 
             getCurrentPackage(env)
           ).getOrElse( 
             throw new MoeErrors.SubroutineNotFound(function_name)
           )
-          if (!sub.hasAssociatedClass) sub.setAssociatedType(Some(MoeCodeType(r.getCoreClassFor("Code"))))
-          sub
         } else {
           throw new MoeErrors.VariableNotFound(name)
         }
