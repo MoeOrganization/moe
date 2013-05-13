@@ -164,21 +164,28 @@ object CorePackage {
           val pb  = new ProcessBuilder(cmd);
           val env = pb.environment();
           env.clear()
-          e.getAs[MoeHashObject]("%ENV").get.unboxToMap.get.map({
-            case (k, v) => env.put(k, v.unboxToString.get)
-          })
-          val p   = pb.start()
-          val err = new java.io.DataInputStream(p.getErrorStream())
-          p.waitFor()
-          val err_out = new java.io.BufferedReader(new java.io.InputStreamReader(err));
-          var x = err_out.readLine()
-          var err_txt = ""
-          while (x != null) {
-            err_txt = err_txt + x
-            x = err_out.readLine()
+          e.getAs[MoeHashObject]("%ENV").get.unboxToMap.get.map({ case (k, v) => env.put(k, v.unboxToString.get) })
+          try {
+            val p   = pb.start()
+            val err = new java.io.DataInputStream(p.getErrorStream())
+            p.waitFor()
+            val err_out = new java.io.BufferedReader(new java.io.InputStreamReader(err));
+            var x = err_out.readLine()
+            var err_txt = ""
+            while (x != null) {
+              err_txt = err_txt + x
+              x = err_out.readLine()
+            }
+            if (err_txt != "") {
+              e.set("$!", getException(err_txt))
+            }
+            getInt(p.exitValue)
+          } catch {
+            case exception: java.io.IOException => {
+              e.set("$!", getException(exception.toString()))
+              getInt(1)
+            }
           }
-          e.set("$OS_ERROR", if (err_txt == null) getUndef else getStr(err_txt))
-          getInt(p.exitValue)
         }
       )
     )
