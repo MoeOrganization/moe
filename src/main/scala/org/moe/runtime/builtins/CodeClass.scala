@@ -23,6 +23,15 @@ object CodeClass {
 
     codeClass.addMethod(
       new MoeMethod(
+        "name",
+        new MoeSignature(),
+        env,
+        (e) => getStr(self(e).getName)
+      )
+    )
+
+    codeClass.addMethod(
+      new MoeMethod(
         "apply",
         new MoeSignature(List(new MoePositionalParameter("@_"))),
         env,
