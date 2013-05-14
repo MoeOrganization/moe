@@ -116,8 +116,13 @@ case class IfStruct (
 
 case class IfNode(if_node: IfStruct) extends AST 
 
-case class UnlessNode(unless_condition: AST, unless_body: AST) extends AST
-case class UnlessElseNode(unless_condition: AST, unless_body: AST, else_body: AST) extends AST
+case class UnlessStruct(
+  var condition: AST,
+  var body: AST, 
+  var else_node: Option[IfStruct] = None
+) extends AST
+
+case class UnlessNode(unless_node: UnlessStruct) extends AST
 
 case class TryNode(
   body: AST,

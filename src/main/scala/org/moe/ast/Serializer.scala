@@ -374,23 +374,11 @@ object Serializer {
       )
     )
 
-    case UnlessNode(unless_condition, unless_body) => JSONObject(
+    case UnlessNode(unless_node) => JSONObject(
       Map(
         "UnlessNode" -> JSONObject(
           Map(
-            "unless_condition" -> toJSON(unless_condition),
-            "unless_body"      -> toJSON(unless_body)
-          )
-        )
-      )
-    )
-    case UnlessElseNode(unless_condition, unless_body, else_body) => JSONObject(
-      Map(
-        "UnlessElseNode" -> JSONObject(
-          Map(
-            "unless_condition" -> toJSON(unless_condition),
-            "unless_body"      -> toJSON(unless_body),
-            "else_body"        -> toJSON(else_body)
+            "unless_node" -> toJSON(unless_node)
           )
         )
       )
