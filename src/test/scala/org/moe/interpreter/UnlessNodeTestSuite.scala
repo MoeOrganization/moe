@@ -11,8 +11,10 @@ class UnlessNodeTestSuite extends FunSuite with InterpreterTestUtils {
     val ast = wrapSimpleAST(
       List(
         UnlessNode(
-          BooleanLiteralNode( false ),
-          IntLiteralNode( 42 )
+          new UnlessStruct(
+            BooleanLiteralNode( false ),
+            IntLiteralNode( 42 )
+          )
         )
       )
     )
@@ -24,8 +26,10 @@ class UnlessNodeTestSuite extends FunSuite with InterpreterTestUtils {
     val ast = wrapSimpleAST(
       List(
         UnlessNode(
-          BooleanLiteralNode( true ),
-          IntLiteralNode( 42 )
+          new UnlessStruct(
+            BooleanLiteralNode( true ),
+            IntLiteralNode( 42 )
+          )
         )
       )
     )
@@ -36,10 +40,12 @@ class UnlessNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic test with UnlessElse") {
     val ast = wrapSimpleAST(
       List(
-        UnlessElseNode(
-          BooleanLiteralNode( false ),
-          IntLiteralNode( 42 ),
-          IntLiteralNode( 21 )
+        UnlessNode(
+          new UnlessStruct(
+            BooleanLiteralNode( false ),
+            IntLiteralNode( 42 ),
+            Some(new IfStruct(BooleanLiteralNode(true), IntLiteralNode(21)))
+          )
         )
       )
     )
@@ -50,10 +56,12 @@ class UnlessNodeTestSuite extends FunSuite with InterpreterTestUtils {
   test("... basic (true) test with UnlessElse") {
     val ast = wrapSimpleAST(
       List(
-        UnlessElseNode(
-          BooleanLiteralNode( true ),
-          IntLiteralNode( 42 ),
-          IntLiteralNode( 21 )
+        UnlessNode(
+          new UnlessStruct(
+            BooleanLiteralNode( true ),
+            IntLiteralNode( 42 ),
+            Some(new IfStruct(BooleanLiteralNode(true), IntLiteralNode(21)))
+          )
         )
       )
     )

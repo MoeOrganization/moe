@@ -74,23 +74,12 @@ package Test {
         }
 
         submethod compare_deeply ($got, $expected) {
-            if ($got.isa("Array") && $expected.isa("Array")) {
-                self.compare_arrays($got, $expected);
-            } elsif ($got.isa("Hash") && $expected.isa("Hash")) {
-                self.compare_hashes($got, $expected);
+            if ($got.isa("Array") && $expected.isa("Array")
+                || $got.isa("Hash") && $expected.isa("Hash")) {
+               $got.eqv($expected);
             } else {
                 $!output.bailout("Can only compare deeply Array and Hash objects");
             }
-        }
-
-        submethod compare_arrays (@got, @expected) {
-            # poor man's deep-compare of arrays
-            self.compare(@got.join("|"), @expected.join("|"));
-        }
-
-        submethod compare_hashes (%got, %expected) {
-            # poor man's deep-compare of hashes
-            self.compare(%got.pairs.join("|"), %expected.pairs.join("|"));
         }
     }
 
