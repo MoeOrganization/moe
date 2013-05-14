@@ -52,28 +52,15 @@ object Statements extends Utils {
         r.NativeObjects.getUndef
       }
     }
-        
-    case (env, UnlessNode(unless_condition, unless_body)) => {
-      i.evaluate(env,
-        UnlessElseNode(
-          unless_condition,
-          unless_body,
-          UndefLiteralNode()
-        )
-      )
-    }
-    case (env, UnlessElseNode(unless_condition, unless_body, else_body)) => {
-      var if_node = new IfStruct(
-        PrefixUnaryOpNode(unless_condition, "!"), 
-        unless_body, 
-        Some(
-          new IfStruct(
-            BooleanLiteralNode(true), 
-            else_body
-          )
-        )
-      )
-      i.evaluate(env, IfNode(if_node))
+
+    case (env, UnlessNode(unless_node)) => {
+      if (i.evaluate(env, unless_node.condition).isFalse) {
+        i.evaluate(env, unless_node.body)
+      } else if (unless_node.else_node.isDefined) {
+        i.evaluate(env, IfNode(unless_node.else_node.get))
+      } else {
+        r.NativeObjects.getUndef
+      }
     }
 
     case (env, TryNode(body, catch_nodes, finally_nodes)) => stub

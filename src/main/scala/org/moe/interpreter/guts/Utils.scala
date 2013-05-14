@@ -108,14 +108,8 @@ trait Utils {
         walkAST(if_node, callback)
       }
 
-      case UnlessNode(unless_condition, unless_body) => {
-        walkAST(unless_condition, callback)
-        walkAST(unless_body, callback)
-      }
-      case UnlessElseNode(unless_condition, unless_body, else_body) => {
-        walkAST(unless_condition, callback)
-        walkAST(unless_body, callback)
-        walkAST(else_body, callback)
+      case UnlessNode(unless_node) => {
+        walkAST(unless_node, callback)
       }
 
       case TryNode(body, catch_nodes, finally_nodes) => {

@@ -406,6 +406,11 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case if_cond ~ if_body ~ Some(_else) => IfNode(new IfStruct(if_cond,if_body, Some(_else))) 
   }
 
+  def unlessElseBlock: Parser[AST] = "unless" ~> ("(" ~> expression <~ ")") ~ block ~ (elsifBlock | elseBlock).? ^^ { 
+    case unless_cond ~ unless_body ~ None        => UnlessNode(new UnlessStruct(unless_cond, unless_body))
+    case unless_cond ~ unless_body ~ Some(_else) => UnlessNode(new UnlessStruct(unless_cond, unless_body, Some(_else)))
+  }
+
   def whileBlock: Parser[WhileNode] = "while" ~> ("(" ~> expression <~ ")") ~ block ^^ {
     case cond ~ body => WhileNode(cond, body)
   }
@@ -445,6 +450,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   lazy val blockStatement: Parser[AST] = (
       ifElseBlock
+    | unlessElseBlock
     | whileBlock
     | untilBlock
     | foreachBlock
