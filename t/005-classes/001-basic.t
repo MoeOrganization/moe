@@ -5,12 +5,12 @@ class Point {
     has $!y = 0;
 
     method x ($x?) { 
-        if ($x) { $!x = $x } 
+        $!x = $x if $x.defined;
         $!x 
     }
 
     method y ($y?) {
-        if ($y) { $!y = $y } 
+        $!y = $y if $y.defined;
         $!y 
     }
 
@@ -23,7 +23,7 @@ class Point3D extends Point {
     has $!z = 0;
 
     method z ($z?) {
-        if ($z) { $!z = $z } 
+        $!z = $z if $z.defined;
         $!z 
     }
 
