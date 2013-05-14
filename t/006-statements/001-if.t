@@ -24,4 +24,16 @@ use Test::More;
     is($r, 30, '... got the expected value');
 }
 
+{
+    my $r = eval("10 if true");
+    ok(not($!.defined), '... the modifier statement worked correctly');
+    is($r, 10, '... got the expected value');
+}
+
+{
+    my $r = eval("my $a = 0; $a = $a + 1 if $a < 1; $a");
+    ok(not($!.defined), '... the modifier statement worked correctly');
+    is($r, 1, '... got the expected value');
+}
+
 done_testing();

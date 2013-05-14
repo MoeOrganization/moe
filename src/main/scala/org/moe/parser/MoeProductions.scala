@@ -296,7 +296,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
       blockStatement
     | declarationStatement
     | terminatedStatement
-    | simpleStatement
+    | statement
     | scopeBlock
   )) ~ opt(statement) ^^ {
     case stmts ~ Some(lastStmt) => StatementsNode(stmts ++ List(lastStmt))
@@ -476,9 +476,21 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     | arrayElementAssignment
     | hashElementAssignment
     | expression
-    // | scopeBlock  
   )
 
-  lazy val statement: Parser[AST] = simpleStatement
-  lazy val terminatedStatement: Parser[AST] = simpleStatement <~ statementDelim
+  /**
+   * Statement modifiers
+   */
+
+  lazy val modifiedStatement: Parser[AST] = simpleStatement ~ "if|unless|for(each)?|while|until".r ~ expression ^^ {
+    case stmt ~ "if"      ~ cond => IfNode(new IfStruct(cond, StatementsNode(List(stmt))))
+    case stmt ~ "unless"  ~ cond => UnlessNode(new UnlessStruct(cond, StatementsNode(List(stmt))))
+    case stmt ~ "foreach" ~ list => ForeachNode(VariableDeclarationNode("$_", UndefLiteralNode()), list, StatementsNode(List(stmt)))
+    case stmt ~ "for"     ~ list => ForeachNode(VariableDeclarationNode("$_", UndefLiteralNode()), list, StatementsNode(List(stmt)))
+    case stmt ~ "while"   ~ cond => WhileNode(cond, StatementsNode(List(stmt)))
+    case stmt ~ "until"   ~ cond => WhileNode(PrefixUnaryOpNode(cond, "!"), StatementsNode(List(stmt)))
+  }
+
+  lazy val statement: Parser[AST] = ( modifiedStatement | simpleStatement )
+  lazy val terminatedStatement: Parser[AST] = statement <~ statementDelim
 }
