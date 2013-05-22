@@ -85,6 +85,11 @@ case class SubroutineDeclarationNode(name: String, signature: SignatureNode, bod
 case class AttributeDeclarationNode(name: String, expression: AST) extends AST
 case class VariableDeclarationNode(name: String, expression: AST) extends AST
 
+case class AttributeNameNode(name: String) extends AST
+case class VariableNameNode(name: String) extends AST
+case class ArrayElementNameNode(arrayName: String, indices: List[AST]) extends AST
+case class HashElementNameNode(hashName: String, indices: List[AST]) extends AST
+
 case class ClassAccessNode(name: String) extends AST
 case class AttributeAccessNode(name: String) extends AST
 case class VariableAccessNode(name: String) extends AST

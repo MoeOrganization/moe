@@ -20,7 +20,18 @@ object Operators extends Utils {
       callMethod(receiver, "postfix:<" + operator + ">", List())
     }
 
-    // binary operators
+    // assignment
+
+    case (env, BinaryOpNode(lhs: AST, "=", rhs: AST)) => {
+      lhs match {
+        case VariableNameNode(var_)             => i.evaluate(env, VariableAssignmentNode(var_, rhs))
+        case AttributeNameNode(attr)            => i.evaluate(env, AttributeAssignmentNode(attr, rhs))
+        case ArrayElementNameNode(array, index) => i.evaluate(env, ArrayElementLvalueNode(array, index, rhs))
+        case HashElementNameNode(hash, key)     => i.evaluate(env, HashElementLvalueNode(hash, key, rhs))
+      }
+    }
+
+    // other binary operators
 
     case (env, BinaryOpNode(lhs: AST, operator: String, rhs: AST)) => {
       val receiver = i.evaluate(env, lhs)
