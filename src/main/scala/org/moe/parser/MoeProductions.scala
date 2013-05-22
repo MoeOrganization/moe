@@ -13,7 +13,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    *********************************************************************
    */
   
-  lazy val expression: PackratParser[AST] = ternaryOp
+  lazy val expression: PackratParser[AST] = assignOp
 
   // TODO: left        or xor
   // TODO: left        and
@@ -21,6 +21,11 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   // TODO: nonassoc    list operators (rightward)
   // TODO: left        , =>
   // TODO: right       = += -= *= etc.
+
+  // right       =  (assignment)
+  lazy val assignOp: PackratParser[AST] = lvalue ~ "=" ~ assignOp ^^ {
+    case left ~ "=" ~ right => BinaryOpNode(left, "=", right)
+  } | ternaryOp
 
   // right       ?:
   lazy val ternaryOp: PackratParser[AST] = logicalOrOp ~ "?" ~ ternaryOp ~ ":" ~ ternaryOp ^^ {
@@ -71,6 +76,11 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   // left        * / % x
   lazy val mulOp: PackratParser[AST] = mulOp ~ "[*/%x]".r ~ expOp ^^ {
+    case left ~ op ~ right => BinaryOpNode(left, op, right)
+  } | matchOp
+
+  // left        =~     TODO: !~
+  lazy val matchOp: PackratParser[AST] = matchOp ~ "=~" ~ expOp ^^ {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
   } | expOp
 
@@ -208,14 +218,20 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   
   // access
 
-  def variableName = """[$@%&][a-zA-Z_][a-zA-Z0-9_]*""".r
-  def variable     = variableName ^^ VariableAccessNode
+  def variableName = """[$@%&][a-zA-Z_][a-zA-Z0-9_]*""".r ^^ { v => VariableNameNode(v) }
+  def variable     = variableName ^^ {
+    case VariableNameNode(v) => VariableAccessNode(v)
+  }
 
-  def specialVariableName = """[$@%&][?*][A-Z_]+""".r | "$!"
-  def specialVariable     = specialVariableName ^^ VariableAccessNode
+  def specialVariableName = ("""[$@%&][?*][A-Z_]+""".r | "$!") ^^ { v => VariableNameNode(v) }
+  def specialVariable     = specialVariableName ^^ {
+    case VariableNameNode(v) => VariableAccessNode(v)
+  }
 
-  def attributeName = """[$@%&]![a-zA-Z_][a-zA-Z0-9_]*""".r
-  def attribute     = attributeName ^^ AttributeAccessNode
+  def attributeName = """[$@%&]![a-zA-Z_][a-zA-Z0-9_]*""".r ^^ { a => AttributeNameNode(a) }
+  def attribute     = attributeName ^^ {
+    case AttributeNameNode(a) =>  AttributeAccessNode(a)
+  }
 
   def parameterName = """([$@%&])([a-zA-Z_][a-zA-Z0-9_]*)""".r
 
@@ -226,21 +242,33 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   def arrayVariableName = """@[a-zA-Z_][a-zA-Z0-9_]*""".r
   def hashVariableName  = """%[a-zA-Z_][a-zA-Z0-9_]*""".r
 
-  private lazy val array_index_rule = arrayVariableName ~ ( "[" ~> expression <~ "]" ).+
-  private lazy val hash_index_rule  = hashVariableName  ~ ( "{" ~> expression <~ "}" ).+
+  def array_index_rule = arrayVariableName ~ ( "[" ~> expression <~ "]" ).+ ^^ {
+    case a ~ i => ArrayElementNameNode(a, i)
+  }
+  def hash_index_rule  = hashVariableName  ~ ( "{" ~> expression <~ "}" ).+ ^^ {
+    case h ~ k => HashElementNameNode(h, k)
+  }
 
   def arrayIndex = array_index_rule ^^ {
-    case i ~ exprs => ArrayElementAccessNode(i, exprs)
+    case ArrayElementNameNode(i, exprs) => ArrayElementAccessNode(i, exprs)
   }
 
   def hashIndex = hash_index_rule ^^ {
-    case i ~ exprs => HashElementAccessNode(i, exprs)
+    case HashElementNameNode(h, exprs) => HashElementAccessNode(h, exprs)
   }
+
+  def lvalue: Parser[AST] = (
+      array_index_rule
+    | hash_index_rule
+    | attributeName
+    | variableName
+    | specialVariableName
+  )
 
   // assignment
 
   def variableDeclaration = "my" ~> variableName ~ ("=" ~> expression).? ^^ {
-    case v ~ expr => VariableDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
+    case VariableNameNode(v) ~ expr => VariableDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
   }  
 
   private def zipEm (x: List[String], y: List[AST], f: ((String, AST)) => AST): List[AST] = {
@@ -253,33 +281,26 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   }
 
   def multiVariableDeclaration = "my" ~> ("(" ~> repsep(variableName, ",") <~ ")") ~ ("=" ~> "(" ~> repsep(expression, ",") <~ ")").? ^^ {
-    case vars ~ None        => StatementsNode(vars.map(VariableDeclarationNode(_, UndefLiteralNode())))
-    case vars ~ Some(exprs) => StatementsNode(zipEm(vars, exprs, (p) => VariableDeclarationNode(p._1, p._2)))
+    case vars ~ None        => StatementsNode(
+      vars.map( { case VariableNameNode(v) => VariableDeclarationNode(v, UndefLiteralNode()) } )
+    )
+    case vars ~ Some(exprs) => StatementsNode(
+      zipEm(vars.map( { case VariableNameNode(v) => v } ),
+            exprs,
+            (p) => VariableDeclarationNode(p._1, p._2))
+    )
   }  
 
-  def variableAssignment = variableName ~ "=" ~ expression ^^ {
-    case v ~ _ ~ expr => VariableAssignmentNode(v, expr)
-  }
-
   def multiVariableAssignment = ("(" ~> repsep(variableName, ",") <~ ")") ~ "=" ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
-    case vars ~ _ ~ exprs => MultiVariableAssignmentNode(vars, exprs)
+    case vars ~ _ ~ exprs => MultiVariableAssignmentNode(
+      vars.map( { case VariableNameNode(vname) => vname } ),
+      exprs
+    )
   }    
 
-  def attributeAssignment = attributeName ~ "=" ~ expression ^^ {
-    case v ~ _ ~ expr => AttributeAssignmentNode(v, expr)
-  }
-
   def multiAttributeAssignment = ("(" ~> repsep(attributeName, ",") <~ ")") ~ "=" ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
-    case vars ~ _ ~ exprs => MultiAttributeAssignmentNode(vars, exprs)
+    case vars ~ _ ~ exprs => MultiAttributeAssignmentNode(vars.map({case AttributeNameNode(aname) => aname}), exprs)
   }   
-
-  def arrayElementAssignment = array_index_rule ~ "=" ~ expression ^^ {
-    case array ~ index_exprs ~ "=" ~ value_expr => ArrayElementLvalueNode(array, index_exprs, value_expr)
-  }
-
-  def hashElementAssignment = hash_index_rule ~ "=" ~ expression ^^ {
-    case hash ~ key_exprs ~ "=" ~ value_expr => HashElementLvalueNode(hash, key_exprs, value_expr)
-  }
 
   /**
    *********************************************************************
@@ -353,7 +374,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   // Classes
 
   def attributeDecl = "has" ~> attributeName ~ ("=" ~> expression).? ^^ {
-    case v ~ expr => AttributeDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
+    case AttributeNameNode(v) ~ expr => AttributeDeclarationNode(v, expr.getOrElse(UndefLiteralNode()))
   }
 
   def methodDecl: Parser[MethodDeclarationNode] = ("method" ~> identifier ~ ("(" ~> repsep(parameter, ",") <~ ")").?) ~ block ^^ { 
@@ -420,8 +441,9 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   }
 
   def topicVariable = ("my".? ~> variableName) ^^ {
-    v => VariableDeclarationNode(v, UndefLiteralNode())
+    case VariableNameNode(v) => VariableDeclarationNode(v, UndefLiteralNode())
   }
+
   def foreachBlock = "for(each)?".r ~> opt(topicVariable) ~ ("(" ~> expression <~ ")") ~ block ^^ {
     case Some(topic) ~ list ~ block => ForeachNode(topic, list, block)
     case None        ~ list ~ block => ForeachNode(VariableDeclarationNode("$_", UndefLiteralNode()), list, block)
@@ -436,7 +458,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   }
 
   def catchBlock: Parser[CatchNode] = ("catch" ~ "(") ~> namespacedIdentifier ~ variableName ~ (")" ~> block) ^^ {
-    case a ~ b ~ c => CatchNode(a, b, c)
+    case a ~ VariableNameNode(b) ~ c => CatchNode(a, b, c)
   }
 
   def finallyBlock: Parser[FinallyNode] = "finally" ~> block ^^ FinallyNode
@@ -468,14 +490,10 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   lazy val simpleStatement: Parser[AST] = (
       variableDeclaration
     | multiVariableDeclaration
-    | variableAssignment
+    | expression
     | multiVariableAssignment
-    | attributeAssignment  
     | multiAttributeAssignment
     | useStatement
-    | arrayElementAssignment
-    | hashElementAssignment
-    | expression
   )
 
   /**

@@ -196,6 +196,7 @@ object Serializer {
       )
     )
 
+    case AttributeNameNode(name)   => JSONObject(Map("AttributeNameNode" -> name))
     case AttributeAccessNode(name) => JSONObject(Map("AttributeAccessNode" -> name))
     case AttributeAssignmentNode(name, expression) => JSONObject(
       Map(
@@ -228,6 +229,7 @@ object Serializer {
       )
     )
 
+    case VariableNameNode(name)   => JSONObject(Map("VariableNameNode" -> name))
     case VariableAccessNode(name) => JSONObject(Map("VariableAccessNode" -> name))
     case VariableAssignmentNode(name, expression) => JSONObject(
       Map(
@@ -261,6 +263,19 @@ object Serializer {
       )
     )
 
+    case HashElementNameNode(hashName, keys) => JSONObject(
+      Map(
+        "HashElementNameNode" -> JSONObject(
+          Map(
+            "hashname" -> hashName,
+            if (keys.length == 1)
+              "key"    -> toJSON(keys.head)
+            else
+              "keys"   -> JSONArray(keys.map(toJSON(_)))
+          )
+        )
+      )
+    )
     case HashElementAccessNode(hashName, keys) => JSONObject(
       Map(
         "HashElementAccessNode" -> JSONObject(
@@ -289,6 +304,19 @@ object Serializer {
       )
     )
 
+    case ArrayElementNameNode(arrayName, indices) => JSONObject(
+      Map(
+        "ArrayElementNameNode" -> JSONObject(
+          Map(
+            "arrayname" -> arrayName,
+            if (indices.length == 1)
+              "index"   -> toJSON(indices.head)
+            else
+              "indices" -> JSONArray(indices.map(toJSON(_)))
+          )
+        )
+      )
+    )
     case ArrayElementAccessNode(arrayName, indices) => JSONObject(
       Map(
         "ArrayElementAccessNode" -> JSONObject(
