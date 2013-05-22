@@ -489,11 +489,11 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
 
   lazy val simpleStatement: Parser[AST] = (
       variableDeclaration
-    | multiVariableDeclaration
-    | expression
+    | multiVariableDeclaration    
+    | useStatement    
+    | expression    
     | multiVariableAssignment
     | multiAttributeAssignment
-    | useStatement
   )
 
   /**
