@@ -103,6 +103,37 @@ class MoeStrObject(
   def greater_than_or_equal_to (r: MoeRuntime, other: MoeObject): MoeBoolObject =
     r.NativeObjects.getBool(getNativeValue >= other.unboxToString.get)
 
+  // regular expression matching
+
+  def matches (r: MoeRuntime, pattern: MoeStrObject): MoeBoolObject =
+    new MoeRegexObject(pattern.unboxToString.get).matches(r, this)
+
+  def matches (r: MoeRuntime, pattern: MoeRegexObject): MoeBoolObject =
+    pattern.matches(r, this)
+
+  // TODO: find method that returns a "Match" object to access captures etc
+
+  def subst (
+    r: MoeRuntime,
+    pattern: MoeStrObject,
+    replacement: MoeStrObject,
+    flags: MoeStrObject
+  ): MoeStrObject =
+    r.NativeObjects.getStr(
+      if (flags.unboxToString.get == "g")
+        getNativeValue.replace(pattern.unboxToString.get, replacement.unboxToString.get)
+      else
+        getNativeValue.replaceFirst(pattern.unboxToString.get, replacement.unboxToString.get)
+    )
+
+  def subst (
+    r: MoeRuntime,
+    pattern: MoeRegexObject,
+    replacement: MoeStrObject,
+    flags: MoeStrObject
+  ): MoeStrObject =
+    pattern.replace(r, this, replacement, Some(flags))
+
   // MoeNativeObject overrides
 
   override def copy = new MoeStrObject(getNativeValue, getAssociatedType)

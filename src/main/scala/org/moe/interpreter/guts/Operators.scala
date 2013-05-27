@@ -31,6 +31,15 @@ object Operators extends Utils {
       }
     }
 
+    // regexes
+
+    case (env, BinaryOpNode(lhs: AST, "=~", rhs: AST)) => {
+      rhs match {
+        case MatchExpressionNode(pattern, flags) => i.evaluate(env, RegexMatchNode(lhs, pattern, flags))
+        case SubstExpressionNode(pattern, replacement, flags) => i.evaluate(env, RegexSubstNode(lhs, pattern, replacement, flags))
+      }
+    }
+
     // other binary operators
 
     case (env, BinaryOpNode(lhs: AST, operator: String, rhs: AST)) => {
@@ -56,5 +65,23 @@ object Operators extends Utils {
       val argFalse = new MoeLazyEval(i, env, falseExpr)
       callMethod(receiver, "infix:<?:>", List(argTrue, argFalse))
     }
+
+    // regex operations
+
+    case (env, RegexMatchNode(target: AST, pattern: AST, flags: AST)) => {
+      val receiver = i.evaluate(env, target)
+      val argPattern = i.evaluate(env, pattern)
+      val argFlags = i.evaluate(env, flags);
+      callMethod(receiver, "match", List(argPattern, argFlags))
+    }
+
+    case (env, RegexSubstNode(target: AST, pattern: AST, replacement: AST, flags: AST)) => {
+      val receiver = i.evaluate(env, target)
+      val argPattern = i.evaluate(env, pattern)
+      val argReplacement = i.evaluate(env, replacement)
+      val argFlags = i.evaluate(env, flags);
+      callMethod(receiver, "subst", List(argPattern, argReplacement, argFlags))
+    }
+
   }
 }

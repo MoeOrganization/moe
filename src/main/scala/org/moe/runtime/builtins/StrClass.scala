@@ -265,6 +265,45 @@ object StrClass {
       )
     )
 
+    // regex matching
+    strClass.addMethod(
+      new MoeMethod(
+        "match",
+        new MoeSignature(List(new MoePositionalParameter("$rx"),
+                              new MoeOptionalParameter("$flags"))),
+        env,
+        (e) => {
+          e.get("$rx") match {
+            case Some(rx: MoeRegexObject) => self(e).matches(r, rx)
+            case Some(s:  MoeStrObject)   => self(e).matches(r, s)
+            case _                        => throw new MoeErrors.IncompatibleType("Str or Regex expected")
+          }
+        }
+      )
+    )
+
+    strClass.addMethod(
+      new MoeMethod(
+        "subst",
+        new MoeSignature(List(new MoePositionalParameter("$rx"),
+                              new MoePositionalParameter("$replacement"),
+                              new MoeOptionalParameter("$flags"))),
+        env,
+        (e) => {
+          val replacement = e.getAs[MoeStrObject]("$replacement").get
+          val flags     = e.get("$flags") match {
+            case Some(s: MoeStrObject) => s.copy
+            case _                     => getStr("")
+          }
+          e.get("$rx") match {
+            case Some(rx: MoeRegexObject) => self(e).subst(r, rx, replacement, flags)
+            case Some(s:  MoeStrObject)   => self(e).subst(r, s, replacement, flags)
+            case _                        => throw new MoeErrors.IncompatibleType("Str or Regex expected")
+          }
+        }
+      )
+    )
+
     /**
      * List of Operators to support:
      * - infix:<.>
