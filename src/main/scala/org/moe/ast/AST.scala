@@ -142,3 +142,9 @@ case class DoWhileNode(condition: AST, body: StatementsNode) extends AST
 
 case class ForeachNode(topic: AST, list: AST, body: StatementsNode) extends AST
 case class ForNode(init: AST, condition: AST, update: AST, body: StatementsNode) extends AST
+
+case class RegexLiteralNode(rx: String) extends AST
+case class MatchExpressionNode(pattern: AST, flags: AST) extends AST
+case class SubstExpressionNode(pattern: AST, replacement: AST, flags: AST) extends AST
+case class RegexMatchNode(target: AST, pattern: AST, flags: AST) extends AST
+case class RegexSubstNode(target: AST, pattern: AST, replacement: AST, flags: AST) extends AST

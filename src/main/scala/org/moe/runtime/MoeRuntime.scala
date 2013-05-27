@@ -102,6 +102,7 @@ class MoeRuntime (
       val intClass       = new MoeClass("Int",        Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val numClass       = new MoeClass("Num",        Some(VERSION), Some(AUTHORITY), Some(scalarClass))
       val exceptionClass = new MoeClass("Exception",  Some(VERSION), Some(AUTHORITY), Some(scalarClass))
+      val regexClass     = new MoeClass("Regex",      Some(VERSION), Some(AUTHORITY), Some(scalarClass))
 
       // set the associated class for all classes
       // this must be classClass because these are
@@ -120,6 +121,7 @@ class MoeRuntime (
       intClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
       numClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
       exceptionClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
+      regexClass.setAssociatedType(Some(MoeClassType(Some(coreClassClass))))
 
       // add all these classes to the corePackage
       corePackage.addClass(objectClass)
@@ -140,6 +142,7 @@ class MoeRuntime (
       corePackage.addClass(intClass)
       corePackage.addClass(numClass)
       corePackage.addClass(exceptionClass)
+      corePackage.addClass(regexClass)
 
       setupBuiltins
 
@@ -280,6 +283,9 @@ class MoeRuntime (
       e.setValue("$!msg", getStr(msg))
       e
     }
+
+    def getRegex (rx: String) = new MoeRegexObject(rx, None, Some(MoeScalarType(getCoreClassFor("Regex"))))
+    def getRegex (rx: String, flags: String) = new MoeRegexObject(rx, Some(flags), Some(MoeScalarType(getCoreClassFor("Regex"))))
 
     def fixupSubroutine (c: MoeSubroutine): MoeSubroutine = {
       c.setAssociatedType(Some(MoeCodeType(getCoreClassFor("Code"))))
