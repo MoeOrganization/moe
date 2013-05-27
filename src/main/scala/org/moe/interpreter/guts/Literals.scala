@@ -81,6 +81,18 @@ object Literals extends Utils {
       r.NativeObjects.getArray(result:_*)
     }
 
+    case (env, RegexLiteralNode(value)) => r.NativeObjects.getRegex(value)
+
+    case (env, MatchExpressionNode(pattern: AST, flags: AST)) =>
+      (pattern, flags) match {
+        case (RegexLiteralNode(p), StringLiteralNode(f)) => r.NativeObjects.getRegex(p, f)
+      }
+
+    case (env, SubstExpressionNode(pattern: AST, replacement: AST, flags: AST)) =>
+      (pattern, replacement, flags) match {
+        case (RegexLiteralNode(p), StringLiteralNode(r_), StringLiteralNode(f)) =>
+         r.NativeObjects.getArray(List(r.NativeObjects.getRegex(p, f), r.NativeObjects.getStr(r_)) : _*)
+      }
   }
 
 }

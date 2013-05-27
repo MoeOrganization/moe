@@ -66,6 +66,13 @@ trait MoeLiterals extends JavaTokenParsers {
   def selfLiteral  : Parser[SelfLiteralNode]  = "self".r ^^^ SelfLiteralNode()
   def superLiteral : Parser[SuperCallNode] = "super".r ^^^ SuperCallNode()
 
+  // Regex Literal
+
+  def regexString = """(\\.|[^/])*""".r
+
+  // TODO: support for other delimiters
+  def regexLiteral: Parser[RegexLiteralNode] = "/" ~> regexString <~ "/" ^^ { rx => RegexLiteralNode(rx) }
+
   def literalValue: Parser[AST] = (
       floatNumber
     | intNumber
@@ -79,5 +86,6 @@ trait MoeLiterals extends JavaTokenParsers {
     | string
     | selfLiteral
     | superLiteral
+    | regexLiteral
   )
 }

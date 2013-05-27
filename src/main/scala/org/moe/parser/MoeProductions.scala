@@ -13,7 +13,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    *********************************************************************
    */
   
-  lazy val expression: PackratParser[AST] = assignOp
+  lazy val expression: PackratParser[AST] = matchOp | assignOp
 
   // TODO: left        or xor
   // TODO: left        and
@@ -77,14 +77,8 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   // left        * / % x
   lazy val mulOp: PackratParser[AST] = mulOp ~ "[*/%x]".r ~ expOp ^^ {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
-  } | matchOp
-
-  // left        =~     TODO: !~
-  lazy val matchOp: PackratParser[AST] = matchOp ~ "=~" ~ expOp ^^ {
-    case left ~ op ~ right => BinaryOpNode(left, op, right)
   } | expOp
 
-  // TODO: left        =~ !~
   // TODO: right       ! ~ \ and unary + and -
 
   // This one is right-recursive (associative) instead of left
@@ -118,7 +112,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   lazy val applyOp: PackratParser[AST] = (applyOp <~ ".") ~ identifier ~ ("(" ~> repsep(expression, ",") <~ ")").? ^^ {
     case invocant ~ method ~ Some(args) => MethodCallNode(invocant, method, args)
     case invocant ~ method ~ None       => MethodCallNode(invocant, method, List())
-  } | subroutineCall
+  } | regexExpression | subroutineCall
 
   lazy val subroutineCall: PackratParser[AST] = namespacedIdentifier ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
     case sub ~ args => SubroutineCallNode(sub, args)
@@ -149,7 +143,8 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    */
 
   lazy val simpleExpression: PackratParser[AST] = (
-      arrayIndex
+      regexExpression
+    | arrayIndex
     | hashIndex
     | hash
     | array
@@ -301,6 +296,31 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   def multiAttributeAssignment = ("(" ~> repsep(attributeName, ",") <~ ")") ~ "=" ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
     case vars ~ _ ~ exprs => MultiAttributeAssignmentNode(vars.map({case AttributeNameNode(aname) => aname}), exprs)
   }   
+
+  /**
+   * regex match/substitution etc
+   */
+
+  lazy val regexModifiers: Parser[AST] = """[igsmx]*""".r ^^ { flags => StringLiteralNode(flags) }
+
+  def matchExpression: Parser[AST] =
+    ("m".? ~> regexLiteral) ~ opt(regexModifiers) ^^ {
+      case pattern ~ None        => MatchExpressionNode(pattern, StringLiteralNode(""))
+      case pattern ~ Some(flags) => MatchExpressionNode(pattern, flags)
+    }
+
+  def substExpression: Parser[AST] = ("s" ~> regexLiteral) ~ ("""(\\.|[^/])*""".r <~ "/") ~ opt(regexModifiers) ^^ {
+    case pattern ~ replacement ~ None        => SubstExpressionNode(pattern, StringLiteralNode(replacement), StringLiteralNode(""))
+    case pattern ~ replacement ~ Some(flags) => SubstExpressionNode(pattern, StringLiteralNode(replacement), flags)
+  }
+
+  // TODO: tr (transliteration) operator
+
+  def regexExpression = (substExpression | matchExpression)
+
+  def matchOp = simpleExpression ~ "=~" ~ expression ^^ {
+    case left ~ op ~ right => BinaryOpNode(left, op, right)
+  }
 
   /**
    *********************************************************************

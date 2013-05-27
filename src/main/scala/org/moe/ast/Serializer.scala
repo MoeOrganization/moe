@@ -18,6 +18,8 @@ object Serializer {
     case ClassLiteralNode() => "ClassLiteralNode"
     case SuperCallNode() => "SuperCallNode"
 
+    case RegexLiteralNode(value) => JSONObject(Map("RegexLiteralNode" -> value.toString))
+
     case PairLiteralNode(key, value) => JSONObject(
       Map(
         "PairLiteralNode" -> JSONObject(
@@ -476,6 +478,54 @@ object Serializer {
             "condition" -> toJSON(condition),
             "update"    -> toJSON(update),
             "body"      -> toJSON(body)
+          )
+        )
+      )
+    )
+
+    case RegexMatchNode(target, pattern, flags) => JSONObject(
+      Map(
+        "RegexMatchNode" -> JSONObject(
+          Map(
+            "target"  -> toJSON(target),
+            "pattern" -> toJSON(pattern),
+            "flags"   -> toJSON(flags)
+          )
+        )
+      )
+    )
+
+    case RegexSubstNode(target, pattern, replacement, flags) => JSONObject(
+      Map(
+        "RegexSubstNode" -> JSONObject(
+          Map(
+            "target"      -> toJSON(target),
+            "pattern"     -> toJSON(pattern),
+            "replacement" -> toJSON(replacement),
+            "flags"       -> toJSON(flags)
+          )
+        )
+      )
+    )
+
+    case MatchExpressionNode(pattern, flags) => JSONObject(
+      Map(
+        "MatchExpressionNode" -> JSONObject(
+          Map(
+            "pattern" -> toJSON(pattern),
+            "flags"   -> toJSON(flags)
+          )
+        )
+      )
+    )
+
+    case SubstExpressionNode(pattern, replacement, flags) => JSONObject(
+      Map(
+        "SubstExpressionNode" -> JSONObject(
+          Map(
+            "pattern"     -> toJSON(pattern),
+            "replacement" -> toJSON(replacement),
+            "flags"       -> toJSON(flags)
           )
         )
       )
