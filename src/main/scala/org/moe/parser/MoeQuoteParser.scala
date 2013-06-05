@@ -11,7 +11,7 @@ trait MoeQuoteParser extends JavaTokenParsers {
     '<' -> '>'
   )
 
-  private def copyUptoEndDelim(in: Input, beginDelim: Char, endDelim: Char) = {
+  private def uptoEndDelim(in: Input, beginDelim: Char, endDelim: Char) = {
     val source = in.source
     val offset = in.offset
     var j = offset + 1
@@ -53,10 +53,10 @@ trait MoeQuoteParser extends JavaTokenParsers {
     }
 
     if (done) {
-      Success(buf.toString, in.drop(j - offset))
+      (Some(buf.toString), in.drop(j - offset - 1))
     }
     else {
-      Failure("`" + endDelim + "' expected but not found.", in.drop(j - offset))
+      (None, in.drop(j - offset - 1))
     }
   }
 
@@ -75,7 +75,10 @@ trait MoeQuoteParser extends JavaTokenParsers {
         Failure("`" + q + "' expected but not found", in.drop(start - offset))
       }
       else {
-        copyUptoEndDelim(in.drop(start - offset), beginDelim, endDelim)
+        uptoEndDelim(in.drop(start - offset), beginDelim, endDelim) match {
+          case (Some(matched), rest_in) => Success(matched, rest_in.drop(1))    // drop endDelim from input
+          case (None,          rest_in) => Failure("`" + endDelim + "' expected but not found.", rest_in)
+        }
       }
     }
   }
@@ -90,10 +93,41 @@ trait MoeQuoteParser extends JavaTokenParsers {
         case Some(matched) => {
           val beginDelim = source.subSequence(start, start + matched.end).charAt(0)
           val endDelim = quotePairMap.getOrElse(beginDelim, beginDelim)
-          copyUptoEndDelim(in.drop(start - offset), beginDelim, endDelim)
+          uptoEndDelim(in.drop(start - offset), beginDelim, endDelim) match {
+            case (Some(matched), rest_in) => Success(matched, rest_in.drop(1))    // drop endDelim from input
+            case (None,          rest_in) => Failure("`" + endDelim + "' expected but not found.", rest_in)
+          }
         }
         case None =>
           Failure("`string matching " + q + "' expected but not found", in.drop(start - offset))
+      }
+    }
+  }
+
+  def quotedPair(q: Char): Parser[(String, String)] = new Parser[(String, String)] {
+    def apply(in: Input) = {
+      val source = in.source
+      val offset = in.offset
+      val start = handleWhiteSpace(source, offset)
+      // println(s"source = |$source|, offset = |$offset|, start = |$start|")
+
+      var j = start
+      val beginDelim = q
+      val endDelim = quotePairMap.getOrElse(beginDelim, beginDelim)
+
+      if (j < source.length && beginDelim != source.charAt(j)) {
+        Failure("`" + q + "' expected but not found", in.drop(start - offset))
+      }
+      else {
+        uptoEndDelim(in.drop(start - offset), beginDelim, endDelim) match {
+          case (Some(matched_1), rest_in) => {
+            uptoEndDelim(rest_in, beginDelim, endDelim) match {
+              case (Some(matched_2), rest_in_2) => Success((matched_1, matched_2), rest_in_2.drop(1))    // drop endDelim from input
+              case (None,            rest_in_2) => Failure("`" + endDelim + "' expected but not found.", rest_in_2)
+            }
+          }
+          case (None,          rest_in) => Failure("`" + endDelim + "' expected but not found.", rest_in)
+        }
       }
     }
   }
