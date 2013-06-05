@@ -23,4 +23,12 @@ ok("foo" =~ m/f/, "... string literal match with =~ and explicit 'm' operator");
     ok($str =~ m/f/, "... string variable match with =~ and explicit 'm' operator");
 }
 
+{
+    my $str = "foo";
+    ok($str =~ m{f}, "... string variable match with '{ }' as delimiters");
+    ok($str =~ m[f], "... string variable match with '[ ]' as delimiters");
+    ok($str =~ m(f), "... string variable match with '( )' as delimiters");
+    ok($str =~ m<f>, "... string variable match with '< >' as delimiters");
+}
+
 done_testing();
