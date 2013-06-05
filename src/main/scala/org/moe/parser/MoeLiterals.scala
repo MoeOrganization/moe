@@ -55,15 +55,18 @@ trait MoeLiterals extends JavaTokenParsers with MoeQuoteParser {
   //   case doubleQuoteStringPattern(s) => StringLiteralNode(formatStr(s))
   // }
 
-  def quotedString = quoted("""[/{\[(<]""".r)
-  def doubleQuoteString: Parser[StringLiteralNode] = (quoted('"') | ("qq" ~> quotedString)) ^^ {
-    s => StringLiteralNode(formatStr(s))
-  }
-
   // val singleQuoteStringPattern = """'((?:[^'\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*)'""".r
   // def singleQuoteString: Parser[StringLiteralNode] = singleQuoteStringPattern ^^ {
   //   case singleQuoteStringPattern(s) => StringLiteralNode(s)
   // }
+
+  def quotedString = quoted("""[/{\[(<]""".r)
+  def bracketedString = quoted("""[{\[(<]""".r) // only matching brackets as delimiters
+
+  def doubleQuoteString: Parser[StringLiteralNode] = (quoted('"') | ("qq" ~> quotedString)) ^^ {
+    s => StringLiteralNode(formatStr(s))
+  }
+
   def singleQuoteString: Parser[StringLiteralNode] = quoted('\'') ^^ {
     s => StringLiteralNode(s)
   }
@@ -80,8 +83,6 @@ trait MoeLiterals extends JavaTokenParsers with MoeQuoteParser {
   // def regexString = """(\\.|[^/])*""".r
 
   // TODO: support for other delimiters
-  // def regexLiteral: Parser[RegexLiteralNode] = "/" ~> regexString <~ "/" ^^ { rx => RegexLiteralNode(rx) }
-  // def regexLiteral: Parser[RegexLiteralNode] = quoted("""[/{\[(<]""".r) ^^ { rx => RegexLiteralNode(rx) }
   def regexLiteral: Parser[RegexLiteralNode] = quoted('/') ^^ { rx => RegexLiteralNode(rx) }
 
   def literalValue: Parser[AST] = (
