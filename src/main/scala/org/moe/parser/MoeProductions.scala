@@ -304,14 +304,22 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   lazy val regexModifiers: Parser[AST] = """[igsmx]*""".r ^^ { flags => StringLiteralNode(flags) }
 
   def matchExpression: Parser[AST] =
-    ("m".? ~> regexLiteral) ~ opt(regexModifiers) ^^ {
-      case pattern ~ None        => MatchExpressionNode(pattern, StringLiteralNode(""))
-      case pattern ~ Some(flags) => MatchExpressionNode(pattern, flags)
+    // ("m".? ~> regexLiteral) ~ opt(regexModifiers) ^^ {
+    //   case pattern ~ None        => MatchExpressionNode(pattern, StringLiteralNode(""))
+    //   case pattern ~ Some(flags) => MatchExpressionNode(pattern, flags)
+    // }
+    (("m" ~> quotedString) | quoted('/')) ~ opt(regexModifiers) ^^ {
+      case pattern ~ None        => MatchExpressionNode(RegexLiteralNode(pattern), StringLiteralNode(""))
+      case pattern ~ Some(flags) => MatchExpressionNode(RegexLiteralNode(pattern), flags)
     }
 
-  def substExpression: Parser[AST] = ("s" ~> regexLiteral) ~ ("""(\\.|[^/])*""".r <~ "/") ~ opt(regexModifiers) ^^ {
-    case pattern ~ replacement ~ None        => SubstExpressionNode(pattern, StringLiteralNode(replacement), StringLiteralNode(""))
-    case pattern ~ replacement ~ Some(flags) => SubstExpressionNode(pattern, StringLiteralNode(replacement), flags)
+  // def substExpression: Parser[AST] = ("s" ~> regexLiteral) ~ ("""(\\.|[^/])*""".r <~ "/") ~ opt(regexModifiers) ^^ {
+  //   case pattern ~ replacement ~ None        => SubstExpressionNode(pattern, StringLiteralNode(replacement), StringLiteralNode(""))
+  //   case pattern ~ replacement ~ Some(flags) => SubstExpressionNode(pattern, StringLiteralNode(replacement), flags)
+  // }
+  def substExpression: Parser[AST] = ("s" ~> quotedString) ~ ("""(\\.|[^/])*""".r <~ "/") ~ opt(regexModifiers) ^^ {
+    case pattern ~ replacement ~ None        => SubstExpressionNode(RegexLiteralNode(pattern), StringLiteralNode(replacement), StringLiteralNode(""))
+    case pattern ~ replacement ~ Some(flags) => SubstExpressionNode(RegexLiteralNode(pattern), StringLiteralNode(replacement), flags)
   }
 
   // TODO: tr (transliteration) operator

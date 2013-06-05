@@ -1,11 +1,12 @@
 package org.moe.parser
 
 import ParserUtils._
+// import MoeQuoteParser._
 
 import scala.util.parsing.combinator._
 import org.moe.ast._
 
-trait MoeLiterals extends JavaTokenParsers {
+trait MoeLiterals extends JavaTokenParsers with MoeQuoteParser {
 
   // treat comments as whitespace
   override val whiteSpace = """(#[^\n\r]*[\n\r]|\s)+""".r
@@ -49,14 +50,22 @@ trait MoeLiterals extends JavaTokenParsers {
   // things a little)
   // - SL
 
-  val doubleQuoteStringPattern = """"((?:[^"\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*)"""".r
-  def doubleQuoteString: Parser[StringLiteralNode] = doubleQuoteStringPattern ^^ {
-    case doubleQuoteStringPattern(s) => StringLiteralNode(formatStr(s))
- }
+  // val doubleQuoteStringPattern = """"((?:[^"\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*)"""".r
+  // def doubleQuoteString: Parser[StringLiteralNode] = doubleQuoteStringPattern ^^ {
+  //   case doubleQuoteStringPattern(s) => StringLiteralNode(formatStr(s))
+  // }
 
-  val singleQuoteStringPattern = """'((?:[^'\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*)'""".r
-  def singleQuoteString: Parser[StringLiteralNode] = singleQuoteStringPattern ^^ {
-    case singleQuoteStringPattern(s) => StringLiteralNode(s)
+  def quotedString = quoted("""[/{\[(<]""".r)
+  def doubleQuoteString: Parser[StringLiteralNode] = (quoted('"') | ("qq" ~> quotedString)) ^^ {
+    s => StringLiteralNode(formatStr(s))
+  }
+
+  // val singleQuoteStringPattern = """'((?:[^'\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*)'""".r
+  // def singleQuoteString: Parser[StringLiteralNode] = singleQuoteStringPattern ^^ {
+  //   case singleQuoteStringPattern(s) => StringLiteralNode(s)
+  // }
+  def singleQuoteString: Parser[StringLiteralNode] = quoted('\'') ^^ {
+    s => StringLiteralNode(s)
   }
 
   def string: Parser[StringLiteralNode] = doubleQuoteString | singleQuoteString
@@ -68,10 +77,12 @@ trait MoeLiterals extends JavaTokenParsers {
 
   // Regex Literal
 
-  def regexString = """(\\.|[^/])*""".r
+  // def regexString = """(\\.|[^/])*""".r
 
   // TODO: support for other delimiters
-  def regexLiteral: Parser[RegexLiteralNode] = "/" ~> regexString <~ "/" ^^ { rx => RegexLiteralNode(rx) }
+  // def regexLiteral: Parser[RegexLiteralNode] = "/" ~> regexString <~ "/" ^^ { rx => RegexLiteralNode(rx) }
+  // def regexLiteral: Parser[RegexLiteralNode] = quoted("""[/{\[(<]""".r) ^^ { rx => RegexLiteralNode(rx) }
+  def regexLiteral: Parser[RegexLiteralNode] = quoted('/') ^^ { rx => RegexLiteralNode(rx) }
 
   def literalValue: Parser[AST] = (
       floatNumber
