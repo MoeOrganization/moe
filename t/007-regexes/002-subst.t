@@ -34,6 +34,7 @@ is("foo" =~ s/o/0/g, "f00", "... string literal global substitution with =~ oper
     is($str =~ s[(.)][$1$1], "ffoo", "... str variable substitution with '[ ]' as delimiters");
     is($str =~ s((.))($1$1), "ffoo", "... str variable substitution with '( )' as delimiters");
     is($str =~ s<(.)><$1$1>, "ffoo", "... str variable substitution with '< >' as delimiters");
+    is($str =~ s[(.)]{$1$1}, "ffoo", "... str variable substitution with different delimiter pairs");
 }
 
 done_testing();
