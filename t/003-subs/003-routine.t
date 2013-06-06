@@ -1,12 +1,12 @@
 use Test::More;
 
 {
-    my &fib = -> ($n) { 
-        if ($n < 2) { 
-            $n 
-        } else { 
+    my &fib = -> ($n) {
+        if ($n < 2) {
+            $n
+        } else {
             (&?ROUTINE.call($n - 1)) + (&?ROUTINE.call($n - 2))
-        } 
+        }
     };
 
     is(&fib.(10), 55, '... fixed point fibonacci');
