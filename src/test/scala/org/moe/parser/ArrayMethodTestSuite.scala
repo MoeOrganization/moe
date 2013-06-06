@@ -13,7 +13,7 @@ import org.moe.runtime.nativeobjects._
 class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestUtils with ShouldMatchers {
 
   test("... basic test with array.map") {
-    val result = interpretCode("[1, 2, 3].map(-> ($_) { $_ + 1 })")
+    val result = interpretCode("[1, 2, 3].map(($_) => { $_ + 1 })")
 
     val array = result.unboxToArrayBuffer.get
     array.length should equal (3)
@@ -23,7 +23,7 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
   }
 
   test("... basic test with array.grep") {
-    val result = interpretCode("[1, 2, 3].grep(-> ($_) { $_ <= 2 })")
+    val result = interpretCode("[1, 2, 3].grep(($_) => { $_ <= 2 })")
 
     val array = result.unboxToArrayBuffer.get
     array.length should equal (2)
@@ -32,7 +32,7 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
   }
 
   test("... basic test with array.each") {
-    val result = interpretCode("my @x = ['foo', 'bar', 'baz']; @x.each(-> ($_) { $_.chop }); @x")
+    val result = interpretCode("my @x = ['foo', 'bar', 'baz']; @x.each(($_) => { $_.chop }); @x")
 
     val array = result.unboxToArrayBuffer.get
     array.length should equal (3)
@@ -42,22 +42,22 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
   }
 
   test("... basic test with array.reduce") {
-    val result = interpretCode("my @x = [1, 2, 3, 4, 5]; @x.reduce(-> ($a, $b) { $a + $b })")
+    val result = interpretCode("my @x = [1, 2, 3, 4, 5]; @x.reduce(($a, $b) => { $a + $b })")
     result.unboxToInt.get should equal (15)
   }
 
   test("... basic test with array.reduce with initial value") {
-    val result = interpretCode("my @x = [1, 2, 3, 4, 5]; @x.reduce(-> ($a, $b) { $a + $b }, 100)")
+    val result = interpretCode("my @x = [1, 2, 3, 4, 5]; @x.reduce(($a, $b) => { $a + $b }, 100)")
     result.unboxToInt.get should equal (115)
   }
 
   test("... basic test with array.first") {
-    val result = interpretCode("my @a = ['foo', 'bar', 'baz']; @a.first(-> ($_) { $_ lt 'foo' } )")
+    val result = interpretCode("my @a = ['foo', 'bar', 'baz']; @a.first(($_) => { $_ lt 'foo' } )")
     result.unboxToString.get should equal ("bar")
   }
 
   test("... basic test with array.first -- non-matching case") {
-    val result = interpretCode("my @a = ['foo', 'bar', 'baz']; @a.first(-> ($_) { $_ eq 'bazz' } )")
+    val result = interpretCode("my @a = ['foo', 'bar', 'baz']; @a.first(($_) => { $_ eq 'bazz' } )")
     result.unboxToString.get should equal ("undef")
   }
 
@@ -143,7 +143,7 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
   }
 
   test("... basic test with array.exists") {
-    val result = interpretCode("""my @a = [2, 3, 4]; 1..5.map(-> ($x) { @a.exists($x) } )""")
+    val result = interpretCode("""my @a = [2, 3, 4]; 1..5.map(($x) => { @a.exists($x) } )""")
     val array = result.unboxToArrayBuffer.get
     array.length should equal (5)
     array(0).unboxToBoolean.get should equal (false)
@@ -169,7 +169,7 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
   }
 
   test("... basic test with array.classify") {
-    val result = interpretCode("""1..5.classify(-> ($x) { $x % 2 ? "odd" : "even" })""")
+    val result = interpretCode("""1..5.classify(($x) => { $x % 2 ? "odd" : "even" })""")
     val map = result.unboxToMap.get
 
     val odds = map("odd").asInstanceOf[MoeArrayObject].unboxToArrayBuffer.get
@@ -185,7 +185,7 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
   }
 
   test("... basic test with array.categorize") {
-    val result = interpretCode("""1..5.categorize(-> ($x) { my @c = [$x % 2 ? "odd" : "even"]; if ($x % 3 == 0) { @c.push('triple') } @c })""")
+    val result = interpretCode("""1..5.categorize(($x) => { my @c = [$x % 2 ? "odd" : "even"]; if ($x % 3 == 0) { @c.push('triple') } @c })""")
     val map = result.unboxToMap.get
 
     val odds = map("odd").asInstanceOf[MoeArrayObject].unboxToArrayBuffer.get
@@ -210,7 +210,7 @@ class ArrayMethodTestSuite extends FunSuite with BeforeAndAfter with ParserTestU
   }
 
   test("... basic test with array.sort -- numeric sorter") {
-    val result = interpretCode("""[2, 7, 10, 3, 4, 1].sort(-> ($a, $b) { $a <=> $b }).join(",")""")
+    val result = interpretCode("""[2, 7, 10, 3, 4, 1].sort(($a, $b) => { $a <=> $b }).join(",")""")
     result.unboxToString.get should equal("1,2,3,4,7,10")
   }
 

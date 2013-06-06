@@ -64,7 +64,7 @@ class ArgumentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter with Pa
     }
 
     test("... exceptional scalar assignment w/ code [" + name + "]") {
-      val result = interpretCode(code.format("->{}"))
+      val result = interpretCode(code.format("() => {}"))
       assert(result.isInstanceOf[MoeCode] === true)
     }
   }
@@ -136,7 +136,7 @@ class ArgumentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter with Pa
 
     test("... exceptional array assignment w/ code [" + name + "]") {
       val e = intercept[Exception] {
-        interpretCode(code.format("-> {}"))
+        interpretCode(code.format("() => {}"))
       }
       e.getMessage should equal ("the argument (@x) is not compatible with CODE")
     }
@@ -209,7 +209,7 @@ class ArgumentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter with Pa
 
     test("... exceptional hash assignment w/ code [" + name + "]") {
       val e = intercept[Exception] {
-        interpretCode(code.format("-> {}"))
+        interpretCode(code.format("() => {}"))
       }
       e.getMessage should equal ("the argument (%x) is not compatible with CODE")
     }
@@ -232,7 +232,7 @@ class ArgumentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter with Pa
     // ------------------------------------------------------
 
     test("... simple code assignment w/ code [" + name + "]") {
-      val result = interpretCode(code.format("-> { 1 }"))
+      val result = interpretCode(code.format("() => { 1 }"))
       assert(result.isInstanceOf[MoeCode] === true)
     }
 

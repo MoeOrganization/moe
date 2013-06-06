@@ -52,7 +52,7 @@ class VarAssignmentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter wi
   }
 
   test("... exceptional scalar assignment w/ code") {
-    val result = interpretCode("my $x = -> {};")
+    val result = interpretCode("my $x = () => {};")   
     assert(result.isInstanceOf[MoeCode] === true)
   }
 
@@ -90,7 +90,7 @@ class VarAssignmentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter wi
   }
 
   test("... exceptional scalar assignment # w/ code") {
-    val result = interpretCode("my $x; $x = -> {};")
+    val result = interpretCode("my $x; $x = () => {};")
     assert(result.isInstanceOf[MoeCode] === true)
   }
 
@@ -156,7 +156,7 @@ class VarAssignmentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter wi
 
   test("... exceptional array assignment w/ code") {
     val e = intercept[Exception] {
-      interpretCode("my @x = -> {};")
+      interpretCode("my @x = () => {};")
     }
     e.getMessage should equal ("the container (@x) is not compatible with CODE")
   }
@@ -200,7 +200,7 @@ class VarAssignmentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter wi
 
   test("... exceptional array assignment #2 w/ code") {
     val e = intercept[Exception] {
-      interpretCode("my @x; @x = -> {};")
+      interpretCode("my @x; @x = () => {};")
     }
     e.getMessage should equal ("the container (@x) is not compatible with CODE")
   }
@@ -267,7 +267,7 @@ class VarAssignmentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter wi
 
   test("... exceptional hash assignment w/ code") {
     val e = intercept[Exception] {
-      interpretCode("my %x = -> {};")
+      interpretCode("my %x = () => {};")
     }
     e.getMessage should equal ("the container (%x) is not compatible with CODE")
   }
@@ -311,7 +311,7 @@ class VarAssignmentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter wi
 
   test("... exceptional hash assignment #2 w/ code") {
     val e = intercept[Exception] {
-      interpretCode("my %x; %x = -> {};")
+      interpretCode("my %x; %x = () => {};")
     }
     e.getMessage should equal ("the container (%x) is not compatible with CODE")
   }
@@ -321,7 +321,7 @@ class VarAssignmentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter wi
   // ------------------------------------------------------
 
   test("... simple code assignment w/ code") {
-    val result = interpretCode("my &x = -> { 1 };")
+    val result = interpretCode("my &x = () => { 1 };")
     assert(result.isInstanceOf[MoeCode] === true)
   }
 
@@ -333,7 +333,7 @@ class VarAssignmentTypeCheckingTestSuite extends FunSuite with BeforeAndAfter wi
   // duplicate the tests with assignment seperate from declaration
 
   test("... simple code assignment #2 w/ code") {
-    val result = interpretCode("my &x; &x = -> { 1 };")
+    val result = interpretCode("my &x; &x = () => { 1 };")
     assert(result.isInstanceOf[MoeCode] === true)
   }
 

@@ -17,17 +17,17 @@ class MultiVarAssignmentTypeCheckingTestSuite extends FunSuite with BeforeAndAft
   // ------------------------------------------------------
 
   test("... multi-assignment success") {
-    val result = interpretCode("my ($i, $n, $s, @a, %h, &c) = (10, 10.5, 'foo', [], {}, -> {});")
+    val result = interpretCode("my ($i, $n, $s, @a, %h, &c) = (10, 10.5, 'foo', [], {}, () => {});")
     assert(result.isInstanceOf[MoeCode] === true)
   }
 
   test("... multi-assignment success #2") {
-    val result = interpretCode("my ($i, $n, $s, @a, %h, &c); ($i, $n, $s, @a, %h, &c) = (10, 10.5, 'foo', [], {}, -> {});")
+    val result = interpretCode("my ($i, $n, $s, @a, %h, &c); ($i, $n, $s, @a, %h, &c) = (10, 10.5, 'foo', [], {}, () => {});")
     assert(result.isInstanceOf[MoeCode] === true)
   }
 
   test("... multi-assignment success #3") {
-    val result = interpretCode("my ($i, $n, $s, @a, %h, &c) = ([], 10.5, 'foo', [], {}, -> {}); $i")
+    val result = interpretCode("my ($i, $n, $s, @a, %h, &c) = ([], 10.5, 'foo', [], {}, () => {}); $i")
     assert(result.isInstanceOf[MoeArrayObject] === true)
   }
 
@@ -35,14 +35,14 @@ class MultiVarAssignmentTypeCheckingTestSuite extends FunSuite with BeforeAndAft
 
   test("... multi-assignment failure #1") {
     val e = intercept[Exception] {
-      interpretCode("my ($i, $n, $s, @a, %h, &c) = (10, 10.5, 'foo', 10, {}, -> {});")
+      interpretCode("my ($i, $n, $s, @a, %h, &c) = (10, 10.5, 'foo', 10, {}, () => {});")
     }
     e.getMessage should equal ("the container (@a) is not compatible with SCALAR")
   }
 
   test("... multi-assignment failure #2") {
     val e = intercept[Exception] {
-      interpretCode("my ($i, $n, $s, @a, %h, &c) = (10, 10.5, 'foo', [], 'bar', -> {});")
+      interpretCode("my ($i, $n, $s, @a, %h, &c) = (10, 10.5, 'foo', [], 'bar', () => {});")
     }
     e.getMessage should equal ("the container (%h) is not compatible with SCALAR")
   }
