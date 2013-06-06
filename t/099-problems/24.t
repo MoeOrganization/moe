@@ -17,7 +17,7 @@ sub remove_at($i, @list) {
 # from P23
 sub random_select($n, @list) {
     my @l = @list;
-    1..$n.map(-> {my @result = remove_at(rand(@l.length).Int, @l); @l = @result[0]; @result[1]})
+    1..$n.map(() => {my @result = remove_at(rand(@l.length).Int, @l); @l = @result[0]; @result[1]})
 }
 
 sub lotto($n, $m) { random_select($n, 1..$m) }
@@ -27,7 +27,7 @@ say @picks;
 
 is(@picks.length, 6, "... P24 -- number of picks");
 ok(@picks.uniq.length == @picks.length, "... P24 -- no duplicates");
-0..5.each(-> ($i) { ok(@picks[$i] > 0 && @picks[$i] <= 49, "... P24 -- pick " ~ ~($i + 1)) });
+0..5.each(($i) => { ok(@picks[$i] > 0 && @picks[$i] <= 49, "... P24 -- pick " ~ ~($i + 1)) });
 
 done_testing();
 

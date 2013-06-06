@@ -37,22 +37,22 @@ sub pr(*@list) {
 # concatenate @a and @b and return a new array
 # this should be an array.method
 sub concat(@a, @b) {
-    my @r = @a.map(-> ($_) {$_});
-    @b.each(-> ($x) { @r.push($x) });
+    my @r = @a.map(($_) => {$_});
+    @b.each(($x) => { @r.push($x) });
     @r
 }
 
 # append contents of @b to @a, and return @a
 # this should be an array.method too
 sub append(@a, @b) {
-    @b.each(-> ($x) { @a.push($x) });
+    @b.each(($x) => { @a.push($x) });
     @a
 }
 
 # from P26
 sub combinations($n, @list) {
     if ($n == 1) {
-        @list.map(-> ($x) { [$x] });
+        @list.map(($x) => { [$x] });
     }
     elsif (@list.length <= $n) {
         [@list];
@@ -61,7 +61,7 @@ sub combinations($n, @list) {
         concat(
                combinations($n - 1, @list.tail)
                .map(
-                    -> (@c) {
+                    (@c) => {
                         [@list.head, @c].flatten
                     }
                    ),
@@ -71,7 +71,7 @@ sub combinations($n, @list) {
 }
 
 sub remove(@list, @elems) {
-    @list.grep(-> ($x) { !(@elems.exists($x)) });
+    @list.grep(($x) => { !(@elems.exists($x)) });
 }
 
 sub group(@sizes, @list, $level?) {
@@ -81,11 +81,11 @@ sub group(@sizes, @list, $level?) {
     else {
         my @result = [];
         combinations(@sizes.head, @list).each(
-            -> ($c) {
+            ($c) => {
                 append(
                     @result,
                     group(@sizes.tail, remove(@list, $c)).map(
-                        -> (@gr) { concat([$c], @gr) }
+                        (@gr) => { concat([$c], @gr) }
                     )
                 );
             }

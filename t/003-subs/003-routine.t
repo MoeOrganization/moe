@@ -1,7 +1,7 @@
 use Test::More;
 
 {
-    my &fib = -> ($n) {
+    my &fib = ($n) => {
         if ($n < 2) {
             $n
         } else {

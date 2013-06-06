@@ -11,7 +11,7 @@ sub is_prime($number) {
         false
     }
     else {
-        !((2..($number.sqrt.Int)).first(-> ($f) { $number % $f == 0 }).defined)
+        !((2..($number.sqrt.Int)).first(($f) => { $number % $f == 0 }).defined)
     }
 }
 

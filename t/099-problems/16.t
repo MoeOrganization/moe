@@ -8,10 +8,10 @@ use Test::More;
 
 sub drop($n, @list) {
     # need prefix -- (pre-decrement) operator for this to work
-    # @list.grep(-> ($a) { --$n % 3 != 0 })
+    # @list.grep(($a) => { --$n % 3 != 0 })
 
     # until then:
-    @list.grep(-> ($a) { $n = $n - 1; $n % 3 != 0 })
+    @list.grep(($a) => { $n = $n - 1; $n % 3 != 0 })
 }
 
 is_deeply(drop(3, ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"]),

@@ -18,7 +18,7 @@ sub is_coprime_to($a, $b) {
 }
 
 sub totient($n) {
-    (1..($n-1)).grep(-> ($m) { is_coprime_to($m, $n) }).length
+    (1..($n-1)).grep(($m) => { is_coprime_to($m, $n) }).length
 }
 
 is(totient(10), 4, "... P34");

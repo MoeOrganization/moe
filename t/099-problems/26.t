@@ -14,13 +14,13 @@
 use Test::More;
 
 sub concat(@a, @b) {
-    @b.each(-> ($x) { @a.push($x) });
+    @b.each(($x) => { @a.push($x) });
     @a
 }
 
 sub combinations($n, @list) {
     if ($n == 1) {
-        @list.map(-> ($x) { [$x] });
+        @list.map(($x) => { [$x] });
     }
     elsif (@list.length <= $n) {
         [@list];
@@ -29,7 +29,7 @@ sub combinations($n, @list) {
         concat(
             combinations($n - 1, @list.tail)
                 .map(
-                    -> (@c) {
+                    (@c) => {
                         [@list.head, @c].flatten
                     }
                 ),

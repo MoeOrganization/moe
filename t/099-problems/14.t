@@ -7,7 +7,7 @@
 use Test::More;
 
 sub duplicate(@list) {
-    @list.map(-> ($x) {[$x, $x]}).flatten
+    @list.map(($x) => {[$x, $x]}).flatten
 }
 
 is_deeply(duplicate(["a", "b", "c", "c", "d"]),

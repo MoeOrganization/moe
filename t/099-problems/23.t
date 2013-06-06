@@ -19,7 +19,7 @@ sub remove_at($i, @list) {
 
 sub random_select($n, @list) {
     my @l = @list;
-    1..$n.map(-> {
+    1..$n.map(() => {
                      my @result = remove_at(rand(@l.length).Int, @l);
                      @l = @result[0];
                      @result[1]

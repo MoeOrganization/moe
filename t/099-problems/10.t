@@ -11,7 +11,7 @@
 use Test::More;
 
 sub pack(@list) {
-    @list.reduce(-> (@a, $b) {
+    @list.reduce((@a, $b) => {
                      if (@a.length == 0 || @a[-1].at_pos(0) ne $b) {
                          @a.push([$b]);
                      }
@@ -24,7 +24,7 @@ sub pack(@list) {
 }
 
 sub encode(*@list) {
-    pack(@list).map(-> (@a) {[@a.length, @a[0]]})
+    pack(@list).map((@a) => {[@a.length, @a[0]]})
 }
 
 is_deeply(encode("a", "a", "a", "a", "b", "c", "c", "a", "a", "d", "e", "e", "e", "e"),

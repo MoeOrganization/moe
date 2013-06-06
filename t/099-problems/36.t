@@ -17,13 +17,13 @@ sub is_prime($number) {
     if ($number < 2) {
         false
     } else {
-        !((2..($number.sqrt.Int)).first(-> ($f) { $number % $f == 0 }).defined)
+        !((2..($number.sqrt.Int)).first(($f) => { $number % $f == 0 }).defined)
     }
 }
 
 # from P35
 sub prime_factors($number) {
-    my $factor = (2..(($number/2).Int)).first(-> ($f) { $number % $f == 0 && is_prime($f) });
+    my $factor = (2..(($number/2).Int)).first(($f) => { $number % $f == 0 && is_prime($f) });
     if ($factor.defined) {
         [$factor, prime_factors(($number/$factor).Int)].flatten
     } else {
@@ -33,7 +33,7 @@ sub prime_factors($number) {
 
 sub prime_factor_multiplicity($number) {
     my %freq = {};
-    prime_factors($number).each(-> ($n) { %freq{~$n} = +%freq{~$n} + 1; });
+    prime_factors($number).each(($n) => { %freq{~$n} = +%freq{~$n} + 1; });
     %freq;
 }
 

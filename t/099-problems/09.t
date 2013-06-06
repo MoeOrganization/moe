@@ -9,7 +9,7 @@
 use Test::More;
 
 sub pack(*@list) {
-    @list.reduce(-> (@a, $b) {
+    @list.reduce((@a, $b) => {
                      if (@a.length == 0 || @a[-1].at_pos(0) ne $b) {
                          @a.push([$b]);
                      }

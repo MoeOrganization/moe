@@ -11,7 +11,7 @@
 use Test::More;
 
 sub compress(*@list) {
-    @list.reduce(-> (@a, $b) {
+    @list.reduce((@a, $b) => {
                      if (@a.length == 0 || @a[-1] ne $b) {
                          @a.push($b)
                      }

@@ -30,15 +30,15 @@
 use Test::More;
 
 sub lsort(@list) {
-    @list.sort(-> ($a, $b) { $a.length <=> $b.length })
+    @list.sort(($a, $b) => { $a.length <=> $b.length })
 }
 
 sub lsort_freq(@list) {
     my %freq = {};
-    @list.each(-> ($l) { %freq{~$l} = +%freq{~$l} + 1; });
+    @list.each(($l) => { %freq{~$l} = +%freq{~$l} + 1; });
 
     # second criterion added to fix the ordering of same-frequency lists
-    @list.sort(-> ($a, $b) { %freq{~$a} <=> %freq{~$b} || ~$a cmp ~$b });
+    @list.sort(($a, $b) => { %freq{~$a} <=> %freq{~$b} || ~$a cmp ~$b });
 }
 
 my @list = [['a', 'b', 'c'], ['d', 'e'], ['f', 'g', 'h'], ['d', 'e'], ['i', 'j', 'k', 'l'], ['m', 'n'], ['o']];

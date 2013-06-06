@@ -7,7 +7,7 @@
 use Test::More;
 
 sub duplicateN($n, @list) {
-    @list.map(-> ($x) {[$x] x $n}).flatten
+    @list.map(($x) => {[$x] x $n}).flatten
 }
 
 is_deeply(duplicateN(3, ["a", "b", "c", "c", "d"]),

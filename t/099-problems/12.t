@@ -10,7 +10,7 @@
 use Test::More;
 
 sub decode(@list) {
-    @list.map(-> (@rlc) {[@rlc[1]] x @rlc[0]}).flatten
+    @list.map((@rlc) => {[@rlc[1]] x @rlc[0]}).flatten
 }
 
 is_deeply(decode([[4, "a"], [1, "b"], [2, "c"], [2, "a"], [1, "d"], [4, "e"]]),

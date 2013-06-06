@@ -42,11 +42,11 @@ use Test::More;
     # the next four test do not depend on hash ordering consistency,
     # but they do depend on array.sort method
 
-    is_deeply(%x.keys.sort(-> ($a, $b) { %x{$a} <=> %x{$b} }), ['one', 'two', 'three', 'four'], '... got the expected values from &keys');
-    is_deeply(%x.values.sort(-> ($a, $b) { $a <=> $b }), [1, 2, 3, 4], '... got the expected values from &values');
+    is_deeply(%x.keys.sort(($a, $b) => { %x{$a} <=> %x{$b} }), ['one', 'two', 'three', 'four'], '... got the expected values from &keys');
+    is_deeply(%x.values.sort(($a, $b) => { $a <=> $b }), [1, 2, 3, 4], '... got the expected values from &values');
 
-    is_deeply(%x.kv.sort(-> (@a, @b) { @a[1] <=> @b[1] }), [['one', 1], ['two', 2], ['three', 3], ['four', 4]], '... got the expected values from &kv');
-    is_deeply(%x.pairs.sort(-> ($a, $b) { $a.value <=> $b.value }), ['one' => 1, 'two' => 2, 'three' => 3, 'four' => 4], '... got the expected values from &pairs');
+    is_deeply(%x.kv.sort((@a, @b) => { @a[1] <=> @b[1] }), [['one', 1], ['two', 2], ['three', 3], ['four', 4]], '... got the expected values from &kv');
+    is_deeply(%x.pairs.sort(($a, $b) => { $a.value <=> $b.value }), ['one' => 1, 'two' => 2, 'three' => 3, 'four' => 4], '... got the expected values from &pairs');
 
     is(%x.clear, undef, '... got the expected value from &clear');
     is_deeply(%x.kv, [], '... got the expected values from &kv (after &clear)');

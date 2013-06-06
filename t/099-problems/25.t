@@ -18,7 +18,7 @@ sub remove_at($i, @list) {
 
 sub random_permute(@list) {
     my @l = @list;
-    1..(@l.length).map(-> {
+    1..(@l.length).map(() => {
                             if (@l.length > 1) {
                                 my @result = remove_at(rand(@l.length).Int, @l);
                                 @l = @result[0];
@@ -34,6 +34,6 @@ my @list = ['a', 'b', 'c', 'd', 'e', 'f'];
 my @permuted = random_permute(@list);
 
 is(@permuted.length, @list.length, "... P25");
-@permuted.each(-> ($x) { ok(@list.exists($x), "... P25 -- exists " ~ $x.Str) });
+@permuted.each(($x) => { ok(@list.exists($x), "... P25 -- exists " ~ $x.Str) });
 
 done_testing();

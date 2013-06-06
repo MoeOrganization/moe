@@ -12,12 +12,12 @@ sub is_prime($number) {
     if ($number < 2) {
         false
     } else {
-        !((2..($number.sqrt.Int)).first(-> ($f) { $number % $f == 0 }).defined)
+        !((2..($number.sqrt.Int)).first(($f) => { $number % $f == 0 }).defined)
     }
 }
 
 sub prime_factors($number) {
-    my $factor = (2..(($number/2).Int)).first(-> ($f) { $number % $f == 0 && is_prime($f) });
+    my $factor = (2..(($number/2).Int)).first(($f) => { $number % $f == 0 && is_prime($f) });
     if ($factor.defined) {
         [$factor, prime_factors(($number/$factor).Int)].flatten
     }

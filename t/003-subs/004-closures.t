@@ -1,6 +1,6 @@
 use Test::More;
 
-sub mk_adder ($x) { -> ($y) { $x + $y } }
+sub mk_adder ($x) { ($y) => { $x + $y } }
 
 {
     my $adder_1 = mk_adder(2);
@@ -11,7 +11,7 @@ sub mk_adder ($x) { -> ($y) { $x + $y } }
     is($adder_1.(2), 4, '... still got the value we expected from the first');
 }
 
-sub mk_modifier ($x) { -> ($y?) { $x = $y if $y; $x } }
+sub mk_modifier ($x) { ($y?) => { $x = $y if $y; $x } }
 
 {
     my $mod_1 = mk_modifier(10);

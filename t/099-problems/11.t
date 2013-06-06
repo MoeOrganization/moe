@@ -12,7 +12,7 @@
 use Test::More;
 
 sub encodeModified(*@list) {
-    @list.reduce(-> (@a, $b) {
+    @list.reduce((@a, $b) => {
                      if (@a.length == 0 || @a[-1].at_pos(0) ne $b) {
                          @a.push([$b]);
                      }
@@ -22,7 +22,7 @@ sub encodeModified(*@list) {
                      @a
                  },
                  [])
-         .map(-> (@a) {@a.length == 1 ? @a[0] : [@a.length, @a[0]]})
+         .map((@a) => {@a.length == 1 ? @a[0] : [@a.length, @a[0]]})
 }
 
 is_deeply(encodeModified('a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e'),
