@@ -63,15 +63,13 @@ trait MoeLiterals extends JavaTokenParsers with MoeQuoteParser {
   def quotedString = quoted("""[/{\[(<]""".r)
   def bracketedString = quoted("""[{\[(<]""".r) // only matching brackets as delimiters
 
-  def doubleQuoteString: Parser[StringLiteralNode] = (quoted('"') | ("qq" ~> quotedString)) ^^ {
-    s => StringLiteralNode(formatStr(s))
+  def doubleQuoteString: Parser[StringSequenceNode] = (quoted('"') | ("qq" ~> quotedString)) ^^ {
+    s => MoeStringParser.interpolateStr(s)
   }
 
   def singleQuoteString: Parser[StringLiteralNode] = quoted('\'') ^^ {
     s => StringLiteralNode(s)
   }
-
-  def string: Parser[StringLiteralNode] = doubleQuoteString | singleQuoteString
 
   // Self Literal
 
@@ -95,7 +93,8 @@ trait MoeLiterals extends JavaTokenParsers with MoeQuoteParser {
     | constTrue
     | constFalse
     | constUndef
-    | string
+    | doubleQuoteString
+    | singleQuoteString
     | selfLiteral
     | superLiteral
     | regexLiteral

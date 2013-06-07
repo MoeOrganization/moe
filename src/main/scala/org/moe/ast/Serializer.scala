@@ -531,6 +531,18 @@ object Serializer {
       )
     )
 
+    case StringSequenceNode(strParts) => JSONObject(
+      Map(
+        "StringSequenceNode" -> JSONObject(
+          Map(
+            "stringParts" -> JSONArray(strParts.map(toJSON(_)))
+          )
+        )
+      )
+    )
+
+    case EvalExpressionNode(value)  => JSONObject(Map("EvalExpressionNode" -> value))
+
     case x => "stub: " + x
   }
 
