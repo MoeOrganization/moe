@@ -101,7 +101,16 @@ object Literals extends Utils {
           parts.map(
             {
               case StringLiteralNode(s) => s
-              case expr                 => i.evaluate(env, expr).toString
+              case expr                 => {
+                val v = i.evaluate(env, expr)
+                // MoeStrObject.toString returns a double-quoted
+                // string literal, so call toString on all but
+                // MoeStrObjects
+                v match {
+                  case s: MoeStrObject => s.getNativeValue
+                  case x               => x.toString
+                }
+              }
             }
           ).mkString
         )
