@@ -13,6 +13,7 @@ object MoeStringParser extends MoeQuoteParser {
 
   private def stringPart: Parser[AST] = (
       block
+    | unicodeChar
     | array
     | hash
     | subroutineCall
@@ -27,6 +28,8 @@ object MoeStringParser extends MoeQuoteParser {
 
   private def block = quoted('{') ^^ EvalExpressionNode
 
+  private def unicodeChar = """\\x\{[a-fA-F0-9]{4}\}""".r ^^ StringLiteralNode
+
   private def array = ("@" ~> ident) ~ quoted('[') ^^ {
     case name ~ ""    => EvalExpressionNode("@" + name)
     case name ~ index => EvalExpressionNode("@" + name + "[" + index + "]")
@@ -40,7 +43,7 @@ object MoeStringParser extends MoeQuoteParser {
   private def hashName = ("%" ~> ident) ^^ {name => StringLiteralNode("%" + name) }
 
   private def subroutineCall = ("&" ~> ident) ~ quoted('(') ^^ {
-    case name ~ args => EvalExpressionNode("&" + name + "(" + args + ")")
+    case name ~ args => EvalExpressionNode(name + "(" + args + ")")
   }
   private def subroutineName = ("&" ~> ident) ^^ {name => StringLiteralNode("&" + name) }
 
