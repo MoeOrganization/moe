@@ -16,9 +16,10 @@ object ParserUtils {
       "\\f" -> "\f",
       "\\n" -> "\n",
       "\\r" -> "\r",
-      "\\t" -> "\t"
+      "\\t" -> "\t",
+      "\\$" -> """\$"""
     )
-    val escapes = """\\([bfnrt'"])""".r
+    val escapes = """\\([bfnrt'"\{\}\(\)\[\]\&\$\\])""".r
     escapes.replaceAllIn(s, m => escaped.getOrElse(m.group(0), m.group(0).tail))
   }
 
