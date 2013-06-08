@@ -1,11 +1,12 @@
 package org.moe.parser
 
 import ParserUtils._
+// import MoeQuoteParser._
 
 import scala.util.parsing.combinator._
 import org.moe.ast._
 
-trait MoeLiterals extends JavaTokenParsers {
+trait MoeLiterals extends JavaTokenParsers with MoeQuoteParser {
 
   // treat comments as whitespace
   override val whiteSpace = """(#[^\n\r]*[\n\r]|\s)+""".r
@@ -49,17 +50,26 @@ trait MoeLiterals extends JavaTokenParsers {
   // things a little)
   // - SL
 
-  val doubleQuoteStringPattern = """"((?:[^"\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*)"""".r
-  def doubleQuoteString: Parser[StringLiteralNode] = doubleQuoteStringPattern ^^ {
-    case doubleQuoteStringPattern(s) => StringLiteralNode(formatStr(s))
- }
+  // val doubleQuoteStringPattern = """"((?:[^"\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*)"""".r
+  // def doubleQuoteString: Parser[StringLiteralNode] = doubleQuoteStringPattern ^^ {
+  //   case doubleQuoteStringPattern(s) => StringLiteralNode(formatStr(s))
+  // }
 
-  val singleQuoteStringPattern = """'((?:[^'\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*)'""".r
-  def singleQuoteString: Parser[StringLiteralNode] = singleQuoteStringPattern ^^ {
-    case singleQuoteStringPattern(s) => StringLiteralNode(s)
+  // val singleQuoteStringPattern = """'((?:[^'\p{Cntrl}\\]|\\[\\'"bfnrt]|\\x\{[a-fA-F0-9]{4}\})*)'""".r
+  // def singleQuoteString: Parser[StringLiteralNode] = singleQuoteStringPattern ^^ {
+  //   case singleQuoteStringPattern(s) => StringLiteralNode(s)
+  // }
+
+  def quotedString = quoted("""[/{\[(<]""".r)
+  def bracketedString = quoted("""[{\[(<]""".r) // only matching brackets as delimiters
+
+  def doubleQuoteString: Parser[StringSequenceNode] = (quoted('"') | ("qq" ~> quotedString)) ^^ {
+    s => MoeStringParser.interpolateStr(s)
   }
 
-  def string: Parser[StringLiteralNode] = doubleQuoteString | singleQuoteString
+  def singleQuoteString: Parser[StringLiteralNode] = quoted('\'') ^^ {
+    s => StringLiteralNode(s)
+  }
 
   // Self Literal
 
@@ -68,10 +78,10 @@ trait MoeLiterals extends JavaTokenParsers {
 
   // Regex Literal
 
-  def regexString = """(\\.|[^/])*""".r
+  // def regexString = """(\\.|[^/])*""".r
 
   // TODO: support for other delimiters
-  def regexLiteral: Parser[RegexLiteralNode] = "/" ~> regexString <~ "/" ^^ { rx => RegexLiteralNode(rx) }
+  def regexLiteral: Parser[RegexLiteralNode] = quoted('/') ^^ { rx => RegexLiteralNode(rx) }
 
   def literalValue: Parser[AST] = (
       floatNumber
@@ -83,7 +93,8 @@ trait MoeLiterals extends JavaTokenParsers {
     | constTrue
     | constFalse
     | constUndef
-    | string
+    | doubleQuoteString
+    | singleQuoteString
     | selfLiteral
     | superLiteral
     | regexLiteral

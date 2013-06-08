@@ -1,1 +1,1 @@
-{"StatementsNode" : [{"ArrayLiteralNode" : [{"IntLiteralNode" : 10}, {"ArrayLiteralNode" : [{"IntLiteralNode" : 20}, {"StringLiteralNode" : "thirty"}]}, {"IntLiteralNode" : 40}, {"ArrayLiteralNode" : [{"BooleanLiteralNode" : "true"}]}]}]}
+{"StatementsNode" : [{"ArrayLiteralNode" : [{"IntLiteralNode" : 10}, {"ArrayLiteralNode" : [{"IntLiteralNode" : 20}, {"StringSequenceNode" : {"stringParts" : [{"StringLiteralNode" : "thirty"}]}}]}, {"IntLiteralNode" : 40}, {"ArrayLiteralNode" : [{"BooleanLiteralNode" : "true"}]}]}]}
