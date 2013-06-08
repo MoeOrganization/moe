@@ -4,6 +4,7 @@ import org.moe.interpreter._
 import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 import org.moe.ast._
+import org.moe.parser._
 
 object Literals extends Utils {
 
@@ -93,6 +94,32 @@ object Literals extends Utils {
         case (RegexLiteralNode(p), StringLiteralNode(r_), StringLiteralNode(f)) =>
          r.NativeObjects.getArray(List(r.NativeObjects.getRegex(p, f), r.NativeObjects.getStr(r_)) : _*)
       }
+
+    case (env, StringSequenceNode(parts: List[AST])) =>
+      r.NativeObjects.getStr(
+        ParserUtils.formatStr(
+          parts.map(
+            {
+              case StringLiteralNode(s) => s
+              case expr                 => {
+                val v = i.evaluate(env, expr)
+                // MoeStrObject.toString returns a double-quoted
+                // string literal, so call toString on all but
+                // MoeStrObjects
+                v match {
+                  case s: MoeStrObject => s.getNativeValue
+                  case x               => x.toString
+                }
+              }
+            }
+          ).mkString
+        )
+      )
+
+    case (env, EvalExpressionNode(expr)) => {
+      val body = MoeParser.parseStuff(expr)
+      i.eval(r, env, body)
+    }
   }
 
 }

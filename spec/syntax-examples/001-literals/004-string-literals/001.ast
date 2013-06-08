@@ -1,1 +1,1 @@
-{"StatementsNode" : [{"StringLiteralNode" : "hello world"}]}
+{"StatementsNode" : [{"StringSequenceNode" : {"stringParts" : [{"StringLiteralNode" : "hello world"}]}}]}
