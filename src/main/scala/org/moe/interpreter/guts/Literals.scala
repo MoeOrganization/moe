@@ -118,7 +118,7 @@ object Literals extends Utils {
 
     case (env, EvalExpressionNode(expr)) => {
       val body = MoeParser.parseStuff(expr)
-      i.eval(r, env, body)
+      i.eval(r, new MoeEnvironment(Some(env)), body)
     }
   }
 
