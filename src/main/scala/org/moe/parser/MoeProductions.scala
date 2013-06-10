@@ -327,7 +327,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case "qx" ~ expr => SubroutineCallNode("system", splitString(expr))
     case "q"  ~ expr => StringLiteralNode(expr)
   }
-  def quoteRegexOp = "q[qrwx]?".r ~ quotedString ~ opt(regexModifiers) ^^ {
+  def quoteRegexOp = "qr" ~ quotedString ~ opt(regexModifiers) ^^ {
     case "qr" ~ expr ~ Some(flags) => MatchExpressionNode(RegexLiteralNode(expr), flags)
     case "qr" ~ expr ~ None        => MatchExpressionNode(RegexLiteralNode(expr), StringLiteralNode(""))
   }
