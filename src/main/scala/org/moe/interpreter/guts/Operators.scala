@@ -4,6 +4,7 @@ import org.moe.interpreter._
 import org.moe.runtime._
 import org.moe.runtime.nativeobjects._
 import org.moe.ast._
+import org.moe.parser._
 
 object Operators extends Utils {
 
@@ -36,6 +37,8 @@ object Operators extends Utils {
     case (env, BinaryOpNode(lhs: AST, "=~", rhs: AST)) => {
       rhs match {
         case MatchExpressionNode(pattern, flags) => i.evaluate(env, RegexMatchNode(lhs, pattern, flags))
+        // TODO: interpolation of the regex variable value
+        case VariableAccessNode (pattern)        => i.evaluate(env, RegexMatchNode(lhs, rhs, StringLiteralNode("")))
         case SubstExpressionNode(pattern, replacement, flags) => i.evaluate(env, RegexSubstNode(lhs, pattern, replacement, flags))
       }
     }
