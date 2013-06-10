@@ -24,6 +24,7 @@ object MoeStringParser extends MoeQuoteParser {
     | methodName
     | scalar
     | chars
+    | delimiters
   )
 
   private def block = quoted('{') ^^ EvalExpressionNode
@@ -58,7 +59,11 @@ object MoeStringParser extends MoeQuoteParser {
     case name => VariableAccessNode("$" + name)
   }
 
+  // any character other than the delimiters
   private def chars = """(\\.|[^$@%&{])+""".r ^^ StringLiteralNode
+
+  // delimiters themselves
+  private def delimiters = """[$@%&{]+""".r ^^ StringLiteralNode
 
   private def getEntryPoint: Parser[AST] = string
 

@@ -31,4 +31,10 @@ ok("foo" =~ m/f/, "... string literal match with =~ and explicit 'm' operator");
     ok($str =~ m<f>, "... string variable match with '< >' as delimiters");
 }
 
+{
+    my $str = "foo";
+    my $rx = qr{f*o+};
+    ok($str =~ $rx, "... string variable match with regex variable");
+}
+
 done_testing();

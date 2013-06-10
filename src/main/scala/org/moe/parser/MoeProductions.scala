@@ -112,7 +112,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   lazy val applyOp: PackratParser[AST] = (applyOp <~ ".") ~ identifier ~ ("(" ~> repsep(expression, ",") <~ ")").? ^^ {
     case invocant ~ method ~ Some(args) => MethodCallNode(invocant, method, args)
     case invocant ~ method ~ None       => MethodCallNode(invocant, method, List())
-  } | regexExpression | subroutineCall
+  } | quoteExpression | subroutineCall
 
   lazy val subroutineCall: PackratParser[AST] = namespacedIdentifier ~ ("(" ~> repsep(expression, ",") <~ ")") ^^ {
     case sub ~ args => SubroutineCallNode(sub, args)
@@ -143,7 +143,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
    */
 
   lazy val simpleExpression: PackratParser[AST] = (
-      regexExpression
+      quoteExpression
     | arrayIndex
     | hashIndex
     | hash
@@ -318,9 +318,23 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case pattern ~ replacement ~ Some(flags) => SubstExpressionNode(RegexLiteralNode(pattern), StringLiteralNode(replacement), flags)
   }
 
+  private def splitString(str: String) = str.split(" ").map(s => StringLiteralNode(s)).toList
+
+  def quoteOp = "q[qwx]?".r ~ quotedString ^^ {
+    case "qq" ~ expr => MoeStringParser.interpolateStr(expr)
+    case "qw" ~ expr => ArrayLiteralNode(splitString(expr))
+    // this is naive; doesn't handle embedded spaces in args
+    case "qx" ~ expr => SubroutineCallNode("system", splitString(expr))
+    case "q"  ~ expr => StringLiteralNode(expr)
+  }
+  def quoteRegexOp = "q[qrwx]?".r ~ quotedString ~ opt(regexModifiers) ^^ {
+    case "qr" ~ expr ~ Some(flags) => MatchExpressionNode(RegexLiteralNode(expr), flags)
+    case "qr" ~ expr ~ None        => MatchExpressionNode(RegexLiteralNode(expr), StringLiteralNode(""))
+  }
+
   // TODO: tr (transliteration) operator
 
-  def regexExpression = (substExpression_2 | substExpression_1 | matchExpression)
+  def quoteExpression = (substExpression_2 | substExpression_1 | matchExpression | quoteOp | quoteRegexOp)
 
   def matchOp = simpleExpression ~ "=~" ~ expression ^^ {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
