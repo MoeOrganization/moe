@@ -38,20 +38,20 @@ class CheckingAccount extends BankAccount {
 
     is($savings.balance, 100, '... got the expected balance');
     
-    eval("$savings.balance(100)");
+    eval('$savings.balance(100)');
     ok($!.defined, '... accessor is read only');
 
-    eval("$savings.deposit(200)");
+    eval('$savings.deposit(200)');
     ok(not($!.defined), '... deposit worked');
 
     is($savings.balance, 300, '... got the expected (altered) balance');
 
-    eval("$savings.withdraw(50)");
+    eval('$savings.withdraw(50)');
     ok(not($!.defined), '... withdraw worked');
 
     is($savings.balance, 250, '... got the expected (altered) balance');
 
-    eval("$savings.withdraw(350)");
+    eval('$savings.withdraw(350)');
     ok($!.defined, '... withdraw worked');    
 
     is($savings.balance, 250, '... got the expected (unaltered) balance');
@@ -71,19 +71,19 @@ class CheckingAccount extends BankAccount {
     is($checking.balance, 250, '... got the expected (checking) balance');
     is($savings.balance, 100, '... got the expected (savings) balance');
 
-    eval("$checking.withdraw(200)");
+    eval('$checking.withdraw(200)');
     ok(not($!.defined), '... withdraw did not die');
 
     is($checking.balance, 50, '... got the expected (checking) balance');
     is($savings.balance, 100, '... got the expected (savings) balance');
 
-    eval("$checking.withdraw(100)");
+    eval('$checking.withdraw(100)');
     ok(not($!.defined), '... withdraw did not die');
 
     is($checking.balance, 0, '... got the expected (checking) balance');
     is($savings.balance, 50, '... got the expected (savings) balance');
 
-    eval("$checking.withdraw(100)");
+    eval('$checking.withdraw(100)');
     ok($!.defined, '... withdraw did die this time');
 
     is($checking.balance, 0, '... got the expected unaltered (checking) balance');
