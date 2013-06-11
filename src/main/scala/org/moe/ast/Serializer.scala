@@ -541,7 +541,8 @@ object Serializer {
       )
     )
 
-    case EvalExpressionNode(value)  => JSONObject(Map("EvalExpressionNode" -> value))
+    case EvalExpressionNode(value)   => JSONObject(Map("EvalExpressionNode" -> value))
+    case ExecuteCommandNode(command) => JSONObject(Map("ExecuteCommandNode" -> toJSON(command)))
 
     case x => "stub: " + x
   }

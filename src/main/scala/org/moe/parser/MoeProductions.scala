@@ -324,7 +324,7 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
     case "qq" ~ expr => MoeStringParser.interpolateStr(expr)
     case "qw" ~ expr => ArrayLiteralNode(splitString(expr))
     // this is naive; doesn't handle embedded spaces in args
-    case "qx" ~ expr => SubroutineCallNode("system", splitString(expr))
+    case "qx" ~ expr => ExecuteCommandNode(MoeStringParser.interpolateStr(expr))
     case "q"  ~ expr => StringLiteralNode(expr)
   }
   def quoteRegexOp = "qr" ~ quotedString ~ opt(regexModifiers) ^^ {
