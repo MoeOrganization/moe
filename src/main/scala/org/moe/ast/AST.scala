@@ -151,3 +151,5 @@ case class RegexSubstNode(target: AST, pattern: AST, replacement: AST, flags: AS
 
 case class StringSequenceNode(exprs: List[AST]) extends AST
 case class EvalExpressionNode(expr: String) extends AST
+
+case class ExecuteCommandNode(expr: AST) extends AST

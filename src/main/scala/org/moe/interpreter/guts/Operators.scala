@@ -86,5 +86,10 @@ object Operators extends Utils {
       callMethod(receiver, "subst", List(argPattern, argReplacement, argFlags))
     }
 
+    case (env, ExecuteCommandNode(cmd: AST)) => {
+      val cmd_str = i.evaluate(env, cmd).asInstanceOf[MoeStrObject].getNativeValue
+      import sys.process._
+      r.NativeObjects.getStr( ParserUtils.formatStr(cmd_str).!! )
+    }
   }
 }
