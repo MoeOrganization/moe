@@ -531,6 +531,30 @@ object Serializer {
       )
     )
 
+    case TransExpressionNode(search, replacement, flags) => JSONObject(
+      Map(
+        "TransExpressionNode" -> JSONObject(
+          Map(
+            "search"      -> toJSON(search),
+            "replacement" -> toJSON(replacement),
+            "flags"       -> toJSON(flags)
+          )
+        )
+      )
+    )
+    case TransOpNode(target, search, replacement, flags) => JSONObject(
+      Map(
+        "TransOpNode" -> JSONObject(
+          Map(
+            "target"      -> toJSON(target),
+            "search"      -> toJSON(search),
+            "replacement" -> toJSON(replacement),
+            "flags"       -> toJSON(flags)
+          )
+        )
+      )
+    )
+
     case StringSequenceNode(strParts) => JSONObject(
       Map(
         "StringSequenceNode" -> JSONObject(
