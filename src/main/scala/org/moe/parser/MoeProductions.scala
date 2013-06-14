@@ -333,8 +333,26 @@ trait MoeProductions extends MoeLiterals with JavaTokenParsers with PackratParse
   }
 
   // TODO: tr (transliteration) operator
+  lazy val transModifiers: Parser[AST] = """[cdsr]*""".r ^^ StringLiteralNode
 
-  def quoteExpression = (substExpression_2 | substExpression_1 | matchExpression | quoteOp | quoteRegexOp)
+  def transExpression_1 = ("tr" ~> quotedPair('/')) ~ opt(transModifiers) ^^ {
+    case (search, replacement) ~ None        => TransExpressionNode(StringLiteralNode(search), StringLiteralNode(replacement), StringLiteralNode(""))
+    case (search, replacement) ~ Some(flags) => TransExpressionNode(StringLiteralNode(search), StringLiteralNode(replacement), flags)
+  }
+  def transExpression_2 = ("tr" ~> bracketedString) ~ bracketedString ~ opt(transModifiers) ^^ {
+    case search ~ replacement ~ None        => TransExpressionNode(StringLiteralNode(search), StringLiteralNode(replacement), StringLiteralNode(""))
+    case search ~ replacement ~ Some(flags) => TransExpressionNode(StringLiteralNode(search), StringLiteralNode(replacement), flags)
+  }
+
+  def quoteExpression = (
+      substExpression_1
+    | substExpression_2
+    | matchExpression
+    | transExpression_1
+    | transExpression_2
+    | quoteOp
+    | quoteRegexOp
+  )
 
   def matchOp = simpleExpression ~ "=~" ~ expression ^^ {
     case left ~ op ~ right => BinaryOpNode(left, op, right)
