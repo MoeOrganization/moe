@@ -40,6 +40,7 @@ object Operators extends Utils {
         // TODO: interpolation of the regex variable value
         case VariableAccessNode (pattern)        => i.evaluate(env, RegexMatchNode(lhs, rhs, StringLiteralNode("")))
         case SubstExpressionNode(pattern, replacement, flags) => i.evaluate(env, RegexSubstNode(lhs, pattern, replacement, flags))
+        case TransExpressionNode(search,  replacement, flags) => i.evaluate(env, TransOpNode(lhs, search, replacement, flags))
       }
     }
 
@@ -84,6 +85,14 @@ object Operators extends Utils {
       val argReplacement = i.evaluate(env, replacement)
       val argFlags = i.evaluate(env, flags);
       callMethod(receiver, "subst", List(argPattern, argReplacement, argFlags))
+    }
+
+    case (env, TransOpNode(target: AST, search: AST, replacement: AST, flags: AST)) => {
+      val receiver = i.evaluate(env, target)
+      val argSearch = i.evaluate(env, search)
+      val argReplacement = i.evaluate(env, replacement)
+      val argFlags = i.evaluate(env, flags);
+      callMethod(receiver, "trans", List(argSearch, argReplacement, argFlags))
     }
 
     case (env, ExecuteCommandNode(cmd: AST)) => {

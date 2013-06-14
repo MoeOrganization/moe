@@ -304,6 +304,25 @@ object StrClass {
       )
     )
 
+    strClass.addMethod(
+      new MoeMethod(
+        "trans",
+        new MoeSignature(List(new MoePositionalParameter("$search"),
+                              new MoePositionalParameter("$replace"),
+                              new MoeOptionalParameter("$flags"))),
+        env,
+        (e) => self(e).trans(
+          r,
+          e.getAs[MoeStrObject]("$search").get,
+          e.getAs[MoeStrObject]("$replace").get,
+          e.get("$flags") match {
+            case Some(s: MoeStrObject) => s.copy
+            case _                     => getStr("")
+          }
+        )
+      )
+    )
+
     /**
      * List of Operators to support:
      * - infix:<.>

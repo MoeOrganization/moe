@@ -134,6 +134,70 @@ class MoeStrObject(
   ): MoeStrObject =
     pattern.replace(r, this, replacement, Some(flags))
 
+  // transliteration -- like in Perl5, except /r flag is the default
+  // behavior; i.e. the original string is not modified and the
+  // transliterated string is returned
+
+  import scala.util.matching.Regex._
+  def trans(
+    r: MoeRuntime,
+    search: MoeStrObject,
+    replace: MoeStrObject,
+    flags: MoeStrObject
+  ): MoeStrObject = {
+    def expandCharSequence(s: String): List[Char] = {
+      s.foldLeft(List[Char]()){
+        (a, c) => if (a.length > 1 && a.last == '-') a.dropRight(2) ++ (a.init.last to c).toList else a ++ List(c)
+      }
+    }
+
+    val complement = flags.unboxToString.get.contains('c')
+    val squash     = flags.unboxToString.get.contains('s')
+    val delete     = flags.unboxToString.get.contains('d')
+
+    val searchList = expandCharSequence(search.unboxToString.get)
+    var replaceList_t = expandCharSequence(replace.unboxToString.get)
+
+    val replaceList = if (delete) {
+                          replaceList_t // use the replace-list as is
+                      }
+                      else {
+                        if (replaceList_t.isEmpty)
+                          searchList
+                        else    // truncate/extend replace-list to match search-list length
+                          if (replaceList_t.length > searchList.length)
+                            replaceList_t.drop(replaceList_t.length - searchList.length)
+                          else if (searchList.length > replaceList_t.length)
+                            replaceList_t ++ List.fill(searchList.length - replaceList_t.length)(replaceList_t.last)
+                          else
+                            replaceList_t
+                      }
+
+    val transMap = searchList.zip(replaceList).toMap
+
+    def isFound(c: Char) = if (complement) !searchList.contains(c) else searchList.contains(c)
+    def maybeSquashed(a: String, c: Char) = if (squash && !a.isEmpty && a.last == c) a else a + c
+
+    r.NativeObjects.getStr(
+      getNativeValue.foldLeft(""){
+        (a, c) => {
+          if (isFound(c)) {
+            if (complement)
+              if (delete) a else maybeSquashed(a, replaceList.last)
+            else
+              transMap.get(c) match {
+                case Some(x) => maybeSquashed(a, x)
+                case None    => if (delete) a else a + c
+              }
+          }
+          else {
+            a + c
+          }
+        }
+      }
+    )
+  }
+
   // MoeNativeObject overrides
 
   override def copy = new MoeStrObject(getNativeValue, getAssociatedType)
