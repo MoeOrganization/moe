@@ -149,6 +149,9 @@ case class SubstExpressionNode(pattern: AST, replacement: AST, flags: AST) exten
 case class RegexMatchNode(target: AST, pattern: AST, flags: AST) extends AST
 case class RegexSubstNode(target: AST, pattern: AST, replacement: AST, flags: AST) extends AST
 
+case class TransExpressionNode(search: AST, replacement: AST, flags: AST) extends AST
+case class TransOpNode(target: AST, search: AST, replacement: AST, flags: AST) extends AST
+
 case class StringSequenceNode(exprs: List[AST]) extends AST
 case class EvalExpressionNode(expr: String) extends AST
 
