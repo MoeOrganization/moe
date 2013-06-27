@@ -76,6 +76,9 @@ any and all contributions. I should warn you though, there will likely
 be a lot of churn and duplicated efforts in the early days as this
 project gets its footing.
 
+For To-Do items, refer to the 
+[wiki](https://github.com/MoeOrganization/moe/wiki#to-do)
+
 ### Communication
 
 Currently the best place to discuss this is in the #moe channel on
@@ -131,10 +134,6 @@ File -> Import... -> Existing Projects into Workspace -> <Browse to the project>
 
 SBT should have pulled in ScalaTest, which you can set as your Run/Debug configurations for
 running the tests.
-
-### What can I do?
-
-Refer to the [wiki](https://github.com/MoeOrganization/moe/wiki#to-do) for information on this.
 
 ## License
 
