@@ -134,7 +134,7 @@ running the tests.
 
 ### What can I do?
 
-Refer to the STATUS document for information regarding this.
+Refer to the [wiki](https://github.com/MoeOrganization/moe/wiki#to-do) for information on this.
 
 ## License
 
