@@ -229,5 +229,22 @@ object CorePackage {
         }
       )
     )
+
+    pkg.addSubroutine(
+      new MoeSubroutine(
+        "__PACKAGE__",
+        new MoeSignature(),
+        env,
+        { (e) =>
+          val caller_env = r.getInterpreterCallStack.head.getCallSiteEnvironment
+          val caller_pkg = caller_env.getCurrentPackage match {
+            case Some(x) => x.getFullyQualifiedName
+            case None    => ""
+            case _       => ""
+          }
+          getStr(caller_pkg)
+        }
+      )
+    )
   }
 }
